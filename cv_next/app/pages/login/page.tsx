@@ -1,7 +1,23 @@
+"use client";
+import FirebaseHelper from "@/app/services/firebaseHelper";
+import React, { useState, useEffect } from "react";
+
 export default function LogIn() {
+  const [isLoginLoaded, setLoginLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!isLoginLoaded) {
+      console.log(isLoginLoaded);
+      setLoginLoaded(true);
+      FirebaseHelper.getAuthUI();
+    }
+  }, [isLoginLoaded]);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <div>
       <h1>LogIn</h1>
-    </main>
-  )
+      <div id="firebaseui-auth-container"></div>
+      <div id="loader">Loading...</div>
+    </div>
+  );
 }

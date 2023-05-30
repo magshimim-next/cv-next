@@ -1,5 +1,4 @@
 import Helper from "../base/helper";
-import { Categories } from "./categories";
 
 export default class CV {
   public id: string;
