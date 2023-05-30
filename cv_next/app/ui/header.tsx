@@ -90,6 +90,7 @@ export default function HeaderMegaMenu() {
     <Box pb={120}>
       <Header height={60} px="md">
         <Group position="apart" sx={{ height: "100%" }}>
+          {/* TODO: get a logo and replace this */}
           CV_NEXT-LOGO
           <Group
             sx={{ height: "100%" }}
@@ -127,6 +128,7 @@ export default function HeaderMegaMenu() {
             color={theme.colorScheme === "dark" ? "dark.5" : "gray.1"}
           />
 
+          {/*TODO: make this a router link */}
           <a href="#" className={classes.link}>
             Home
           </a>
