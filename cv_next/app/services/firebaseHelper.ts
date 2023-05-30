@@ -1,4 +1,4 @@
-"use client";
+"use client";//TODO: check if this is needed
 import Helper from "../base/helper";
 import { FirebaseApp, initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
