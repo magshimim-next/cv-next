@@ -1,4 +1,5 @@
 "use client";
+import HeaderMegaMenu from "./header";
 import { useState } from "react";
 import {
   AppShell,
@@ -54,8 +55,7 @@ export default function Layout({ children }: { children: any }) {
                 mr="xl"
               />
             </MediaQuery>
-
-            <Text>Application header</Text>
+            <HeaderMegaMenu />
           </div>
         </Header>
       }
