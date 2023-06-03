@@ -1,13 +1,10 @@
-import Link from "next/link";
-import Layout from "@/app/ui/layout";
+import LandingLayout from "@/app/ui/landingLayout";
 export default function Home() {
   return (
     <main>
-      <Layout>
+      <LandingLayout>
         <h1>Hello World!</h1>
-        <Link href={"/pages/login"}>Log In</Link>
-        <Link href={"/pages/register"}>Register</Link>
-      </Layout>
+      </LandingLayout>
     </main>
   );
 }

@@ -1,3 +1,4 @@
+"use client"
 import {
   createStyles,
   Header,
@@ -68,7 +69,7 @@ function Links() {
   );
 }
 
-export default function HeaderMegaMenu() {
+export default function LandingHeader() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const { classes, theme } = useStyles();
@@ -114,6 +115,7 @@ export default function HeaderMegaMenu() {
             my="sm"
             color={theme.colorScheme === "dark" ? "dark.5" : "gray.1"}
           />
+
           <Links />
 
           <Divider
