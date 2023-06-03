@@ -11,6 +11,7 @@ import {
   rem,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import React, { Fragment } from "react";
 import Link from "next/link";
 
 const useStyles = createStyles((theme) => ({
@@ -82,6 +83,26 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+function Links() {
+  const { classes } = useStyles();
+  return (
+    <Fragment>
+      <Link className={classes.link} href={"/"}>
+        Home
+      </Link>
+      <Link className={classes.link} href={"/"}>
+        Home
+      </Link>
+      <Link className={classes.link} href={"/"}>
+        Home
+      </Link>
+      <Link className={classes.link} href={"/"}>
+        Home
+      </Link>
+    </Fragment>
+  );
+}
+
 export default function HeaderMegaMenu() {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
@@ -98,12 +119,12 @@ export default function HeaderMegaMenu() {
             spacing={0}
             className={classes.hiddenMobile}
           >
-            <Link className={classes.link} href={"/"}>
-              Home
-            </Link>
+            <Links />
           </Group>
           <Group className={classes.hiddenMobile}>
-            <Button component="a" href="/pages/login">log in</Button>
+            <Button component="a" href="/pages/login">
+              log in
+            </Button>
           </Group>
           <Burger
             opened={drawerOpened}
@@ -128,9 +149,7 @@ export default function HeaderMegaMenu() {
             my="sm"
             color={theme.colorScheme === "dark" ? "dark.5" : "gray.1"}
           />
-          <Link className={classes.link} href={"/"}>
-            Home
-          </Link>
+          <Links />
 
           <Divider
             my="sm"
@@ -138,7 +157,9 @@ export default function HeaderMegaMenu() {
           />
 
           <Group position="center" grow pb="xl" px="md">
-            <Button component="a" href="/pages/login">log in</Button>
+            <Button component="a" href="/pages/login">
+              log in
+            </Button>
           </Group>
         </ScrollArea>
       </Drawer>
