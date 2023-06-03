@@ -1,5 +1,5 @@
 "use client";
-import HeaderMegaMenu from "./header";
+import HeaderMegaMenu from "./landingHeader";
 import { useState } from "react";
 import {
   AppShell,
