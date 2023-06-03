@@ -11,6 +11,7 @@ import {
   rem,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import Link from "next/link";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -97,13 +98,12 @@ export default function HeaderMegaMenu() {
             spacing={0}
             className={classes.hiddenMobile}
           >
-            <a href="#" className={classes.link}>
+            <Link className={classes.link} href={"/"}>
               Home
-            </a>
+            </Link>
           </Group>
           <Group className={classes.hiddenMobile}>
-            <Button variant="default">Log in</Button>
-            <Button>Sign up</Button>
+            <Button component="a" href="/pages/login">log in</Button>
           </Group>
           <Burger
             opened={drawerOpened}
@@ -113,6 +113,7 @@ export default function HeaderMegaMenu() {
         </Group>
       </Header>
 
+      {/* drawer for mobile site */}
       <Drawer
         opened={drawerOpened}
         onClose={closeDrawer}
@@ -127,11 +128,9 @@ export default function HeaderMegaMenu() {
             my="sm"
             color={theme.colorScheme === "dark" ? "dark.5" : "gray.1"}
           />
-
-          {/*TODO: make this a router link */}
-          <a href="#" className={classes.link}>
+          <Link className={classes.link} href={"/"}>
             Home
-          </a>
+          </Link>
 
           <Divider
             my="sm"
@@ -139,8 +138,7 @@ export default function HeaderMegaMenu() {
           />
 
           <Group position="center" grow pb="xl" px="md">
-            <Button variant="default">Log in</Button>
-            <Button>Sign up</Button>
+            <Button component="a" href="/pages/login">log in</Button>
           </Group>
         </ScrollArea>
       </Drawer>
