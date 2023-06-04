@@ -150,6 +150,7 @@ export default class FirebaseHelper {
       documentData.userID,
       documentData.data,
       documentData.resolved,
+      documentData.deleted,
       documentData.documentID,
       documentData.parentCommentID,
       documentData.upvotes,
@@ -158,14 +159,19 @@ export default class FirebaseHelper {
   }
 
   public static async getAllCommentsByQueryFilter(
-    w: QueryFieldFilterConstraint
+    w: QueryFieldFilterConstraint,
+    filterOutDeleted: boolean = true
   ): Promise<CommentModel[] | null> {
     try {
       let collectionRef = collection(
         FirebaseHelper.getFirestoreInstance(),
         CommentModel.CollectionName
       );
-      const q = query(collectionRef, w);
+      const q = query(
+        collectionRef,
+        w,
+        where("deleted", "==", !filterOutDeleted)
+      );
       const querySnapshot = await getDocs(q);
       const matchingDocuments: CommentModel[] = [];
 
@@ -183,8 +189,38 @@ export default class FirebaseHelper {
   }
 
   public static async getAllCommentsByUserId(
-    userId: string
+    userId: string,
+    filterOutDeleted: boolean = true
   ): Promise<CommentModel[] | null> {
-    return FirebaseHelper.getAllCommentsByQueryFilter(where("userID", "==", userId));
+    return FirebaseHelper.getAllCommentsByQueryFilter(
+      where("userID", "==", userId),
+      filterOutDeleted
+    );
+  }
+
+  /**
+   *
+   * @param documentID is the ID of the specific CV document.
+   * @returns all the top level comments of the CV
+   */
+  public static async getAllCommentsByDocumentId(
+    documentID: string
+  ): Promise<CommentModel[] | null> {
+    return FirebaseHelper.getAllCommentsByQueryFilter(
+      where("documentID", "==", documentID)
+    );
+  }
+
+  /**
+   *
+   * @param parentCommentID is the ID of the specific Parent Comment.
+   * @returns all the top level comments of the specific parent comment
+   */
+  public static async getAllCommentsByParentCommentID(
+    parentCommentID: string
+  ): Promise<CommentModel[] | null> {
+    return FirebaseHelper.getAllCommentsByQueryFilter(
+      where("parentCommentID", "==", parentCommentID)
+    );
   }
 }

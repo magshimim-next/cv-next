@@ -12,7 +12,7 @@ export default function LogIn() {
       setLoginLoaded(true);
       FirebaseHelper.getAuthUI();
 
-      /*let comment = new CommentModel("123456", "111", "test", false, undefined, undefined, ["12","34"]);
+      /*let comment = new CommentModel("654321", "111", "test", false, false, undefined, undefined);
       FirebaseHelper.addNewComment(comment);*/
       FirebaseHelper.getAllCommentsByUserId("111");
     }

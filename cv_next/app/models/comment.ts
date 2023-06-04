@@ -6,6 +6,7 @@ export default class CommentModel implements BaseModel {
   public userID: string;
   public data: string;
   public resolved: boolean;
+  public deleted: boolean;
   public lastUpdate: number;
   public documentID: string | null;
   public parentCommentID: string | null;
@@ -23,6 +24,7 @@ export default class CommentModel implements BaseModel {
     userID: string,
     data: string,
     resolved: boolean = false,
+    deleted: boolean = false,
     documentID?: string,
     parentCommentID?: string,
     upvotes?: Array<string>,
@@ -42,10 +44,16 @@ export default class CommentModel implements BaseModel {
     this.upvotes = upvotes || null;
     this.downvotes = downvotes || null;
     this.resolved = resolved;
+    this.deleted = deleted;
   }
 
   public updateData(data: string) {
     this.data = data;
+    this.lastUpdate = Helper.epochTimeNow();
+  }
+
+  public markDeleted(deleted: boolean) {
+    this.deleted = deleted;
     this.lastUpdate = Helper.epochTimeNow();
   }
 
