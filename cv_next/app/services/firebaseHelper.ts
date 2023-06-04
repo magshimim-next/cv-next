@@ -14,6 +14,7 @@ import {
   DocumentData,
   QueryDocumentSnapshot,
   QueryFieldFilterConstraint,
+  QuerySnapshot,
 } from "firebase/firestore";
 import { Auth, getAuth, GoogleAuthProvider } from "firebase/auth";
 import CommentModel from "../models/comment";
@@ -32,6 +33,30 @@ const firebaseConfig = {
   messagingSenderId: "447291460762",
   appId: "1:447291460762:web:7e8c9cf3726ef31e372323",
 };
+
+enum ErrorReasons {
+  noErr,
+  undefinedErr,
+  emailExists,
+}
+
+const enumToStringMap: Record<ErrorReasons, string> = {
+  [ErrorReasons.noErr]: "No Error",
+  [ErrorReasons.undefinedErr]: "Undefined Error",
+  [ErrorReasons.emailExists]: "Email already exists!",
+};
+
+export class DbOperationResult {
+  public success: boolean;
+  public reason: ErrorReasons;
+  public reasonString: string;
+
+  constructor(success: boolean, reason: ErrorReasons) {
+    this.success = success;
+    this.reason = reason;
+    this.reasonString = enumToStringMap[reason];
+  }
+}
 
 export default class FirebaseHelper {
   private static firebaseAppInstance?: FirebaseApp;
@@ -184,9 +209,12 @@ export default class FirebaseHelper {
    * @param comment the comment model to add
    * @returns true if succeeded.
    */
-  public static async addNewComment(comment: CommentModel): Promise<boolean> {
+  public static async addNewComment(
+    comment: CommentModel
+  ): Promise<DbOperationResult> {
     let data = Helper.serializeObject(comment.removeBaseData());
-    return FirebaseHelper.addData(data, comment.collectionName);
+    let res = await FirebaseHelper.addData(data, comment.collectionName);
+    return new DbOperationResult(res, res ? ErrorReasons.noErr : ErrorReasons.undefinedErr);
   }
 
   /**
@@ -194,9 +222,16 @@ export default class FirebaseHelper {
    * @param comment should hold the proper ID in order to update the correct document
    * @returns true upon success
    */
-  public static async updateComment(comment: CommentModel): Promise<boolean> {
+  public static async updateComment(
+    comment: CommentModel
+  ): Promise<DbOperationResult> {
     let data = Helper.serializeObject(comment.removeBaseData());
-    return FirebaseHelper.updateData(comment.id, data, comment.collectionName);
+    let res = await FirebaseHelper.updateData(
+      comment.id,
+      data,
+      comment.collectionName
+    );
+    return new DbOperationResult(res, res ? ErrorReasons.noErr : ErrorReasons.undefinedErr);
   }
 
   private static documentSnapshotToComment(
@@ -216,7 +251,7 @@ export default class FirebaseHelper {
     );
   }
 
-  public static async getAllCommentsByQueryFilter(
+  private static async getAllCommentsByQueryFilter(
     w: QueryFieldFilterConstraint,
     filterOutDeleted: boolean = true
   ): Promise<CommentModel[] | null> {
@@ -295,9 +330,14 @@ export default class FirebaseHelper {
    * @param user the user model to add
    * @returns true if succeeded.
    */
-  public static async addNewUser(user: UserModel): Promise<boolean> {
+  public static async addNewUser(user: UserModel): Promise<DbOperationResult> {
+    let userByEmail = await FirebaseHelper.getUserByEmail(user.email);
+    if (userByEmail !== null && userByEmail.length > 0) {
+      return new DbOperationResult(false, ErrorReasons.emailExists);
+    }
     let data = Helper.serializeObject(user.removeBaseData());
-    return FirebaseHelper.addData(data, user.collectionName);
+    let res = await FirebaseHelper.addData(data, user.collectionName);
+    return new DbOperationResult(res, res ? ErrorReasons.noErr : ErrorReasons.undefinedErr);
   }
 
   /**
@@ -305,8 +345,109 @@ export default class FirebaseHelper {
    * @param user should hold the proper ID in order to update the correct document
    * @returns true upon success
    */
-  public static async updateuser(user: UserModel): Promise<boolean> {
+  public static async updateUser(user: UserModel): Promise<DbOperationResult> {
     let data = Helper.serializeObject(user.removeBaseData());
-    return FirebaseHelper.updateData(user.id, data, user.collectionName);
+    let res = await FirebaseHelper.updateData(
+      user.id,
+      data,
+      user.collectionName
+    );
+    return new DbOperationResult(res, res ? ErrorReasons.noErr : ErrorReasons.undefinedErr);
+  }
+
+  private static documentSnapshotToUser(
+    documentSnapshot: QueryDocumentSnapshot
+  ): UserModel {
+    const documentData = documentSnapshot.data() as DocumentData;
+    return new UserModel(
+      documentSnapshot.id,
+      documentData.name,
+      documentData.email,
+      documentData.active
+    );
+  }
+
+  private static async getAllUsersByQueryFilter(
+    w?: QueryFieldFilterConstraint,
+    filterOutInactive: boolean = true
+  ): Promise<UserModel[] | null> {
+    try {
+      let collectionRef = collection(
+        FirebaseHelper.getFirestoreInstance(),
+        UserModel.CollectionName
+      );
+      let querySnapshot: QuerySnapshot;
+      if (w !== undefined) {
+        const q = filterOutInactive
+          ? query(collectionRef, w, where("active", "==", true))
+          : query(collectionRef, w);
+        querySnapshot = await getDocs(q);
+      } else {
+        if (filterOutInactive) {
+          const q = query(collectionRef, where("active", "==", true));
+          querySnapshot = await getDocs(q);
+        } else {
+          querySnapshot = await getDocs(collectionRef);
+        }
+      }
+      const matchingDocuments: UserModel[] = [];
+
+      querySnapshot.forEach((documentSnapshot) => {
+        matchingDocuments.push(
+          FirebaseHelper.documentSnapshotToUser(documentSnapshot)
+        );
+      });
+      return matchingDocuments;
+    } catch (error) {
+      let err = error;
+      //TODO: add console log
+    }
+    return null;
+  }
+
+  /**
+   *
+   * @param name the name to filter by
+   * @param filterOutInactive whether or not we'd like to filter out the inactive users - true by default
+   * @returns the user
+   */
+  public static async getUserByName(
+    name: string,
+    filterOutInactive: boolean = true
+  ): Promise<UserModel[] | null> {
+    return FirebaseHelper.getAllUsersByQueryFilter(
+      where("name", "==", name),
+      filterOutInactive
+    );
+  }
+
+  /**
+   *
+   * @param email the email to filter by
+   * @param filterOutInactive whether or not we'd like to filter out the inactive users - true by default
+   * @returns the user
+   */
+  public static async getUserByEmail(
+    email: string,
+    filterOutInactive: boolean = true
+  ): Promise<UserModel[] | null> {
+    return FirebaseHelper.getAllUsersByQueryFilter(
+      where("email", "==", email),
+      filterOutInactive
+    );
+  }
+
+  /**
+   *
+   * @param filterOutInactive whether or not we'd like to filter out the inactive users - true by default
+   * @returns the users
+   */
+  public static async getAllUsers(
+    filterOutInactive: boolean = true
+  ): Promise<UserModel[] | null> {
+    return FirebaseHelper.getAllUsersByQueryFilter(
+      undefined,
+      filterOutInactive
+    );
   }
 }

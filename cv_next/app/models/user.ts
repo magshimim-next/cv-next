@@ -6,7 +6,7 @@ export default class UserModel implements BaseModel {
   public name: string;
   public active: boolean;
   public created: number;
-  public lastLogin?: number | null;
+  public lastLogin: number | null;
 
   public collectionName: string;
   public id: string;
@@ -15,8 +15,8 @@ export default class UserModel implements BaseModel {
   public static readonly CollectionName: string = "user";
 
   public constructor(
-    name: string,
     id: string,
+    name: string,
     email: string,
     active: boolean = false
   ) {
@@ -30,6 +30,7 @@ export default class UserModel implements BaseModel {
     this.email = email;
     this.active = active;
     this.created = Helper.epochTimeNow();
+    this.lastLogin = null;
   }
 
   public updateName(name: string) {
