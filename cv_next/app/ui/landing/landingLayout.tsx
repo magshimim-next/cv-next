@@ -15,7 +15,7 @@ export default function LandingLayout({ children }: { children: any }) {
         },
       }}
       header={
-        <Header height={{ base: 50, md: 70 }} p="md">
+        <Header height={{ base: 50, md: 60 }} p="md">
           <div
             style={{ display: "flex", alignItems: "center", height: "100%" }}
           >
