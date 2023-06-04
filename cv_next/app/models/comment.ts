@@ -1,4 +1,4 @@
-import Definitions from "../base/Definitions";
+import Definitions from "../base/definitions"
 import Helper from "../base/helper";
 
 export default class Comment {
