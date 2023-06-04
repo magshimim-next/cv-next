@@ -7,14 +7,25 @@ export default function LogIn() {
   const [isLoginLoaded, setLoginLoaded] = useState(false);
 
   useEffect(() => {
+    async function fetchData() {
+      let comment = new CommentModel("654321", "111", "test", false, false, undefined, undefined);
+      await FirebaseHelper.addNewComment(comment);
+      let comments = await FirebaseHelper.getAllCommentsByUserId("111");
+      if(comments !== null){
+        let comment = comments.at(0);
+        if(comment !== undefined){
+        comment?.updateData("my new data");
+        await FirebaseHelper.updateComment(comment);
+        }
+      }
+    }
+
     if (!isLoginLoaded) {
       console.log(isLoginLoaded);
       setLoginLoaded(true);
       FirebaseHelper.getAuthUI();
 
-      /*let comment = new CommentModel("654321", "111", "test", false, false, undefined, undefined);
-      FirebaseHelper.addNewComment(comment);*/
-      FirebaseHelper.getAllCommentsByUserId("111");
+      fetchData();
     }
   }, [isLoginLoaded]);
 
