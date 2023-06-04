@@ -19,9 +19,9 @@ export default function LogIn() {
         await FirebaseHelper.updateComment(comment);
         }
       }*/
-      /*let res = await FirebaseHelper.getUserByName("ethan");
-      let res2 = await FirebaseHelper.getUserByName("EthanKr");
-      let res3 = await FirebaseHelper.getAllUsers();*/
+      let res = await FirebaseHelper.getUserByName("ethan");
+      let res1 = await FirebaseHelper.getUserByName("EthanKr");
+      let res3 = await FirebaseHelper.getAllUsers();
 
       let res2 = await FirebaseHelper.getUserByEmail("eitankr1@cyber.org.il");
       if(res2 !== null && res2.length > 0){
