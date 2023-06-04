@@ -5,6 +5,7 @@ export default class Comment {
   public id: string;
   public userID: string;
   public data: string;
+  public resolved: boolean;
   public lastUpdate: number;
   public documentID?: string;
   public parentCommentID?: string;
@@ -15,6 +16,7 @@ export default class Comment {
     id: string,
     userID: string,
     data: string,
+    resolved: boolean = false,
     documentID?: string,
     parentCommentID?: string,
     upvotes?: Array<string>,
@@ -28,10 +30,16 @@ export default class Comment {
     this.parentCommentID = parentCommentID;
     this.upvotes = upvotes;
     this.downvotes = downvotes;
+    this.resolved = resolved;
   }
 
   public updateData(data: string) {
     this.data = data;
+    this.lastUpdate = Helper.epochTimeNow();
+  }
+  
+  public updateResolvedValue(resolved: boolean = false) {
+    this.resolved = resolved;
     this.lastUpdate = Helper.epochTimeNow();
   }
 

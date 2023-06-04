@@ -22,5 +22,8 @@ export default class CV {
     this.uploadDate = Helper.epochTimeNow();
     this.categoryID = categoryID;
   }
-  // at the moment there is no need for update methods since once a user would like to update a CV he'll just create a new one.
+
+  public updateDescription(description: string) {
+    this.description = description;
+  }
 }
