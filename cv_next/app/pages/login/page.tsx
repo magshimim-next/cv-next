@@ -1,4 +1,5 @@
 "use client";
+import CommentModel from "@/app/models/comment";
 import FirebaseHelper from "@/app/services/firebaseHelper";
 import React, { useState, useEffect } from "react";
 
@@ -10,6 +11,10 @@ export default function LogIn() {
       console.log(isLoginLoaded);
       setLoginLoaded(true);
       FirebaseHelper.getAuthUI();
+
+      /*let comment = new CommentModel("123456", "111", "test", false, undefined, undefined, ["12","34"]);
+      FirebaseHelper.addNewComment(comment);*/
+      FirebaseHelper.getAllCommentsByUserId("111");
     }
   }, [isLoginLoaded]);
 

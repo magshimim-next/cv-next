@@ -1,16 +1,22 @@
-import Definitions from "../base/definitions"
+import Definitions from "../base/definitions";
 import Helper from "../base/helper";
+import BaseModel from "./baseModel";
 
-export default class Comment {
-  public id: string;
+export default class CommentModel implements BaseModel {
   public userID: string;
   public data: string;
   public resolved: boolean;
   public lastUpdate: number;
-  public documentID?: string;
-  public parentCommentID?: string;
-  public upvotes?: Array<string>;
-  public downvotes?: Array<string>;
+  public documentID: string | null;
+  public parentCommentID: string | null;
+  public upvotes: Array<string> | null;
+  public downvotes: Array<string> | null;
+
+  public collectionName: string;
+  public id: string;
+  public removeBaseData: () => Omit<BaseModel, "id" | "collectionName">;
+
+  public static readonly CollectionName: string = "comment";
 
   public constructor(
     id: string,
@@ -23,13 +29,18 @@ export default class Comment {
     downvotes?: Array<string>
   ) {
     this.id = id;
+    this.collectionName = CommentModel.CollectionName;
+    this.removeBaseData = () => {
+      const { id, collectionName, ...rest } = this;
+      return rest;
+    };
     this.userID = userID;
     this.data = data;
     this.lastUpdate = Helper.epochTimeNow();
-    this.documentID = documentID;
-    this.parentCommentID = parentCommentID;
-    this.upvotes = upvotes;
-    this.downvotes = downvotes;
+    this.documentID = documentID || null;
+    this.parentCommentID = parentCommentID || null;
+    this.upvotes = upvotes || null;
+    this.downvotes = downvotes || null;
     this.resolved = resolved;
   }
 
@@ -37,7 +48,7 @@ export default class Comment {
     this.data = data;
     this.lastUpdate = Helper.epochTimeNow();
   }
-  
+
   public updateResolvedValue(resolved: boolean = false) {
     this.resolved = resolved;
     this.lastUpdate = Helper.epochTimeNow();

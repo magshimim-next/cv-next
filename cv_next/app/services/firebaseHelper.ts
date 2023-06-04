@@ -1,7 +1,22 @@
-"use client";//TODO: check if this is needed
+"use client"; //TODO: check if this is needed
 import Helper from "../base/helper";
 import { FirebaseApp, initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import {
+  Firestore,
+  getFirestore,
+  collection,
+  addDoc,
+  updateDoc,
+  getDoc,
+  where,
+  getDocs,
+  query,
+  DocumentData,
+  QueryDocumentSnapshot,
+  QueryFieldFilterConstraint,
+} from "firebase/firestore";
+import { Auth, getAuth, GoogleAuthProvider } from "firebase/auth";
+import CommentModel from "../models/comment";
 var firebaseui = require("firebaseui");
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -19,6 +34,8 @@ const firebaseConfig = {
 
 export default class FirebaseHelper {
   private static firebaseAppInstance?: FirebaseApp;
+  private static firestoreInstance?: Firestore;
+  private static firebaseAuthInstance?: Auth;
 
   /**
    * Method initiates the firebase app if not initiated yet
@@ -34,12 +51,45 @@ export default class FirebaseHelper {
     return FirebaseHelper.firebaseAppInstance;
   }
 
+  /**
+   * Method initiates the firebase app if not initiated yet
+   * @returns FirebaseApp instance
+   */
+  private static getFirestoreInstance(): Firestore {
+    if (
+      FirebaseHelper.firestoreInstance === null ||
+      FirebaseHelper.firestoreInstance === undefined
+    ) {
+      FirebaseHelper.firestoreInstance = getFirestore(
+        FirebaseHelper.getFirebaseInstance()
+      );
+    }
+    return FirebaseHelper.firestoreInstance;
+  }
+
+  /**
+   * Method initiates the firebase app if not initiated yet
+   * @returns FirebaseApp instance
+   */
+  public static getFirebaseAuthInstance(): Auth {
+    if (
+      FirebaseHelper.firebaseAuthInstance === null ||
+      FirebaseHelper.firebaseAuthInstance === undefined
+    ) {
+      FirebaseHelper.firebaseAuthInstance = getAuth(this.getFirebaseInstance());
+    }
+    return FirebaseHelper.firebaseAuthInstance;
+  }
+
   public static getAuthUI() {
-    const auth = getAuth(this.getFirebaseInstance());
+    const auth = FirebaseHelper.getFirebaseAuthInstance();
     var ui = new firebaseui.auth.AuthUI(auth);
     ui.start("#firebaseui-auth-container", {
       callbacks: {
-        signInSuccessWithAuthResult: function (authResult: any, redirectUrl: any) {
+        signInSuccessWithAuthResult: function (
+          authResult: any,
+          redirectUrl: any
+        ) {
           // User successfully signed in.
           // Return type determines whether we continue the redirect automatically
           // or whether we leave that to developer to handle.
@@ -72,5 +122,69 @@ export default class FirebaseHelper {
       // Privacy policy url.
       privacyPolicyUrl: "<your-privacy-policy-url>",
     });
+  }
+
+  public static async addNewComment(comment: CommentModel): Promise<boolean> {
+    try {
+      let data = Helper.serializeObject(comment.removeBaseData());
+      let collectionRef = collection(
+        FirebaseHelper.getFirestoreInstance(),
+        comment.collectionName
+      );
+
+      let res = await addDoc(collectionRef, data);
+      return true;
+    } catch (error) {
+      let err = error;
+      //TODO: add console log
+    }
+    return false;
+  }
+
+  private static documentSnapshotToComment(
+    documentSnapshot: QueryDocumentSnapshot
+  ): CommentModel {
+    const documentData = documentSnapshot.data() as DocumentData;
+    return new CommentModel(
+      documentSnapshot.id,
+      documentData.userID,
+      documentData.data,
+      documentData.resolved,
+      documentData.documentID,
+      documentData.parentCommentID,
+      documentData.upvotes,
+      documentData.downvotes
+    );
+  }
+
+  public static async getAllCommentsByQueryFilter(
+    w: QueryFieldFilterConstraint
+  ): Promise<CommentModel[] | null> {
+    try {
+      let collectionRef = collection(
+        FirebaseHelper.getFirestoreInstance(),
+        CommentModel.CollectionName
+      );
+      const q = query(collectionRef, w);
+      const querySnapshot = await getDocs(q);
+      const matchingDocuments: CommentModel[] = [];
+
+      querySnapshot.forEach((documentSnapshot) => {
+        matchingDocuments.push(
+          FirebaseHelper.documentSnapshotToComment(documentSnapshot)
+        );
+      });
+      return matchingDocuments;
+    } catch (error) {
+      let err = error;
+      //TODO: add console log
+    }
+    return null;
+  }
+
+  public static async getAllCommentsByUserId(
+    userId: string
+  ): Promise<CommentModel[] | null> {
+    return FirebaseHelper.getAllCommentsByQueryFilter(where("userID", "==", userId));
   }
 }
