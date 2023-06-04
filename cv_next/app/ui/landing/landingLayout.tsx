@@ -1,8 +1,9 @@
 "use client";
 import LandingHeader from "./landingHeader";
+import Title from "./landingBody"
 import { AppShell, Header, useMantineTheme } from "@mantine/core";
 
-export default function LandingLayout({ children }: { children: any }) {
+export default function LandingLayout() {
   const theme = useMantineTheme();
   return (
     <AppShell
@@ -24,7 +25,7 @@ export default function LandingLayout({ children }: { children: any }) {
         </Header>
       }
     >
-      {children}
+      <Title/>
     </AppShell>
   );
 }
