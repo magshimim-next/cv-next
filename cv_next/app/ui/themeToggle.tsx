@@ -8,8 +8,9 @@ export default function SwitchToggle() {
 
   return (
     <ActionIcon
+    size="lg"
       variant="outline"
-      color={dark ? 'yellow' : 'blue'}
+      color='blue'
       onClick={() => toggleColorScheme()}
       title="Toggle color scheme"
     >
