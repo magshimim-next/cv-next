@@ -13,6 +13,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import React, { Fragment } from "react";
 import Link from "next/link";
+import SwitchToggle from "../themeToggle";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -90,6 +91,7 @@ export default function LandingHeader() {
             <Button component="a" href="/pages/login">
               log in
             </Button>
+            <SwitchToggle/>
           </Group>
           <Burger
             opened={drawerOpened}
@@ -124,6 +126,7 @@ export default function LandingHeader() {
             <Button component="a" href="/pages/login">
               log in
             </Button>
+            <SwitchToggle/>
           </Group>
         </ScrollArea>
       </Drawer>
