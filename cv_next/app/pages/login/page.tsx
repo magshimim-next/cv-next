@@ -48,12 +48,13 @@ export default function LogIn() {
       );
       let res = await FirebaseHelper.addNewCV(cv);
       if (res.success) {
-        let resres = await FirebaseHelper.getAllCvs();
-        let resres2 = await FirebaseHelper.getAllCvsByCategory(Categories.category.backEnd);
-        let resres3 = await FirebaseHelper.getAllCvsByCategory(Categories.category.cyberSecurity);
-        let resres8 = await FirebaseHelper.getAllCvsByCategory(Categories.category.general);
-        let resres4 = await FirebaseHelper.getAllCvsByUserId("dB3txgQQWJS4MggsZHP0");
-        let resres5 = await FirebaseHelper.getAllCvsByUserId("ta");
+        FirebaseHelper.resetCvPeginationNumber();
+        let resres = await FirebaseHelper.getAllCvs(true);
+        let resres1 = await FirebaseHelper.getAllCvs(true);
+        let resres2 = await FirebaseHelper.getAllCvs(true);
+        let resres3 = await FirebaseHelper.getAllCvs(true);
+        let val = FirebaseHelper.getCurrentPageNumber();
+        let resres4 = await FirebaseHelper.getAllCvs(false);
         console.log(resres);
         /*
         cv.userID = res2?.at(0)?.id ?? "fail";

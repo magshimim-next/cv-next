@@ -15,12 +15,18 @@ import {
   QueryDocumentSnapshot,
   QueryFieldFilterConstraint,
   QuerySnapshot,
+  orderBy,
+  limit,
+  DocumentSnapshot,
+  endBefore,
+  startAfter,
 } from "firebase/firestore";
 import { Auth, getAuth, GoogleAuthProvider } from "firebase/auth";
 import CommentModel from "../models/comment";
 import UserModel from "../models/user";
 import CvModel from "../models/cv";
 import { Categories } from "../models/categories";
+import Definitions from "../base/definitions";
 var firebaseui = require("firebaseui");
 
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -524,7 +530,124 @@ export default class FirebaseHelper {
     );
   }
 
-  private static async getAllCvsByQueryFilter(
+  private static startAfterSnapshot: QueryDocumentSnapshot<unknown> | undefined;
+  private static endBeforeSnapshot: QueryDocumentSnapshot<unknown> | undefined;
+  private static pageSize: number = Definitions.CVS_PER_PAGE;
+  private static queryLimit: number = FirebaseHelper.pageSize;
+  private static initialQueryDone: boolean = false;
+  private static currentCvPaginatioPage: number =
+    Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER;
+
+  private static async paginatedGetAllCvsByQueryFilter(
+    forward: boolean,
+    w?: QueryFieldFilterConstraint,
+    filterOutDeleted: boolean = true
+  ): Promise<CvModel[] | null> {
+    if (!FirebaseHelper.initialQueryDone) {
+      forward = true;
+      FirebaseHelper.initialQueryDone = true;
+    }
+    let pageQuery: ReturnType<typeof query<DocumentData>>;
+    let collectionRef = collection(
+      FirebaseHelper.getFirestoreInstance(),
+      CvModel.CollectionName
+    );
+    let deleteW = where("deleted", "==", !filterOutDeleted);
+
+    if (forward) {
+      if (FirebaseHelper.startAfterSnapshot) {
+        // Create a new query starting after the last document of the previous page
+        pageQuery =
+          w !== undefined
+            ? query(
+                collectionRef,
+                orderBy("uploadDate", "desc"),
+                startAfter(FirebaseHelper.startAfterSnapshot),
+                limit(FirebaseHelper.queryLimit),
+                deleteW,
+                w
+              )
+            : query(
+                collectionRef,
+                orderBy("uploadDate", "desc"),
+                startAfter(FirebaseHelper.startAfterSnapshot),
+                limit(FirebaseHelper.queryLimit),
+                deleteW
+              );
+        FirebaseHelper.currentCvPaginatioPage++;
+      } else {
+        // Perform the initial query
+        pageQuery =
+          w !== undefined
+            ? query(
+                collectionRef,
+                orderBy("uploadDate", "desc"),
+                limit(FirebaseHelper.queryLimit),
+                deleteW,
+                w
+              )
+            : query(
+                collectionRef,
+                orderBy("uploadDate", "desc"),
+                limit(FirebaseHelper.queryLimit),
+                deleteW
+              );
+      }
+    } else {
+      // Create a new query ending before the first document of the previous page
+      //todo: fix this when going back...
+      pageQuery =
+        w !== undefined
+          ? query(
+              collectionRef,
+              orderBy("uploadDate", "desc"),
+              limit(FirebaseHelper.queryLimit),
+              endBefore(FirebaseHelper.endBeforeSnapshot),
+              deleteW,
+              w
+            )
+          : query(
+              collectionRef,
+              orderBy("uploadDate", "desc"),
+              limit(FirebaseHelper.queryLimit),
+              endBefore(FirebaseHelper.endBeforeSnapshot),
+              deleteW
+            );
+      FirebaseHelper.currentCvPaginatioPage--;
+    }
+
+    try {
+      const querySnapshot = await getDocs(pageQuery);
+      const matchingDocuments: CvModel[] = [];
+
+      querySnapshot.forEach((documentSnapshot) => {
+        matchingDocuments.push(
+          FirebaseHelper.documentSnapshotToCV(documentSnapshot)
+        );
+      });
+      // Determine if there are more pages to fetch
+      if (querySnapshot.size === FirebaseHelper.queryLimit) {
+        // Get the first and last document from the current page
+        const firstVisible = querySnapshot.docs[0];
+        const lastVisible = querySnapshot.docs[querySnapshot.size - 1];
+
+        FirebaseHelper.startAfterSnapshot = lastVisible;
+        FirebaseHelper.endBeforeSnapshot = firstVisible;
+      } else {
+        // No more pages to fetch
+        FirebaseHelper.startAfterSnapshot = undefined;
+        FirebaseHelper.endBeforeSnapshot = undefined;
+      }
+      return matchingDocuments;
+    } catch (error) {
+      let err = error;
+      console.log("Error getting documents:", error);
+    }
+
+    return null;
+  }
+
+  private static async _getAllCvsByQueryFilter(
     w?: QueryFieldFilterConstraint,
     filterOutDeleted: boolean = true
   ): Promise<CvModel[] | null> {
@@ -564,7 +687,7 @@ export default class FirebaseHelper {
     userId: string,
     filterOutDeleted: boolean = true
   ): Promise<CvModel[] | null> {
-    return FirebaseHelper.getAllCvsByQueryFilter(
+    return FirebaseHelper._getAllCvsByQueryFilter(
       where("userID", "==", userId),
       filterOutDeleted
     );
@@ -580,20 +703,34 @@ export default class FirebaseHelper {
     category: Categories.category,
     filterOutDeleted: boolean = true
   ): Promise<CvModel[] | null> {
-    return FirebaseHelper.getAllCvsByQueryFilter(
+    return FirebaseHelper._getAllCvsByQueryFilter(
       where("categoryID", "==", category),
       filterOutDeleted
     );
   }
 
   /**
-   *
+   * @param forward true if we want the next page, false if we want the previous
    * @param filterOutDeleted whether or not we'd like to filter out the deleted CVs - true by default
    * @returns the users
    */
   public static async getAllCvs(
+    forward: boolean,
     filterOutDeleted: boolean = true
   ): Promise<CvModel[] | null> {
-    return FirebaseHelper.getAllCvsByQueryFilter(undefined, filterOutDeleted);
+    return FirebaseHelper.paginatedGetAllCvsByQueryFilter(
+      forward,
+      undefined,
+      filterOutDeleted
+    );
+  }
+
+  public static getCurrentPageNumber(): number {
+    return FirebaseHelper.currentCvPaginatioPage;
+  }
+
+  public static resetCvPeginationNumber() {
+    FirebaseHelper.currentCvPaginatioPage =
+      Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER;
   }
 }
