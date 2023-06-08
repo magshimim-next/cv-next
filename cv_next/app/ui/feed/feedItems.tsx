@@ -1,6 +1,8 @@
 "use client";
 import CvModel from "@/app/models/cv";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useIntersection } from "@mantine/hooks";
+import { useEffect, useRef } from "react";
 
 const CVS_PER_PAGE = 2;
 
@@ -39,15 +41,29 @@ function FeedItems() {
     }
   );
 
+  const lastPostRef = useRef<HTMLElement>(null);
+  const { ref, entry } = useIntersection({
+    root: lastPostRef.current,
+    threshold: 0, //% of the viewd element before the next fetch
+  });
+
+  useEffect(() => {
+    if (entry?.isIntersecting) fetchNextPage();
+  }, [entry]);
+
+  const cvs = data?.pages.flatMap((page) => page);
   return (
     <div>
-      {data?.pages.map((page, i) => (
-        <div key={i}>
-          {page.map((cv) => (
-            <div key={cv.id}>{cv.documentLink}</div>
-          ))}
-        </div>
-      ))}
+      {cvs?.map((cv, i) => {
+        if (i === cvs.length - 1) {
+          return (
+            <div key={cv.id} ref={ref}>
+              {cv.documentLink}
+            </div>
+          );
+        }
+        return <div key={cv.id}>{cv.documentLink}</div>;
+      })}
       <button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
         {isFetchingNextPage ? "Loading more... " : "Load More"}
       </button>
