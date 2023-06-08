@@ -65,6 +65,9 @@ function Links() {
       <Link className={classes.link} href={"/pages/about"}>
         About
       </Link>
+      <Link className={classes.link} href={"/pages/feed"}>
+        Feed
+      </Link>
     </Fragment>
   );
 }

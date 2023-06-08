@@ -67,7 +67,6 @@ function FeedItems() {
               <Grid.Col xs={4}>
                 <div key={cv.id} ref={i === cvs.length - 1 ? ref : null}>
                   <CVCard cv={cv} />
-                  {cv.id}
                 </div>
               </Grid.Col>
             );
