@@ -4,8 +4,7 @@ export default function Home() {
   return (
     <main>
       <Layout>
-        <h1>Page Content</h1>
-        <FeedItems/>
+        <FeedItems />
       </Layout>
     </main>
   );

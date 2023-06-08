@@ -38,7 +38,7 @@ export default function CVCard({ cv }: { cv: CvModel }) {
   return (
     <Card withBorder radius="md" p="md" className={classes.card}>
       <Card.Section>
-        <Image src={""} height={180} />
+        <Image src={cv.documentLink} height={400} />
       </Card.Section>
 
       <Card.Section className={classes.section} mt="md">

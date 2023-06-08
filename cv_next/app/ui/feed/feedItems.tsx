@@ -1,5 +1,6 @@
 "use client";
 import CvModel from "@/app/models/cv";
+import { Grid, Skeleton, Container } from "@mantine/core";
 import { useIntersection } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
 import FirebaseHelper from "@/app/services/firebaseHelper";
@@ -18,7 +19,7 @@ const useIncrementState = (initialValue: number) => {
 
 function FeedItems() {
   const [cvs, setCvs] = useState<CvModel[]>([
-    new CvModel("1", "1", "https://site.com/1", 1), //TESTING ONLY
+    new CvModel("1", "1", "https://upload.wikimedia.org/wikipedia/commons/9/90/Resume_logo.jpeg", 1,"cv number: 1"), //TESTING ONLY
   ]);
 
   const lastCVRef = useRef<any>(null);
@@ -45,7 +46,7 @@ function FeedItems() {
     setCount(count);
     if (count < 500)
       return [
-        new CvModel("" + count, "" + count, "https://site.com/" + count, count),
+        new CvModel("" + count, "" + count, "https://upload.wikimedia.org/wikipedia/commons/9/90/Resume_logo.jpeg", 1,"cv number: "+count),
       ];
     return null;
   }
@@ -59,14 +60,20 @@ function FeedItems() {
 
   return (
     <div>
-      {cvs?.map((cv: CvModel, i) => {
-        return (
-          <div key={cv.id} ref={i === cvs.length - 1 ? ref : null}>
-            <CVCard cv={cv} />
-            {cv.id}
-          </div>
-        );
-      })}
+      <Container fluid>
+        <Grid gutter="xl">
+          {cvs?.map((cv: CvModel, i) => {
+            return (
+              <Grid.Col xs={4}>
+                <div key={cv.id} ref={i === cvs.length - 1 ? ref : null}>
+                  <CVCard cv={cv} />
+                  {cv.id}
+                </div>
+              </Grid.Col>
+            );
+          })}
+        </Grid>
+      </Container>
     </div>
   );
 }
