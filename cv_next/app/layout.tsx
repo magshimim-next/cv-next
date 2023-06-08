@@ -1,7 +1,6 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
-
-import ColorProvider from "./services/colorSchemeProvider";
+import Providers from "@/app/services/provider";
 
 const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
@@ -14,8 +13,7 @@ export default function RootLayout({ children }: { children: any }) {
     <html lang="en-US">
       <head />
       <body className={inter.className}>
-        <ColorProvider>{children}</ColorProvider>
-      </body>
+      <Providers>{children}</Providers>      </body>
     </html>
   );
 }
