@@ -1,4 +1,3 @@
-"use client";
 import {
   MantineProvider,
   ColorSchemeProvider,
@@ -6,11 +5,7 @@ import {
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 
-export default function ColorProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ColorProvider({ children }: React.PropsWithChildren)  {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: "mantine-color-scheme",
     defaultValue: "dark",
