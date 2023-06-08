@@ -1,5 +1,6 @@
 import Helper from "../base/helper";
 import BaseModel from "./baseModel";
+import { Categories } from "./categories";
 
 export default class CvModel implements BaseModel {
   public userID: string;
@@ -7,6 +8,8 @@ export default class CvModel implements BaseModel {
   public description?: string | null;
   public uploadDate: number;
   public categoryID: number;
+  public resolved: boolean;
+  public deleted: boolean;
 
   public collectionName: string;
   public id: string;
@@ -19,7 +22,10 @@ export default class CvModel implements BaseModel {
     userID: string,
     documentLink: string,
     categoryID: number,
-    description?: string
+    description?: string,
+    resolved? : boolean,
+    deleted? : boolean,
+    uploadDate? : number,
   ) {
     this.id = id;
     this.collectionName = CvModel.CollectionName;
@@ -30,11 +36,26 @@ export default class CvModel implements BaseModel {
     this.userID = userID;
     this.documentLink = documentLink;
     this.description = description || null;
-    this.uploadDate = Helper.epochTimeNow();
+    this.uploadDate = uploadDate ?? Helper.epochTimeNow();
     this.categoryID = categoryID;
+    this.resolved = resolved ?? false;
+    this.deleted = deleted ?? false;
+  }
+
+  public setResolved(resolved: boolean) {
+    this.resolved = resolved;
+  }
+  
+  public setDeleted(deleted: boolean) {
+    this.deleted = deleted;
   }
 
   public updateDescription(description: string) {
     this.description = description;
+  }
+
+  public getCategory(): Categories.category {
+    let res = Helper.getEnumValueById(Categories.category, this.categoryID);
+    return res !== undefined ? res : Categories.category.undefined;
   }
 }

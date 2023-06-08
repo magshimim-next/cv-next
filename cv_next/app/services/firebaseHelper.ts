@@ -19,9 +19,10 @@ import {
 import { Auth, getAuth, GoogleAuthProvider } from "firebase/auth";
 import CommentModel from "../models/comment";
 import UserModel from "../models/user";
+import CvModel from "../models/cv";
+import { Categories } from "../models/categories";
 var firebaseui = require("firebaseui");
 
-// TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
@@ -48,13 +49,15 @@ const enumToStringMap: Record<ErrorReasons, string> = {
 
 export class DbOperationResult {
   public success: boolean;
+  public data: any;
   public reason: ErrorReasons;
   public reasonString: string;
 
-  constructor(success: boolean, reason: ErrorReasons) {
+  constructor(success: boolean, reason: ErrorReasons, data: any) {
     this.success = success;
     this.reason = reason;
     this.reasonString = enumToStringMap[reason];
+    this.data = data;
   }
 }
 
@@ -159,7 +162,7 @@ export default class FirebaseHelper {
   private static async addData(
     data: any,
     collectionName: string
-  ): Promise<boolean> {
+  ): Promise<string | boolean> {
     try {
       let collectionRef = collection(
         FirebaseHelper.getFirestoreInstance(),
@@ -167,7 +170,7 @@ export default class FirebaseHelper {
       );
 
       let res = await addDoc(collectionRef, data);
-      return true;
+      return res.id;
     } catch (error) {
       let err = error;
       //TODO: add console log
@@ -212,9 +215,13 @@ export default class FirebaseHelper {
   public static async addNewComment(
     comment: CommentModel
   ): Promise<DbOperationResult> {
-    let data = Helper.serializeObject(comment.removeBaseData());
+    let data = Helper.serializeObjectToFirebaseUsage(comment.removeBaseData());
     let res = await FirebaseHelper.addData(data, comment.collectionName);
-    return new DbOperationResult(res, res ? ErrorReasons.noErr : ErrorReasons.undefinedErr);
+    return new DbOperationResult(
+      typeof res === "string",
+      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
+      res
+    );
   }
 
   /**
@@ -225,13 +232,17 @@ export default class FirebaseHelper {
   public static async updateComment(
     comment: CommentModel
   ): Promise<DbOperationResult> {
-    let data = Helper.serializeObject(comment.removeBaseData());
+    let data = Helper.serializeObjectToFirebaseUsage(comment.removeBaseData());
     let res = await FirebaseHelper.updateData(
       comment.id,
       data,
       comment.collectionName
     );
-    return new DbOperationResult(res, res ? ErrorReasons.noErr : ErrorReasons.undefinedErr);
+    return new DbOperationResult(
+      res,
+      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
+      res
+    );
   }
 
   private static documentSnapshotToComment(
@@ -247,7 +258,8 @@ export default class FirebaseHelper {
       documentData.documentID,
       documentData.parentCommentID,
       documentData.upvotes,
-      documentData.downvotes
+      documentData.downvotes,
+      documentData.lastUpdate
     );
   }
 
@@ -327,17 +339,22 @@ export default class FirebaseHelper {
 
   /**
    * Adds a new user to the db, excludes the model ID (created automatically)
+   * Will not allow to add a user with an already existing email in the system.
    * @param user the user model to add
    * @returns true if succeeded.
    */
   public static async addNewUser(user: UserModel): Promise<DbOperationResult> {
     let userByEmail = await FirebaseHelper.getUserByEmail(user.email);
     if (userByEmail !== null && userByEmail.length > 0) {
-      return new DbOperationResult(false, ErrorReasons.emailExists);
+      return new DbOperationResult(false, ErrorReasons.emailExists, undefined);
     }
-    let data = Helper.serializeObject(user.removeBaseData());
+    let data = Helper.serializeObjectToFirebaseUsage(user.removeBaseData());
     let res = await FirebaseHelper.addData(data, user.collectionName);
-    return new DbOperationResult(res, res ? ErrorReasons.noErr : ErrorReasons.undefinedErr);
+    return new DbOperationResult(
+      typeof res === "string",
+      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
+      res
+    );
   }
 
   /**
@@ -346,13 +363,17 @@ export default class FirebaseHelper {
    * @returns true upon success
    */
   public static async updateUser(user: UserModel): Promise<DbOperationResult> {
-    let data = Helper.serializeObject(user.removeBaseData());
+    let data = Helper.serializeObjectToFirebaseUsage(user.removeBaseData());
     let res = await FirebaseHelper.updateData(
       user.id,
       data,
       user.collectionName
     );
-    return new DbOperationResult(res, res ? ErrorReasons.noErr : ErrorReasons.undefinedErr);
+    return new DbOperationResult(
+      res,
+      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
+      res
+    );
   }
 
   private static documentSnapshotToUser(
@@ -363,7 +384,10 @@ export default class FirebaseHelper {
       documentSnapshot.id,
       documentData.name,
       documentData.email,
-      documentData.active
+      documentData.userTypeID,
+      documentData.active,
+      documentData.created,
+      documentData.lastLogin
     );
   }
 
@@ -377,14 +401,15 @@ export default class FirebaseHelper {
         UserModel.CollectionName
       );
       let querySnapshot: QuerySnapshot;
+      let activeWhere = where("active", "==", true);
       if (w !== undefined) {
         const q = filterOutInactive
-          ? query(collectionRef, w, where("active", "==", true))
+          ? query(collectionRef, w, activeWhere)
           : query(collectionRef, w);
         querySnapshot = await getDocs(q);
       } else {
         if (filterOutInactive) {
-          const q = query(collectionRef, where("active", "==", true));
+          const q = query(collectionRef, activeWhere);
           querySnapshot = await getDocs(q);
         } else {
           querySnapshot = await getDocs(collectionRef);
@@ -449,5 +474,126 @@ export default class FirebaseHelper {
       undefined,
       filterOutInactive
     );
+  }
+
+  /*-------------------------CVs SECTION------------------------------*/
+
+  /**
+   * Adds a new cv to the db, excludes the model ID (created automatically)
+   * @param cv the cv model to add
+   * @returns DbOperationResult
+   */
+  public static async addNewCV(cv: CvModel): Promise<DbOperationResult> {
+    let data = Helper.serializeObjectToFirebaseUsage(cv.removeBaseData());
+    let res = await FirebaseHelper.addData(data, cv.collectionName);
+    return new DbOperationResult(
+      typeof res === "string",
+      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
+      res
+    );
+  }
+
+  /**
+   * Updates a specific cv using the given model
+   * @param cv should hold the proper ID in order to update the correct document
+   * @returns DbOperationResult
+   */
+  public static async updateCV(cv: CvModel): Promise<DbOperationResult> {
+    let data = Helper.serializeObjectToFirebaseUsage(cv.removeBaseData());
+    let res = await FirebaseHelper.updateData(cv.id, data, cv.collectionName);
+    return new DbOperationResult(
+      res,
+      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
+      res
+    );
+  }
+
+  private static documentSnapshotToCV(
+    documentSnapshot: QueryDocumentSnapshot
+  ): CvModel {
+    const documentData = documentSnapshot.data() as DocumentData;
+    return new CvModel(
+      documentSnapshot.id,
+      documentData.userID,
+      documentData.documentLink,
+      documentData.categoryID,
+      documentData.description,
+      documentData.resolved,
+      documentData.deleted,
+      documentData.uploadDate
+    );
+  }
+
+  private static async getAllCvsByQueryFilter(
+    w?: QueryFieldFilterConstraint,
+    filterOutDeleted: boolean = true
+  ): Promise<CvModel[] | null> {
+    try {
+      let collectionRef = collection(
+        FirebaseHelper.getFirestoreInstance(),
+        CvModel.CollectionName
+      );
+      let deleteW = where("deleted", "==", !filterOutDeleted);
+      const q =
+        w !== undefined
+          ? query(collectionRef, w, deleteW)
+          : query(collectionRef, deleteW);
+      const querySnapshot = await getDocs(q);
+      const matchingDocuments: CvModel[] = [];
+
+      querySnapshot.forEach((documentSnapshot) => {
+        matchingDocuments.push(
+          FirebaseHelper.documentSnapshotToCV(documentSnapshot)
+        );
+      });
+      return matchingDocuments;
+    } catch (error) {
+      let err = error;
+      //TODO: add console log
+    }
+    return null;
+  }
+
+  /**
+   *
+   * @param userId the userId to filter by
+   * @param filterOutDeleted whether or not we'd like to filter out the deleted cvs - true by default
+   * @returns the CVs
+   */
+  public static async getAllCvsByUserId(
+    userId: string,
+    filterOutDeleted: boolean = true
+  ): Promise<CvModel[] | null> {
+    return FirebaseHelper.getAllCvsByQueryFilter(
+      where("userID", "==", userId),
+      filterOutDeleted
+    );
+  }
+
+  /**
+   *
+   * @param category the category to filter by
+   * @param filterOutDeleted whether or not we'd like to filter out the deleted cvs - true by default
+   * @returns the CVs
+   */
+  public static async getAllCvsByCategory(
+    category: Categories.category,
+    filterOutDeleted: boolean = true
+  ): Promise<CvModel[] | null> {
+    return FirebaseHelper.getAllCvsByQueryFilter(
+      where("categoryID", "==", category),
+      filterOutDeleted
+    );
+  }
+
+  /**
+   *
+   * @param filterOutDeleted whether or not we'd like to filter out the deleted CVs - true by default
+   * @returns the users
+   */
+  public static async getAllCvs(
+    filterOutDeleted: boolean = true
+  ): Promise<CvModel[] | null> {
+    return FirebaseHelper.getAllCvsByQueryFilter(undefined, filterOutDeleted);
   }
 }

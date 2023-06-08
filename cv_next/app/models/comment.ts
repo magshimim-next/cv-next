@@ -28,7 +28,8 @@ export default class CommentModel implements BaseModel {
     documentID?: string,
     parentCommentID?: string,
     upvotes?: Array<string>,
-    downvotes?: Array<string>
+    downvotes?: Array<string>,
+    lastUpdate?: number
   ) {
     this.id = id;
     this.collectionName = CommentModel.CollectionName;
@@ -38,7 +39,7 @@ export default class CommentModel implements BaseModel {
     };
     this.userID = userID;
     this.data = data;
-    this.lastUpdate = Helper.epochTimeNow();
+    this.lastUpdate = lastUpdate ?? Helper.epochTimeNow();
     this.documentID = documentID || null;
     this.parentCommentID = parentCommentID || null;
     this.upvotes = upvotes || null;

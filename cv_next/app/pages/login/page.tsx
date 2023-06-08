@@ -1,6 +1,9 @@
 "use client";
+import { Categories } from "@/app/models/categories";
 import CommentModel from "@/app/models/comment";
+import CvModel from "@/app/models/cv";
 import UserModel from "@/app/models/user";
+import { UserTypes } from "@/app/models/userTypes";
 import FirebaseHelper from "@/app/services/firebaseHelper";
 import React, { useState, useEffect } from "react";
 
@@ -19,21 +22,78 @@ export default function LogIn() {
         await FirebaseHelper.updateComment(comment);
         }
       }*/
-      let res = await FirebaseHelper.getUserByName("ethan");
-      let res1 = await FirebaseHelper.getUserByName("EthanKr");
-      let res3 = await FirebaseHelper.getAllUsers();
 
+      let user = new UserModel(
+        "1234",
+        "EthanKr",
+        "eitankr1@cyber.org.il",
+        UserTypes.userType.admin,
+        true
+      );
+      let res4 = await FirebaseHelper.addNewUser(user);
+      let res3 = await FirebaseHelper.getAllUsers();
       let res2 = await FirebaseHelper.getUserByEmail("eitankr1@cyber.org.il");
-      if(res2 !== null && res2.length > 0){
+      if (res2 !== null && res2.length > 0) {
         res2.at(0)?.updateName("test!!!");
         let resres = await FirebaseHelper.updateUser(res2.at(0)!);
         console.log(resres);
       }
 
-      let user = new UserModel("1234","EthanKr", "eitankr1@cyber.org.il", true);
-      let res4 = await FirebaseHelper.addNewUser(user);
-      
-      console.log(res4);
+      let cv = new CvModel(
+        "112222",
+        "bla",
+        "Google.com",
+        Categories.category.backEnd,
+        "testing"
+      );
+      let res = await FirebaseHelper.addNewCV(cv);
+      if (res.success) {
+        let resres = await FirebaseHelper.getAllCvs();
+        let resres2 = await FirebaseHelper.getAllCvsByCategory(Categories.category.backEnd);
+        let resres3 = await FirebaseHelper.getAllCvsByCategory(Categories.category.cyberSecurity);
+        let resres8 = await FirebaseHelper.getAllCvsByCategory(Categories.category.general);
+        let resres4 = await FirebaseHelper.getAllCvsByUserId("dB3txgQQWJS4MggsZHP0");
+        let resres5 = await FirebaseHelper.getAllCvsByUserId("ta");
+        console.log(resres);
+        /*
+        cv.userID = res2?.at(0)?.id ?? "fail";
+        cv.id = res.data;
+        let resres = await FirebaseHelper.updateCV(cv);
+        console.log(resres);
+
+        let rootComment = new CommentModel(
+          "1222",
+          "tra",
+          "Root Comment",
+          false,
+          false,
+          cv.id
+        );
+
+        resres = await FirebaseHelper.addNewComment(rootComment);
+
+        if (resres.success) {
+          rootComment.id = resres.data;
+          let comment = new CommentModel(
+            "1222",
+            "tra",
+            "Child Comment",
+            false,
+            false,
+            undefined,
+            rootComment.id
+          );
+          resres = await FirebaseHelper.addNewComment(comment);
+          if (resres) {
+            comment.id = resres.data;
+
+            rootComment.updateData("changedData");
+            rootComment.userID = cv.userID;
+            resres = await FirebaseHelper.updateComment(rootComment);
+            console.log(resres);
+          }
+        }*/
+      }
     }
 
     if (!isLoginLoaded) {
