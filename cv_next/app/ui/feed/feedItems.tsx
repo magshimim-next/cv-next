@@ -3,7 +3,7 @@ import CvModel from "@/app/models/cv";
 import { useIntersection } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
 import FirebaseHelper from "@/app/services/firebaseHelper";
-// import CVCard from "./cvCard";
+import CVCard from "./cvCard";
 
 //TESTING ONLY
 //hook for generating different ids in mock models
@@ -62,7 +62,7 @@ function FeedItems() {
       {cvs?.map((cv: CvModel, i) => {
         return (
           <div key={cv.id} ref={i === cvs.length - 1 ? ref : null}>
-            {/* <CVCard cv={cv} /> */}
+            <CVCard cv={cv} />
             {cv.id}
           </div>
         );
