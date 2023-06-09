@@ -2,14 +2,13 @@
 import { FirebaseApp, initializeApp } from "firebase/app";
 import { Auth, getAuth, GoogleAuthProvider } from "firebase/auth";
 import Definitions from "../base/definitions";
-var firebaseui = require("firebaseui");
+import MyLogger from "../base/logger";
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 export default class FirebaseAuthHelper {
   private static firebaseAppInstance?: FirebaseApp;
   private static firebaseAuthInstance?: Auth;
-  private static authUi?: any;
 
   /**
    * Method initiates the firebase app if not initiated yet
@@ -53,11 +52,12 @@ export default class FirebaseAuthHelper {
           // User successfully signed in.
           // Return type determines whether we continue the redirect automatically
           // or whether we leave that to developer to handle.
-          console.log(authResult);
-          console.log(authResult.user);
-          console.log(authResult.credential);
-          console.log(authResult.additionalUserInfo);
-          return true;
+          //MyLogger.logInfo("sign in", authResult);
+          MyLogger.logInfo("sign in", authResult.user.email); //V
+          MyLogger.logInfo("sign in", authResult.user.displayName); //V
+          MyLogger.logInfo("sign in", authResult.additionalUserInfo.isNewUser); //V
+          MyLogger.logInfo("sign in", authResult.credential); //V
+          return false;
         },
         uiShown: function () {
           // The widget is rendered.
@@ -72,7 +72,7 @@ export default class FirebaseAuthHelper {
       },
       // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
       signInFlow: "popup",
-      signInSuccessUrl: "<url-to-redirect-to-on-success>",
+      //signInSuccessUrl: "<url-to-redirect-to-on-success>",
 
       signInOptions: [
         // List of OAuth providers supported.
@@ -83,16 +83,5 @@ export default class FirebaseAuthHelper {
       privacyPolicyUrl: "<your-privacy-policy-url>",
     };
     return config;
-  }
-
-  public static getAuthUI() {
-    if (
-      FirebaseAuthHelper.authUi === null ||
-      FirebaseAuthHelper.authUi === undefined
-    ) {
-      const auth = FirebaseAuthHelper.getFirebaseAuthInstance();
-      FirebaseAuthHelper.authUi = new firebaseui.auth.AuthUI(auth);
-    }
-    return FirebaseAuthHelper.authUi;
   }
 }

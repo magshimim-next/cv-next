@@ -5,6 +5,7 @@ import { useIntersection } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
 import FirebaseHelper from "@/app/services/firebaseHelper";
 import CVCard from "./cvCard";
+import FirebaseAuthHelper from "@/app/services/firebaseAuthHelper";
 
 //TESTING ONLY
 //hook for generating different ids in mock models
@@ -42,6 +43,23 @@ function FeedItems() {
 
   const [firstLoaded, setFirstLoaded] = useState<boolean>(false);
   const [cvs, setCvs] = useState<CvModel[]>([]);
+
+  useEffect(() => {
+    // Check if user is already logged in
+    FirebaseAuthHelper.getFirebaseAuthInstance().onAuthStateChanged((user) => {
+      if (user) {
+        // User is logged in
+        //setLoggedIn(true);
+        // Perform actions for logged-in user
+        console.log('User is logged in:', user);
+      } else {
+        // User is not logged in
+        //setLoggedIn(false);
+        // Perform actions for non-logged-in user
+        console.log('User is not logged in');
+      }
+    });
+  }, []);
 
   const fetchCVs = async () => {
     if (!initialLoaded) {
