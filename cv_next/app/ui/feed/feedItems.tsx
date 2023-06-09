@@ -18,40 +18,54 @@ const useIncrementState = (initialValue: number) => {
 //TESTING ONLY
 
 function FeedItems() {
+  //TESTING ONLY
+  // const [count, setCount] = useIncrementState(2);
+
+  // //mock fetch for testing
+  // function mockFetch() {
+  //   setCount(count);
+  //   if (count < 500)
+  //     return [
+  //       new CvModel(
+  //         "" + count,
+  //         "" + count,
+  //         "https://upload.wikimedia.org/wikipedia/commons/9/90/Resume_logo.jpeg",
+  //         1,
+  //         "cv number: " + count
+  //       ),
+  //     ];
+  //   return null;
+  // }
+  //TESTING ONLY
+
   const [cvs, setCvs] = useState<CvModel[]>([
-    new CvModel("1", "1", "https://upload.wikimedia.org/wikipedia/commons/9/90/Resume_logo.jpeg", 1,"cv number: 1"), //TESTING ONLY
+    new CvModel(
+      "1",
+      "1",
+      "https://upload.wikimedia.org/wikipedia/commons/9/90/Resume_logo.jpeg",
+      1,
+      "cv number: 1"
+    ), //TODO: find a way to not have a first mock model and still fetch
   ]);
+
+  const fetchCVs = async () => {
+    let result = null;
+    result = await FirebaseHelper.getAllCvs(true);
+
+    console.log("fetching..");
+    if (result !== null) {
+      setCvs(cvs.concat(result));
+      console.log(result);
+    } else {
+      console.log("reached the end.");
+    }
+  };
 
   const lastCVRef = useRef<any>(null);
   const { ref, entry } = useIntersection({
     root: lastCVRef.current,
     threshold: 0, //% of the viewd element before the next fetch
   });
-
-  const fetchCVs = async () => {
-    // let result = await FirebaseHelper.getAllCvs(true);
-    let result = mockFetch(); //TESTING ONLY
-    if (result !== null) {
-      setCvs(cvs.concat(result));
-      console.log("fetching..");
-    } else {
-      console.log("reached the end.");
-    }
-  };
-
-  //TESTING ONLY
-  const [count, setCount] = useIncrementState(2);
-  //mock fetch for testing
-  function mockFetch() {
-    setCount(count);
-    if (count < 500)
-      return [
-        new CvModel("" + count, "" + count, "https://upload.wikimedia.org/wikipedia/commons/9/90/Resume_logo.jpeg", 1,"cv number: "+count),
-      ];
-    return null;
-  }
-  //TESTING ONLY
-
   useEffect(() => {
     if (entry?.isIntersecting) {
       fetchCVs();
