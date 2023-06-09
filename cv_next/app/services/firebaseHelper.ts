@@ -17,8 +17,6 @@ import {
   QuerySnapshot,
   orderBy,
   limit,
-  DocumentSnapshot,
-  endBefore,
   startAfter,
   Query,
 } from "firebase/firestore";
@@ -29,6 +27,7 @@ import CvModel from "../models/cv";
 import { Categories } from "../models/categories";
 import Definitions from "../base/definitions";
 import OperationBucket from "./operationBucket";
+import MyLogger from "../base/logger";
 var firebaseui = require("firebaseui");
 
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -56,6 +55,13 @@ const enumToStringMap: Record<ErrorReasons, string> = {
   [ErrorReasons.emailExists]: "Email already exists!",
   [ErrorReasons.rateLimitPerSecondReached]: "Rate limit per second reached",
 };
+
+export class RateLimitError extends Error {
+  constructor() {
+    super();
+    this.cause = enumToStringMap[ErrorReasons.rateLimitPerSecondReached];
+  }
+}
 
 export class DbOperationResult {
   public success: boolean;
@@ -201,11 +207,10 @@ export default class FirebaseHelper {
         let res = await addDoc(collectionRef, data);
         return res.id;
       } catch (error) {
-        let err = error;
-        //TODO: add console log
+        MyLogger.logInfo("Error @ FirebaseHelper::addData", error);
       }
     } else {
-      throw Error(enumToStringMap[ErrorReasons.rateLimitPerSecondReached]);
+      throw new RateLimitError();
     }
     return false;
   }
@@ -232,11 +237,10 @@ export default class FirebaseHelper {
         await updateDoc(documentRef, data);
         return true;
       } catch (error) {
-        let err = error;
-        //TODO: add console log
+        MyLogger.logInfo("Error @ FirebaseHelper::updateData", error);
       }
     } else {
-      throw Error(enumToStringMap[ErrorReasons.rateLimitPerSecondReached]);
+      throw new RateLimitError();
     }
     return false;
   }
@@ -254,11 +258,11 @@ export default class FirebaseHelper {
         return await getDocs(query);
       } catch (error) {
         let err = error;
-        //TODO: add console log
+        MyLogger.logInfo("Error @ FirebaseHelper::myGetDocs", error);
         throw Error(enumToStringMap[ErrorReasons.undefinedErr]);
       }
     } else {
-      throw Error(enumToStringMap[ErrorReasons.rateLimitPerSecondReached]);
+      throw new RateLimitError();
     }
   }
 
@@ -272,13 +276,26 @@ export default class FirebaseHelper {
   public static async addNewComment(
     comment: CommentModel
   ): Promise<DbOperationResult> {
-    let data = Helper.serializeObjectToFirebaseUsage(comment.removeBaseData());
-    let res = await FirebaseHelper.addData(data, comment.collectionName);
-    return new DbOperationResult(
-      typeof res === "string",
-      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
-      res
-    );
+    try {
+      let data = Helper.serializeObjectToFirebaseUsage(
+        comment.removeBaseData()
+      );
+      let res = await FirebaseHelper.addData(data, comment.collectionName);
+      return new DbOperationResult(
+        typeof res === "string",
+        res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
+        res
+      );
+    } catch (err) {
+      MyLogger.logInfo("Error @ FirebaseHelper::addNewComment", err);
+      return new DbOperationResult(
+        false,
+        typeof err === typeof RateLimitError
+          ? ErrorReasons.rateLimitPerSecondReached
+          : ErrorReasons.undefinedErr,
+        err
+      );
+    }
   }
 
   /**
@@ -289,17 +306,30 @@ export default class FirebaseHelper {
   public static async updateComment(
     comment: CommentModel
   ): Promise<DbOperationResult> {
-    let data = Helper.serializeObjectToFirebaseUsage(comment.removeBaseData());
-    let res = await FirebaseHelper.updateData(
-      comment.id,
-      data,
-      comment.collectionName
-    );
-    return new DbOperationResult(
-      res,
-      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
-      res
-    );
+    try {
+      let data = Helper.serializeObjectToFirebaseUsage(
+        comment.removeBaseData()
+      );
+      let res = await FirebaseHelper.updateData(
+        comment.id,
+        data,
+        comment.collectionName
+      );
+      return new DbOperationResult(
+        res,
+        res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
+        res
+      );
+    } catch (err) {
+      MyLogger.logInfo("Error @ FirebaseHelper::updateComment", err);
+      return new DbOperationResult(
+        false,
+        typeof err === typeof RateLimitError
+          ? ErrorReasons.rateLimitPerSecondReached
+          : ErrorReasons.undefinedErr,
+        err
+      );
+    }
   }
 
   private static documentSnapshotToComment(
@@ -343,9 +373,8 @@ export default class FirebaseHelper {
         );
       });
       return matchingDocuments;
-    } catch (error) {
-      let err = error;
-      //TODO: add console log
+    } catch (err) {
+      MyLogger.logInfo("Error @ FirebaseHelper::updateComment", err);
     }
     return null;
   }
@@ -401,17 +430,32 @@ export default class FirebaseHelper {
    * @returns true if succeeded.
    */
   public static async addNewUser(user: UserModel): Promise<DbOperationResult> {
-    let userByEmail = await FirebaseHelper.getUserByEmail(user.email);
-    if (userByEmail !== null && userByEmail.length > 0) {
-      return new DbOperationResult(false, ErrorReasons.emailExists, undefined);
+    try {
+      let userByEmail = await FirebaseHelper.getUserByEmail(user.email);
+      if (userByEmail !== null && userByEmail.length > 0) {
+        return new DbOperationResult(
+          false,
+          ErrorReasons.emailExists,
+          undefined
+        );
+      }
+      let data = Helper.serializeObjectToFirebaseUsage(user.removeBaseData());
+      let res = await FirebaseHelper.addData(data, user.collectionName);
+      return new DbOperationResult(
+        typeof res === "string",
+        res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
+        res
+      );
+    } catch (err) {
+      MyLogger.logInfo("Error @ FirebaseHelper::addNewUser", err);
+      return new DbOperationResult(
+        false,
+        typeof err === typeof RateLimitError
+          ? ErrorReasons.rateLimitPerSecondReached
+          : ErrorReasons.undefinedErr,
+        err
+      );
     }
-    let data = Helper.serializeObjectToFirebaseUsage(user.removeBaseData());
-    let res = await FirebaseHelper.addData(data, user.collectionName);
-    return new DbOperationResult(
-      typeof res === "string",
-      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
-      res
-    );
   }
 
   /**
@@ -420,17 +464,28 @@ export default class FirebaseHelper {
    * @returns true upon success
    */
   public static async updateUser(user: UserModel): Promise<DbOperationResult> {
-    let data = Helper.serializeObjectToFirebaseUsage(user.removeBaseData());
-    let res = await FirebaseHelper.updateData(
-      user.id,
-      data,
-      user.collectionName
-    );
-    return new DbOperationResult(
-      res,
-      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
-      res
-    );
+    try {
+      let data = Helper.serializeObjectToFirebaseUsage(user.removeBaseData());
+      let res = await FirebaseHelper.updateData(
+        user.id,
+        data,
+        user.collectionName
+      );
+      return new DbOperationResult(
+        res,
+        res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
+        res
+      );
+    } catch (err) {
+      MyLogger.logInfo("Error @ FirebaseHelper::updateUser", err);
+      return new DbOperationResult(
+        false,
+        typeof err === typeof RateLimitError
+          ? ErrorReasons.rateLimitPerSecondReached
+          : ErrorReasons.undefinedErr,
+        err
+      );
+    }
   }
 
   private static documentSnapshotToUser(
@@ -481,8 +536,10 @@ export default class FirebaseHelper {
       });
       return matchingDocuments;
     } catch (error) {
-      let err = error;
-      //TODO: add console log
+      MyLogger.logInfo(
+        "Error @ FirebaseHelper::getAllUsersByQueryFilter",
+        error
+      );
     }
     return null;
   }
@@ -541,13 +598,24 @@ export default class FirebaseHelper {
    * @returns DbOperationResult
    */
   public static async addNewCV(cv: CvModel): Promise<DbOperationResult> {
-    let data = Helper.serializeObjectToFirebaseUsage(cv.removeBaseData());
-    let res = await FirebaseHelper.addData(data, cv.collectionName);
-    return new DbOperationResult(
-      typeof res === "string",
-      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
-      res
-    );
+    try {
+      let data = Helper.serializeObjectToFirebaseUsage(cv.removeBaseData());
+      let res = await FirebaseHelper.addData(data, cv.collectionName);
+      return new DbOperationResult(
+        typeof res === "string",
+        res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
+        res
+      );
+    } catch (err) {
+      MyLogger.logInfo("Error @ FirebaseHelper::addNewCV", err);
+      return new DbOperationResult(
+        false,
+        typeof err === typeof RateLimitError
+          ? ErrorReasons.rateLimitPerSecondReached
+          : ErrorReasons.undefinedErr,
+        err
+      );
+    }
   }
 
   /**
@@ -556,13 +624,24 @@ export default class FirebaseHelper {
    * @returns DbOperationResult
    */
   public static async updateCV(cv: CvModel): Promise<DbOperationResult> {
-    let data = Helper.serializeObjectToFirebaseUsage(cv.removeBaseData());
-    let res = await FirebaseHelper.updateData(cv.id, data, cv.collectionName);
-    return new DbOperationResult(
-      res,
-      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
-      res
-    );
+    try {
+      let data = Helper.serializeObjectToFirebaseUsage(cv.removeBaseData());
+      let res = await FirebaseHelper.updateData(cv.id, data, cv.collectionName);
+      return new DbOperationResult(
+        res,
+        res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
+        res
+      );
+    } catch (err) {
+      MyLogger.logInfo("Error @ FirebaseHelper::updateCV", err);
+      return new DbOperationResult(
+        false,
+        typeof err === typeof RateLimitError
+          ? ErrorReasons.rateLimitPerSecondReached
+          : ErrorReasons.undefinedErr,
+        err
+      );
+    }
   }
 
   private static documentSnapshotToCV(
@@ -586,6 +665,7 @@ export default class FirebaseHelper {
   private static pageSize: number = Definitions.CVS_PER_PAGE;
   private static queryLimit: number = FirebaseHelper.pageSize;
   private static initialQueryDone: boolean = false;
+  private static paginationReachedEnd: boolean = false;
   private static currentCvPaginatioPage: number =
     Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER;
 
@@ -603,7 +683,9 @@ export default class FirebaseHelper {
     );
     let deleteW = where("deleted", "==", !filterOutDeleted);
 
-    if (FirebaseHelper.startAfterSnapshot) {
+    if (FirebaseHelper.paginationReachedEnd) {
+      return [];
+    } else if (FirebaseHelper.startAfterSnapshot) {
       // Create a new query starting after the last document of the previous page
       pageQuery =
         w !== undefined
@@ -663,11 +745,14 @@ export default class FirebaseHelper {
         // No more pages to fetch
         FirebaseHelper.startAfterSnapshot = undefined;
         FirebaseHelper.endBeforeSnapshot = undefined;
+        FirebaseHelper.paginationReachedEnd = true;
       }
       return matchingDocuments;
     } catch (error) {
-      let err = error;
-      console.log("Error getting documents:", error);
+      MyLogger.logInfo(
+        "Error @ FirebaseHelper::paginatedGetAllCvsByQueryFilter",
+        error
+      );
     }
 
     return null;
@@ -697,8 +782,10 @@ export default class FirebaseHelper {
       });
       return matchingDocuments;
     } catch (error) {
-      let err = error;
-      //TODO: add console log
+      MyLogger.logInfo(
+        "Error @ FirebaseHelper::_getAllCvsByQueryFilter",
+        error
+      );
     }
     return null;
   }
@@ -744,10 +831,16 @@ export default class FirebaseHelper {
     forward: boolean,
     filterOutDeleted: boolean = true
   ): Promise<CvModel[] | null> {
-    return FirebaseHelper.paginatedGetAllCvsByQueryFilter(
+    let res = FirebaseHelper.paginatedGetAllCvsByQueryFilter(
       undefined,
       filterOutDeleted
     );
+    MyLogger.logDebug(
+      `requested all cvs(pagination) - current page number: ${FirebaseHelper.getCurrentPageNumber()}` +
+        `\n got:`,
+      res
+    );
+    return res;
   }
 
   public static getCurrentPageNumber(): number {
@@ -757,5 +850,6 @@ export default class FirebaseHelper {
   public static resetCvPeginationNumber() {
     FirebaseHelper.currentCvPaginatioPage =
       Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER;
+    FirebaseHelper.paginationReachedEnd = false;
   }
 }

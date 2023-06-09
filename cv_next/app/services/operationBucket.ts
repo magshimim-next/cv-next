@@ -1,4 +1,5 @@
 export default class OperationBucket {
+  private static operationBucketInstance?: OperationBucket;
   private maxTokens: number;
   private tokens: number;
   private refillRate: number;
@@ -12,13 +13,18 @@ export default class OperationBucket {
     this.lastRefillTimestamp = Date.now();
   }
 
-  private refillTokens() {
+  private refillTokens(operationBucket: OperationBucket) {
     const now = Date.now();
-    const elapsedTime = now - this.lastRefillTimestamp;
-    const tokensToAdd = Math.floor(elapsedTime * (this.refillRate / 1000));
+    const elapsedTime = now - operationBucket.lastRefillTimestamp;
+    const tokensToAdd = Math.floor(
+      elapsedTime * (operationBucket.refillRate / 1000)
+    );
 
-    this.tokens = Math.min(this.tokens + tokensToAdd, this.maxTokens);
-    this.lastRefillTimestamp = now;
+    operationBucket.tokens = Math.min(
+      operationBucket.tokens + tokensToAdd,
+      operationBucket.maxTokens
+    );
+    operationBucket.lastRefillTimestamp = now;
   }
 
   public tryConsumeToken() {
@@ -37,7 +43,7 @@ export default class OperationBucket {
       return;
     }
     // Start the periodic task
-    const interval = setInterval(this.refillTokens, 1000); // Execute task every 1 second (1000 milliseconds)
+    const interval = setInterval(this.refillTokens, 1000, this); // Execute task every 1 second (1000 milliseconds)
     this.interval = interval;
   }
 

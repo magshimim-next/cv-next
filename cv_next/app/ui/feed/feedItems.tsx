@@ -18,6 +18,9 @@ const useIncrementState = (initialValue: number) => {
 //TESTING ONLY
 
 function FeedItems() {
+  const [initialLoaded, setInitialLoaded] = useState<boolean>(false);
+
+
   //TESTING ONLY
   // const [count, setCount] = useIncrementState(2);
 
@@ -49,6 +52,11 @@ function FeedItems() {
   ]);
 
   const fetchCVs = async () => {
+    if(!initialLoaded){
+      //to handle refresh in future
+      FirebaseHelper.resetCvPeginationNumber();
+      setInitialLoaded(true);
+    }
     let result = null;
     result = await FirebaseHelper.getAllCvs(true);
 
@@ -62,10 +70,12 @@ function FeedItems() {
   };
 
   const lastCVRef = useRef<any>(null);
+
   const { ref, entry } = useIntersection({
     root: lastCVRef.current,
     threshold: 0, //% of the viewd element before the next fetch
   });
+
   useEffect(() => {
     if (entry?.isIntersecting) {
       fetchCVs();
