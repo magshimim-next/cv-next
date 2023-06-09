@@ -20,6 +20,7 @@ import {
   DocumentSnapshot,
   endBefore,
   startAfter,
+  Query,
 } from "firebase/firestore";
 import { Auth, getAuth, GoogleAuthProvider } from "firebase/auth";
 import CommentModel from "../models/comment";
@@ -27,6 +28,7 @@ import UserModel from "../models/user";
 import CvModel from "../models/cv";
 import { Categories } from "../models/categories";
 import Definitions from "../base/definitions";
+import OperationBucket from "./operationBucket";
 var firebaseui = require("firebaseui");
 
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -45,12 +47,14 @@ enum ErrorReasons {
   noErr,
   undefinedErr,
   emailExists,
+  rateLimitPerSecondReached,
 }
 
 const enumToStringMap: Record<ErrorReasons, string> = {
   [ErrorReasons.noErr]: "No Error",
   [ErrorReasons.undefinedErr]: "Undefined Error",
   [ErrorReasons.emailExists]: "Email already exists!",
+  [ErrorReasons.rateLimitPerSecondReached]: "Rate limit per second reached",
 };
 
 export class DbOperationResult {
@@ -71,6 +75,24 @@ export default class FirebaseHelper {
   private static firebaseAppInstance?: FirebaseApp;
   private static firestoreInstance?: Firestore;
   private static firebaseAuthInstance?: Auth;
+  private static operationBucketInstance?: OperationBucket;
+
+  /**
+   * Method initiates the firebase app if not initiated yet
+   * @returns FirebaseApp instance
+   */
+  public static getOperationBucketInstance(): OperationBucket {
+    if (
+      FirebaseHelper.operationBucketInstance === null ||
+      FirebaseHelper.operationBucketInstance === undefined
+    ) {
+      FirebaseHelper.operationBucketInstance = new OperationBucket(
+        Definitions.MAX_OPERATIONS,
+        Definitions.MAX_OPERATIONS_REFILL_PER_SECOND
+      );
+    }
+    return FirebaseHelper.operationBucketInstance;
+  }
 
   /**
    * Method initiates the firebase app if not initiated yet
@@ -169,17 +191,21 @@ export default class FirebaseHelper {
     data: any,
     collectionName: string
   ): Promise<string | boolean> {
-    try {
-      let collectionRef = collection(
-        FirebaseHelper.getFirestoreInstance(),
-        collectionName
-      );
+    let collectionRef = collection(
+      FirebaseHelper.getFirestoreInstance(),
+      collectionName
+    );
 
-      let res = await addDoc(collectionRef, data);
-      return res.id;
-    } catch (error) {
-      let err = error;
-      //TODO: add console log
+    if (FirebaseHelper.getOperationBucketInstance().tryConsumeToken()) {
+      try {
+        let res = await addDoc(collectionRef, data);
+        return res.id;
+      } catch (error) {
+        let err = error;
+        //TODO: add console log
+      }
+    } else {
+      throw Error(enumToStringMap[ErrorReasons.rateLimitPerSecondReached]);
     }
     return false;
   }
@@ -196,19 +222,44 @@ export default class FirebaseHelper {
     data: any,
     collectionName: string
   ): Promise<boolean> {
-    try {
-      let collectionRef = collection(
-        FirebaseHelper.getFirestoreInstance(),
-        collectionName
-      );
-      const documentRef = doc(collectionRef, id);
-      await updateDoc(documentRef, data);
-      return true;
-    } catch (error) {
-      let err = error;
-      //TODO: add console log
+    let collectionRef = collection(
+      FirebaseHelper.getFirestoreInstance(),
+      collectionName
+    );
+    if (FirebaseHelper.getOperationBucketInstance().tryConsumeToken()) {
+      try {
+        const documentRef = doc(collectionRef, id);
+        await updateDoc(documentRef, data);
+        return true;
+      } catch (error) {
+        let err = error;
+        //TODO: add console log
+      }
+    } else {
+      throw Error(enumToStringMap[ErrorReasons.rateLimitPerSecondReached]);
     }
     return false;
+  }
+
+  /**
+   * returns the query snapshot with results(documents)
+   * @param query the query
+   * @returns QuerySnapshot or undefined upon error
+   */
+  private static async myGetDocs(
+    query: Query<DocumentData>
+  ): Promise<QuerySnapshot<DocumentData>> {
+    if (FirebaseHelper.getOperationBucketInstance().tryConsumeToken()) {
+      try {
+        return await getDocs(query);
+      } catch (error) {
+        let err = error;
+        //TODO: add console log
+        throw Error(enumToStringMap[ErrorReasons.undefinedErr]);
+      }
+    } else {
+      throw Error(enumToStringMap[ErrorReasons.rateLimitPerSecondReached]);
+    }
   }
 
   /*-------------------------COMMENT SECTION------------------------------*/
@@ -283,7 +334,7 @@ export default class FirebaseHelper {
         w,
         where("deleted", "==", !filterOutDeleted)
       );
-      const querySnapshot = await getDocs(q);
+      const querySnapshot = await FirebaseHelper.myGetDocs(q);
       const matchingDocuments: CommentModel[] = [];
 
       querySnapshot.forEach((documentSnapshot) => {
@@ -412,13 +463,13 @@ export default class FirebaseHelper {
         const q = filterOutInactive
           ? query(collectionRef, w, activeWhere)
           : query(collectionRef, w);
-        querySnapshot = await getDocs(q);
+        querySnapshot = await FirebaseHelper.myGetDocs(q);
       } else {
         if (filterOutInactive) {
           const q = query(collectionRef, activeWhere);
-          querySnapshot = await getDocs(q);
+          querySnapshot = await FirebaseHelper.myGetDocs(q);
         } else {
-          querySnapshot = await getDocs(collectionRef);
+          querySnapshot = await FirebaseHelper.myGetDocs(collectionRef);
         }
       }
       const matchingDocuments: UserModel[] = [];
@@ -539,12 +590,10 @@ export default class FirebaseHelper {
     Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER;
 
   private static async paginatedGetAllCvsByQueryFilter(
-    forward: boolean,
     w?: QueryFieldFilterConstraint,
     filterOutDeleted: boolean = true
   ): Promise<CvModel[] | null> {
     if (!FirebaseHelper.initialQueryDone) {
-      forward = true;
       FirebaseHelper.initialQueryDone = true;
     }
     let pageQuery: ReturnType<typeof query<DocumentData>>;
@@ -554,55 +603,34 @@ export default class FirebaseHelper {
     );
     let deleteW = where("deleted", "==", !filterOutDeleted);
 
-    if (forward) {
-      if (FirebaseHelper.startAfterSnapshot) {
-        // Create a new query starting after the last document of the previous page
-        pageQuery =
-          w !== undefined
-            ? query(
-                collectionRef,
-                orderBy("uploadDate", "desc"),
-                startAfter(FirebaseHelper.startAfterSnapshot),
-                limit(FirebaseHelper.queryLimit),
-                deleteW,
-                w
-              )
-            : query(
-                collectionRef,
-                orderBy("uploadDate", "desc"),
-                startAfter(FirebaseHelper.startAfterSnapshot),
-                limit(FirebaseHelper.queryLimit),
-                deleteW
-              );
-        FirebaseHelper.currentCvPaginatioPage++;
-      } else {
-        // Perform the initial query
-        pageQuery =
-          w !== undefined
-            ? query(
-                collectionRef,
-                orderBy("uploadDate", "desc"),
-                limit(FirebaseHelper.queryLimit),
-                deleteW,
-                w
-              )
-            : query(
-                collectionRef,
-                orderBy("uploadDate", "desc"),
-                limit(FirebaseHelper.queryLimit),
-                deleteW
-              );
-      }
+    if (FirebaseHelper.startAfterSnapshot) {
+      // Create a new query starting after the last document of the previous page
+      pageQuery =
+        w !== undefined
+          ? query(
+              collectionRef,
+              orderBy("uploadDate", "desc"),
+              startAfter(FirebaseHelper.startAfterSnapshot),
+              limit(FirebaseHelper.queryLimit),
+              deleteW,
+              w
+            )
+          : query(
+              collectionRef,
+              orderBy("uploadDate", "desc"),
+              startAfter(FirebaseHelper.startAfterSnapshot),
+              limit(FirebaseHelper.queryLimit),
+              deleteW
+            );
+      FirebaseHelper.currentCvPaginatioPage++;
     } else {
-      // Create a new query ending before the first document of the previous page
-      //todo: fix this when going back...
+      // Perform the initial query
       pageQuery =
         w !== undefined
           ? query(
               collectionRef,
               orderBy("uploadDate", "desc"),
               limit(FirebaseHelper.queryLimit),
-              endBefore(FirebaseHelper.endBeforeSnapshot),
               deleteW,
               w
             )
@@ -610,14 +638,12 @@ export default class FirebaseHelper {
               collectionRef,
               orderBy("uploadDate", "desc"),
               limit(FirebaseHelper.queryLimit),
-              endBefore(FirebaseHelper.endBeforeSnapshot),
               deleteW
             );
-      FirebaseHelper.currentCvPaginatioPage--;
     }
 
     try {
-      const querySnapshot = await getDocs(pageQuery);
+      const querySnapshot = await FirebaseHelper.myGetDocs(pageQuery);
       const matchingDocuments: CvModel[] = [];
 
       querySnapshot.forEach((documentSnapshot) => {
@@ -661,7 +687,7 @@ export default class FirebaseHelper {
         w !== undefined
           ? query(collectionRef, w, deleteW)
           : query(collectionRef, deleteW);
-      const querySnapshot = await getDocs(q);
+      const querySnapshot = await FirebaseHelper.myGetDocs(q);
       const matchingDocuments: CvModel[] = [];
 
       querySnapshot.forEach((documentSnapshot) => {
@@ -710,7 +736,7 @@ export default class FirebaseHelper {
   }
 
   /**
-   * @param forward true if we want the next page, false if we want the previous
+   * @param forward - always true to get the next data
    * @param filterOutDeleted whether or not we'd like to filter out the deleted CVs - true by default
    * @returns the users
    */
@@ -719,7 +745,6 @@ export default class FirebaseHelper {
     filterOutDeleted: boolean = true
   ): Promise<CvModel[] | null> {
     return FirebaseHelper.paginatedGetAllCvsByQueryFilter(
-      forward,
       undefined,
       filterOutDeleted
     );
