@@ -1,4 +1,3 @@
-"use client"; //TODO: check if this is needed
 import Helper from "../base/helper";
 import { FirebaseApp, initializeApp } from "firebase/app";
 import {
@@ -20,7 +19,6 @@ import {
   startAfter,
   Query,
 } from "firebase/firestore";
-import { Auth, getAuth, GoogleAuthProvider } from "firebase/auth";
 import CommentModel from "../models/comment";
 import UserModel from "../models/user";
 import CvModel from "../models/cv";
@@ -28,7 +26,6 @@ import { Categories } from "../models/categories";
 import Definitions from "../base/definitions";
 import OperationBucket from "./operationBucket";
 import MyLogger from "../base/logger";
-var firebaseui = require("firebaseui");
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -80,7 +77,6 @@ export class DbOperationResult {
 export default class FirebaseHelper {
   private static firebaseAppInstance?: FirebaseApp;
   private static firestoreInstance?: Firestore;
-  private static firebaseAuthInstance?: Auth;
   private static operationBucketInstance?: OperationBucket;
 
   /**
@@ -128,63 +124,6 @@ export default class FirebaseHelper {
       );
     }
     return FirebaseHelper.firestoreInstance;
-  }
-
-  /**
-   * Method initiates the firebase app if not initiated yet
-   * @returns FirebaseApp instance
-   */
-  public static getFirebaseAuthInstance(): Auth {
-    if (
-      FirebaseHelper.firebaseAuthInstance === null ||
-      FirebaseHelper.firebaseAuthInstance === undefined
-    ) {
-      FirebaseHelper.firebaseAuthInstance = getAuth(this.getFirebaseInstance());
-    }
-    return FirebaseHelper.firebaseAuthInstance;
-  }
-
-  public static getAuthUI() {
-    const auth = FirebaseHelper.getFirebaseAuthInstance();
-    var ui = new firebaseui.auth.AuthUI(auth);
-    ui.start("#firebaseui-auth-container", {
-      callbacks: {
-        signInSuccessWithAuthResult: function (
-          authResult: any,
-          redirectUrl: any
-        ) {
-          // User successfully signed in.
-          // Return type determines whether we continue the redirect automatically
-          // or whether we leave that to developer to handle.
-          console.log(authResult);
-          console.log(authResult.user);
-          console.log(authResult.credential);
-          console.log(authResult.additionalUserInfo);
-          return true;
-        },
-        uiShown: function () {
-          // The widget is rendered.
-          // Hide the loader.
-          if (
-            document.getElementById("loader") !== null &&
-            document.getElementById("loader") !== undefined
-          ) {
-            document.getElementById("loader")!.style.display = "none";
-          }
-        },
-      },
-      // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
-      signInFlow: "popup",
-      signInSuccessUrl: "<url-to-redirect-to-on-success>",
-
-      signInOptions: [
-        // List of OAuth providers supported.
-        GoogleAuthProvider.PROVIDER_ID,
-      ],
-      tosUrl: "<your-tos-url>",
-      // Privacy policy url.
-      privacyPolicyUrl: "<your-privacy-policy-url>",
-    });
   }
 
   /**

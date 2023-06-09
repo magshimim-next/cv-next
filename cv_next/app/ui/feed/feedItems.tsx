@@ -20,7 +20,6 @@ const useIncrementState = (initialValue: number) => {
 function FeedItems() {
   const [initialLoaded, setInitialLoaded] = useState<boolean>(false);
 
-
   //TESTING ONLY
   // const [count, setCount] = useIncrementState(2);
 
@@ -41,18 +40,11 @@ function FeedItems() {
   // }
   //TESTING ONLY
 
-  const [cvs, setCvs] = useState<CvModel[]>([
-    new CvModel(
-      "1",
-      "1",
-      "https://upload.wikimedia.org/wikipedia/commons/9/90/Resume_logo.jpeg",
-      1,
-      "cv number: 1"
-    ), //TODO: find a way to not have a first mock model and still fetch
-  ]);
+  const [firstLoaded, setFirstLoaded] = useState<boolean>(false);
+  const [cvs, setCvs] = useState<CvModel[]>([]);
 
   const fetchCVs = async () => {
-    if(!initialLoaded){
+    if (!initialLoaded) {
       //to handle refresh in future
       FirebaseHelper.resetCvPeginationNumber();
       setInitialLoaded(true);
@@ -77,10 +69,14 @@ function FeedItems() {
   });
 
   useEffect(() => {
+    if (!firstLoaded) {
+      setFirstLoaded(true);
+      fetchCVs();
+    }
     if (entry?.isIntersecting) {
       fetchCVs();
     }
-  }, [entry]);
+  }, [entry, firstLoaded]);
 
   return (
     <div>
