@@ -1,23 +1,15 @@
 "use client";
 import { FirebaseApp, initializeApp } from "firebase/app";
 import { Auth, getAuth, GoogleAuthProvider } from "firebase/auth";
+import Definitions from "../base/definitions";
 var firebaseui = require("firebaseui");
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBXgXEklKuIjzHAb2LJn8fkEgj_GLBL64A",
-  authDomain: "cv-next.firebaseapp.com",
-  projectId: "cv-next",
-  storageBucket: "cv-next.appspot.com",
-  messagingSenderId: "447291460762",
-  appId: "1:447291460762:web:7e8c9cf3726ef31e372323",
-};
-
 export default class FirebaseAuthHelper {
   private static firebaseAppInstance?: FirebaseApp;
   private static firebaseAuthInstance?: Auth;
+  private static authUi?: any;
 
   /**
    * Method initiates the firebase app if not initiated yet
@@ -28,7 +20,9 @@ export default class FirebaseAuthHelper {
       FirebaseAuthHelper.firebaseAppInstance === null ||
       FirebaseAuthHelper.firebaseAppInstance === undefined
     ) {
-      FirebaseAuthHelper.firebaseAppInstance = initializeApp(firebaseConfig);
+      FirebaseAuthHelper.firebaseAppInstance = initializeApp(
+        Definitions.FIREBASE_CONFIG
+      );
     }
     return FirebaseAuthHelper.firebaseAppInstance;
   }
@@ -92,7 +86,13 @@ export default class FirebaseAuthHelper {
   }
 
   public static getAuthUI() {
-    const auth = FirebaseAuthHelper.getFirebaseAuthInstance();
-    return new firebaseui.auth.AuthUI(auth);
+    if (
+      FirebaseAuthHelper.authUi === null ||
+      FirebaseAuthHelper.authUi === undefined
+    ) {
+      const auth = FirebaseAuthHelper.getFirebaseAuthInstance();
+      FirebaseAuthHelper.authUi = new firebaseui.auth.AuthUI(auth);
+    }
+    return FirebaseAuthHelper.authUi;
   }
 }

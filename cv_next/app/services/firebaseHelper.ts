@@ -29,16 +29,6 @@ import MyLogger from "../base/logger";
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBXgXEklKuIjzHAb2LJn8fkEgj_GLBL64A",
-  authDomain: "cv-next.firebaseapp.com",
-  projectId: "cv-next",
-  storageBucket: "cv-next.appspot.com",
-  messagingSenderId: "447291460762",
-  appId: "1:447291460762:web:7e8c9cf3726ef31e372323",
-};
-
 enum ErrorReasons {
   noErr,
   undefinedErr,
@@ -105,7 +95,9 @@ export default class FirebaseHelper {
       FirebaseHelper.firebaseAppInstance === null ||
       FirebaseHelper.firebaseAppInstance === undefined
     ) {
-      FirebaseHelper.firebaseAppInstance = initializeApp(firebaseConfig);
+      FirebaseHelper.firebaseAppInstance = initializeApp(
+        Definitions.FIREBASE_CONFIG
+      );
     }
     return FirebaseHelper.firebaseAppInstance;
   }

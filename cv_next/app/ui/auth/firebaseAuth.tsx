@@ -19,7 +19,7 @@ export default function FirebaseAuthComp() {
 
   return (
     <div>
-      <div id="firebaseui-auth-container"></div>
+      <div id="firebaseui-auth-container" style={{height:"10"}}></div>
       <div id="loader">Loading...</div>
     </div>
   );
