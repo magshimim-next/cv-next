@@ -6,6 +6,7 @@ import {
   Group,
   rem,
 } from "@mantine/core";
+import { useRouter } from 'next/router'
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -73,6 +74,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default function Title() {
+  const router = useRouter()
   const { classes } = useStyles();
 
   return (
@@ -103,7 +105,9 @@ export default function Title() {
             variant="gradient"
             gradient={{ from: "blue", to: "cyan" }}
             component="a"
-            href="/pages/login"
+            onClick={() => {
+              router.push('/pages/login');
+            }}
           >
             Get started
           </Button>
