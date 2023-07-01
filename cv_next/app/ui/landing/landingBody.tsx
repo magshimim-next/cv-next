@@ -6,7 +6,7 @@ import {
   Group,
   rem,
 } from "@mantine/core";
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
