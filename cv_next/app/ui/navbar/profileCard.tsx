@@ -4,6 +4,7 @@ import {
   Avatar,
   Box,
   Button,
+  Divider,
   Flex,
   Text,
   createStyles,
@@ -25,31 +26,48 @@ const useStyles = createStyles((theme) => ({
       
     }
     
-  }
+  },
+  uploadButton: {
+    backgroundColor: theme.colors.blue[5],
+    fontSize: theme.fontSizes.lg,
+    fontWeight: 'bolder'
+  },
   
-
+  statsBox: {
+    textAlign: 'center',
+    
+  }
 }));
 
 export default function ProfileCard({imageUrl, name}: 
   {imageUrl: string, name: string}) {
+    
   const { classes, theme } = useStyles();
 
   return (
-  <Box>
-    <Flex direction='column' gap='md' >
-
-      <Flex align='center' gap={10}>
-        <Avatar radius='lg' size='md'
+  <Box >
+    <Flex direction='column' gap='md'>
+      {/* USERNAME AND PROFILE PIC */}
+      <Flex align='center' justify='start' gap={10}>
+        <Avatar radius='lg' size='sm'
         src={imageUrl}/>
 
-        <Text fz='xl' fw={600}>{name}</Text>
+        <Text fz='lg' fw={600}>{name}</Text>
       </Flex>
 
+           {/* LOGOUT AND UPLOAD CV OPTION */}
+      <Flex gap={20}>
       <div>
-        <Button size='sm' className={classes.logoutButton}>
+        <Button size='xs' className={classes.logoutButton}>
           Logout
         </Button>
       </div>
+      <div>
+        <Button size='xs'  className={classes.uploadButton}>
+          +
+        </Button>
+      </div>
+      </Flex>
     </Flex>
   </Box>
   );

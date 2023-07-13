@@ -7,7 +7,8 @@ function FeedNavbar() {
           {/* <Text>Application navbar</Text> */}
           <ProfileCard
           imageUrl="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png" 
-          name='Ilan Yashuk'
+          name='Official Name'
+          
           />
         </div>
       );}
