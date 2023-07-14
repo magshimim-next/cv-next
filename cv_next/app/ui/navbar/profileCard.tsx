@@ -1,4 +1,4 @@
-import { IconMessage } from "@tabler/icons-react";
+import { IconChevronDown, IconChevronRight, IconLogout, IconMessage, IconUpload } from "@tabler/icons-react";
 import {
 
   Avatar,
@@ -6,69 +6,88 @@ import {
   Button,
   Divider,
   Flex,
+  Group,
+  Menu,
   Text,
+  UnstyledButton,
   createStyles,
   rem,
 } from "@mantine/core";
 import CvModel from "@/app/models/cv";
+import { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
-  box: {
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
-    
-  },
-  logoutButton: {
-    backgroundColor: theme.colors.red[6],
+  user: {
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
+    padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
+    borderRadius: theme.radius.sm,
+    transition: 'background-color 100ms ease',
+
     '&:hover': {
-      backgroundColor: theme.colors.red[7],
-      textAlign: 'center'
-      
-    }
-    
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[1],
+    },
+
+
+
   },
-  uploadButton: {
-    backgroundColor: theme.colors.blue[5],
-    fontSize: theme.fontSizes.lg,
-    fontWeight: 'bolder'
+
+
+  userActive: {
+    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
   },
-  
-  statsBox: {
-    textAlign: 'center',
-    
-  }
+
 }));
 
-export default function ProfileCard({imageUrl, name}: 
-  {imageUrl: string, name: string}) {
-    
-  const { classes, theme } = useStyles();
+
+export default function ProfileCard({ imageUrl, name }:
+  { imageUrl: string, name: string }) {
+
+  const [userMenuOpened, setUserMenuOpened] = useState(false);
+  const { classes, theme, cx } = useStyles();
 
   return (
-  <Box >
-    <Flex direction='column' gap='md'>
-      {/* USERNAME AND PROFILE PIC */}
-      <Flex align='center' justify='start' gap={10}>
-        <Avatar radius='lg' size='sm'
-        src={imageUrl}/>
 
-        <Text fz='lg' fw={600}>{name}</Text>
-      </Flex>
+    <Group position="center">
+      <Menu
+        width='inherit'
+        position="bottom-start"
+        transitionProps={{ transition: 'pop-top-right' }}
+        onClose={() => setUserMenuOpened(false)}
+        onOpen={() => setUserMenuOpened(true)}
+        withinPortal
+      >
+        <Menu.Target>
+          <UnstyledButton
+            className={cx(classes.user, { [classes.userActive]: userMenuOpened })}
+          >
+            <Group spacing={7}>
+              <Avatar src={imageUrl} alt={name} radius="xl" size={20} />
+              <Text weight={500} size='sm' sx={{ lineHeight: 1 }} mr={3}>
+                {name}
+              </Text>
+              <IconChevronDown size={rem(12)} stroke={1.5} />
+            </Group>
+          </UnstyledButton>
+        </Menu.Target>
 
-           {/* LOGOUT AND UPLOAD CV OPTION */}
-      <Flex gap={20}>
-      <div>
-        <Button size='xs' className={classes.logoutButton}>
-          Logout
-        </Button>
-      </div>
-      <div>
-        <Button size='xs'  className={classes.uploadButton}>
-          +
-        </Button>
-      </div>
-      </Flex>
-    </Flex>
-  </Box>
+        <Menu.Dropdown>
+
+          <Menu.Item icon={<IconUpload color={theme.colors.blue[6]} size="0.9rem" stroke={1.5} />}>
+            Upload a CV
+          </Menu.Item>
+
+          <Menu.Divider />
+
+          <Menu.Item color='red' icon={<IconLogout size="0.9rem" stroke={1.5} />}>
+            Logout
+          </Menu.Item>
+
+
+
+        </Menu.Dropdown>
+      </Menu>
+
+    </Group>
+
   );
 }
