@@ -1,11 +1,7 @@
-import { IconChevronDown, IconChevronRight, IconLogout, IconMessage, IconUpload } from "@tabler/icons-react";
+import { IconChevronDown, IconLogout, IconUpload } from "@tabler/icons-react";
 import {
-
   Avatar,
-  Box,
-  Button,
-  Divider,
-  Flex,
+  DEFAULT_THEME,
   Group,
   Menu,
   Text,
@@ -13,8 +9,7 @@ import {
   createStyles,
   rem,
 } from "@mantine/core";
-import CvModel from "@/app/models/cv";
-import { useState } from "react";
+import React, { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
   user: {
@@ -27,10 +22,7 @@ const useStyles = createStyles((theme) => ({
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[1],
     },
 
-
-
   },
-
 
   userActive: {
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
@@ -38,12 +30,41 @@ const useStyles = createStyles((theme) => ({
 
 }));
 
+interface DropdownOption {
+  text: string;
+  icon: JSX.Element;
+  onClickFunc: (event: React.MouseEvent) => void
+}
 
-export default function ProfileCard({ imageUrl, name }:
-  { imageUrl: string, name: string }) {
+// Default profile's dropdown options that'll pop up when clicked 
+const defaultDropdownOptions: DropdownOption[] = [
+  {
+    text: 'Upload a cv',
+    icon: <IconUpload color={DEFAULT_THEME.colors.blue[6]} size="0.9rem" stroke={1.5} />,
+    onClickFunc: () => { console.log("That's just a dummy upload") }
+  },
+  {
+    text: 'Logout',
+    icon: <IconLogout color='red' size="0.9rem" stroke={1.5} />,
+    onClickFunc: () => { console.log("That's just a dummy logout") }
+  },
+]
+
+
+export default function ProfileCard({ imageUrl, name,
+  options = defaultDropdownOptions }:
+  { imageUrl: string, name: string, options?: DropdownOption[] }) {
 
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { classes, theme, cx } = useStyles();
+
+  // Editing the options before injecting into the JSX
+  const adjustedOptions: DropdownOption[] = options.map(option => ({
+    ...option,
+
+    // Editing size so users won't worry about handling it & only about the icon itself
+    icon: React.cloneElement(option.icon, { size: '0.9rem' }),
+  }))
 
   return (
 
@@ -71,19 +92,19 @@ export default function ProfileCard({ imageUrl, name }:
         </Menu.Target>
 
         <Menu.Dropdown>
+          {adjustedOptions.map((option, index) =>
+            <>
+              <Menu.Item icon={option.icon}
+                onClick={option.onClickFunc}
+                key={index}>
 
-          <Menu.Item icon={<IconUpload color={theme.colors.blue[6]} size="0.9rem" stroke={1.5} />}>
-            Upload a CV
-          </Menu.Item>
+                {option.text}
 
-          <Menu.Divider />
-
-          <Menu.Item color='red' icon={<IconLogout size="0.9rem" stroke={1.5} />}>
-            Logout
-          </Menu.Item>
-
-
-
+              </Menu.Item>
+              {/* Don't add a divider after the last element (ugly) */}
+              {index != options.length - 1 ? <Menu.Divider /> : <></>}
+            </>)
+          }
         </Menu.Dropdown>
       </Menu>
 
