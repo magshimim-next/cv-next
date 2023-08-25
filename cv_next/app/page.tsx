@@ -1,8 +1,9 @@
-import LandingLayout from "@/app/ui/landing/landingLayout";
+import Hero from "@/components/pages/hero"
+
 export default function Home() {
   return (
     <main>
-      <LandingLayout/>
+      <Hero />
     </main>
-  );
+  )
 }

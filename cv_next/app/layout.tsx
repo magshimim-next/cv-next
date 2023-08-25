@@ -1,19 +1,35 @@
-import "./globals.css";
-import { Inter } from "next/font/google";
-import Providers from "@/app/services/provider";
+import "./globals.css"
+import { Inter } from "next/font/google"
+import Navbar from "@/components/layout/navbar"
+import { ThemeProvider } from "@/components/theme-provider"
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] })
+
 export const metadata = {
-  title: "CV_NEXT",
-  description: "A Resume peer-review platform",
-};
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
+  icons: {
+    icon: "/favicon.ico",
+  },
+}
 
-export default function RootLayout({ children }: { children: any }) {
+interface RootLayoutProps {
+  children: React.ReactNode
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en-US">
-      <head />
-      <body className={inter.className}>
-      <Providers>{children}</Providers>      </body>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${inter.className} bg-background text-primary flex min-h-screen flex-col`}
+      >
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Navbar />
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
-  );
+  )
 }
