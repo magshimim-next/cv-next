@@ -55,8 +55,8 @@ export default class FirebaseHelper {
     }
   
     /**
-     * Method initiates the firebase app if not initiated yet
-     * @returns FirebaseApp instance
+     * Method initiates the firestore if not initiated yet
+     * @returns Firestore instance
      */
     public static getFirestoreInstance(): Firestore {
       if (
