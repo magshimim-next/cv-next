@@ -478,12 +478,12 @@ export default class FirebaseHelper {
   /**
    *
    * @param name the name to filter by
-   * @param filterOutInactive whether or not we'd like to filter out the inactive users - true by default
+   * @param filterOutInactive whether or not we'd like to filter out the inactive users - false by default
    * @returns the user
    */
   public static async getUserByName(
     name: string,
-    filterOutInactive: boolean = true
+    filterOutInactive: boolean = false
   ): Promise<UserModel[] | null> {
     return FirebaseHelper.getAllUsersByQueryFilter(
       where("name", "==", name),
@@ -494,12 +494,12 @@ export default class FirebaseHelper {
   /**
    *
    * @param email the email to filter by
-   * @param filterOutInactive whether or not we'd like to filter out the inactive users - true by default
+   * @param filterOutInactive whether or not we'd like to filter out the inactive users - false by default
    * @returns the user
    */
   public static async getUserByEmail(
     email: string,
-    filterOutInactive: boolean = true
+    filterOutInactive: boolean = false
   ): Promise<UserModel[] | null> {
     return FirebaseHelper.getAllUsersByQueryFilter(
       where("email", "==", email),

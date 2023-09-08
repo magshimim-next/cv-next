@@ -5,6 +5,10 @@ var firebaseui = require("firebaseui");
 
 function getAuthUI() {
   const auth = MyApp.firebaseAuthHelper.getFirebaseAuthInstance();
+  if(firebaseui.auth.AuthUI.getInstance())
+  {
+    return firebaseui.auth.AuthUI.getInstance()
+  }
   return new firebaseui.auth.AuthUI(auth);
 }
 
