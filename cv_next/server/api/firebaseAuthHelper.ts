@@ -49,7 +49,7 @@ export default class FirebaseAuthHelper {
           authResult: any,
           redirectUrl: any
         ) {
-          // User successfully signed in.
+          // User successfully authenticated with Firebase.
           // Return type determines whether we continue the redirect automatically
           // or whether we leave that to developer to handle.
           //MyLogger.logInfo("sign in", authResult);
