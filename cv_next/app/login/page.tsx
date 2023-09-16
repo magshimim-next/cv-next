@@ -34,6 +34,7 @@ export default function LoginPage()
         if(existingUser !== null && existingUser.length > 0)
         {
           console.log("Existing user is active");
+          router.push("/dummy");
         }
         else
         {
