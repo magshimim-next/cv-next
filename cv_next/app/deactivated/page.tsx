@@ -1,4 +1,4 @@
-import Hero from "@/components/pages/dummy"
+import Hero from "@/components/pages/deactivated"
 
 export default function Home() {
   return (

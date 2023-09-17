@@ -16,6 +16,7 @@ const DynamicAuthUIComponent = dynamic(
 export default function LoginPage()
 {
   const router = useRouter();
+
   FirebaseAuthHelper.getFirebaseAuthInstance().onAuthStateChanged(async (user) => {
   MyLogger.logInfo("login change", user);
     if (user) {
@@ -34,7 +35,9 @@ export default function LoginPage()
         if(existingUser !== null && existingUser.length > 0)
         {
           console.log("Existing user is active");
-          router.push("/dummy");
+          loggedUser.updateActiveValue(true);
+          FirebaseAuthHelper.setLoggedUser(loggedUser);
+          router.push("/activated");
         }
         else
         {

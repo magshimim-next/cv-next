@@ -21,7 +21,7 @@ export default function HeroHeader() {
           target="_blank"
           className={`w-[10rem] ${cn(buttonVariants({ size: "lg" }))}`}
         >
-          Got started
+          Activated
         </Link>
       </div>
       {heroHeader.image !== "" ? (
