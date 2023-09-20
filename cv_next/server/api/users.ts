@@ -140,12 +140,12 @@ export default class UsersApi {
   /**
    *
    * @param name the name to filter by
-   * @param filterOutInactive whether or not we'd like to filter out the inactive users - true by default
+   * @param filterOutInactive whether or not we'd like to filter out the inactive users - false by default
    * @returns the user
    */
   public static async getUserByName(
     name: string,
-    filterOutInactive: boolean = true
+    filterOutInactive: boolean = false
   ): Promise<UserModel[] | null> {
     return this.getAllUsersByQueryFilter(
       where("name", "==", name),
@@ -156,12 +156,12 @@ export default class UsersApi {
   /**
    *
    * @param email the email to filter by
-   * @param filterOutInactive whether or not we'd like to filter out the inactive users - true by default
+   * @param filterOutInactive whether or not we'd like to filter out the inactive users - false by default
    * @returns the user
    */
   public static async getUserByEmail(
     email: string,
-    filterOutInactive: boolean = true
+    filterOutInactive: boolean = false
   ): Promise<UserModel[] | null> {
     return this.getAllUsersByQueryFilter(
       where("email", "==", email),
@@ -171,11 +171,11 @@ export default class UsersApi {
 
   /**
    *
-   * @param filterOutInactive whether or not we'd like to filter out the inactive users - true by default
+   * @param filterOutInactive whether or not we'd like to filter out the inactive users - false by default
    * @returns the users
    */
   public static async getAllUsers(
-    filterOutInactive: boolean = true
+    filterOutInactive: boolean = false
   ): Promise<UserModel[] | null> {
     return this.getAllUsersByQueryFilter(
       undefined,
