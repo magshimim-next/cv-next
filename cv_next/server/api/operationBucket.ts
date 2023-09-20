@@ -1,3 +1,5 @@
+import 'server-only'
+
 export default class OperationBucket {
   private static operationBucketInstance?: OperationBucket;
   private maxTokens: number;

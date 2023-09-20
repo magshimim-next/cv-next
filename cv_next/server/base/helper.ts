@@ -1,3 +1,5 @@
+import 'server-only'
+
 export default class Helper {
   public static epochTimeNow(): number {
     return new Date().getTime();
@@ -29,22 +31,6 @@ export default class Helper {
         (key) => enumType[key as keyof T] === id
       );
       return enumType[enumKey as keyof T];
-    }
-
-    return undefined;
-  }
-
-  public static getEnumIndex<T extends Record<string, string | number>>(
-    enumType: T,
-    enumValue: keyof T
-  ): number | undefined {
-    const enumKeys = Object.keys(enumType) as Array<keyof T>;
-    const index = enumKeys.findIndex(
-      (key) => enumType[key] === enumType[enumValue]
-    );
-
-    if (index !== -1) {
-      return index;
     }
 
     return undefined;

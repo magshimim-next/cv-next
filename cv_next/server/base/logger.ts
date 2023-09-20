@@ -1,3 +1,5 @@
+import 'server-only'
+
 export default class MyLogger {
   private static isDebugMode = process.env.NODE_ENV === "development";
   private static logOperation(operation: string, type: string, obj?: unknown) {
