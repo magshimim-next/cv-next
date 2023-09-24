@@ -5,7 +5,6 @@ import { UserTypes } from "./userTypes";
 export default class UserModel implements BaseModel {
   public email: string;
   public name: string;
-  public active: boolean;
   public created: number;
   public lastLogin: number | null;
   public userTypeID: number;
@@ -21,7 +20,6 @@ export default class UserModel implements BaseModel {
     name: string,
     email: string,
     userTypeID: number,
-    active: boolean = false,
     created?: number,
     lastLogin?: number
   ) {
@@ -33,7 +31,6 @@ export default class UserModel implements BaseModel {
     };
     this.name = name;
     this.email = email;
-    this.active = active;
     this.userTypeID = userTypeID;
     this.created = created ?? Helper.epochTimeNow();
     this.lastLogin = lastLogin ?? null;
@@ -50,11 +47,7 @@ export default class UserModel implements BaseModel {
   public updateLastLogin() {
     this.lastLogin = Helper.epochTimeNow();
   }
-
-  public updateActiveValue(active: boolean = false) {
-    this.active = active;
-  }
-
+  
   public getUserType(): UserTypes.userType {
     let res = Helper.getEnumValueById(UserTypes.userType, this.userTypeID);
     return res !== undefined ? res : UserTypes.userType.regular;

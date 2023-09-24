@@ -1,6 +1,6 @@
 import Hero from "@/components/pages/deactivated"
 
-export default function Home() {
+export default function Inactive() {
   return (
     <main>
       <Hero />

@@ -4,33 +4,14 @@ import { Auth, getAuth, GoogleAuthProvider } from "firebase/auth";
 import Definitions from "@/server/base/definitions";
 import MyLogger from "@/server/base/logger";
 import UserModel from "@/types/models/user";
+import UsersApi from "./users";
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 export default class FirebaseAuthHelper {
   private static firebaseAppInstance?: FirebaseApp;
   private static firebaseAuthInstance?: Auth;
-  private static loggedUser?: UserModel;
-
-  public static getLoggedUser(): UserModel {
-    if (
-      FirebaseAuthHelper.loggedUser === null ||
-      FirebaseAuthHelper.loggedUser === undefined
-    ) {
-      FirebaseAuthHelper.loggedUser = new UserModel("def", '{}', '{}', 0, false);
-    }
-    return FirebaseAuthHelper.loggedUser;
-  }
-
-  public static setLoggedUser(value: UserModel) {
-    FirebaseAuthHelper.loggedUser = value;
-  }
-
-  public static checkLoggedUserActivation(): boolean {
-    MyLogger.logInfo("Test", this.getLoggedUser());
-    return this.getLoggedUser().active;
-  }
-
+  
   /**
    * Method initiates the firebase app if not initiated yet
    * @returns FirebaseApp instance

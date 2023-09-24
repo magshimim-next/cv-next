@@ -88,7 +88,6 @@ export default class UsersApi {
       documentData.name,
       documentData.email,
       documentData.userTypeID,
-      documentData.active,
       documentData.created,
       documentData.lastLogin
     );
@@ -104,7 +103,7 @@ export default class UsersApi {
         UserModel.CollectionName
       );
       let querySnapshot: QuerySnapshot;
-      let activeWhere = where("active", "==", true);
+      let activeWhere = where("userTypeID", "!=", 0);
       if (w !== undefined) {
         const q = filterOutInactive
           ? query(collectionRef, w, activeWhere)
