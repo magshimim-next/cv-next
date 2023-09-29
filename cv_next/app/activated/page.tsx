@@ -1,21 +1,23 @@
 "use client";
 import Hero from "@/components/pages/activated"
-import RouteGuard from "@/components/route-guards/inactive-guard";
+import { getServerSession } from "next-auth/next"
+import { redirect } from "next/navigation"
+import { useSession } from 'next-auth/react'
 
-function ProtectedRoute() {
-  return (
-    <Hero />
-  );
-}
+export default function ServerPage() {
+  const { data: session } = useSession({
+    required: true,
+    onUnauthenticated() {
+        redirect('/api/auth/signin?callbackUrl=/activated')
+    }
+})
 
-export default function Active() {
-  
-  return (
-    <main>
-      <RouteGuard>
-        <ProtectedRoute/>
-      </RouteGuard>
+    if (!session?.user) return
+    
+    return (
+      <main>
+      <Hero />
     </main>
-  )
-}
+    )
 
+}

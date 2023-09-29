@@ -5,14 +5,14 @@ export const navLinks = [
   },
   {
     route: "Login",
-    path: "/login",
+    path: "/api/auth/signin",
   },
   {
-    route: "Home",
-    path: "/",
+    route: "Logout",
+    path: "/api/auth/signout",
   },
   {
-    route: "Home",
-    path: "/",
+    route: "Activated",
+    path: "/activated",
   },
 ]
