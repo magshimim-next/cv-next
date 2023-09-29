@@ -2,7 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { heroHeader } from "@/config/contents"
+import { inactiveHeader } from "@/config/contents"
 
 export default function HeroHeader() {
   return (
@@ -10,10 +10,10 @@ export default function HeroHeader() {
       <div className="flex flex-1 flex-col items-center gap-4 text-center lg:gap-8">
         <div className="space-y-4">
           <h1 className="text-4xl font-bold lg:text-6xl">
-            {heroHeader.header}
+            {inactiveHeader.header}
           </h1>
           <h2 className="text-muted-foreground text-lg font-light lg:text-3xl">
-            {heroHeader.subheader}
+            {inactiveHeader.subheader}
           </h2>
         </div>
         <Link
@@ -21,13 +21,13 @@ export default function HeroHeader() {
           target="_blank"
           className={`w-[10rem] ${cn(buttonVariants({ size: "lg" }))}`}
         >
-          Deactivated
+          Go back
         </Link>
       </div>
-      {heroHeader.image !== "" ? (
+      {inactiveHeader.image !== "" ? (
         <div className="flex flex-1 justify-center lg:justify-end">
           <Image
-            src={heroHeader.image}
+            src={inactiveHeader.image}
             width={500}
             height={500}
             alt="Header image"

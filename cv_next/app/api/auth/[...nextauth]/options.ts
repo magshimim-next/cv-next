@@ -9,7 +9,6 @@ export const options: NextAuthOptions = {
     providers: [
         GoogleProvider({
             async profile(profile: GoogleProfile) {
-                console.log("here %s", process.env.GOOGLE_CLIENT_ID)
                 let loggedUser = new UserModel(profile.sub, profile.name || '{}', profile.email || '{}', 0);
                 let userActive = 0;
                 let res = await UsersApi.addNewUser(loggedUser);
@@ -22,7 +21,7 @@ export const options: NextAuthOptions = {
                     let existingUser = await UsersApi.getUserByEmail(loggedUser.email, true);
                     if(existingUser !== null && existingUser.length > 0)
                     {
-                        console.log("Existing user is active - %d %d", existingUser[0].getUserType());
+                        console.log("Existing user is active - %d", existingUser[0].getUserType());
                         userActive = existingUser[0].getUserType();
                     }
                     else

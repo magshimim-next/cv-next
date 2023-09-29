@@ -11,8 +11,6 @@ export default function ServerPage() {
         redirect('/api/auth/signin?callbackUrl=/activated')
     }
 })
-
-    if (!session?.user) return
     
     return (
       <main>
