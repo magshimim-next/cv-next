@@ -15,12 +15,14 @@ export default function CVItem({ cv }: CVCardProps) {
       />
       <div className="overlay gradient-blur-backdrop absolute bottom-0 left-0 flex h-1/2 w-full flex-col justify-end rounded-lg">
         <div className="px-6 pt-2">
-          <div className="text-xl font-bold text-neutral-700">{cv.userId}</div>
           <p className="mb-2 text-base text-neutral-700">{cv.description}</p>
         </div>
-        <div className="px-6 pb-2">
+        <div className="flex justify-between px-6 pb-2">
           <span className="mb-2 mr-2 inline-block rounded-full bg-neutral-200 px-3 py-1 text-sm font-semibold text-neutral-700">
             #{cv.categoryId}
+          </span>
+          <span className=" mb-2 mr-2 text-xl font-bold text-neutral-700">
+            {cv.userId}
           </span>
         </div>
       </div>
