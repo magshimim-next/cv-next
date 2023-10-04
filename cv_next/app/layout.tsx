@@ -23,7 +23,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.className} bg-background text-primary flex min-h-screen flex-col bg-background`}
+        className={`${inter.className} bg-gradient flex min-h-screen flex-col bg-background text-primary`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Navbar />

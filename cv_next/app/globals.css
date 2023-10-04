@@ -61,3 +61,7 @@
 .gradient-blur-backdrop {
   @apply bg-gradient-to-t from-white to-transparent;
 }
+
+.bg-gradient {
+  @apply bg-gradient-to-br from-sky-200 to-red-100 dark:bg-gradient-to-br dark:from-slate-800 dark:to-sky-900;
+}
