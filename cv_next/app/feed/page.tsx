@@ -6,7 +6,8 @@ export default function Feed() {
     "cv-id",
     "user-id",
     "https://lh3.google.com/u/0/d/1gquDwmvOjuRCVQJ-LkMnA3NOLWDw_UDu=w1000-h1200-p",
-    1
+    1,
+    "description"
   )
   return (
     <main>
