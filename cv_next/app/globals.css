@@ -2,12 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
-.bg-theme {
-  @apply bg-theme-100 dark:bg-theme-800;
+:root {
+  --theme-50: #e5eaf0;
+  --theme-100: #dce3ea;
+  --theme-200: #c2cedb;
+  --theme-300: #a6b7ca;
+  --theme-400: #839bb5;
+  --theme-500: #5b7898;
+  --theme-600: #506a86;
+  --theme-700: #496079;
+  --theme-800: #1e293b;
+  --theme-900: #0f172a;
+  --theme-950: #020617;
+
+  --background: var(--theme-100);
+  --forground: var(--theme-800);
+  --muted: var(--theme-200);
+  --muted-foreground: var(--theme-600);
+  --card: var(--theme-100);
+  --card-foreground: var(--theme-800);
+  --popover: var(--theme-100);
+  --popover-foreground: var(--theme-800);
+  --border: var(--theme-800);
+  --input: var(--theme-800);
+  --primary: black;
+  --primary-foreground: white;
+  --secondary: var(--theme-200);
+  --secondary-foreground: var(--theme-800);
+  --accent: var(--theme-200);
+  --accent-foreground: var(--theme-800);
+  --destructive: #da6161;
+  --destructive-foreground: var(--theme-100);
+  --ring: var(--theme-600);
 }
 
-.text-theme {
-  @apply text-theme-800 dark:text-white;
+:root.dark {
+  --background: var(--theme-800);
+  --forground: var(--white);
+  --muted: var(--theme-500);
+  --muted-foreground: var(--theme-100);
+  --card: var(--theme-800);
+  --card-foreground: var(--theme-100);
+  --popover: var(--theme-800);
+  --popover-foreground: var(--theme-100);
+  --border: var(--theme-100);
+  --input: var(--theme-100);
+  --primary: white;
+  --primary-foreground: black;
+  --secondary: var(--theme-100);
+  --secondary-foreground: var(--theme-800);
+  --accent: var(--theme-700);
+  --accent-foreground: var(--white);
+  --destructive: #da6161;
+  --destructive-foreground: var(--theme-800);
+  --ring: var(--theme-100);
 }
 
 .gradient-blur-backdrop {
