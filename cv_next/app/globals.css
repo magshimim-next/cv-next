@@ -10,7 +10,7 @@
   --theme-400: #839bb5;
   --theme-500: #5b7898;
   --theme-600: #506a86;
-  --theme-700: #496079;
+  --theme-700: #27374e;
   --theme-800: #1e293b;
   --theme-900: #0f172a;
   --theme-950: #020617;
@@ -25,7 +25,7 @@
   --popover-foreground: var(--theme-800);
   --border: var(--theme-800);
   --input: var(--theme-800);
-  --primary: black;
+  --primary: var(--theme-950);
   --primary-foreground: white;
   --secondary: var(--theme-200);
   --secondary-foreground: var(--theme-800);
@@ -48,7 +48,7 @@
   --border: var(--theme-100);
   --input: var(--theme-100);
   --primary: white;
-  --primary-foreground: black;
+  --primary-foreground: var(--theme-950);
   --secondary: var(--theme-100);
   --secondary-foreground: var(--theme-800);
   --accent: var(--theme-700);
