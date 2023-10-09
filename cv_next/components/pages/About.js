@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import "./About.css";
 
-class About extends Component {
-  render() {
-    return (
+
+export default function AboutPage() {
+  return (
       <div className="About">
         <header className="About-header">
           <h1>About CV-Next</h1>
@@ -36,8 +36,7 @@ class About extends Component {
           </p>
         </body>
       </div>
-    );
-  }
+    )
 }
 
-export default About;
+
