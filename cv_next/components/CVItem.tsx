@@ -1,8 +1,8 @@
-'use client'
+"use client"
 import CVModel from "@/types/models/cv"
 import Image from "next/image"
 import { generateImageUrl } from "@/helpers/imageURLHelper"
-
+import { Categories } from "@/types/models/categories"
 interface CVCardProps {
   cv: CVModel
 }
@@ -25,7 +25,7 @@ export default function CVItem({ cv }: CVCardProps) {
         </div>
         <div className="px-6 pb-2">
           <span className="mb-2 mr-2 inline-block rounded-full bg-neutral-200 px-3 py-1 text-sm font-semibold text-neutral-700">
-            #{cv.categoryID}
+            #{Categories.category[cv.categoryID]}
           </span>
         </div>
       </div>
