@@ -1,4 +1,4 @@
-import 'server-only'
+// import 'server-only'
 
 export default class MyLogger {
   private static isDebugMode = process.env.NODE_ENV === "development";
