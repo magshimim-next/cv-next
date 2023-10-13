@@ -18,16 +18,14 @@ export default function CVItem({ cv }: CVCardProps) {
         alt="CV Preview"
         loading="lazy"
       />
-      <div className="overlay gradient-blur-backdrop absolute bottom-0 left-0 flex h-1/2 w-full flex-col justify-end rounded-lg">
-        <div className="px-6 pt-2">
+      <div className="overlay gradient-blur-backdrop absolute bottom-0 flex h-1/2 w-full rounded-lg">
+        <div className=" absolute bottom-0 left-0 mx-4 mb-3">
           <div className="text-xl font-bold text-neutral-700">{cv.userID}</div>
-          <p className="mb-2 text-base text-neutral-700">{cv.description}</p>
+          <p className="text-base text-neutral-700">{cv.description}</p>
         </div>
-        <div className="px-6 pb-2">
-          <span className="mb-2 mr-2 inline-block rounded-full bg-neutral-200 px-3 py-1 text-sm font-semibold text-neutral-700">
-            #{Categories.category[cv.categoryID]}
-          </span>
-        </div>
+        <span className="absolute bottom-0 right-0 mx-4 mb-3 inline-block rounded-full bg-neutral-200 px-3 py-1 text-sm font-semibold text-neutral-700">
+          #{Categories.category[cv.categoryID]}
+        </span>
       </div>
     </div>
   )
