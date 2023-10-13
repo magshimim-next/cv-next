@@ -1,4 +1,4 @@
-import { HeroHeader } from "@/types/contents"
+import { HeroHeader } from "@/types/models/contents"
 
 export const heroHeader: HeroHeader = {
   header: `Landing pages made easy`,
