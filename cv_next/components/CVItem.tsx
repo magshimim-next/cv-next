@@ -16,7 +16,10 @@ export default function CVItem({ cv }: CVCardProps) {
   const formattedDate = new Date(cv.uploadDate).toLocaleDateString("en-US")
 
   return (
-    <div className="relative w-full max-w-sm rounded-lg bg-white object-cover shadow-lg">
+    <div
+      id={cv.id}
+      className="relative w-full max-w-sm rounded-lg bg-white object-cover shadow-lg"
+    >
       <Image
         width={500}
         height={500 * 1.4142}
