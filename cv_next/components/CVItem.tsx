@@ -1,6 +1,7 @@
 "use client"
 import CVModel from "@/types/models/cv"
 import Image from "next/image"
+import Link from "next/link"
 import { generateImageUrl } from "@/helpers/imageURLHelper"
 import { Categories } from "@/types/models/categories"
 interface CVCardProps {
@@ -23,9 +24,12 @@ export default function CVItem({ cv }: CVCardProps) {
           <div className="text-xl font-bold text-neutral-700">{cv.userID}</div>
           <p className="text-base text-neutral-700">{cv.description}</p>
         </div>
-        <span className="absolute bottom-0 right-0 mx-4 mb-3 inline-block rounded-full bg-neutral-200 px-3 py-1 text-sm font-semibold text-neutral-700">
+        <Link
+          href={`/feed?category=${Categories.category[cv.categoryID].toLowerCase()}`}
+          className="absolute bottom-0 right-0 mx-4 mb-3 rounded-full bg-neutral-200 px-3 py-1 text-sm font-semibold text-neutral-700 hover:underline"
+        >
           #{Categories.category[cv.categoryID]}
-        </span>
+        </Link>
       </div>
     </div>
   )
