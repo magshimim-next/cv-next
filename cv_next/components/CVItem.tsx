@@ -12,24 +12,27 @@ export default function CVItem({ cv }: CVCardProps) {
   const categoryLink = `/feed?category=${Categories.category[
     cv.categoryID
   ].toLowerCase()}`
+  const imageUrl = generateImageUrl(cv.documentLink)
+  const formattedDate = new Date(cv.uploadDate).toLocaleDateString("en-US")
+
   return (
     <div className="relative w-full max-w-sm rounded-lg bg-white object-cover shadow-lg">
       <Image
         width={500}
         height={500 * 1.4142}
         className="w-full rounded-lg p-2"
-        src={generateImageUrl(cv.documentLink)}
+        src={imageUrl}
         alt="CV Preview"
         loading="lazy"
       />
       <div className="overlay gradient-blur-backdrop absolute bottom-0 flex h-1/6 w-full rounded-b-lg">
         <div className="overlay absolute bottom-0 h-1/5 w-full rounded-b-lg bg-white p-6">
-          <div className=" absolute bottom-0 left-0 mx-5 mb-2.5">
+          <div className="absolute bottom-0 left-0 mx-5 mb-2.5">
             <div className="mr-2 inline text-xl font-bold text-neutral-700">
               {cv.userID}
             </div>
             <p className="inline text-xs text-neutral-700/75">
-              {new Date(cv.uploadDate).toLocaleDateString("en-US")}
+              {formattedDate}
             </p>
           </div>
           <Link
