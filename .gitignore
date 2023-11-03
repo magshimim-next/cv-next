@@ -70,7 +70,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
-next.config.js
+firebase.config.js
 
 # vercel
 .vercel
