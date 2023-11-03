@@ -1,4 +1,4 @@
-const googleUrl = "https://lh5.googleusercontent.com/d/"
+const GOOGLE_URL = "https://lh5.googleusercontent.com/d/"
 const errorUrl = "/public/error.jgp" // TODO: replace with real URL here
 
 /**
@@ -50,7 +50,7 @@ export function generateImageUrl(
     return errorUrl
   }
 
-  let url = googleUrl + id
+  let url = GOOGLE_URL + id
 
   if (width && height) {
     const urlSuffix = generateUrlSuffix(width, height, forceRatio || false)
