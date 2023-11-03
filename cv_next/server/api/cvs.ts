@@ -1,6 +1,6 @@
-import 'server-only'
+import "server-only"
 
-import Helper from "@/server/base/helper";
+import Helper from "@/server/base/helper"
 import {
   collection,
   where,
@@ -12,251 +12,236 @@ import {
   orderBy,
   Query,
   startAfter,
-} from "firebase/firestore";
-import CommentModel from "@/types//models/comment";
-import MyLogger from "@/server/base/logger";
-import { Categories } from "@/types/models/categories";
-import CvModel from "@/types/models/cv";
-import Definitions from "../base/definitions";
-import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils";
-import FirebaseHelper from './firebaseHelper'
+} from "firebase/firestore"
+import MyLogger from "@/server/base/logger"
+import { Categories } from "@/types/models/categories"
+import CvModel from "@/types/models/cv"
+import Definitions from "../base/definitions"
+import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils"
+import FirebaseHelper from "./firebaseHelper"
 
+/**
+ * Updates a specific cv using the given model
+ * @param cv should hold the proper ID in order to update the correct document
+ * @returns DbOperationResult
+ */
+export async function updateCV(cv: CvModel): Promise<DbOperationResult> {
+  try {
+    let data = Helper.serializeObjectToFirebaseUsage(cv.removeBaseData())
+    let res = await FirebaseHelper.updateData(cv.id, data, cv.collectionName)
+    return new DbOperationResult(
+      res,
+      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
+      res
+    )
+  } catch (err) {
+    MyLogger.logInfo("Error @ FirebaseHelper::updateCV", err)
+    return new DbOperationResult(
+      false,
+      typeof err === typeof RateLimitError
+        ? ErrorReasons.rateLimitPerSecondReached
+        : ErrorReasons.undefinedErr,
+      err
+    )
+  }
+}
 
-export default class CvsApi {
+export function documentSnapshotToCV(
+  documentSnapshot: QueryDocumentSnapshot
+): CvModel {
+  const documentData = documentSnapshot.data() as DocumentData
+  return new CvModel(
+    documentSnapshot.id,
+    documentData.userID,
+    documentData.documentLink,
+    documentData.categoryID,
+    documentData.description,
+    documentData.resolved,
+    documentData.deleted,
+    documentData.uploadDate
+  )
+}
 
-    
-  /**
-   * Updates a specific cv using the given model
-   * @param cv should hold the proper ID in order to update the correct document
-   * @returns DbOperationResult
-   */
-  public static async updateCV(cv: CvModel): Promise<DbOperationResult> {
-    try {
-      let data = Helper.serializeObjectToFirebaseUsage(cv.removeBaseData());
-      let res = await FirebaseHelper.updateData(cv.id, data, cv.collectionName);
-      return new DbOperationResult(
-        res,
-        res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
-        res
-      );
-    } catch (err) {
-      MyLogger.logInfo("Error @ FirebaseHelper::updateCV", err);
-      return new DbOperationResult(
-        false,
-        typeof err === typeof RateLimitError
-          ? ErrorReasons.rateLimitPerSecondReached
-          : ErrorReasons.undefinedErr,
-        err
-      );
-    }
+let startAfterSnapshot: QueryDocumentSnapshot<unknown> | undefined
+let endBeforeSnapshot: QueryDocumentSnapshot<unknown> | undefined
+let pageSize: number = Definitions.CVS_PER_PAGE
+let queryLimit: number = pageSize
+let initialQueryDone: boolean = false
+let paginationReachedEnd: boolean = false
+let currentCvPaginatioPage: number =
+  Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER
+
+export async function paginatedGetAllCvsByQueryFilter(
+  queryFilter?: QueryFieldFilterConstraint,
+  filterOutDeleted: boolean = true
+): Promise<CvModel[] | null> {
+  if (!initialQueryDone) {
+    initialQueryDone = true
+  }
+  let pageQuery: Query<DocumentData>
+  let collectionRef = collection(
+    FirebaseHelper.getFirestoreInstance(),
+    CvModel.CollectionName
+  )
+  let filterDeletedQuery = where("deleted", "==", !filterOutDeleted)
+
+  if (paginationReachedEnd) {
+    return []
+  } else if (startAfterSnapshot) {
+    // Create a new query starting after the last document of the previous page
+    pageQuery =
+      queryFilter !== undefined
+        ? query(
+            collectionRef,
+            orderBy("uploadDate", "desc"),
+            startAfter(startAfterSnapshot),
+            limit(queryLimit),
+            filterDeletedQuery,
+            queryFilter
+          )
+        : query(
+            collectionRef,
+            orderBy("uploadDate", "desc"),
+            startAfter(startAfterSnapshot),
+            limit(queryLimit),
+            filterDeletedQuery
+          )
+    currentCvPaginatioPage++
+  } else {
+    // Perform the initial query
+    pageQuery =
+      queryFilter !== undefined
+        ? query(
+            collectionRef,
+            orderBy("uploadDate", "desc"),
+            limit(queryLimit),
+            filterDeletedQuery,
+            queryFilter
+          )
+        : query(
+            collectionRef,
+            orderBy("uploadDate", "desc"),
+            limit(queryLimit),
+            filterDeletedQuery
+          )
   }
 
-  private static documentSnapshotToCV(
-    documentSnapshot: QueryDocumentSnapshot
-  ): CvModel {
-    const documentData = documentSnapshot.data() as DocumentData;
-    return new CvModel(
-      documentSnapshot.id,
-      documentData.userID,
-      documentData.documentLink,
-      documentData.categoryID,
-      documentData.description,
-      documentData.resolved,
-      documentData.deleted,
-      documentData.uploadDate
-    );
+  try {
+    const querySnapshot = await FirebaseHelper.myGetDocs(pageQuery)
+    const matchingDocuments: CvModel[] = []
+
+    querySnapshot.forEach((documentSnapshot) => {
+      matchingDocuments.push(documentSnapshotToCV(documentSnapshot))
+    })
+    // Determine if there are more pages to fetch
+    if (querySnapshot.size === queryLimit) {
+      // Get the first and last document from the current page
+      const firstVisible = querySnapshot.docs[0]
+      const lastVisible = querySnapshot.docs[querySnapshot.size - 1]
+
+      startAfterSnapshot = lastVisible
+      endBeforeSnapshot = firstVisible
+    } else {
+      // No more pages to fetch
+      startAfterSnapshot = undefined
+      endBeforeSnapshot = undefined
+      paginationReachedEnd = true
+    }
+    return matchingDocuments
+  } catch (error) {
+    MyLogger.logInfo(
+      "Error @ FirebaseHelper::paginatedGetAllCvsByQueryFilter",
+      error
+    )
   }
 
-  private static startAfterSnapshot: QueryDocumentSnapshot<unknown> | undefined;
-  private static endBeforeSnapshot: QueryDocumentSnapshot<unknown> | undefined;
-  private static pageSize: number = Definitions.CVS_PER_PAGE;
-  private static queryLimit: number = this.pageSize;
-  private static initialQueryDone: boolean = false;
-  private static paginationReachedEnd: boolean = false;
-  private static currentCvPaginatioPage: number =
-    Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER;
+  return null
+}
 
-  private static async paginatedGetAllCvsByQueryFilter(
-    queryFilter?: QueryFieldFilterConstraint,
-    filterOutDeleted: boolean = true
-  ): Promise<CvModel[] | null> {
-    if (!this.initialQueryDone) {
-        this.initialQueryDone = true;
-    }
-    let pageQuery: Query<DocumentData>;
+export async function _getAllCvsByQueryFilter(
+  queryFilter?: QueryFieldFilterConstraint,
+  filterOutDeleted: boolean = true
+): Promise<CvModel[] | null> {
+  try {
     let collectionRef = collection(
       FirebaseHelper.getFirestoreInstance(),
       CvModel.CollectionName
-    );
-    let filterDeletedQuery = where("deleted", "==", !filterOutDeleted);
+    )
+    let filterDeletedQuery = where("deleted", "==", !filterOutDeleted)
+    const q =
+      queryFilter !== undefined
+        ? query(collectionRef, queryFilter, filterDeletedQuery)
+        : query(collectionRef, filterDeletedQuery)
+    const querySnapshot = await FirebaseHelper.myGetDocs(q)
+    const matchingDocuments: CvModel[] = []
 
-    if (this.paginationReachedEnd) {
-      return [];
-    } else if (this.startAfterSnapshot) {
-      // Create a new query starting after the last document of the previous page
-      pageQuery =
-        queryFilter !== undefined
-          ? query(
-              collectionRef,
-              orderBy("uploadDate", "desc"),
-              startAfter(this.startAfterSnapshot),
-              limit(this.queryLimit),
-              filterDeletedQuery,
-              queryFilter
-            )
-          : query(
-              collectionRef,
-              orderBy("uploadDate", "desc"),
-              startAfter(this.startAfterSnapshot),
-              limit(this.queryLimit),
-              filterDeletedQuery
-            );
-            this.currentCvPaginatioPage++;
-    } else {
-      // Perform the initial query
-      pageQuery =
-        queryFilter !== undefined
-          ? query(
-              collectionRef,
-              orderBy("uploadDate", "desc"),
-              limit(this.queryLimit),
-              filterDeletedQuery,
-              queryFilter
-            )
-          : query(
-              collectionRef,
-              orderBy("uploadDate", "desc"),
-              limit(this.queryLimit),
-              filterDeletedQuery
-            );
-    }
-
-    try {
-      const querySnapshot = await FirebaseHelper.myGetDocs(pageQuery);
-      const matchingDocuments: CvModel[] = [];
-
-      querySnapshot.forEach((documentSnapshot) => {
-        matchingDocuments.push(
-            this.documentSnapshotToCV(documentSnapshot)
-        );
-      });
-      // Determine if there are more pages to fetch
-      if (querySnapshot.size === this.queryLimit) {
-        // Get the first and last document from the current page
-        const firstVisible = querySnapshot.docs[0];
-        const lastVisible = querySnapshot.docs[querySnapshot.size - 1];
-
-        this.startAfterSnapshot = lastVisible;
-        this.endBeforeSnapshot = firstVisible;
-      } else {
-        // No more pages to fetch
-        this.startAfterSnapshot = undefined;
-        this.endBeforeSnapshot = undefined;
-        this.paginationReachedEnd = true;
-      }
-      return matchingDocuments;
-    } catch (error) {
-      MyLogger.logInfo(
-        "Error @ FirebaseHelper::paginatedGetAllCvsByQueryFilter",
-        error
-      );
-    }
-
-    return null;
+    querySnapshot.forEach((documentSnapshot) => {
+      matchingDocuments.push(documentSnapshotToCV(documentSnapshot))
+    })
+    return matchingDocuments
+  } catch (error) {
+    MyLogger.logInfo("Error @ FirebaseHelper::_getAllCvsByQueryFilter", error)
   }
+  return null
+}
 
-  private static async _getAllCvsByQueryFilter(
-    queryFilter?: QueryFieldFilterConstraint,
-    filterOutDeleted: boolean = true
-  ): Promise<CvModel[] | null> {
-    try {
-      let collectionRef = collection(
-        FirebaseHelper.getFirestoreInstance(),
-        CvModel.CollectionName
-      );
-      let filterDeletedQuery = where("deleted", "==", !filterOutDeleted);
-      const q =
-        queryFilter !== undefined
-          ? query(collectionRef, queryFilter, filterDeletedQuery)
-          : query(collectionRef, filterDeletedQuery);
-      const querySnapshot = await FirebaseHelper.myGetDocs(q);
-      const matchingDocuments: CvModel[] = [];
+/**
+ *
+ * @param userId the userId to filter by
+ * @param filterOutDeleted whether or not we'd like to filter out the deleted cvs - true by default
+ * @returns the CVs
+ */
+export async function getAllCvsByUserId(
+  userId: string,
+  filterOutDeleted: boolean = true
+): Promise<CvModel[] | null> {
+  return _getAllCvsByQueryFilter(
+    where("userID", "==", userId),
+    filterOutDeleted
+  )
+}
 
-      querySnapshot.forEach((documentSnapshot) => {
-        matchingDocuments.push(
-            this.documentSnapshotToCV(documentSnapshot)
-        );
-      });
-      return matchingDocuments;
-    } catch (error) {
-      MyLogger.logInfo(
-        "Error @ FirebaseHelper::_getAllCvsByQueryFilter",
-        error
-      );
-    }
-    return null;
-  }
+/**
+ *
+ * @param category the category to filter by
+ * @param filterOutDeleted whether or not we'd like to filter out the deleted cvs - true by default
+ * @returns the CVs
+ */
+export async function getAllCvsByCategory(
+  category: Categories.category,
+  filterOutDeleted: boolean = true
+): Promise<CvModel[] | null> {
+  return _getAllCvsByQueryFilter(
+    where("categoryID", "==", category),
+    filterOutDeleted
+  )
+}
 
-  /**
-   *
-   * @param userId the userId to filter by
-   * @param filterOutDeleted whether or not we'd like to filter out the deleted cvs - true by default
-   * @returns the CVs
-   */
-  public static async getAllCvsByUserId(
-    userId: string,
-    filterOutDeleted: boolean = true
-  ): Promise<CvModel[] | null> {
-    return this._getAllCvsByQueryFilter(
-      where("userID", "==", userId),
-      filterOutDeleted
-    );
-  }
+/**
+ * @param forward - always true to get the next data
+ * @param filterOutDeleted whether or not we'd like to filter out the deleted CVs - true by default
+ * @returns the users
+ */
+export async function getAllCvs(
+  forward: boolean,
+  filterOutDeleted: boolean = true
+): Promise<CvModel[] | null> {
+  console.log("AAAAA")
+  let res = paginatedGetAllCvsByQueryFilter(undefined, filterOutDeleted)
+  MyLogger.logDebug(
+    `requested all cvs(pagination) - current page number: ${getCurrentPageNumber()}` +
+      `\n got:`,
+    res
+  )
+  return res
+}
+// export async function getAllCvs() { return []}
 
-  /**
-   *
-   * @param category the category to filter by
-   * @param filterOutDeleted whether or not we'd like to filter out the deleted cvs - true by default
-   * @returns the CVs
-   */
-  public static async getAllCvsByCategory(
-    category: Categories.category,
-    filterOutDeleted: boolean = true
-  ): Promise<CvModel[] | null> {
-    return this._getAllCvsByQueryFilter(
-      where("categoryID", "==", category),
-      filterOutDeleted
-    );
-  }
+export function getCurrentPageNumber(): number {
+  return currentCvPaginatioPage
+}
 
-  /**
-   * @param forward - always true to get the next data
-   * @param filterOutDeleted whether or not we'd like to filter out the deleted CVs - true by default
-   * @returns the users
-   */
-  public static async getAllCvs(
-    forward: boolean,
-    filterOutDeleted: boolean = true
-  ): Promise<CvModel[] | null> {
-    let res = this.paginatedGetAllCvsByQueryFilter(
-      undefined,
-      filterOutDeleted
-    );
-    MyLogger.logDebug(
-      `requested all cvs(pagination) - current page number: ${this.getCurrentPageNumber()}` +
-        `\n got:`,
-      res
-    );
-    return res;
-  }
-
-  public static getCurrentPageNumber(): number {
-    return this.currentCvPaginatioPage;
-  }
-
-  public static resetCvPeginationNumber() {
-    this.currentCvPaginatioPage =
-      Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER;
-    this.paginationReachedEnd = false;
-  }
+export function resetCvPeginationNumber() {
+  currentCvPaginatioPage = Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER
+  paginationReachedEnd = false
 }

@@ -1,4 +1,3 @@
-"use client"
 import CVModel from "@/types/models/cv"
 import Image from "next/image"
 import Link from "next/link"
