@@ -1,4 +1,4 @@
-import CVItem from "@/components/CVItem";
+import CVItem from "@/app/feed/components/CVItem";
 import { getAllCvs } from "@/server/api/cvs";
 
 export default async function Feed() {

@@ -2,8 +2,19 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ModeToggle } from "@/components/mode-toggle"
-import { navLinks } from "@/lib/links"
+import { ModeToggle } from "@/components/ui/mode-toggle"
+
+const navLinks = [
+  {
+    route: "Home",
+    path: "/",
+  },
+  {
+    route: "Feed",
+    path: "/feed",
+  }
+]
+
 
 export default function Navbar() {
   const [navbar, setNavbar] = useState(false)
