@@ -1,4 +1,4 @@
-// import 'server-only'
+import 'server-only'
 
 export default class Definitions {
   public static readonly undefinedIndex = -1;
