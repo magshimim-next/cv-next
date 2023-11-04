@@ -39,7 +39,7 @@ function generateUrlSuffix(
  * @param {boolean} [forceRatio] - Indicates if the image should maintain its aspect ratio.
  * @returns {string} The generated URL.
  */
-export function generateImageUrl(
+export default function generateImageUrl(
   link: string,
   width?: number,
   height?: number,

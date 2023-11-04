@@ -1,6 +1,6 @@
 import Helper from "@/server/base/helper";
 import BaseModel from "./baseModel";
-import { Categories } from "./categories";
+import Categories from "./categories";
 
 export default class CvModel implements BaseModel {
   public userID: string;

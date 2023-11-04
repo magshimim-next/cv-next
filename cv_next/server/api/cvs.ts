@@ -1,51 +1,39 @@
 import "server-only"
 
 import Helper from "@/server/base/helper"
+import MyLogger from "@/server/base/logger"
+import Categories from "@/types/models/categories"
+import CvModel from "@/types/models/cv"
 import {
-  collection,
-  where,
-  query,
   DocumentData,
+  Query,
   QueryDocumentSnapshot,
   QueryFieldFilterConstraint,
+  collection,
   limit,
   orderBy,
-  Query,
+  query,
   startAfter,
+  where,
 } from "firebase/firestore"
-import MyLogger from "@/server/base/logger"
-import { Categories } from "@/types/models/categories"
-import CvModel from "@/types/models/cv"
 import Definitions from "../base/definitions"
-import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils"
 import FirebaseHelper from "./firebaseHelper"
+import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils"
+
+let startAfterSnapshot: QueryDocumentSnapshot<unknown> | undefined
+let endBeforeSnapshot: QueryDocumentSnapshot<unknown> | undefined
+let queryLimit: number = Definitions.CVS_PER_PAGE
+let initialQueryDone: boolean = false
+let paginationReachedEnd: boolean = false
+let currentCvPaginatioPage: number =
+  Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER
 
 /**
- * Updates a specific cv using the given model
- * @param cv should hold the proper ID in order to update the correct document
- * @returns DbOperationResult
+ * Converts a document snapshot to a CV model.
+ *
+ * @param {QueryDocumentSnapshot} documentSnapshot - The document snapshot to convert.
+ * @return {CvModel} The CV model created from the document snapshot.
  */
-export async function updateCV(cv: CvModel): Promise<DbOperationResult> {
-  try {
-    let data = Helper.serializeObjectToFirebaseUsage(cv.removeBaseData())
-    let res = await FirebaseHelper.updateData(cv.id, data, cv.collectionName)
-    return new DbOperationResult(
-      res,
-      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
-      res
-    )
-  } catch (err) {
-    MyLogger.logInfo("Error @ FirebaseHelper::updateCV", err)
-    return new DbOperationResult(
-      false,
-      typeof err === typeof RateLimitError
-        ? ErrorReasons.rateLimitPerSecondReached
-        : ErrorReasons.undefinedErr,
-      err
-    )
-  }
-}
-
 export function documentSnapshotToCV(
   documentSnapshot: QueryDocumentSnapshot
 ): CvModel {
@@ -62,15 +50,13 @@ export function documentSnapshotToCV(
   )
 }
 
-let startAfterSnapshot: QueryDocumentSnapshot<unknown> | undefined
-let endBeforeSnapshot: QueryDocumentSnapshot<unknown> | undefined
-let pageSize: number = Definitions.CVS_PER_PAGE
-let queryLimit: number = pageSize
-let initialQueryDone: boolean = false
-let paginationReachedEnd: boolean = false
-let currentCvPaginatioPage: number =
-  Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER
-
+/**
+ * Retrieves paginated CVs based on a query filter and optionally filters out deleted CVs.
+ *
+ * @param {QueryFieldFilterConstraint} queryFilter - Optional query filter to apply to the CVs.
+ * @param {boolean} filterOutDeleted - Optional flag to filter out deleted CVs. Defaults to true.
+ * @return {Promise<CvModel[] | null>} A promise that resolves to an array of CV models or null if an error occurred.
+ */
 export async function paginatedGetAllCvsByQueryFilter(
   queryFilter?: QueryFieldFilterConstraint,
   filterOutDeleted: boolean = true
@@ -158,6 +144,15 @@ export async function paginatedGetAllCvsByQueryFilter(
   return null
 }
 
+/**
+ * Retrieves all CVs from the database based on a given query filter and
+ * optionally filters out deleted CVs.
+ *
+ * @param {QueryFieldFilterConstraint} queryFilter - The query filter to apply.
+ * @param {boolean} filterOutDeleted - Whether to filter out deleted CVs.
+ * @return {Promise<CvModel[] | null>} An array of CV models that match the
+ * query filter, or null if there was an error.
+ */
 export async function _getAllCvsByQueryFilter(
   queryFilter?: QueryFieldFilterConstraint,
   filterOutDeleted: boolean = true
@@ -186,10 +181,11 @@ export async function _getAllCvsByQueryFilter(
 }
 
 /**
+ * Retrieves all CVs by user ID.
  *
- * @param userId the userId to filter by
- * @param filterOutDeleted whether or not we'd like to filter out the deleted cvs - true by default
- * @returns the CVs
+ * @param {string} userId - The ID of the user.
+ * @param {boolean} filterOutDeleted - Whether to filter out deleted CVs.
+ * @return {Promise<CvModel[] | null>} - A promise that resolves to an array of CV models or null.
  */
 export async function getAllCvsByUserId(
   userId: string,
@@ -202,10 +198,11 @@ export async function getAllCvsByUserId(
 }
 
 /**
+ * Retrieves all CVs by category.
  *
- * @param category the category to filter by
- * @param filterOutDeleted whether or not we'd like to filter out the deleted cvs - true by default
- * @returns the CVs
+ * @param {Categories.category} category - The category to filter CVs by.
+ * @param {boolean} filterOutDeleted - Whether to exclude deleted CVs from the result. Defaults to true.
+ * @return {Promise<CvModel[] | null>} - A promise that resolves to an array of CV models or null.
  */
 export async function getAllCvsByCategory(
   category: Categories.category,
@@ -218,15 +215,14 @@ export async function getAllCvsByCategory(
 }
 
 /**
- * @param forward - always true to get the next data
- * @param filterOutDeleted whether or not we'd like to filter out the deleted CVs - true by default
- * @returns the users
+ * Retrieves all CVs from the database.
+ *
+ * @param {boolean} filterOutDeleted - Whether to filter out deleted CVs.
+ * @return {Promise<CvModel[] | null>} - A promise that resolves to an array of CV models or null.
  */
 export async function getAllCvs(
-  forward: boolean,
   filterOutDeleted: boolean = true
 ): Promise<CvModel[] | null> {
-  console.log("AAAAA")
   let res = paginatedGetAllCvsByQueryFilter(undefined, filterOutDeleted)
   MyLogger.logDebug(
     `requested all cvs(pagination) - current page number: ${getCurrentPageNumber()}` +
@@ -235,13 +231,49 @@ export async function getAllCvs(
   )
   return res
 }
-// export async function getAllCvs() { return []}
 
+/**
+ * Retrieves the current page number.
+ *
+ * @return {number} The current page number.
+ */
 export function getCurrentPageNumber(): number {
   return currentCvPaginatioPage
 }
 
+/**
+ * Resets the cv pagination number to the default first page number.
+ *
+ * @return {void} This function does not return anything.
+ */
 export function resetCvPeginationNumber() {
   currentCvPaginatioPage = Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER
   paginationReachedEnd = false
+}
+
+/**
+ * Updates a CV in the database.
+ *
+ * @param {CvModel} cv - The CV model to be updated.
+ * @return {Promise<DbOperationResult>} A promise that resolves to a DbOperationResult object.
+ */
+export async function updateCV(cv: CvModel): Promise<DbOperationResult> {
+  try {
+    let data = Helper.serializeObjectToFirebaseUsage(cv.removeBaseData())
+    let res = await FirebaseHelper.updateData(cv.id, data, cv.collectionName)
+    return new DbOperationResult(
+      res,
+      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
+      res
+    )
+  } catch (err) {
+    MyLogger.logInfo("Error @ FirebaseHelper::updateCV", err)
+    return new DbOperationResult(
+      false,
+      typeof err === typeof RateLimitError
+        ? ErrorReasons.rateLimitPerSecondReached
+        : ErrorReasons.undefinedErr,
+      err
+    )
+  }
 }

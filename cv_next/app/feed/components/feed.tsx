@@ -2,8 +2,7 @@ import CVItem from "@/app/feed/components/CVItem";
 import { getAllCvs } from "@/server/api/cvs";
 
 export default async function Feed() {
-  console.log("Feed Reached");
-  const cvs = await getAllCvs(true);
+  const cvs = await getAllCvs();
   return (
     <main>
       <div className="container mx-auto space-y-8 p-6">

@@ -1,4 +1,4 @@
-export namespace Categories {
+namespace Categories {
   export enum category {
     Undefined,
     General,
@@ -14,3 +14,5 @@ export namespace Categories {
     Cybersecurity,
   }
 }
+export default Categories;
+

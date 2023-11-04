@@ -1,8 +1,8 @@
 import CVModel from "@/types/models/cv"
 import Image from "next/image"
 import Link from "next/link"
-import { generateImageUrl } from "@/helpers/imageURLHelper"
-import { Categories } from "@/types/models/categories"
+import generateImageUrl from "@/helpers/imageURLHelper"
+import Categories from "@/types/models/categories"
 interface CVCardProps {
   cv: CVModel
 }

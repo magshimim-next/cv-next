@@ -2,8 +2,6 @@ import { Suspense } from "react";
 import Feed from "./components/feed";
 
 export default function Page() {
-  console.log("Page Reached");
-
   return (
     <main>
       <div className="container mx-auto space-y-8 p-6">
