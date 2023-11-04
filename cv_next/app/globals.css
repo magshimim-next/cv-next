@@ -63,6 +63,6 @@
 }
 
 .bg-gradient {
-  @apply bg-gradient-to-br from-sky-200 to-red-100 dark:bg-gradient-to-br dark:from-slate-800 dark:to-sky-900;
+  @apply bg-gradient-to-br from-sky-200 to-pink-50 dark:bg-gradient-to-br dark:from-slate-800 dark:to-sky-900;
   background-attachment: fixed;
 }
