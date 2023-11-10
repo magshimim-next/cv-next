@@ -2,8 +2,19 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ModeToggle } from "@/components/mode-toggle"
-import { navLinks } from "@/lib/links"
+import { ModeToggle } from "@/components/ui/mode-toggle"
+
+const navLinks = [
+  {
+    route: "Home",
+    path: "/",
+  },
+  {
+    route: "Feed",
+    path: "/feed",
+  }
+]
+
 
 export default function Navbar() {
   const [navbar, setNavbar] = useState(false)
@@ -72,7 +83,7 @@ export default function Navbar() {
         </div>
         <div>
           <div
-            className={`bg-background absolute left-0 right-0 z-10 m-auto justify-self-center rounded-md border p-4 md:static md:mt-0 md:block md:border-none md:p-0 ${
+            className={`absolute left-0 right-0 z-10 m-auto justify-self-center rounded-md border p-4 md:static md:mt-0 md:block md:border-none md:p-0 ${
               navbar ? "block" : "hidden"
             }`}
             style={{ width: "100%", maxWidth: "20rem" }}

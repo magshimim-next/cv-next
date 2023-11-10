@@ -1,6 +1,6 @@
 import Helper from "@/server/base/helper";
 import BaseModel from "./baseModel";
-import { Categories } from "./categories";
+import Categories from "./categories";
 
 export default class CvModel implements BaseModel {
   public userID: string;
@@ -56,6 +56,6 @@ export default class CvModel implements BaseModel {
 
   public getCategory(): Categories.category {
     let res = Helper.getEnumValueById(Categories.category, this.categoryID);
-    return res !== undefined ? res : Categories.category.undefined;
+    return res !== undefined ? res : Categories.category.Undefined;
   }
 }

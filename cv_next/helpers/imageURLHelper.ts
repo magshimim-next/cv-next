@@ -1,4 +1,4 @@
-const googleUrl = "https://lh5.googleusercontent.com/d/"
+const GOOGLE_URL = "https://lh5.googleusercontent.com/d/"
 const errorUrl = "/public/error.jgp" // TODO: replace with real URL here
 
 /**
@@ -39,7 +39,7 @@ function generateUrlSuffix(
  * @param {boolean} [forceRatio] - Indicates if the image should maintain its aspect ratio.
  * @returns {string} The generated URL.
  */
-export function generateImageUrl(
+export default function generateImageUrl(
   link: string,
   width?: number,
   height?: number,
@@ -50,7 +50,7 @@ export function generateImageUrl(
     return errorUrl
   }
 
-  let url = googleUrl + id
+  let url = GOOGLE_URL + id
 
   if (width && height) {
     const urlSuffix = generateUrlSuffix(width, height, forceRatio || false)

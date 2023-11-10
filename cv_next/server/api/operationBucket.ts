@@ -1,5 +1,11 @@
 import 'server-only'
 
+/**
+ * OperationBucket - hold an instance for query requests.
+ * Operates as a query "session" manager, where every instance
+ * can make token-number of requests in a specific rate-limit
+ * time. (useful for code-handled rate limitting)
+ */
 export default class OperationBucket {
   private static operationBucketInstance?: OperationBucket;
   private maxTokens: number;
