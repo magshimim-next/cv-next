@@ -1,10 +1,10 @@
-import CVModel from "@/types/models/cv"
 import Image from "next/image"
 import Link from "next/link"
 import generateImageUrl from "@/helpers/imageURLHelper"
 import Categories from "@/types/models/categories"
+import { ClientCvModel } from "../actions/fetchCvs"
 interface CVCardProps {
-  cv: CVModel
+  cv: ClientCvModel
 }
 
 export default function CVItem({ cv }: CVCardProps) {
@@ -25,7 +25,7 @@ export default function CVItem({ cv }: CVCardProps) {
         className="w-full rounded-lg p-2"
         src={imageUrl}
         alt="CV Preview"
-        loading="lazy"
+        priority
       />
       <div className="overlay gradient-blur-backdrop absolute bottom-0 flex h-1/6 w-full rounded-b-lg">
         <div className="overlay absolute bottom-0 h-1/5 w-full rounded-b-lg bg-white p-6">

@@ -1,13 +1,16 @@
 import { Suspense } from "react";
+import fetchCvs from "./actions/fetchCvs";
 import Feed from "./components/feed";
 
-export default function Page() {
+export default async function Page() {
+
+  const fetchedCvs = await fetchCvs({lastId: undefined});
+
   return (
     <main>
       <div className="container mx-auto space-y-8 p-6">
         <Suspense fallback={<div>Loading...</div>}>
-          {/* @ts-expect-error Async Server Component - might need a simple npm rebuild to resolve */}
-          <Feed/>
+          <Feed initialBatch={fetchedCvs} />
         </Suspense>
       </div>
     </main>

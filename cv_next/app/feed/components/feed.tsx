@@ -1,8 +1,35 @@
-import CVItem from "@/app/feed/components/CVItem";
-import { getAllCvs } from "@/server/api/cvs";
+'use client';
 
-export default async function Feed() {
-  const cvs = await getAllCvs();
+import CVItem from "@/app/feed/components/CVItem";
+import { useEffect, useState } from "react";
+import fetchCvs, { ClientCvModel } from "../actions/fetchCvs";
+import TriggerPagination from "./TriggerPagination";
+
+export default function Feed({initialBatch} : {initialBatch: ClientCvModel[] | null}) {
+
+  const [cvs, setCvs] = useState<ClientCvModel[] | null>(initialBatch);
+  const [page, setPage] = useState(0);
+  const [isLoading, setLoading] = useState(false);
+  const [loadMore, setLoadMore] = useState(true);
+
+  useEffect(() => {
+    async function fetchCvsEffect() {
+      if (loadMore && page > 0) {
+        setLoading(true);
+        const fetchedCvs = await fetchCvs({lastId: cvs?.[cvs.length-1]?.id});
+        if (fetchedCvs && fetchedCvs?.length > 0) {
+          if (fetchedCvs[fetchedCvs.length - 1]?.id === cvs?.[cvs.length-1]?.id) {
+            setLoadMore(false);
+          } else {
+            setCvs(cvs ? [...cvs, ...fetchedCvs] : fetchedCvs);
+          }
+          setLoading(false);
+        }
+      }
+    }
+    fetchCvsEffect();
+  }, [ page, loadMore ]);
+
   return (
     <main>
       <div className="container mx-auto space-y-8 p-6">
@@ -12,6 +39,13 @@ export default async function Feed() {
           )) : <></>
         }
         </div>
+          {!isLoading && loadMore &&
+            <TriggerPagination
+                loadMore={loadMore}
+                pageNum={page}
+                setPage={setPage}
+                lastId={cvs?.[cvs.length - 1]?.id}
+          />}
       </div>
     </main>
   )
