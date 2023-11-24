@@ -59,3 +59,5 @@ export default class CvModel implements BaseModel {
     return res !== undefined ? res : Categories.category.Undefined;
   }
 }
+
+export type ClientCvModel = Omit<CvModel, "removeBaseData" | "setResolved" | "setDeleted" | "updateDescription" | "getCategory">;

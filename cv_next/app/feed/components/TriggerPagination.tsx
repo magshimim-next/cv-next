@@ -1,33 +1,33 @@
 'use client'
 
-import { Dispatch, SetStateAction, useCallback, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { useInView } from "react-intersection-observer";
 
 
-export default function TriggerPagination({loadMore, pageNum, setPage, lastId} :
-        { loadMore: boolean, pageNum: number, setPage: Dispatch<SetStateAction<number>>, lastId: string | undefined }) {
+export default function TriggerPagination({loadMore, pageNum, setPage, lastId, isLoading, callbackTrigger} :
+        { loadMore: boolean, pageNum: number, setPage: Dispatch<SetStateAction<number>>,
+            lastId: string | undefined, isLoading: boolean, callbackTrigger: (page: number) => Promise<void> }) {
 
-    if (!loadMore) return <></>;
+    const [triggerRef, inView] = useInView();
+
+    if (!loadMore) return <>No more cvs to load...</>;
 
     const prevId = useRef<string>();
 
-    const triggerRef = useCallback((node: any) => {
-        if (!node) return;
+    useEffect(() => {
+        if (isLoading) return;
 
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    if (!prevId.current || prevId.current != lastId) {
-                        setPage(pageNum + 1);
-                        prevId.current = lastId;
-                    }
-                    observer.disconnect();
-                }
-            });
-        });
-        observer.observe(node);
-    }, [lastId, pageNum]);
+        if (inView && (!prevId.current || prevId.current != lastId)) {
+            const nextPage = pageNum + 1;
+            callbackTrigger(nextPage);
+            setPage(nextPage);
+            prevId.current = lastId;
+        }
+    }, [ inView ])
 
     return (
-        <div ref={triggerRef}></div>
+        <div ref={triggerRef} className="flex justify-center z-10">
+            <div>Loading...</div>
+        </div>
     )
 }

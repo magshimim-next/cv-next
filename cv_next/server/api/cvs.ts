@@ -126,7 +126,7 @@ export async function getPaginatedCvsByQueryFilter(
   return null
 }
 
-async function getCvById(cvId: string,
+export async function getCvById(cvId: string,
   collectionRefParam?: CollectionReference<DocumentData, DocumentData>,
   translateSnapshot: boolean = true)
   : Promise<CvModel | QueryDocumentSnapshot<DocumentData, DocumentData> | undefined> {
@@ -134,12 +134,12 @@ async function getCvById(cvId: string,
     FirebaseHelper.getFirestoreInstance(),
     CvModel.CollectionName
   )
-  const findLastDocQuery = query(collectionRef,
+  const findDocQuery = query(collectionRef,
     where(documentId(), "==", cvId)
     );
   
   try {
-    const querySnapshot = await FirebaseHelper.myGetDocs(findLastDocQuery);
+    const querySnapshot = await FirebaseHelper.myGetDocs(findDocQuery);
     if (querySnapshot.size != 1) {
       throw new Error("Expected only one match for query; documents found: " + querySnapshot.docs);
     }

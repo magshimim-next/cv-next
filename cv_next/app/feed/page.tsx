@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import fetchCvs from "./actions/fetchCvs";
+import { fetchCvs } from "@/app/actions/fetchCvs";
 import Feed from "./components/feed";
 
 export default async function Page() {
@@ -8,11 +8,9 @@ export default async function Page() {
 
   return (
     <main>
-      <div className="container mx-auto space-y-8 p-6">
-        <Suspense fallback={<div>Loading...</div>}>
-          <Feed initialBatch={fetchedCvs} />
-        </Suspense>
-      </div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Feed initialBatch={fetchedCvs} />
+      </Suspense>
     </main>
   )
 }

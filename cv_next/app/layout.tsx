@@ -2,6 +2,7 @@ import "./globals.css"
 import { Inter } from "next/font/google"
 import Navbar from "@/components/layout/navbar"
 import { ThemeProvider } from "@/components/theme-provider"
+import { CvsProvider } from "@/providers/cvsProvider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -26,8 +27,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
         className={`${inter.className} bg-gradient flex min-h-screen flex-col bg-background text-primary`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Navbar />
-          {children}
+          <CvsProvider>
+            <Navbar />
+            <div className="container mx-auto space-y-8 p-6">
+              {children}
+            </div>
+          </CvsProvider>
         </ThemeProvider>
       </body>
     </html>
