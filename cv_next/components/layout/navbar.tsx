@@ -92,7 +92,7 @@ export default function Navbar() {
               {navLinks.map((link) => (
                 <li key={link.route}>
                   <Link
-                    className="hover:underline"
+                    className="hover:underline text-primary text-lg"
                     href={link.path}
                     onClick={handleClick}
                   >
