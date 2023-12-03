@@ -57,4 +57,4 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TYPESCRIPT_STANDARD_TSCONFIG_FILE:	${DEFAULT_WORKSPACE}/cv_next/tsconfig.json
+          TYPESCRIPT_STANDARD_TSCONFIG_FILE: ${DEFAULT_WORKSPACE}/cv_next/tsconfig.json
