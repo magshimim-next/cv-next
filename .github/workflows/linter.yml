@@ -54,5 +54,5 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TYPESCRIPT_STANDARD_TSCONFIG_FILE: /github/workspace/cv_next/cv_next/tsconfig.json
+          TYPESCRIPT_DEFAULT_STYLE: prettier
           VALIDATE_JSCPD: false
