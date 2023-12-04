@@ -21,4 +21,4 @@ jobs:
           directory: './cv_next/' #optional
           targets: '.' #optional
           eslint-lib-path: './node_modules/eslint/lib/api.js' #optional
-          eslint-bin-path: '/node_modules/.bin/eslint' # optional
+          eslint-bin-path: './node_modules/.bin/eslint' # optional
