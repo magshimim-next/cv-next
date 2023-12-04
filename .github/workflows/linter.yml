@@ -12,13 +12,13 @@ jobs:
           node-version: '20'
           check-latest: true
       - name: Install dependencies
-        run: cd cv_next && npm ci && ls && pwd
+        run: cd cv_next && npm ci && pwd && cd ..
       - uses: CatChen/eslint-suggestion-action@v2
         with:
           request-changes: true # optional
           fail-check: false # optional
           github-token: ${{ secrets.GITHUB_TOKEN }} # optional
-          # directory: './cv_next/cv_next' #optional
+          directory: './cv_next/' #optional
           targets: '.' #optional
-          # eslint-lib-path: './node_modules/eslint/lib/api.js' #optional
-          # eslint-bin-path: 'node_modules/.bin/eslint' # optional
+          eslint-lib-path: './node_modules/eslint/lib/api.js' #optional
+          eslint-bin-path: './node_modules/.bin/eslint' # optional
