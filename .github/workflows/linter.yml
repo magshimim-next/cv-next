@@ -18,7 +18,7 @@ jobs:
           request-changes: true # optional
           fail-check: false # optional
           github-token: ${{ secrets.GITHUB_TOKEN }} # optional
-          directory: '.' #optional
+          # directory: '.' #optional
           targets: './cv_next/' #optional
           eslint-lib-path: './cv_next/node_modules/eslint/lib/api.js' #optional
           eslint-bin-path: './cv_next/node_modules/.bin/eslint' # optional
