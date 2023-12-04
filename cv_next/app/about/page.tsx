@@ -18,9 +18,9 @@ export default function page() {
         </ul>
         <h4 className="text-2xl pt-3">Structure</h4>
         <p className="text-lg ">
-          It's similar to Twitter, in some ways. <br />
+          It&apos;s similar to Twitter, in some ways. <br />
           First, login. With either a Google or <br />
-          a Twitter account. Moreover, there's a <br/>
+          a Twitter account. Moreover, there&apos;s a <br/>
           whitelist of alumni, to restrict the <br/>
           website access. After that, you get to <br />
           a feed of CVs. You may comment, share, <br/>
