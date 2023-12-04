@@ -56,4 +56,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_TYPESCRIPT_STANDARD: false
           VALIDATE_JSCPD: false
-          CSS_FILE_NAME: ./cv_next/.stylelintrc.json
+          CSS_FILE_NAME: ${GITHUB_WORKSPACE}/cv_next/.stylelintrc.json
