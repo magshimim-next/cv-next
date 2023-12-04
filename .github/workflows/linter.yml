@@ -12,7 +12,7 @@ jobs:
           node-version: '20'
           check-latest: true
       - name: Install dependencies
-        run: npm ci
+        run: cd cv_next && npm ci
       - uses: CatChen/eslint-suggestion-action@v2
         with:
           request-changes: true # optional
