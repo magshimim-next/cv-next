@@ -1,7 +1,7 @@
 'use client';
 
 import CVItem from "@/app/feed/components/CVItem";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { fetchCvs } from "@/app/actions/fetchCvs";
 import CVItemRSC from "./CVItemRSC";
 import TriggerPagination from "./TriggerPagination";
@@ -15,34 +15,32 @@ export default function Feed({initialBatch} : {initialBatch: ClientCvModel[] | n
   const cvsDispatchContextConsumer = useContext(CvsDispatchContext);
   const [cvs, setCvs] = useState<ClientCvModel[] | null>(cvsContextConsumer.cvs?.length ? cvsContextConsumer.cvs : initialBatch);
   const cvsRef = useRef<ClientCvModel[] | null>();
-  const [page, setPage] = useState(0);
-  const [isLoading, setLoading] = useState(false);
+  const lastCvRef = useRef<string | undefined>(cvs?.[cvs?.length]?.id);
   const [loadMore, setLoadMore] = useState(true);
 
   useEffect(() => {
-    //make sure cvs ref is reset on mount
-    cvsRef.current = null;
-  }, []);
+    //update cv-related refs
+    cvsRef.current = cvs;
+    lastCvRef.current = cvs?.[cvs?.length - 1]?.id;
+  }, [ cvs ]);
   
-  const fetchCvsCallback = async (page: number) => {      
+  const fetchCvsCallback = useCallback(async () => {
+    
     //fetch cvs and handle loading states
-    if (loadMore && page > 0) {
-      setLoading(true);
-      const fetchedCvs = await fetchCvs({lastId: cvs?.[cvs.length-1]?.id});
+    if (loadMore) {
+      const fetchedCvs = await fetchCvs({lastId: lastCvRef.current});
       
       if (fetchedCvs && fetchedCvs?.length > 0) {
-        if (fetchedCvs[fetchedCvs.length - 1]?.id === cvs?.[cvs.length-1]?.id) {
+        if (fetchedCvs[fetchedCvs.length - 1]?.id === lastCvRef.current) {
           setLoadMore(false);
         } else {
-          cvsRef.current = cvs ? [...cvs, ...fetchedCvs] : fetchedCvs;
-          setCvs(cvs ? [...cvs, ...fetchedCvs] : fetchedCvs);
+          setCvs((prevCvs) => [ ...(prevCvs?.length ? prevCvs : []), ...fetchedCvs ]);
         }
-        setLoading(false);
       } else {
         setLoadMore(false);
       }
     }
-  };
+  }, [ loadMore ]);
 
   useEffect(() => {
     //before unmount, save current cvs state to context for smoother navigation
@@ -52,16 +50,12 @@ export default function Feed({initialBatch} : {initialBatch: ClientCvModel[] | n
         cvsDispatchContextConsumer({ type: `replace`, payload: cvsRef.current });
       }
     }
-  }, []);
+  }, [ cvsDispatchContextConsumer ]);
 
   const forceReload = () => {
     cvsDispatchContextConsumer({type: `reset`, payload: []});
     setCvs([]);
-    setPage(0);
     setLoadMore(true);
-    setLoading(false);
-    //force delay to wait for state change so we can be sure Effect will run
-    setTimeout(()=>{}, 100);
   };
 
   return (
@@ -75,21 +69,14 @@ export default function Feed({initialBatch} : {initialBatch: ClientCvModel[] | n
           )) : <></>
         }
         </div>
-          {loadMore &&
-            <TriggerPagination
-                loadMore={loadMore}
-                pageNum={page}
-                setPage={setPage}
-                lastId={cvs?.[cvs.length - 1]?.id}
-                isLoading={isLoading}
-                callbackTrigger={fetchCvsCallback}
-          />}
-          {!loadMore &&
-          <div className="flex justify-center sticky bottom-5 z-10">
-            <ReloadButton callback={forceReload}>
-              Reload
-            </ReloadButton>
-          </div>}
+          {loadMore ?
+            <TriggerPagination callbackTrigger={fetchCvsCallback}/>
+            :
+            <div className="flex justify-center sticky bottom-5 z-10">
+              <ReloadButton callback={forceReload}>
+                Reload
+              </ReloadButton>
+            </div>}
       </div>
     </main>
   )
