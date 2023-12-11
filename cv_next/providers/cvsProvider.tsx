@@ -32,7 +32,6 @@ type CvState = {
 }
 
 function cvsReducer(state: CvState, action: CvAction) {
-    console.log(action);
     
     switch (action.type) {
         case 'push': {
