@@ -14,18 +14,17 @@ export const CommentForm:React.FC<CommentFormProps> = ({ children, formAction, r
     const formRef = useRef<HTMLFormElement | null>(null);
 
     const interactiveFormAction = (formData: FormData) => {
-        console.log(`commentForm`, formData);
 
         return formAction(formData)
         .finally(() => {
             formRef.current?.reset();
             revalidatePath("/cv/[cvId]");
-        })
+        });
     }
 
     return (
         <form className="mb-6" hidden={!show} ref={formRef} action={interactiveFormAction}>
-            {children}
+            { children }
         </form>
     )
 }

@@ -4,7 +4,24 @@ import { revalidatePath } from "next/cache";
 import { Suspense, use } from "react";
 import { CommentForm, CommentFormRSC } from "../commentForm";
 import { Comment } from "./comment";
+import { CommentSkeleton } from "./commentSkeleton";
 
+const CommentSectionSkeleton = () => {
+    //TODO: perhaps calculate amount of skeletons needed according to viewport?
+    return (
+        <>
+        <CommentSkeleton/>
+        <CommentSkeleton/>
+        <CommentSkeleton/>
+        <CommentSkeleton/>
+        <CommentSkeleton/>
+        <CommentSkeleton/>
+        <CommentSkeleton/>
+        <CommentSkeleton/>
+        <CommentSkeleton/>
+        </>
+    )
+}
 
 export const CommentsSection = ({ cv }: { cv: ClientCvModel }) => {
 
@@ -44,7 +61,7 @@ export const CommentsSection = ({ cv }: { cv: ClientCvModel }) => {
         <div className="overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 
         dark:scrollbar-thumb-gray-800 scrollbar-thumb-rounded-full flex-1">
             {comments.length ?
-                <Suspense fallback="Loading discussion..."> {/* TODO: add skeleton */}
+                <Suspense fallback={<CommentSectionSkeleton />}> {/* TODO: add skeleton */}
                     {comments.map((comment) => <Comment key={comment.id} comment={comment}
                         submitNewComment={submitNewComment} revalidatePath={revalidatePathAction} />)}
                 </Suspense>
