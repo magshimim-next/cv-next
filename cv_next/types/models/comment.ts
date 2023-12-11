@@ -103,3 +103,6 @@ export default class CommentModel implements BaseModel {
     this.lastUpdate = Helper.epochTimeNow();
   }
 }
+
+export type ClientCommentModel = Omit<CommentModel, "removeBaseData" | "updateData" | "markDeleted"
+| "updateResolvedValue" | "addUpvote" | "removeUpvote" | "addDownvote" | "removeDownvote">;
