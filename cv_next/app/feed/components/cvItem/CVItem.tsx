@@ -8,7 +8,7 @@ interface CVCardProps {
   children: React.ReactNode
 }
 
-export default function CVItem({ cv, children }: CVCardProps) {
+export function CVItem({ cv, children }: CVCardProps) {
 
   const router = useRouter();
   const encodedId = encodeValue(cv.id);

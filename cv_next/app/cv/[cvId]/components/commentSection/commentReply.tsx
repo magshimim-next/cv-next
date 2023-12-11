@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react"
-import { CommentForm } from "./commentForm"
+import { CommentForm } from "../commentForm/commentForm"
 import { CommentFormRSC } from "./CommentFormRSC"
 
 

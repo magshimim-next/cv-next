@@ -4,7 +4,7 @@ import { ClientCvModel } from "@/types/models/cv";
 import { revalidatePath } from "next/cache";
 import { Suspense, use } from "react";
 import { Comment } from "./comment";
-import { CommentForm } from "./commentForm";
+import { CommentForm } from "../commentForm/commentForm";
 import { CommentFormRSC } from "./CommentFormRSC";
 
 

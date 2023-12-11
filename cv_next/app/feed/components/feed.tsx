@@ -1,13 +1,12 @@
 'use client';
 
-import CVItem from "@/app/feed/components/CVItem";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { fetchCvs } from "@/app/actions/fetchCvs";
-import CVItemRSC from "./CVItemRSC";
-import TriggerPagination from "./TriggerPagination";
-import { ClientCvModel } from "@/types/models/cv";
 import { CvsContext, CvsDispatchContext } from "@/providers/cvsProvider";
+import { ClientCvModel } from "@/types/models/cv";
 import { ReloadButton } from "@/components/ui/reloadButton";
+import TriggerPagination from "./TriggerPagination";
+import { CVItem, CVItemRSC } from "./cvItem";
 
 export default function Feed({initialBatch} : {initialBatch: ClientCvModel[] | null}) {
   

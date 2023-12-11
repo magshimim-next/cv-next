@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react"
-import { CommentForm } from "./commentForm"
-import { CommentFormRSC } from "./CommentFormRSC"
 import { AiFillLike } from "react-icons/ai";
 import { ClientCommentModel } from "@/types/models/comment";
+import { CommentForm, CommentFormRSC } from "../commentForm"
 
 
 export const CommentActions = ({ submitNewComment, likeAction, revalidatePath, parentCommentId, upvotes = null }: 
