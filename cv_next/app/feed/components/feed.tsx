@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { fetchCvs } from "@/app/actions/fetchCvs";
+import { fetchCvs } from "@/app/actions/cvs";
 import { CvsContext, CvsDispatchContext } from "@/providers/cvsProvider";
 import { ClientCvModel } from "@/types/models/cv";
 import { ReloadButton } from "@/components/ui/reloadButton";

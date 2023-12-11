@@ -1,12 +1,13 @@
 'use server';
 
-import { getPaginatedCvs } from "@/server/api/cvs";
+import { getAllCvs, getPaginatedCvs } from "@/server/api/cvs";
 import CvModel, { ClientCvModel } from "@/types/models/cv";
 
 let mappedResults: {[key: string]: ClientCvModel[] | null} = {};
 
-export const fetchCvs = async ({ lastId, forceReset = false } : { lastId?: string, forceReset?: boolean }): Promise<ClientCvModel[] | null> => {
-    console.log(Object.keys(mappedResults));
+export const fetchCvs = async ({ lastId, forceReset = false } : { lastId?: string, forceReset?: boolean }):
+Promise<ClientCvModel[] | null> => {
+    console.log(`cache: ${Object.keys(mappedResults)}`);
     if (forceReset) {
         mappedResults = {};
     }
@@ -23,6 +24,11 @@ export const fetchCvs = async ({ lastId, forceReset = false } : { lastId?: strin
     mappedResults[`${lastId}`] = result;    
     return result;
 };
+
+export const fetchAllCvs = async (): Promise<ClientCvModel[] | null> => {
+    const fetchedCvs = await getAllCvs();
+    return fetchedCvs?.map(serverCv => transformCvToClient(serverCv)) ?? null;
+}
 
 const transformCvToClient = (serverCv: CvModel) => {
     const {removeBaseData, setResolved, setDeleted, updateDescription, getCategory, ...clientCv} = serverCv;

@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react"
-import { CommentForm } from "../commentForm/commentForm"
-import { CommentFormRSC } from "./CommentFormRSC"
+import { CommentForm, CommentFormRSC } from "../commentForm"
 
 
 export const CommentReply = ({ submitNewComment, revalidatePath, parentCommentId }: 

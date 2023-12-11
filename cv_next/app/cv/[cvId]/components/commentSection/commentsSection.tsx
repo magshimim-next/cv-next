@@ -1,11 +1,9 @@
-import { fetchComments } from "@/app/actions/fetchComments";
-import { postComment } from "@/app/actions/postComment";
+import { fetchComments, postComment } from "@/app/actions/comments";
 import { ClientCvModel } from "@/types/models/cv";
 import { revalidatePath } from "next/cache";
 import { Suspense, use } from "react";
+import { CommentForm, CommentFormRSC } from "../commentForm";
 import { Comment } from "./comment";
-import { CommentForm } from "../commentForm/commentForm";
-import { CommentFormRSC } from "./CommentFormRSC";
 
 
 export const CommentsSection = ({ cv }: { cv: ClientCvModel }) => {

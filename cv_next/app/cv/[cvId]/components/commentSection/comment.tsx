@@ -1,6 +1,5 @@
-import { addLikeToComment, removeLikeFromComment } from "@/app/actions/commentLikes";
-import { fetchChildComments } from "@/app/actions/fetchComments";
-import { fetchUser } from "@/app/actions/fetchUser";
+import { addLikeToComment, fetchChildComments, removeLikeFromComment } from "@/app/actions/comments";
+import { fetchUser } from "@/app/actions/users";
 import { ClientCommentModel } from "@/types/models/comment";
 import { use } from "react";
 import { CommentActions } from "./commentActions";

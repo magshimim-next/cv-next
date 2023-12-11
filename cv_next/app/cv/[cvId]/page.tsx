@@ -1,9 +1,8 @@
-import { fetchCv } from "@/app/actions/fetchCv";
-// import { fetchAllCvs } from "@/app/actions/fetchCvs";
-import { decodeValue, encodeValue } from "@/lib/utils";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
-import { CommentsSection } from "./components/commentsSection";
+import { fetchCv } from "@/app/actions/cvs";
+// import { fetchAllCvs } from "@/app/actions/cvs";
+import { decodeValue } from "@/lib/utils";
+import { CommentsSection } from "./components/commentSection/commentsSection";
 import { CvPreview } from "./components/cvPreview";
 
 

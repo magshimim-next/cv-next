@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { fetchCvs } from "@/app/actions/fetchCvs";
+import { fetchCvs } from "@/app/actions/cvs";
 import Feed from "./components/feed";
 
 export default async function Page() {
