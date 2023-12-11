@@ -6,6 +6,8 @@ import { CommentForm, CommentFormRSC } from "../commentForm";
 import { Comment } from "./comment";
 import { CommentSkeleton } from "./commentSkeleton";
 
+ const NO_COMMENTS_MESSAGE = "No comments yet. Start the conversation!";
+
 const CommentSectionSkeleton = () => {
     //TODO: perhaps calculate amount of skeletons needed according to viewport?
     return (
@@ -31,9 +33,7 @@ export const CommentsSection = ({ cv }: { cv: ClientCvModel }) => {
     };
 
     const submitNewComment = async (formData: FormData, parentCommentId?: string) => {
-        'use server'        
-
-        console.log(`commentSection`, formData);
+        'use server'
         
         const commentData = {
             cvId: cv.id, 
@@ -65,9 +65,7 @@ export const CommentsSection = ({ cv }: { cv: ClientCvModel }) => {
                     {comments.map((comment) => <Comment key={comment.id} comment={comment}
                         submitNewComment={submitNewComment} revalidatePath={revalidatePathAction} />)}
                 </Suspense>
-                : <h3 className="text-gray-800 dark:text-gray-200">
-                    No comments yet. Start the conversation!
-                </h3>}
+                : <h3 className="text-gray-800 dark:text-gray-200">{NO_COMMENTS_MESSAGE}</h3>}
         </div>
     </div>
     )
