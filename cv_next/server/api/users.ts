@@ -2,14 +2,12 @@ import 'server-only'
 
 import Helper from "@/server/base/helper";
 import {
-  collection,
-  where,
-  query,
+  Query,
   DocumentData,
   QueryDocumentSnapshot,
-  QueryFieldFilterConstraint,
   QuerySnapshot,
-} from "firebase/firestore";
+  Filter
+} from "firebase-admin/firestore";
 import UserModel from "@/types/models/user";
 import MyLogger from "@/server/base/logger";
 import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils";
@@ -97,24 +95,24 @@ export default class UsersApi {
   }
 
   private static async getAllUsersByQueryFilter(
-    w?: QueryFieldFilterConstraint,
+    w?: Filter,
     filterOutInactive: boolean = true
   ): Promise<UserModel[] | null> {
     try {
-      let collectionRef = collection(
-        FirebaseHelper.getFirestoreInstance(),
+      let collectionRef = FirebaseHelper.getFirestoreInstance().collection(
         UserModel.CollectionName
       );
+      
       let querySnapshot: QuerySnapshot;
-      let activeWhere = where("active", "==", true);
+      let activeWhere = collectionRef.where("active", "==", true);
       if (w !== undefined) {
         const q = filterOutInactive
-          ? query(collectionRef, w, activeWhere)
-          : query(collectionRef, w);
+          ? collectionRef.where(w).where(activeWhere)
+          : collectionRef.where(w);
         querySnapshot = await FirebaseHelper.myGetDocs(q);
       } else {
         if (filterOutInactive) {
-          const q = query(collectionRef, activeWhere);
+          const q = collectionRef.where(activeWhere);
           querySnapshot = await FirebaseHelper.myGetDocs(q);
         } else {
           querySnapshot = await FirebaseHelper.myGetDocs(collectionRef);
@@ -148,7 +146,7 @@ export default class UsersApi {
     filterOutInactive: boolean = false
   ): Promise<UserModel[] | null> {
     return this.getAllUsersByQueryFilter(
-      where("name", "==", name),
+      Filter.where("name", "==", name),
       filterOutInactive
     );
   }
@@ -164,7 +162,7 @@ export default class UsersApi {
     filterOutInactive: boolean = false
   ): Promise<UserModel[] | null> {
     return this.getAllUsersByQueryFilter(
-      where("email", "==", email),
+      Filter.where("email", "==", email),
       filterOutInactive
     );
   }
