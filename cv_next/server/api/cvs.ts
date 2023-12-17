@@ -8,16 +8,10 @@ import {
   DocumentData,
   Query,
   QueryDocumentSnapshot,
-  QueryFieldFilterConstraint,
-  collection,
-  limit,
-  orderBy,
-  query,
-  startAfter,
-  where,
-  documentId,
   CollectionReference,
-} from "firebase/firestore"
+  FieldPath,
+  Filter
+} from "firebase-admin/firestore"
 import Definitions from "../base/definitions"
 import FirebaseHelper from "./firebaseHelper"
 import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils"
@@ -51,22 +45,21 @@ export function documentSnapshotToCV(
  * Retrieves paginated CVs based on a query filter and optionally filters out deleted CVs.
  * If last document id is given, retreive the "page" that starts after it.
  *
- * @param {QueryFieldFilterConstraint} queryFilter - Optional query filter to apply to the CVs.
+ * @param {Filter} queryFilter - Optional query filter to apply to the CVs.
  * @param {boolean} filterOutDeleted - Optional flag to filter out deleted CVs. Defaults to true.
  * @param {string?} lastId - Optional last cv document id to start the query after.
  * @return {Promise<CvModel[] | null>} A promise that resolves to an array of CV models or null if an error occurred.
  */
 export async function getPaginatedCvsByQueryFilter(
-  queryFilter?: QueryFieldFilterConstraint,
+  queryFilter?: Filter,
   filterOutDeleted: boolean = true,
   lastId?: string
 ): Promise<CvModel[] | null> {
-  let pageQuery: Query<DocumentData>
-  let collectionRef = collection(
-    FirebaseHelper.getFirestoreInstance(),
+  let pageQuery: Query<DocumentData>;
+  let collectionRef = FirebaseHelper.getFirestoreInstance().collection(
     CvModel.CollectionName
-  )
-  let filterDeletedQuery = where("deleted", "==", !filterOutDeleted);
+  );
+  let filterDeletedQuery = Filter.where("deleted", "==", !filterOutDeleted);
   
   if (lastId) {
     const lastDoc = await getCvById(lastId, collectionRef, false);
@@ -75,37 +68,32 @@ export async function getPaginatedCvsByQueryFilter(
     }
     pageQuery =
     queryFilter !== undefined
-    ? query(
-        collectionRef,
-        orderBy("uploadDate", "desc"),
-        limit(queryLimit),
-        startAfter(lastDoc),
-        filterDeletedQuery,
-        queryFilter
-      )
-    : query(
-        collectionRef,
-        orderBy("uploadDate", "desc"),
-        limit(queryLimit),
-        startAfter(lastDoc),
-        filterDeletedQuery
-      );
+    ? 
+    collectionRef
+    .orderBy("uploadDate", "desc")
+    .limit(queryLimit)
+    .where(filterDeletedQuery)
+    .where(queryFilter)
+    .startAfter(lastDoc)
+    : 
+    collectionRef
+    .orderBy("uploadDate", "desc")
+    .limit(queryLimit)
+    .where(filterDeletedQuery)
+    .startAfter(lastDoc)
+    ;
   } else {
     pageQuery =
     queryFilter !== undefined
-    ? query(
-        collectionRef,
-        orderBy("uploadDate", "desc"),
-        limit(queryLimit),
-        filterDeletedQuery,
-        queryFilter
-      )
-    : query(
-        collectionRef,
-        orderBy("uploadDate", "desc"),
-        limit(queryLimit),
-        filterDeletedQuery
-      );
+    ? collectionRef
+    .orderBy("uploadDate", "desc")
+    .limit(queryLimit)
+    .where(filterDeletedQuery)
+    .where(queryFilter)
+    : collectionRef
+    .orderBy("uploadDate", "desc")
+    .limit(queryLimit)
+    .where(filterDeletedQuery);
   }
   
   try {
@@ -127,16 +115,13 @@ export async function getPaginatedCvsByQueryFilter(
 }
 
 export async function getCvById(cvId: string,
-  collectionRefParam?: CollectionReference<DocumentData, DocumentData>,
+  collectionRefParam?: CollectionReference,
   translateSnapshot: boolean = true)
-  : Promise<CvModel | QueryDocumentSnapshot<DocumentData, DocumentData> | undefined> {
-  const collectionRef = collectionRefParam ?? collection(
-    FirebaseHelper.getFirestoreInstance(),
+  : Promise<CvModel | QueryDocumentSnapshot<DocumentData> | undefined> {
+  const collectionRef = collectionRefParam ?? FirebaseHelper.getFirestoreInstance().collection(
     CvModel.CollectionName
   )
-  const findDocQuery = query(collectionRef,
-    where(documentId(), "==", cvId)
-    );
+  const findDocQuery = collectionRef.where(FieldPath.documentId(), "==", cvId);
   
   try {
     const querySnapshot = await FirebaseHelper.myGetDocs(findDocQuery);
@@ -165,25 +150,25 @@ export async function getCvById(cvId: string,
  * Retrieves all CVs from the database based on a given query filter and
  * optionally filters out deleted CVs.
  *
- * @param {QueryFieldFilterConstraint} queryFilter - The query filter to apply.
+ * @param {Filter} queryFilter - The query filter to apply.
  * @param {boolean} filterOutDeleted - Whether to filter out deleted CVs.
  * @return {Promise<CvModel[] | null>} An array of CV models that match the
  * query filter, or null if there was an error.
  */
 export async function _getAllCvsByQueryFilter(
-  queryFilter?: QueryFieldFilterConstraint,
+  queryFilter?: Filter,
   filterOutDeleted: boolean = true
 ): Promise<CvModel[] | null> {
   try {
-    let collectionRef = collection(
-      FirebaseHelper.getFirestoreInstance(),
+    let collectionRef = FirebaseHelper.getFirestoreInstance().
+    collection(
       CvModel.CollectionName
     )
-    let filterDeletedQuery = where("deleted", "==", !filterOutDeleted)
+    let filterDeletedQuery = Filter.where("deleted", "==", !filterOutDeleted)
     const q =
       queryFilter !== undefined
-        ? query(collectionRef, queryFilter, filterDeletedQuery)
-        : query(collectionRef, filterDeletedQuery)
+        ? collectionRef.where(queryFilter).where(filterDeletedQuery)
+        : collectionRef.where(filterDeletedQuery)
     const querySnapshot = await FirebaseHelper.myGetDocs(q)
     const matchingDocuments: CvModel[] = []
 
@@ -209,7 +194,7 @@ export async function getAllCvsByUserId(
   filterOutDeleted: boolean = true
 ): Promise<CvModel[] | null> {
   return _getAllCvsByQueryFilter(
-    where("userID", "==", userId),
+    Filter.where("userID", "==", userId),
     filterOutDeleted
   )
 }
@@ -226,7 +211,7 @@ export async function getAllCvsByCategory(
   filterOutDeleted: boolean = true
 ): Promise<CvModel[] | null> {
   return _getAllCvsByQueryFilter(
-    where("categoryID", "==", category),
+    Filter.where("categoryID", "==", category),
     filterOutDeleted
   )
 }
