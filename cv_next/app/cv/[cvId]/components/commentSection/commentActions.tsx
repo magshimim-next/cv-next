@@ -6,10 +6,10 @@ import { ClientCommentModel } from "@/types/models/comment";
 import { CommentForm, CommentFormRSC } from "../commentForm"
 
 
-export const CommentActions = ({ submitNewComment, likeAction, revalidatePath, parentCommentId, upvotes = null }: 
+export const CommentActions = ({ submitNewComment, likeAction, parentCommentId, upvotes = null }: 
     { submitNewComment: (formData: FormData, parentCommentId?: string) => Promise<string | null>,
         likeAction: (userId: string) => Promise<ClientCommentModel | null>,
-        revalidatePath: (path: string) => Promise<void>, parentCommentId?: string,
+        parentCommentId?: string,
         upvotes?: string[] | null }) => {
 
     const [renderReplyFrom, setRenderReplyForm] = useState(false);
@@ -34,11 +34,11 @@ export const CommentActions = ({ submitNewComment, likeAction, revalidatePath, p
                         <AiFillLike className={`ml-1 w-4 h-4 ${likeStyle}`} />
                 </button>
             </div>
-            <CommentForm show={renderReplyFrom}
-                formAction={(formData: FormData) => {setRenderReplyForm(false); return submitNewComment(formData, parentCommentId);}}
-                revalidatePath={revalidatePath}>
-                <CommentFormRSC />
-            </CommentForm>
+            <CommentForm show={renderReplyFrom} userId={userId} cvId={undefined}
+                // formAction={(formData: FormData) => {setRenderReplyForm(false); return submitNewComment(formData, parentCommentId);}}
+                // revalidatePath={revalidatePath}>
+                 />
+            {/* </CommentForm> */}
         </>
     )
 }

@@ -4,6 +4,8 @@ import { fetchCv } from "@/app/actions/cvs";
 import { decodeValue } from "@/lib/utils";
 import { CommentsSection } from "./components/commentSection/commentsSection";
 import { CvPreview } from "./components/cvPreview";
+import { Suspense } from "react";
+import { Comments } from "./components/commentSection/comments";
 
 
 // export const generateStaticParams = async () => {
@@ -34,7 +36,10 @@ export default async function Page({ params } : { params: { cvId: string }}) {
             <CvPreview cv={cv} />
         </section>
         <section className="self-start h-[78.75rem] flex-col">
-            <CommentsSection cv={cv} />
+            {/* <Suspense fallback="Loading..."> */}
+                <CommentsSection cv={cv}>
+                </CommentsSection>
+            {/* </Suspense> */}
         </section>
     </div>
     )

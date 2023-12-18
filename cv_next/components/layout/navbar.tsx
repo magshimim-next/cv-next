@@ -23,13 +23,6 @@ export default function Navbar() {
     setNavbar(false)
   }
 
-  useEffect(() => {
-    if (navbar) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "auto"
-    }
-  }, [navbar])
 
   return (
     <header className="select-none">
@@ -83,10 +76,9 @@ export default function Navbar() {
         </div>
         <div>
           <div
-            className={`absolute left-0 right-0 z-10 m-auto justify-self-center rounded-md border p-4 md:static md:mt-0 md:block md:border-none md:p-0 ${
+            className={`absolute w-full max-w-xs left-0 right-0 z-10 m-auto justify-self-center rounded-md border p-4 md:static md:mt-0 md:block md:border-none md:p-0 ${
               navbar ? "block" : "hidden"
             }`}
-            style={{ width: "100%", maxWidth: "20rem" }}
           >
             <ul className="text-primary flex flex-col items-center space-y-4 opacity-60 md:flex-row md:space-x-6 md:space-y-0">
               {navLinks.map((link) => (

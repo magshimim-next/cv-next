@@ -105,4 +105,4 @@ export default class CommentModel implements BaseModel {
 }
 
 export type ClientCommentModel = Omit<CommentModel, "removeBaseData" | "updateData" | "markDeleted"
-| "updateResolvedValue" | "addUpvote" | "removeUpvote" | "addDownvote" | "removeDownvote">;
+| "updateResolvedValue" | "addUpvote" | "removeUpvote" | "addDownvote" | "removeDownvote" | "collectionName">;

@@ -1,35 +1,46 @@
-import { addLikeToComment, fetchChildComments, removeLikeFromComment } from "@/app/actions/comments";
+// "use client";
+
+import useSWR from 'swr';
+import { addLikeToComment, fetchChildComments, postComment, removeLikeFromComment } from "@/app/actions/comments";
 import { fetchUser } from "@/app/actions/users";
+import { isBrowser } from "@/lib/utils";
 import { ClientCommentModel } from "@/types/models/comment";
 import { use } from "react";
 import { CommentActions } from "./commentActions";
 
 
-const ChildComments = async ({ childDepth, parentCommentId, submitNewComment, revalidatePath }:
+const ChildComments = async ({ childDepth, parentCommentId, userId }:
     { childDepth: number, parentCommentId: string,
-        submitNewComment: (formData: FormData, parentCommentId?: string) => Promise<string | null>,
-        revalidatePath: (path: string) => Promise<void> }) => {
+        userId: string,
+        }) => {
 
+    // const { data: childComments } = useSWR(parentCommentId, fetchChildComments);
     const childComments = await fetchChildComments(parentCommentId);
 
-    if (childComments === null) {
+    if (!childComments) {
         return <></>;
     }
 
     return (
-        childComments.map((comment) => <Comment key={comment.id} comment={comment}
-        submitNewComment={submitNewComment}
-        revalidatePath={revalidatePath} childDepth={childDepth + 1} />)
-    )
+        <>
+        {childComments.map((comment) =>
+        <>
+            {/* @ts-expect-error Server Component */}
+            <Comment key={comment.id} comment={comment} userId={userId}
+                childDepth={childDepth + 1}/>
+        </>)}
+        </>);
 }
 
-export const Comment = ({ comment, submitNewComment, revalidatePath, childDepth = 0 }:
-    { comment: ClientCommentModel, submitNewComment: (formData: FormData, parentCommentId?: string) => Promise<string | null>,
-        revalidatePath: (path: string) => Promise<void>, childDepth?: number }) => {
 
-    const user = use(fetchUser(comment.userID));
-
-    if (user === null) {
+export const Comment = async ({ comment, userId, childDepth = 0 }:
+    { comment: ClientCommentModel, userId: string, childDepth?: number }) => {
+    // const { data: user } = useSWR(comment.userID, fetchUser);
+    const user = await fetchUser(comment.userID);
+    console.log(user?.id);
+    console.log(`I was rendered in the ${isBrowser() ? `browser`: `server`}`);
+    
+    if (!user) {
         return <>Failed to load user</>
     }
 
@@ -38,40 +49,41 @@ export const Comment = ({ comment, submitNewComment, revalidatePath, childDepth 
         `p-3 ml-${6/childDepth} lg:ml-${12/childDepth} border-t border-gray-400 dark:border-gray-600` :
         "p-6 mb-3 border-b border-gray-200 rounded-lg";
 
-    const submitNewCommentWithParent = async (formData: FormData) => {
+    const submitNewCommentWithParent = async (formData: FormData, parentCommentId: string = comment.id) => {
         "use server";
-        formData.set("parentCommentId", comment.id);
-        console.log(formData);
-        
 
-        return submitNewComment(formData, comment.id);
+        const commentData = {
+            cvId: undefined, 
+            userId: userId, 
+            message: formData.get("comment") as string,
+            parentCommentId: parentCommentId
+        };
+
+        return await postComment(commentData);
     }
 
-    const likeAction = async (userId: string) => {
+    const likeAction = async () => {
         "use server";
 
-        revalidatePath; //for some reason need to "announce" this function for the server action to know it exists
-        // might be resolved in next 14.
-
-        //for some reason server actions doesnt like es5 methods (some, filter, etc).
-        //hopefully resolved in next 14.
         let hasUserAlreadyLiked = false;
-        for (const upvoteUser of comment.upvotes as string[]) {
-            if (upvoteUser === userId) {
-                hasUserAlreadyLiked = true;
-                break;
+        if (comment.upvotes !== null) {
+            for (const upvoteUser of comment.upvotes as string[]) {
+                if (upvoteUser === userId) {
+                    hasUserAlreadyLiked = true;
+                    break;
+                }
             }
         }
 
         if (hasUserAlreadyLiked) {
             return removeLikeFromComment(comment, userId)
             .finally(() => {
-                revalidatePath("/cv/[cvId]");
+                // revalidatePath("/cv/[cvId]");
             });
         } else {
             return addLikeToComment(comment, userId)
             .finally(() => {
-                revalidatePath("/cv/[cvId]");
+                // revalidatePath("/cv/[cvId]");
             });
         }
     }
@@ -88,10 +100,10 @@ export const Comment = ({ comment, submitNewComment, revalidatePath, childDepth 
             <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
             <CommentActions submitNewComment={submitNewCommentWithParent}
                     likeAction={likeAction} upvotes={comment.upvotes}
-                    revalidatePath={revalidatePath} />
+                     />
             {/* @ts-expect-error Server Component */}
             <ChildComments childDepth={childDepth + 1} parentCommentId={comment.id}
-                submitNewComment={submitNewComment} revalidatePath={revalidatePath} />
+                userId={userId}  />
         </article>
     )
 }
