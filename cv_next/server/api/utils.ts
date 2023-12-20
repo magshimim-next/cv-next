@@ -23,7 +23,7 @@ export class RateLimitError extends Error {
   
 export class DbOperationResult {
     public success: boolean;
-    public data: any;
+    public data: string | undefined;
     public reason: ErrorReasons;
     public reasonString: string;
   

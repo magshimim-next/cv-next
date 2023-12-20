@@ -59,7 +59,8 @@ export function documentSnapshotToCV(
 export async function getPaginatedCvsByQueryFilter(
   queryFilter?: QueryFieldFilterConstraint,
   filterOutDeleted: boolean = true,
-  lastId?: string
+  lastId?: string,
+  forceNoLimit = false
 ): Promise<CvModel[] | null> {
   let pageQuery: Query<DocumentData>
   let collectionRef = collection(
@@ -68,7 +69,21 @@ export async function getPaginatedCvsByQueryFilter(
   )
   let filterDeletedQuery = where("deleted", "==", !filterOutDeleted);
   
-  if (lastId) {
+  if (forceNoLimit) {
+    pageQuery =
+    queryFilter !== undefined
+    ? query(
+        collectionRef,
+        orderBy("uploadDate", "desc"),
+        filterDeletedQuery,
+        queryFilter
+      )
+    : query(
+        collectionRef,
+        orderBy("uploadDate", "desc"),
+        filterDeletedQuery
+      );
+  } else if (lastId) {
     const lastDoc = await getCvById(lastId, collectionRef, false);
     if (!lastDoc || lastDoc instanceof CvModel) {
       return null;
@@ -245,6 +260,23 @@ export async function getPaginatedCvs(
   let res = getPaginatedCvsByQueryFilter(undefined, filterOutDeleted, lastId)
   MyLogger.logDebug(
     `requested all cvs(pagination) - last cv id: ${lastId}`
+  )
+  return res
+}
+
+/**
+ * Retrieves paginated CVs from the database.
+ *
+ * @param {boolean} filterOutDeleted - Whether to filter out deleted CVs.
+ * @param {string?} lastId - optionally pass the last cv id to start the query after. 
+ * @return {Promise<CvModel[] | null>} - A promise that resolves to an array of CV models or null.
+ */
+export async function getAllCvs(
+  filterOutDeleted: boolean = true
+): Promise<CvModel[] | null> {
+  let res = getPaginatedCvsByQueryFilter(undefined, filterOutDeleted, undefined, true);
+  MyLogger.logDebug(
+    `requested all cvs(no pagination)`
   )
   return res
 }

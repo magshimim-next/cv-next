@@ -110,7 +110,8 @@ export default class FirebaseHelper {
   public static async updateData(
     id: string,
     data: any,
-    collectionName: string
+    collectionName: string,
+    retries = 5
   ): Promise<boolean> {
     let collectionRef = collection(
       FirebaseHelper.getFirestoreInstance(),
@@ -125,18 +126,31 @@ export default class FirebaseHelper {
         MyLogger.logInfo("Error @ FirebaseHelper::updateData", error);
       }
     } else {
-      throw new RateLimitError();
+      if (retries >= 0) {
+        //reasonable sleep time for rate limit
+        await this.sleep(1500);
+        return this.updateData(id, data, collectionName, retries - 1);
+      } else {
+        throw new RateLimitError();
+      }
     }
     return false;
+  }
+
+  private static sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   /**
    * returns the query snapshot with results(documents)
    * @param query the query
+   * @param retries force retry on the request when rate limit reaches.
+   *                Defaults to 5
    * @returns QuerySnapshot or undefined upon error
    */
   public static async myGetDocs(
-    query: Query<DocumentData>
+    query: Query<DocumentData>,
+    retries = 5
   ): Promise<QuerySnapshot<DocumentData>> {
     if (FirebaseHelper.getOperationBucketInstance().tryConsumeToken()) {
       try {
@@ -147,7 +161,13 @@ export default class FirebaseHelper {
         throw Error(enumToStringMap[ErrorReasons.undefinedErr]);
       }
     } else {
-      throw new RateLimitError();
+      if (retries >= 0) {
+        //reasonable sleep time for rate limit
+        await this.sleep(1500);
+        return this.myGetDocs(query, retries - 1);
+      } else {
+        throw new RateLimitError();
+      }
     }
   }
 }

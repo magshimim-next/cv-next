@@ -7,7 +7,7 @@ interface CVCardProps {
   cv: ClientCvModel
 }
 
-export default function CVItemRSC({ cv }: CVCardProps) {
+export function CVItemRSC({ cv }: CVCardProps) {
   const categoryLink = `/feed?category=${Categories.category[
     cv.categoryID
   ].toLowerCase()}`
