@@ -1,33 +1,22 @@
 # CV_Next
 
-## Name
-CV_Next
-
-## Description
-A simple peer review and cv upload system
-
-## Badges
-
-## Visuals
+A simple cv upload and peer review system
 
 ## Installation
+```
+git clone https://github.com/magshimim-next/cv-next.git
+```
+```
+npm install
+```
+then fill in the firebase config file with the credentials
 
 ## Usage
-
-## Support
+```
+npm run dev
+```
 
 ## Roadmap
-A simple web app that will also use the Gooogle Drive API and google firebase firestore
+A simple web app that will show cv documents hosted on google drive with an option to discuss changes.
 
 Please read the design document for more information.
-
-## Contributing
-
-## Authors and acknowledgment
-
-## License
-
-## Project status
-
-## Suggested technologies:
-React.next(TS), Firestore, Drive API. AWS + Docker Image.
