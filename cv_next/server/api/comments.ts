@@ -2,13 +2,12 @@ import 'server-only'
 
 import Helper from "@/server/base/helper";
 import {
-  collection,
-  where,
-  query,
+  CollectionReference,
+  Query,
   DocumentData,
   QueryDocumentSnapshot,
-  QueryFieldFilterConstraint,
-} from "firebase/firestore";
+  Filter
+} from "firebase-admin/firestore";
 import CommentModel from "@/types//models/comment";
 import MyLogger from "@/server/base/logger";
 import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils";
@@ -99,19 +98,15 @@ export default class CommentsApi {
   }
 
   private static async getAllCommentsByQueryFilter(
-    queryFilter: QueryFieldFilterConstraint,
+    queryFilter: Filter,
     filterOutDeleted: boolean = true
   ): Promise<CommentModel[] | null> {
     try {
-      let collectionRef = collection(
-        FirebaseHelper.getFirestoreInstance(),
+      let collectionRef = FirebaseHelper.getFirestoreInstance().
+      collection(
         CommentModel.CollectionName
       );
-      const q = query(
-        collectionRef,
-        queryFilter,
-        where("deleted", "==", !filterOutDeleted)
-      );
+      const q = collectionRef.where("deleted", "==", !filterOutDeleted).where(queryFilter);
       const querySnapshot = await FirebaseHelper.myGetDocs(q);
       const matchingDocuments: CommentModel[] = [];
 
@@ -138,7 +133,7 @@ export default class CommentsApi {
     filterOutDeleted: boolean = true
   ): Promise<CommentModel[] | null> {
     return this.getAllCommentsByQueryFilter(
-      where("userID", "==", userId),
+      Filter.where("userID", "==", userId),
       filterOutDeleted
     );
   }
@@ -152,7 +147,7 @@ export default class CommentsApi {
     documentID: string
   ): Promise<CommentModel[] | null> {
     return this.getAllCommentsByQueryFilter(
-      where("documentID", "==", documentID)
+      Filter.where("documentID", "==", documentID)
     );
   }
 
@@ -165,7 +160,7 @@ export default class CommentsApi {
     parentCommentID: string
   ): Promise<CommentModel[] | null> {
     return this.getAllCommentsByQueryFilter(
-      where("parentCommentID", "==", parentCommentID)
+      Filter.where("parentCommentID", "==", parentCommentID)
     );
   }
 }
