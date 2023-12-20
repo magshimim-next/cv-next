@@ -1,25 +1,25 @@
 import 'server-only'
 
-import { App, initializeApp, getApp, getApps} from "firebase-admin/app";
-import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
-const cvSdk = require("@/cv-sdk.json");
-import { credential } from 'firebase-admin';
+import { FirebaseApp, initializeApp } from "firebase/app";
 import {
+  Firestore,
+  getFirestore,
+  collection,
+  addDoc,
+  updateDoc,
+  doc,
+  getDocs,
   DocumentData,
   QuerySnapshot,
   Query,
-  getFirestore,
-  Firestore
-} from "firebase-admin/firestore";
+} from "firebase/firestore";
 import Definitions from "@/server/base/definitions";
 import OperationBucket from "@/server/api/operationBucket";
 import MyLogger from "@/server/base/logger";
 import { RateLimitError, enumToStringMap, ErrorReasons } from "./utils";
-import { fromJSON } from 'postcss';
 
 export default class FirebaseHelper {
-    private static firebaseAppInstance?: App;
+    private static firebaseAppInstance?: FirebaseApp;
     private static firestoreInstance?: Firestore;
     private static operationBucketInstance?: OperationBucket;
   
@@ -44,18 +44,15 @@ export default class FirebaseHelper {
      * Method initiates the firebase app if not initiated yet
      * @returns FirebaseApp instance
      */
-    public static getFirebaseInstance(): App {
-      
+    public static getFirebaseInstance(): FirebaseApp {
       if (
-        (FirebaseHelper.firebaseAppInstance === null ||
-        FirebaseHelper.firebaseAppInstance === undefined) 
+        FirebaseHelper.firebaseAppInstance === null ||
+        FirebaseHelper.firebaseAppInstance === undefined
       ) {
-        FirebaseHelper.firebaseAppInstance = (getApps().length === 0) ? initializeApp({
-          credential: credential.cert(cvSdk)
-        }, "cv-next") :
-        getApp("cv-next");
+        FirebaseHelper.firebaseAppInstance = initializeApp(
+          Definitions.FIREBASE_CONFIG
+        );
       }
-      
       return FirebaseHelper.firebaseAppInstance;
     }
   
@@ -85,11 +82,14 @@ export default class FirebaseHelper {
     data: any,
     collectionName: string
   ): Promise<string | boolean> {
-    let collectionRef = FirebaseHelper.getFirestoreInstance().collection(collectionName);
+    let collectionRef = collection(
+      FirebaseHelper.getFirestoreInstance(),
+      collectionName
+    );
 
     if (FirebaseHelper.getOperationBucketInstance().tryConsumeToken()) {
       try {
-        let res = await collectionRef.add(data);
+        let res = await addDoc(collectionRef, data);
         return res.id;
       } catch (error) {
         MyLogger.logInfo("Error @ FirebaseHelper::addData", error);
@@ -112,12 +112,14 @@ export default class FirebaseHelper {
     data: any,
     collectionName: string
   ): Promise<boolean> {
-    let collectionRef = FirebaseHelper.getFirestoreInstance().collection(collectionName);
-
+    let collectionRef = collection(
+      FirebaseHelper.getFirestoreInstance(),
+      collectionName
+    );
     if (FirebaseHelper.getOperationBucketInstance().tryConsumeToken()) {
       try {
-        const documentRef = collectionRef.doc(id);
-        await documentRef.update(data);
+        const documentRef = doc(collectionRef, id);
+        await updateDoc(documentRef, data);
         return true;
       } catch (error) {
         MyLogger.logInfo("Error @ FirebaseHelper::updateData", error);
@@ -138,7 +140,7 @@ export default class FirebaseHelper {
   ): Promise<QuerySnapshot<DocumentData>> {
     if (FirebaseHelper.getOperationBucketInstance().tryConsumeToken()) {
       try {
-        return await query.get();
+        return await getDocs(query);
       } catch (error) {
         let err = error;
         MyLogger.logInfo("Error @ FirebaseHelper::myGetDocs", error);
