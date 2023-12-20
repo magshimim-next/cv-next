@@ -19,4 +19,4 @@ npm run dev
 ## Roadmap
 A simple web app that will show cv documents hosted on google drive with an option to discuss changes.
 
-Please read the design document for more information.
+Please read the [design document](/DESIGN.md) for more information.
