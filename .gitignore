@@ -4,19 +4,19 @@
 **/.firebaserc
 
 # dependencies
-/node_modules
-/.pnp
+cv_next/node_modules
+cv_next/.pnp
 .pnp.js
 
 # testing
-/coverage
+cv_next/coverage
 
 # next.js
-/.next/
-/out/
+cv_next/.next/
+cv_next/out/
 
 # production
-/build
+cv_next/build
 
 # misc
 .DS_Store
@@ -29,6 +29,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+firebase.config.js
 
 # vercel
 .vercel
@@ -41,36 +42,6 @@ next-env.d.ts
 ### Firebase Patch ###
 .runtimeconfig.json
 .firebase/
-
-### NextJS ###
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# local env files
-.env*.local
-next.config.js
 
 # vercel
 .vercel

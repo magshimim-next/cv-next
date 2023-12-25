@@ -1,38 +1,49 @@
-import 'server-only'
+import "server-only"
 
-export default class Helper {
-  public static epochTimeNow(): number {
-    return new Date().getTime();
+namespace Helper {
+  /**
+   * Returns the current epoch time.
+   *
+   * @return {number} The current epoch time.
+   */
+  export function epochTimeNow(): number {
+    return new Date().getTime()
   }
 
-  // Function to serialize class objects
-  public static serializeObjectToFirebaseUsage(obj: any) {
-    const serialized: any = {};
-    for (const key in obj) {
-      if (
-        Object.prototype.hasOwnProperty.call(obj, key) &&
-        typeof obj[key] !== "function"
-      ) {
-        serialized[key] = obj[key];
+  /**
+   * Serializes an object to a Firebase usage object.
+   *
+   * @param {any} obj - The object to be serialized.
+   * @return {any} The serialized object.
+   */
+  export function serializeObjectToFirebaseUsage(obj: any) {
+    const serializedObj: any = {}
+    for (const prop in obj) {
+      if (typeof obj[prop] !== "function") {
+        serializedObj[prop] = obj[prop]
       }
     }
-
-    return serialized;
+    return serializedObj
   }
 
-  public static getEnumValueById<
+  /**
+   * Returns the value of an enum based on its ID.
+   *
+   * @param {T} enumType - The enum type.
+   * @param {V} id - The ID of the enum value.
+   * @return {T[keyof T] | undefined} The value of the enum or undefined if not found.
+   */
+  export function getEnumValueById<
     T extends Record<string, string | number>,
-    V extends T[keyof T]
+    V extends T[keyof T],
   >(enumType: T, id: V): T[keyof T] | undefined {
-    const enumValues = Object.values(enumType) as V[];
+    const enumValues = Object.values(enumType) as V[]
+    const enumKey = Object.keys(enumType).find(
+      (key) => enumType[key as keyof T] === id
+    )
 
-    if (enumValues.includes(id)) {
-      const enumKey = Object.keys(enumType).find(
-        (key) => enumType[key as keyof T] === id
-      );
-      return enumType[enumKey as keyof T];
-    }
-
-    return undefined;
+    return enumValues.includes(id) ? enumType[enumKey as keyof T] : undefined
   }
 }
+
+export default Helper
