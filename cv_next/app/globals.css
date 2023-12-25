@@ -38,7 +38,7 @@
 
 :root.dark {
   --background: var(--theme-800);
-  --forground: var(--white);
+  --forground: white;
   --muted: var(--theme-500);
   --muted-foreground: var(--theme-100);
   --card: var(--theme-800);
@@ -52,7 +52,7 @@
   --secondary: var(--theme-100);
   --secondary-foreground: var(--theme-800);
   --accent: var(--theme-700);
-  --accent-foreground: var(--white);
+  --accent-foreground: white;
   --destructive: #da6161;
   --destructive-foreground: var(--theme-800);
   --ring: var(--theme-100);
