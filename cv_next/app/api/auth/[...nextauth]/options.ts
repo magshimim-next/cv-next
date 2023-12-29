@@ -4,7 +4,7 @@ import { GoogleProfile } from "next-auth/providers/google";
 import UserModel from "../../../../types/models/user";
 import UsersApi from "../../../../server/api/users";
 import { ErrorReasons } from "../../../../server/api/utils"
-import NextAuth from 'next-auth/next';
+import MyLogger from "@/server/base/logger";
 
 export const options: NextAuthOptions = {
     secret: process.env.NEXTAUTH_SECRET,
@@ -16,24 +16,32 @@ export const options: NextAuthOptions = {
                 let res = await UsersApi.addNewUser(loggedUser);
                 if(res.success)
                 {
-                    console.log("New user was created but by default is inactive");
+                    MyLogger.logDebug(
+                        `New user was created but by default is inactive`
+                    )
                 }
                 else if(res.reason == ErrorReasons.emailExists)
                 {
                     let existingUser = await UsersApi.getUserByEmail(loggedUser.email, true);
                     if(existingUser !== null && existingUser.length > 0)
                     {
-                        console.log("Existing user is active - %d", existingUser[0].getUserType());
+                        MyLogger.logDebug(
+                            `Existing user is active - ${existingUser[0].getUserType()}`
+                        )
                         userActive = existingUser[0].getUserType();
                     }
                     else
                     {
-                        console.log("Existing user is inactive");
+                        MyLogger.logDebug(
+                            `Existing user is inactive`
+                        )
                     }
                 }
                 else
                 {
-                    console.log("An unexpected error");
+                    MyLogger.logDebug(
+                        `An unexpected error`
+                    )
                 }
                 return {
                     ...profile,
