@@ -6,6 +6,7 @@ import UsersApi from "../../../../server/api/users";
 import { ErrorReasons } from "../../../../server/api/utils"
 
 export const options: NextAuthOptions = {
+    secret: process.env.NEXTAUTH_SECRET,
     providers: [
         GoogleProvider({
             async profile(profile: GoogleProfile) {
@@ -37,6 +38,8 @@ export const options: NextAuthOptions = {
                     ...profile,
                     role: profile.role ?? userActive.toString(),
                     id: profile.sub.toString(),
+                    name: profile.name,
+                    email: profile.email
                 }
             },
             clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -54,5 +57,9 @@ export const options: NextAuthOptions = {
             if (session?.user) session.user.role = token.role
             return session
         },
+        async redirect({url, baseUrl}) {
+            if (url.endsWith("signout")) return '${baseUrl}'
+            return baseUrl
+        }
     }
 }

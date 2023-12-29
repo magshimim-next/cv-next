@@ -11,7 +11,7 @@ export default function ServerPage() {
         redirect('/api/auth/signin?callbackUrl=/activated')
     }
 })
-    
+    console.log(session?.user.email)
     return (
       <main>
       <Hero />
