@@ -1,9 +1,12 @@
 import { Suspense } from "react";
+import { getServerSession } from "next-auth/next"
+import { options } from "../api/auth/[...nextauth]/options";
 import { fetchCvs } from "@/app/actions/fetchCvs";
 import Feed from "./components/feed";
 
 export default async function Page() {
-
+  const session = await getServerSession(options);
+  console.log(session?.user.email)
   const fetchedCvs = await fetchCvs({lastId: undefined});
 
   return (
