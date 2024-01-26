@@ -16,6 +16,10 @@ const navLinks = [
   {
     route: "Login",
     path: "/login",
+  },
+  {
+    route: "Signout",
+    path: "/logout",
   }
 ]
 
