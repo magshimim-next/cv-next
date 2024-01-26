@@ -14,7 +14,7 @@ export default class SupabaseHelper<T> {
           SupabaseHelper.supabase === null ||
           SupabaseHelper.supabase === undefined
         ) {
-            SupabaseHelper.supabase = createClient("https://weepggwhsrfmizptbnua.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlZXBnZ3doc3JmbWl6cHRibnVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDQ1NTg2MjgsImV4cCI6MjAyMDEzNDYyOH0.WaGv6-ZyjodzNBT1E9F0itAqQ4_OT8KomlY6GEduU4k")
+            SupabaseHelper.supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "")
         }
         return SupabaseHelper.supabase;
     }

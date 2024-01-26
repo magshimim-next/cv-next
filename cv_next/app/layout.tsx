@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import Navbar from "@/components/layout/navbar"
 import { ThemeProvider } from "@/components/theme-provider"
 import { CvsProvider } from "@/providers/cvsProvider"
+import SupabaseProvider from "@/providers/supabase-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -30,7 +31,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <CvsProvider>
             <Navbar />
             <div className="container mx-auto space-y-8 p-6">
-              {children}
+              <SupabaseProvider>{children}</SupabaseProvider>
             </div>
           </CvsProvider>
         </ThemeProvider>
