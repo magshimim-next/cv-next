@@ -1,6 +1,8 @@
 import 'server-only'
 
-import { createClient, SupabaseClient, PostgrestResponse } from '@supabase/supabase-js'
+import { createClient, SupabaseClient, PostgrestResponse, SelectFromTable } from '@supabase/supabase-js'
+import MyLogger from '../base/logger';
+import { RateLimitError, enumToStringMap } from './utils';
 
 export default class SupabaseHelper<T> {
     private static supabase: SupabaseClient;
@@ -43,7 +45,7 @@ export default class SupabaseHelper<T> {
      * @param tableName the table name
      * @returns true if succeeded.
      */
-    public static async updateData(tableName: string, data: any, id: string): Promise<string | boolean> {
+    public static async updateData(tableName: string, data: any, id: string): Promise<boolean> {
         const { data: responseData, error } = await SupabaseHelper.getSupabaseInstance().from(tableName).update(data).eq('id', id);
     
         if (error) {
@@ -53,4 +55,35 @@ export default class SupabaseHelper<T> {
     
         return true;
     }
+
+     /**
+   * returns the query snapshot with results(documents)
+   * @param query the query
+   * @returns QuerySnapshot or undefined upon error
+   */
+  // DENIS NOTE: DIDNT FINISH THIS FUNCTION, the implementation might be incorrect
+    public static async myGetDocs(
+      query: SelectFromTable<Document>
+      ): Promise<any> {
+      if (SupabaseHelper.getSupabaseInstance()) {
+        try {
+          const { data, error } = await SupabaseHelper.supabase
+          .from(query.table)
+          .select()
+          .eq(query.columns, query.conditions);
+
+        if (error) {
+          throw new Error(error.message);
+        }
+        } catch (error) {
+          let err = error;
+          MyLogger.logInfo("Error @ SupabaseHelper::myGetDocs", error);
+          throw Error(enumToStringMap[ErrorReasons.undefinedErr]);
+        }
+      } else {
+        throw new RateLimitError();
+      }
+    }
+  }
+
 }

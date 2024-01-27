@@ -4,6 +4,7 @@ import Helper from "@/server/base/helper"
 import MyLogger from "@/server/base/logger"
 import Categories from "@/types/models/categories"
 import CvModel from "@/types/models/cv"
+/*
 import {
   DocumentData,
   Query,
@@ -17,9 +18,9 @@ import {
   where,
   documentId,
   CollectionReference,
-} from "firebase/firestore"
+} from "firebase/firestore"*/
 import Definitions from "../base/definitions"
-import FirebaseHelper from "./firebaseHelper"
+import SupabaseHelper from "./supabaseHelper"
 import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils"
 
 const queryLimit: number = Definitions.CVS_PER_PAGE
@@ -63,7 +64,7 @@ export async function getPaginatedCvsByQueryFilter(
 ): Promise<CvModel[] | null> {
   let pageQuery: Query<DocumentData>
   let collectionRef = collection(
-    FirebaseHelper.getFirestoreInstance(),
+    SupabaseHelper.getSupabaseInstance(),
     CvModel.CollectionName
   )
   let filterDeletedQuery = where("deleted", "==", !filterOutDeleted);
@@ -131,7 +132,7 @@ export async function getCvById(cvId: string,
   translateSnapshot: boolean = true)
   : Promise<CvModel | QueryDocumentSnapshot<DocumentData, DocumentData> | undefined> {
   const collectionRef = collectionRefParam ?? collection(
-    FirebaseHelper.getFirestoreInstance(),
+    SupabaseHelper.getSupabaseInstance(),
     CvModel.CollectionName
   )
   const findDocQuery = query(collectionRef,
@@ -176,7 +177,7 @@ export async function _getAllCvsByQueryFilter(
 ): Promise<CvModel[] | null> {
   try {
     let collectionRef = collection(
-      FirebaseHelper.getFirestoreInstance(),
+      SupabaseHelper.getSupabaseInstance(),
       CvModel.CollectionName
     )
     let filterDeletedQuery = where("deleted", "==", !filterOutDeleted)
@@ -258,14 +259,14 @@ export async function getPaginatedCvs(
 export async function updateCV(cv: CvModel): Promise<DbOperationResult> {
   try {
     let data = Helper.serializeObjectToFirebaseUsage(cv.removeBaseData())
-    let res = await FirebaseHelper.updateData(cv.id, data, cv.collectionName)
+    let res = await SupabaseHelper.updateData(cv.id, data, cv.collectionName)
     return new DbOperationResult(
       res,
       res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
       res
     )
   } catch (err) {
-    MyLogger.logInfo("Error @ FirebaseHelper::updateCV", err)
+    MyLogger.logInfo("Error @ cvs::updateCV", err)
     return new DbOperationResult(
       false,
       typeof err === typeof RateLimitError
