@@ -2,17 +2,16 @@ import Image from "next/image"
 import Link from "next/link"
 import generateImageUrl from "@/helpers/imageURLHelper"
 import Categories from "@/types/models/categories"
-import { ClientCvModel } from "@/types/models/cv"
 interface CVCardProps {
-  cv: ClientCvModel
+  cv: CvModel
 }
 
 export default function CVItemRSC({ cv }: CVCardProps) {
   const categoryLink = `/feed?category=${Categories.category[
-    cv.categoryID
+    cv.category_id
   ].toLowerCase()}`
-  const imageUrl = generateImageUrl(cv.documentLink)
-  const formattedDate = new Date(cv.uploadDate).toLocaleDateString("en-US")
+  const imageUrl = generateImageUrl(cv.document_link)
+  const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US")
 
   return (
     <>
@@ -28,7 +27,7 @@ export default function CVItemRSC({ cv }: CVCardProps) {
         <div className="overlay absolute bottom-0 h-1/5 w-full rounded-b-lg bg-white p-6">
           <div className="absolute bottom-0 left-0 mx-5 mb-2.5">
             <div className="mr-2 inline text-xl font-bold text-neutral-700">
-              {cv.userID}
+              {cv.user_id}
             </div>
             <p className="inline text-xs text-neutral-700/75">
               {formattedDate}
@@ -38,7 +37,7 @@ export default function CVItemRSC({ cv }: CVCardProps) {
             href={categoryLink}
             className="absolute bottom-0 right-0 mx-4 mb-2.5 rounded-full bg-neutral-200 px-3 py-1 text-sm font-semibold text-neutral-700 hover:underline"
           >
-            #{Categories.category[cv.categoryID]}
+            #{Categories.category[cv.category_id]}
           </Link>
         </div>
       </div>

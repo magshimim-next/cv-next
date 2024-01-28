@@ -2,7 +2,7 @@ import "server-only"
 
 import MyLogger from "@/server/base/logger"
 import Categories from "@/types/models/categories"
-import Definitions from "../base/definitions"
+import Definitions from "../../lib/definitions"
 import SupabaseHelper from "./supabaseHelper"
 import { PostgrestError } from "@supabase/supabase-js"
 
@@ -119,9 +119,8 @@ export async function getPaginatedCvs(
     const supabase = SupabaseHelper.getSupabaseInstance()
     let query = supabase
       .from("cvs")
-      .select("*", { count: "exact" })
-      .order("id", { ascending: true })
-      .range(from, to)
+      .select("*")
+      .range(from, to - 1)
 
     if (filterOutDeleted) {
       query = query.eq("deleted", false)

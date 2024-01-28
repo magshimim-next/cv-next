@@ -1,4 +1,4 @@
-import Definitions from "@/server/base/definitions";
+import Definitions from "@/lib/definitions";
 import Helper from "@/server/base/helper";
 import BaseModel from "./baseModel";
 

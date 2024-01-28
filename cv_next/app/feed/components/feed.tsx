@@ -7,7 +7,7 @@ import CVItemRSC from "./CVItemRSC"
 import TriggerPagination from "./TriggerPagination"
 import { CvsContext, CvsDispatchContext } from "@/providers/cvsProvider"
 import { ReloadButton } from "@/components/ui/reloadButton"
-import Definitions from "@/server/base/definitions"
+import Definitions from "@/lib/definitions"
 
 export default function Feed({
   initialBatch,
@@ -45,7 +45,7 @@ export default function Feed({
             ...(prevCvs?.length ? prevCvs : []),
             ...fetchedCvs.cvs,
           ])
-          page.current = fetchedCvs.page
+          page.current = fetchedCvs.page + 1
         }
       } else {
         setLoadMore(false)
