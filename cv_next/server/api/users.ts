@@ -1,19 +1,12 @@
 import 'server-only'
 
 import Helper from "@/server/base/helper";
-import {
-  collection,
-  where,
-  query,
-  DocumentData,
-  QueryDocumentSnapshot,
-  QueryFieldFilterConstraint,
-  QuerySnapshot,
-} from "firebase/firestore";
 import UserModel from "@/types/models/user";
 import MyLogger from "@/server/base/logger";
 import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils";
-import FirebaseHelper from './firebaseHelper'
+
+
+//TODO: implement UsersApi with supabase
 
 export default class UsersApi {
   /**
