@@ -28,15 +28,14 @@ export default function Feed({
   const [loadMore, setLoadMore] = useState(true)
 
   useEffect(() => {
-    //update cv-related refs
     cvsRef.current = cvs
   }, [cvs])
 
   const fetchCvsCallback = useCallback(async () => {
     //fetch cvs and handle loading states
     if (loadMore) {
-      const fetchedCvs = await fetchCvsForFeed({ page: page.current })
-
+      const fetchedCvs = await fetchCvsForFeed({ page: page.current + 1 })
+      console.log(fetchedCvs)
       if (fetchedCvs && fetchedCvs.cvs.length > 0) {
         if (fetchedCvs.page === page.current) {
           setLoadMore(false)
@@ -45,7 +44,7 @@ export default function Feed({
             ...(prevCvs?.length ? prevCvs : []),
             ...fetchedCvs.cvs,
           ])
-          page.current = fetchedCvs.page + 1
+          page.current = fetchedCvs.page
         }
       } else {
         setLoadMore(false)

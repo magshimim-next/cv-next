@@ -6,8 +6,6 @@ import Definitions from "../../lib/definitions"
 import SupabaseHelper from "./supabaseHelper"
 import { PostgrestError } from "@supabase/supabase-js"
 
-const queryLimit: number = Definitions.CVS_PER_PAGE
-
 /**
  * Retrieves a CV by its ID from the database.
  *
@@ -113,8 +111,8 @@ export async function getPaginatedCvs(
   try {
     page = page ?? Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER
 
-    const from = page * queryLimit
-    const to = page ? from + queryLimit : queryLimit
+    const from = page * Definitions.CVS_PER_PAGE
+    const to = page ? from + Definitions.CVS_PER_PAGE : Definitions.CVS_PER_PAGE
 
     const supabase = SupabaseHelper.getSupabaseInstance()
     let query = supabase

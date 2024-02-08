@@ -12,15 +12,15 @@ export const fetchCvsForFeed = async ({
   page?: number
   forceReset?: boolean
 }): Promise<PaginatedCvsModel | null> => {
-  MyLogger.logDebug(`new call with id: ${page}`)
-
   if (forceReset) {
     mappedResults = {}
   }
-  MyLogger.logDebug(Object.keys(mappedResults).toString())
-
   if (page && mappedResults?.[page]) {
-    MyLogger.logDebug(`result from cache for id: ${page}`)
+    MyLogger.logDebug(
+      `result from cache for id: ${page}\ncache: ${Object.keys(
+        mappedResults
+      ).toString()}`
+    )
     return mappedResults?.[page]
   }
 
