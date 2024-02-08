@@ -24,10 +24,7 @@ export const fetchCvsForFeed = async ({
     return mappedResults?.[page]
   }
 
-  const result: PaginatedCvsModel | null = await getPaginatedCvs(
-    true,
-    page ?? undefined
-  )
+  const result: PaginatedCvsModel | null = await getPaginatedCvs(true, page)
   if (result) {
     mappedResults[result.page] = result
   }
