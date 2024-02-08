@@ -1,6 +1,6 @@
-import "server-only"
+import 'server-only'
 
-import { FirebaseApp, initializeApp } from "firebase/app"
+import { FirebaseApp, initializeApp } from "firebase/app";
 import {
   Firestore,
   getFirestore,
@@ -12,66 +12,66 @@ import {
   DocumentData,
   QuerySnapshot,
   Query,
-} from "firebase/firestore"
-import Definitions from "@/server/base/definitions"
-import OperationBucket from "@/server/api/operationBucket"
-import MyLogger from "@/server/base/logger"
-import { RateLimitError, enumToStringMap, ErrorReasons } from "./utils"
+} from "firebase/firestore";
+import Definitions from "@/server/base/definitions";
+import OperationBucket from "@/server/api/operationBucket";
+import MyLogger from "@/server/base/logger";
+import { RateLimitError, enumToStringMap, ErrorReasons } from "./utils";
 
 export default class FirebaseHelper {
-  private static firebaseAppInstance?: FirebaseApp
-  private static firestoreInstance?: Firestore
-  private static operationBucketInstance?: OperationBucket
-
-  /**
-   * Method initiates the firebase app if not initiated yet
-   * @returns FirebaseApp instance
-   */
-  public static getOperationBucketInstance(): OperationBucket {
-    if (
-      FirebaseHelper.operationBucketInstance === null ||
-      FirebaseHelper.operationBucketInstance === undefined
-    ) {
-      FirebaseHelper.operationBucketInstance = new OperationBucket(
-        Definitions.MAX_OPERATIONS,
-        Definitions.MAX_OPERATIONS_REFILL_PER_SECOND
-      )
+    private static firebaseAppInstance?: FirebaseApp;
+    private static firestoreInstance?: Firestore;
+    private static operationBucketInstance?: OperationBucket;
+  
+    /**
+     * Method initiates the firebase app if not initiated yet
+     * @returns FirebaseApp instance
+     */
+    public static getOperationBucketInstance(): OperationBucket {
+      if (
+        FirebaseHelper.operationBucketInstance === null ||
+        FirebaseHelper.operationBucketInstance === undefined
+      ) {
+        FirebaseHelper.operationBucketInstance = new OperationBucket(
+          Definitions.MAX_OPERATIONS,
+          Definitions.MAX_OPERATIONS_REFILL_PER_SECOND
+        );
+      }
+      return FirebaseHelper.operationBucketInstance;
     }
-    return FirebaseHelper.operationBucketInstance
-  }
-
-  /**
-   * Method initiates the firebase app if not initiated yet
-   * @returns FirebaseApp instance
-   */
-  public static getFirebaseInstance(): FirebaseApp {
-    if (
-      FirebaseHelper.firebaseAppInstance === null ||
-      FirebaseHelper.firebaseAppInstance === undefined
-    ) {
-      FirebaseHelper.firebaseAppInstance = initializeApp(
-        Definitions.FIREBASE_CONFIG
-      )
+  
+    /**
+     * Method initiates the firebase app if not initiated yet
+     * @returns FirebaseApp instance
+     */
+    public static getFirebaseInstance(): FirebaseApp {
+      if (
+        FirebaseHelper.firebaseAppInstance === null ||
+        FirebaseHelper.firebaseAppInstance === undefined
+      ) {
+        FirebaseHelper.firebaseAppInstance = initializeApp(
+          Definitions.FIREBASE_CONFIG
+        );
+      }
+      return FirebaseHelper.firebaseAppInstance;
     }
-    return FirebaseHelper.firebaseAppInstance
-  }
-
-  /**
-   * Method initiates the firestore if not initiated yet
-   * @returns Firestore instance
-   */
-  public static getFirestoreInstance(): Firestore {
-    if (
-      FirebaseHelper.firestoreInstance === null ||
-      FirebaseHelper.firestoreInstance === undefined
-    ) {
-      FirebaseHelper.firestoreInstance = getFirestore(
-        FirebaseHelper.getFirebaseInstance()
-      )
+  
+    /**
+     * Method initiates the firestore if not initiated yet
+     * @returns Firestore instance
+     */
+    public static getFirestoreInstance(): Firestore {
+      if (
+        FirebaseHelper.firestoreInstance === null ||
+        FirebaseHelper.firestoreInstance === undefined
+      ) {
+        FirebaseHelper.firestoreInstance = getFirestore(
+          FirebaseHelper.getFirebaseInstance()
+        );
+      }
+      return FirebaseHelper.firestoreInstance;
     }
-    return FirebaseHelper.firestoreInstance
-  }
-
+    
   /**
    * Adds data to the proper collection
    * @param data the model serialized to data
@@ -85,19 +85,19 @@ export default class FirebaseHelper {
     let collectionRef = collection(
       FirebaseHelper.getFirestoreInstance(),
       collectionName
-    )
+    );
 
     if (FirebaseHelper.getOperationBucketInstance().tryConsumeToken()) {
       try {
-        let res = await addDoc(collectionRef, data)
-        return res.id
+        let res = await addDoc(collectionRef, data);
+        return res.id;
       } catch (error) {
-        MyLogger.logInfo("Error @ FirebaseHelper::addData", error)
+        MyLogger.logInfo("Error @ FirebaseHelper::addData", error);
       }
     } else {
-      throw new RateLimitError()
+      throw new RateLimitError();
     }
-    return false
+    return false;
   }
 
   /**
@@ -115,19 +115,19 @@ export default class FirebaseHelper {
     let collectionRef = collection(
       FirebaseHelper.getFirestoreInstance(),
       collectionName
-    )
+    );
     if (FirebaseHelper.getOperationBucketInstance().tryConsumeToken()) {
       try {
-        const documentRef = doc(collectionRef, id)
-        await updateDoc(documentRef, data)
-        return true
+        const documentRef = doc(collectionRef, id);
+        await updateDoc(documentRef, data);
+        return true;
       } catch (error) {
-        MyLogger.logInfo("Error @ FirebaseHelper::updateData", error)
+        MyLogger.logInfo("Error @ FirebaseHelper::updateData", error);
       }
     } else {
-      throw new RateLimitError()
+      throw new RateLimitError();
     }
-    return false
+    return false;
   }
 
   /**
@@ -140,14 +140,14 @@ export default class FirebaseHelper {
   ): Promise<QuerySnapshot<DocumentData>> {
     if (FirebaseHelper.getOperationBucketInstance().tryConsumeToken()) {
       try {
-        return await getDocs(query)
+        return await getDocs(query);
       } catch (error) {
-        let err = error
-        MyLogger.logInfo("Error @ FirebaseHelper::myGetDocs", error)
-        throw Error(enumToStringMap[ErrorReasons.undefinedErr])
+        let err = error;
+        MyLogger.logInfo("Error @ FirebaseHelper::myGetDocs", error);
+        throw Error(enumToStringMap[ErrorReasons.undefinedErr]);
       }
     } else {
-      throw new RateLimitError()
+      throw new RateLimitError();
     }
   }
 }

@@ -14,4 +14,5 @@ namespace Categories {
     Cybersecurity,
   }
 }
-export default Categories
+export default Categories;
+

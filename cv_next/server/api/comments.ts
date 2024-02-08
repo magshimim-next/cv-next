@@ -1,6 +1,6 @@
-import "server-only"
+import 'server-only'
 
-import Helper from "@/server/base/helper"
+import Helper from "@/server/base/helper";
 import {
   collection,
   where,
@@ -8,11 +8,12 @@ import {
   DocumentData,
   QueryDocumentSnapshot,
   QueryFieldFilterConstraint,
-} from "firebase/firestore"
-import CommentModel from "@/types//models/comment"
-import MyLogger from "@/server/base/logger"
-import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils"
-import FirebaseHelper from "./firebaseHelper"
+} from "firebase/firestore";
+import CommentModel from "@/types//models/comment";
+import MyLogger from "@/server/base/logger";
+import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils";
+import FirebaseHelper from './firebaseHelper'
+
 
 export default class CommentsApi {
   /**
@@ -24,22 +25,24 @@ export default class CommentsApi {
     comment: CommentModel
   ): Promise<DbOperationResult> {
     try {
-      let data = Helper.serializeObjectToFirebaseUsage(comment.removeBaseData())
-      let res = await FirebaseHelper.addData(data, comment.collectionName)
+      let data = Helper.serializeObjectToFirebaseUsage(
+        comment.removeBaseData()
+      );
+      let res = await FirebaseHelper.addData(data, comment.collectionName);
       return new DbOperationResult(
         typeof res === "string",
         res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
         res
-      )
+      );
     } catch (err) {
-      MyLogger.logInfo("Error @ FirebaseHelper::addNewComment", err)
+      MyLogger.logInfo("Error @ FirebaseHelper::addNewComment", err);
       return new DbOperationResult(
         false,
         typeof err === typeof RateLimitError
           ? ErrorReasons.rateLimitPerSecondReached
           : ErrorReasons.undefinedErr,
         err
-      )
+      );
     }
   }
 
@@ -52,33 +55,35 @@ export default class CommentsApi {
     comment: CommentModel
   ): Promise<DbOperationResult> {
     try {
-      let data = Helper.serializeObjectToFirebaseUsage(comment.removeBaseData())
+      let data = Helper.serializeObjectToFirebaseUsage(
+        comment.removeBaseData()
+      );
       let res = await FirebaseHelper.updateData(
         comment.id,
         data,
         comment.collectionName
-      )
+      );
       return new DbOperationResult(
         res,
         res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
         res
-      )
+      );
     } catch (err) {
-      MyLogger.logInfo("Error @ FirebaseHelper::updateComment", err)
+      MyLogger.logInfo("Error @ FirebaseHelper::updateComment", err);
       return new DbOperationResult(
         false,
         typeof err === typeof RateLimitError
           ? ErrorReasons.rateLimitPerSecondReached
           : ErrorReasons.undefinedErr,
         err
-      )
+      );
     }
   }
 
   private static documentSnapshotToComment(
     documentSnapshot: QueryDocumentSnapshot
   ): CommentModel {
-    const documentData = documentSnapshot.data() as DocumentData
+    const documentData = documentSnapshot.data() as DocumentData;
     return new CommentModel(
       documentSnapshot.id,
       documentData.userID,
@@ -90,7 +95,7 @@ export default class CommentsApi {
       documentData.upvotes,
       documentData.downvotes,
       documentData.lastUpdate
-    )
+    );
   }
 
   private static async getAllCommentsByQueryFilter(
@@ -101,23 +106,25 @@ export default class CommentsApi {
       let collectionRef = collection(
         FirebaseHelper.getFirestoreInstance(),
         CommentModel.CollectionName
-      )
+      );
       const q = query(
         collectionRef,
         queryFilter,
         where("deleted", "==", !filterOutDeleted)
-      )
-      const querySnapshot = await FirebaseHelper.myGetDocs(q)
-      const matchingDocuments: CommentModel[] = []
+      );
+      const querySnapshot = await FirebaseHelper.myGetDocs(q);
+      const matchingDocuments: CommentModel[] = [];
 
       querySnapshot.forEach((documentSnapshot) => {
-        matchingDocuments.push(this.documentSnapshotToComment(documentSnapshot))
-      })
-      return matchingDocuments
+        matchingDocuments.push(
+          this.documentSnapshotToComment(documentSnapshot)
+        );
+      });
+      return matchingDocuments;
     } catch (err) {
-      MyLogger.logInfo("Error @ FirebaseHelper::updateComment", err)
+      MyLogger.logInfo("Error @ FirebaseHelper::updateComment", err);
     }
-    return null
+    return null;
   }
 
   /**
@@ -133,7 +140,7 @@ export default class CommentsApi {
     return this.getAllCommentsByQueryFilter(
       where("userID", "==", userId),
       filterOutDeleted
-    )
+    );
   }
 
   /**
@@ -146,7 +153,7 @@ export default class CommentsApi {
   ): Promise<CommentModel[] | null> {
     return this.getAllCommentsByQueryFilter(
       where("documentID", "==", documentID)
-    )
+    );
   }
 
   /**
@@ -159,6 +166,6 @@ export default class CommentsApi {
   ): Promise<CommentModel[] | null> {
     return this.getAllCommentsByQueryFilter(
       where("parentCommentID", "==", parentCommentID)
-    )
+    );
   }
 }

@@ -1,14 +1,14 @@
-"use client"
-import { FirebaseApp, initializeApp } from "firebase/app"
-import { Auth, getAuth, GoogleAuthProvider } from "firebase/auth"
-import Definitions from "@/server/base/definitions"
-import MyLogger from "@/server/base/logger"
+"use client";
+import { FirebaseApp, initializeApp } from "firebase/app";
+import { Auth, getAuth, GoogleAuthProvider } from "firebase/auth";
+import Definitions from "@/server/base/definitions";
+import MyLogger from "@/server/base/logger";
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 export default class FirebaseAuthHelper {
-  private static firebaseAppInstance?: FirebaseApp
-  private static firebaseAuthInstance?: Auth
+  private static firebaseAppInstance?: FirebaseApp;
+  private static firebaseAuthInstance?: Auth;
 
   /**
    * Method initiates the firebase app if not initiated yet
@@ -21,9 +21,9 @@ export default class FirebaseAuthHelper {
     ) {
       FirebaseAuthHelper.firebaseAppInstance = initializeApp(
         Definitions.FIREBASE_CONFIG
-      )
+      );
     }
-    return FirebaseAuthHelper.firebaseAppInstance
+    return FirebaseAuthHelper.firebaseAppInstance;
   }
 
   /**
@@ -37,9 +37,9 @@ export default class FirebaseAuthHelper {
     ) {
       FirebaseAuthHelper.firebaseAuthInstance = getAuth(
         this.getFirebaseInstance()
-      )
+      );
     }
-    return FirebaseAuthHelper.firebaseAuthInstance
+    return FirebaseAuthHelper.firebaseAuthInstance;
   }
 
   public static getAuthUiConfig() {
@@ -53,11 +53,11 @@ export default class FirebaseAuthHelper {
           // Return type determines whether we continue the redirect automatically
           // or whether we leave that to developer to handle.
           //MyLogger.logInfo("sign in", authResult);
-          MyLogger.logInfo("sign in", authResult.user.email) //V
-          MyLogger.logInfo("sign in", authResult.user.displayName) //V
-          MyLogger.logInfo("sign in", authResult.additionalUserInfo.isNewUser) //V
-          MyLogger.logInfo("sign in", authResult.credential) //V
-          return false
+          MyLogger.logInfo("sign in", authResult.user.email); //V
+          MyLogger.logInfo("sign in", authResult.user.displayName); //V
+          MyLogger.logInfo("sign in", authResult.additionalUserInfo.isNewUser); //V
+          MyLogger.logInfo("sign in", authResult.credential); //V
+          return false;
         },
         uiShown: function () {
           // The widget is rendered.
@@ -66,7 +66,7 @@ export default class FirebaseAuthHelper {
             document.getElementById("loader") !== null &&
             document.getElementById("loader") !== undefined
           ) {
-            document.getElementById("loader")!.style.display = "none"
+            document.getElementById("loader")!.style.display = "none";
           }
         },
       },
@@ -81,7 +81,7 @@ export default class FirebaseAuthHelper {
       tosUrl: "<your-tos-url>",
       // Privacy policy url.
       privacyPolicyUrl: "<your-privacy-policy-url>",
-    }
-    return config
+    };
+    return config;
   }
 }

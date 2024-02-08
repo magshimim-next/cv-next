@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "format": "prettier --write ."
+    "lint": "next lint"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.1.1",
@@ -41,7 +40,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "prettier": "3.2.5",
+    "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.4.1"
   }
 }

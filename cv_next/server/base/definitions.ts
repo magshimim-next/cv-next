@@ -1,11 +1,11 @@
-import "server-only"
+import 'server-only'
 
 export default class Definitions {
-  public static readonly undefinedIndex = -1
-  public static readonly CVS_PER_PAGE = 10
-  public static readonly DEFAULT_PAGINATION_FIRST_PAGE_NUMBER = 1
-  public static readonly MAX_OPERATIONS = 10
-  public static readonly MAX_OPERATIONS_REFILL_PER_SECOND = 2
+  public static readonly undefinedIndex = -1;
+  public static readonly CVS_PER_PAGE = 10;
+  public static readonly DEFAULT_PAGINATION_FIRST_PAGE_NUMBER = 1;
+  public static readonly MAX_OPERATIONS = 10;
+  public static readonly MAX_OPERATIONS_REFILL_PER_SECOND = 2;
 
   // Your web app's Firebase configuration
   public static readonly FIREBASE_CONFIG = {
@@ -15,5 +15,5 @@ export default class Definitions {
     storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
     messagingSenderId: process.env.FIREBASE_MESSAGEING_SENDER_ID,
     appId: process.env.FIREBASE_APP_ID,
-  }
+  };
 }
