@@ -4,10 +4,10 @@ import CVItem from "@/app/feed/components/CVItem"
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { fetchCvsForFeed } from "@/app/actions/fetchCvs"
 import CVItemRSC from "./CVItemRSC"
-import TriggerPagination from "./TriggerPagination"
 import { CvsContext, CvsDispatchContext } from "@/providers/cvsProvider"
 import { ReloadButton } from "@/components/ui/reloadButton"
 import Definitions from "@/lib/definitions"
+import { useInView } from "react-intersection-observer"
 
 export default function Feed({
   initialBatch,
@@ -26,6 +26,22 @@ export default function Feed({
     initialBatch?.page ?? Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER
   )
   const [loadMore, setLoadMore] = useState(true)
+
+  function TriggerPagination({
+    callbackTrigger,
+  }: {
+    callbackTrigger: () => Promise<void>
+  }) {
+    const [triggerRef, inView] = useInView()
+
+    useEffect(() => {
+      if (inView) {
+        callbackTrigger()
+      }
+    }, [callbackTrigger, inView])
+
+    return <div ref={triggerRef}></div>
+  }
 
   useEffect(() => {
     cvsRef.current = cvs
@@ -81,13 +97,15 @@ export default function Feed({
           ) : (
             <></>
           )}
-        </div>
-        {loadMore ? (
           <TriggerPagination callbackTrigger={fetchCvsCallback} />
-        ) : (
+        </div>
+        {!loadMore ? (
           <div className="sticky bottom-5 z-10 flex justify-center">
             <ReloadButton callback={forceReload}>Reload</ReloadButton>
           </div>
+        ) : (
+          //TODO: replace with proper spinner
+          <div className="z-10 flex justify-center">Loading...</div>
         )}
       </div>
     </main>
