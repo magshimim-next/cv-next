@@ -48,19 +48,17 @@ export default function Feed({
   }, [cvs])
 
   const fetchCvsCallback = useCallback(async () => {
-    //fetch cvs and handle loading states
     if (loadMore) {
-      const fetchedCvs = await fetchCvsForFeed({ page: page.current + 1 })
-      console.log(fetchedCvs)
-      if (fetchedCvs && fetchedCvs.cvs.length > 0) {
-        if (fetchedCvs.page === page.current) {
+      const response = await fetchCvsForFeed({ page: page.current + 1 })
+      if (response && response.cvs.length > 0) {
+        if (response.page === page.current) {
           setLoadMore(false)
         } else {
           setCvs((prevCvs) => [
             ...(prevCvs?.length ? prevCvs : []),
-            ...fetchedCvs.cvs,
+            ...response.cvs,
           ])
-          page.current = fetchedCvs.page
+          page.current = response.page
         }
       } else {
         setLoadMore(false)
