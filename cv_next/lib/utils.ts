@@ -1,27 +1,27 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
- 
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
 export function isBrowser() {
-  return typeof window !== 'undefined';
+  return typeof window !== "undefined"
 }
 
 export function decodeValue(value: string | undefined) {
   if (!value) {
-    return null;
+    return null
   }
 
-  const valueToString = value.toString();
+  const valueToString = value.toString()
 
   if (isBrowser()) {
-    return atob(valueToString);
+    return atob(valueToString)
   }
 
-  const buff = Buffer.from(valueToString, 'base64');
-  return buff.toString('ascii');
+  const buff = Buffer.from(valueToString, "base64")
+  return buff.toString("ascii")
 }
 
 /*
@@ -30,15 +30,15 @@ export function decodeValue(value: string | undefined) {
  */
 export function encodeValue(value: string | undefined) {
   if (!value) {
-    return null;
+    return null
   }
 
-  const valueToString = value.toString();
+  const valueToString = value.toString()
 
   if (isBrowser()) {
-    return btoa(valueToString);
+    return btoa(valueToString)
   }
 
-  const buff = Buffer.from(valueToString, 'ascii');
-  return buff.toString('base64');
+  const buff = Buffer.from(valueToString, "ascii")
+  return buff.toString("base64")
 }

@@ -1,10 +1,9 @@
-import { Suspense } from "react";
-import { fetchCvs } from "@/app/actions/fetchCvs";
-import Feed from "./components/feed";
+import { Suspense } from "react"
+import { fetchCvs } from "@/app/actions/fetchCvs"
+import Feed from "./components/feed"
 
 export default async function Page() {
-
-  const fetchedCvs = await fetchCvs({lastId: undefined});
+  const fetchedCvs = await fetchCvs({ lastId: undefined })
 
   return (
     <main>
