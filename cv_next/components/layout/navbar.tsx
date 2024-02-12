@@ -12,6 +12,14 @@ const navLinks = [
   {
     route: "Feed",
     path: "/feed",
+  },
+  {
+    route: "About",
+    path: "/about",
+  },
+  {
+    route: "Login",
+    path: "/login",
   }
 ]
 
