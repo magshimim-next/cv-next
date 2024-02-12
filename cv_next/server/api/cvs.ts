@@ -106,7 +106,7 @@ export async function getAllCvsByCategory(
  */
 export async function getPaginatedCvs(
   filterOutDeleted: boolean = true,
-  page: number = Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER
+  page: number = Definitions.PAGINATION_INIT_PAGE_NUMBER
 ): Promise<PaginatedCvsModel | null> {
   try {
     const from = page * Definitions.CVS_PER_PAGE

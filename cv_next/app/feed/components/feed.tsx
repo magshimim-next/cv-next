@@ -9,23 +9,21 @@ import { ReloadButton } from "@/components/ui/reloadButton"
 import Definitions from "@/lib/definitions"
 import { useInView } from "react-intersection-observer"
 
-export default function Feed({
-  initialBatch,
-}: {
-  initialBatch: PaginatedCvsModel | null
-}) {
+export const revalidate = 0
+
+export default function Feed() {
   const cvsContextConsumer = useContext(CvsContext)
   const cvsDispatchContextConsumer = useContext(CvsDispatchContext)
   const initialCvs = cvsContextConsumer.cvs?.length
     ? cvsContextConsumer.cvs
-    : initialBatch?.cvs ?? []
+    : []
 
   const [cvs, setCvs] = useState<CvModel[]>(initialCvs)
   const cvsRef = useRef<CvModel[] | null>()
   const page = useRef<number>(
     cvsContextConsumer.cvs?.length
       ? cvsContextConsumer.page
-      : initialBatch?.page ?? Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER
+      : Definitions.PAGINATION_INIT_PAGE_NUMBER
   )
   const [loadMore, setLoadMore] = useState(true)
 
@@ -57,14 +55,15 @@ export default function Feed({
 
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
-      const response = await fetchCvsForFeed({ page: page.current + 1 })
+      var nextPage = page.current + 1
+      const response = await fetchCvsForFeed({ page: nextPage })
       if (
         response &&
         response.cvs.length > 0 &&
         response.page !== page.current
       ) {
         setCvs((prevCvs) => [...prevCvs, ...response.cvs])
-        page.current = response.page
+        page.current = nextPage
       } else {
         setLoadMore(false)
       }
@@ -89,10 +88,11 @@ export default function Feed({
       type: `reset`,
       payload: {
         cvs: [],
-        page: Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER,
+        page: Definitions.PAGINATION_INIT_PAGE_NUMBER,
       },
     })
     setCvs([])
+    page.current = Definitions.PAGINATION_INIT_PAGE_NUMBER
     setLoadMore(true)
   }
 

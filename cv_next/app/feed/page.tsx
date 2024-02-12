@@ -1,14 +1,13 @@
 import { Suspense } from "react"
 import { fetchCvsForFeed } from "@/app/actions/fetchCvs"
 import Feed from "./components/feed"
+import Definitions from "@/lib/definitions"
 
 export default async function Page() {
-  const fetchedCvs = await fetchCvsForFeed({ page: undefined })
-
   return (
     <main>
       <Suspense fallback={<div>Loading...</div>}>
-        <Feed initialBatch={fetchedCvs} />
+        <Feed />
       </Suspense>
     </main>
   )
