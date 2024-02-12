@@ -20,13 +20,21 @@ export default function Feed({
     ? cvsContextConsumer.cvs
     : initialBatch?.cvs ?? []
 
-  const [cvs, setCvs] = useState<CvModel[] | null>(initialCvs)
+  const [cvs, setCvs] = useState<CvModel[]>(initialCvs)
   const cvsRef = useRef<CvModel[] | null>()
   const page = useRef<number>(
-    initialBatch?.page ?? Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER
+    cvsContextConsumer.cvs?.length
+      ? cvsContextConsumer.page
+      : initialBatch?.page ?? Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER
   )
   const [loadMore, setLoadMore] = useState(true)
 
+  /**
+   * Trigger pagination when this element comes into view.
+   *
+   * @param {Function} callbackTrigger - A function that triggers pagination when called
+   * @return {JSX.Element} A div element with a ref for triggering pagination
+   */
   function TriggerPagination({
     callbackTrigger,
   }: {
@@ -50,16 +58,13 @@ export default function Feed({
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
       const response = await fetchCvsForFeed({ page: page.current + 1 })
-      if (response && response.cvs.length > 0) {
-        if (response.page === page.current) {
-          setLoadMore(false)
-        } else {
-          setCvs((prevCvs) => [
-            ...(prevCvs?.length ? prevCvs : []),
-            ...response.cvs,
-          ])
-          page.current = response.page
-        }
+      if (
+        response &&
+        response.cvs.length > 0 &&
+        response.page !== page.current
+      ) {
+        setCvs((prevCvs) => [...prevCvs, ...response.cvs])
+        page.current = response.page
       } else {
         setLoadMore(false)
       }
@@ -71,13 +76,22 @@ export default function Feed({
     //TODO: add time-based revalidation for context
     return () => {
       if (cvsRef.current) {
-        cvsDispatchContextConsumer({ type: `replace`, payload: cvsRef.current })
+        cvsDispatchContextConsumer({
+          type: `replace`,
+          payload: { cvs: cvsRef.current, page: page.current },
+        })
       }
     }
   }, [cvsDispatchContextConsumer])
 
   const forceReload = () => {
-    cvsDispatchContextConsumer({ type: `reset`, payload: [] })
+    cvsDispatchContextConsumer({
+      type: `reset`,
+      payload: {
+        cvs: [],
+        page: Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER,
+      },
+    })
     setCvs([])
     setLoadMore(true)
   }
