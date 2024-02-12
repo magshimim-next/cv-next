@@ -60,3 +60,6 @@ export default class UserModel implements BaseModel {
     return res !== undefined ? res : UserTypes.userType.regular;
   }
 }
+
+export type ClientUserModel = Omit<UserModel, "removeBaseData" | "updateName" | "updateEmail"
+| "updateLastLogin" | "updateActiveValue" | "getUserType">;

@@ -51,7 +51,7 @@ export default class OperationBucket {
       return;
     }
     // Start the periodic task
-    const interval = setInterval(this.refillTokens, 1000, this); // Execute task every 1 second (1000 milliseconds)
+    const interval = setInterval(this.refillTokens, 2000, this); // Execute task every 1 second (1000 milliseconds)
     this.interval = interval;
   }
 
