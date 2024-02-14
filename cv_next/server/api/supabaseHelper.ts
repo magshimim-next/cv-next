@@ -1,56 +1,26 @@
-import 'server-only'
+import "server-only"
 
-import { createClient, SupabaseClient, PostgrestResponse } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from "@supabase/supabase-js"
 
 export default class SupabaseHelper<T> {
-    private static supabase: SupabaseClient;
+  private static supabase: SupabaseClient
 
-    /**
-     * Method initiates the supabase client if not initiated yet
-     * @returns supabase client
-     */
-    public static getSupabaseInstance(): SupabaseClient {
-        if (
-          SupabaseHelper.supabase === null ||
-          SupabaseHelper.supabase === undefined
-        ) {
-            SupabaseHelper.supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "")
-        }
-        return SupabaseHelper.supabase;
+  /**
+   * Returns the Supabase client instance. If the instance is not already
+   * created, it creates a new instance and returns it.
+   *
+   * @return {SupabaseClient<Database>} The Supabase client instance
+   */
+  public static getSupabaseInstance(): SupabaseClient<Database> {
+    if (
+      SupabaseHelper.supabase === null ||
+      SupabaseHelper.supabase === undefined
+    ) {
+      SupabaseHelper.supabase = createClient<Database>(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      )
     }
-
-    /**
-     * Adds data to the proper table
-     * @param data the model serialized to data
-     * @param tableName the collection name
-     * @returns true if succeeded.
-     */
-    public static async addData(data: any, tableName: string): Promise<string | boolean> {
-        const { data: responseData, error } = await SupabaseHelper.getSupabaseInstance().from(tableName).insert(data);
-
-        if (error) {
-          console.error(`Error adding data to ${tableName}:`, error);
-          return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Updates data of the proper collection
-     * @param id the id of the data to update
-     * @param data the model serialized to data
-     * @param tableName the table name
-     * @returns true if succeeded.
-     */
-    public static async updateData(tableName: string, data: any, id: string): Promise<string | boolean> {
-        const { data: responseData, error } = await SupabaseHelper.getSupabaseInstance().from(tableName).update(data).eq('id', id);
-
-        if (error) {
-          console.error(`Error updating data on ${tableName} ${id}:`, error);
-          return false;
-        }
-
-        return true;
-    }
+    return SupabaseHelper.supabase
+  }
 }

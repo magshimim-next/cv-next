@@ -1,30 +1,32 @@
-'use server';
+"use server"
 
-import { getPaginatedCvs } from "@/server/api/cvs";
-import CvModel, { ClientCvModel } from "@/types/models/cv";
+import { getPaginatedCvs } from "@/server/api/cvs"
+import MyLogger from "@/server/base/logger"
 
-let mappedResults: {[key: string]: ClientCvModel[] | null} = {};
+let mappedResults: { [key: number]: PaginatedCvsModel | null } = {}
 
-export const fetchCvs = async ({ lastId, forceReset = false } : { lastId?: string, forceReset?: boolean }): Promise<ClientCvModel[] | null> => {
-    console.log(Object.keys(mappedResults));
-    if (forceReset) {
-        mappedResults = {};
-    }
-    if (lastId && mappedResults?.[lastId]) {
-        console.log(`result from cache for id: ${lastId}`);
-        
-        return mappedResults?.[lastId];
-    }
-    console.log(`new call with id: ${lastId}`);
-    
+export const fetchCvsForFeed = async ({
+  page,
+  forceReset = false,
+}: {
+  page?: number
+  forceReset?: boolean
+}): Promise<PaginatedCvsModel | null> => {
+  if (forceReset) {
+    mappedResults = {}
+  }
+  if (page && mappedResults?.[page]) {
+    MyLogger.logDebug(
+      `result from cache for id: ${page}\ncache: ${Object.keys(
+        mappedResults
+      ).toString()}`
+    )
+    return mappedResults?.[page]
+  }
 
-    const fetchedCvs: CvModel[] | null = await getPaginatedCvs(true, lastId);
-    const result = fetchedCvs?.map(serverCv => transformCvToClient(serverCv)) ?? null;
-    mappedResults[`${lastId}`] = result;    
-    return result;
-};
-
-const transformCvToClient = (serverCv: CvModel) => {
-    const {removeBaseData, setResolved, setDeleted, updateDescription, getCategory, ...clientCv} = serverCv;
-    return clientCv;
+  const result: PaginatedCvsModel | null = await getPaginatedCvs(true, page)
+  if (result) {
+    mappedResults[result.page] = result
+  }
+  return result
 }

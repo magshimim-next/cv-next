@@ -1,17 +1,20 @@
 /** @type {import('next').NextConfig} */
-const firebaseConfig = require('./firebase.config');
 
 const nextConfig = {
-    env: {
-        ...firebaseConfig,
-    },
-    images: {
-        domains: ['lh5.googleusercontent.com'],
-        unoptimized: true,
-    },
-    experimental: {
-        serverActions: true,
-    }
-};
+  images: {
+    domains: ["lh5.googleusercontent.com"],
+    unoptimized: true,
+  },
+  experimental: {
+    serverActions: true,
+  },
+  webpack: (config) => {
+    config.externals.push({
+      "utf-8-validate": "commonjs utf-8-validate",
+      "bufferutil": "commonjs bufferutil",
+    })
+    return config
+  },
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig

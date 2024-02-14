@@ -1,19 +1,19 @@
 {
-  "name": "next-shadcn-landing",
+  "name": "cv_next",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@hookform/resolvers": "^3.1.1",
     "@radix-ui/react-dropdown-menu": "^2.0.5",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
-    "@supabase/auth-helpers-sveltekit": "^0.11.0",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.39.3",
@@ -26,7 +26,6 @@
     "clsx": "^2.0.0",
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.12",
-    "firebase": "^10.3.1",
     "lucide-react": "^0.263.1",
     "next": "13.4.12",
     "next-themes": "^0.2.1",
@@ -46,7 +45,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "prettier": "^3.0.0",
+    "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "^0.4.1"
   }
 }
