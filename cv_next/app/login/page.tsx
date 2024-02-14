@@ -5,7 +5,6 @@ import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 
 export default async function Page() {
-    //const supabase = SupabaseHelper.getSupabaseInstance()
     const supabaseClient = createClientComponentClient()
     return (
         <main>
