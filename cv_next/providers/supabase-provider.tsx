@@ -1,50 +1,70 @@
-"use client";
+'use client'
 
-import { createContext, useContext, useEffect, useState } from "react";
-import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
-import { useRouter } from "next/navigation";
+import { createContext, useContext, useEffect, useState } from 'react'
+import { Session, SupabaseClient, createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useRouter } from 'next/navigation'
 
-import type { SupabaseClient } from "@supabase/auth-helpers-nextjs";
+type MaybeSession = Session | null
 
 type SupabaseContext = {
-	supabase: SupabaseClient;
-};
-
-const Context = createContext<SupabaseContext | undefined>(undefined);
-
-export default function SupabaseProvider({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
-	const [supabase] = useState(() => createPagesBrowserClient());
-	const router = useRouter();
-
-	useEffect(() => {
-		const {
-			data: { subscription },
-		} = supabase.auth.onAuthStateChange(() => {
-			router.refresh();
-		});
-
-		return () => {
-			subscription.unsubscribe();
-		};
-	}, [router, supabase]);
-
-	return (
-		<Context.Provider value={{ supabase }}>
-			<>{children}</>
-		</Context.Provider>
-	);
+  supabase: SupabaseClient<any, string>
+  session: MaybeSession
 }
 
-export const useSupabase = () => {
-	const context = useContext(Context);
+const Context = createContext<SupabaseContext | undefined>(undefined)
 
-	if (context === undefined) {
-		throw new Error("useSupabase must be used inside SupabaseProvider");
-	}
+export default function SupabaseProvider({
+  children,
+  session,
+}: {
+  children: React.ReactNode
+  session: MaybeSession
+}) {
+  const supabase = createClientComponentClient()
+  const router = useRouter()
 
-	return context;
-};
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_, _session) => {
+      if (_session?.access_token !== session?.access_token) {
+        router.refresh()
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [router, supabase, session])
+
+  return (
+    <Context.Provider value={{ supabase, session }}>
+      <>{children}</>
+    </Context.Provider>
+  )
+}
+
+export const useSupabase = <
+  Database = any,
+  SchemaName extends string & keyof Database = 'public' extends keyof Database
+    ? 'public'
+    : string & keyof Database
+>() => {
+  let context = useContext(Context)
+
+  if (context === undefined) {
+    throw new Error('useSupabase must be used inside SupabaseProvider')
+  }
+
+  return context.supabase as SupabaseClient<Database, SchemaName>
+}
+
+export const useSession = () => {
+  let context = useContext(Context)
+
+  if (context === undefined) {
+    throw new Error('useSession must be used inside SupabaseProvider')
+  }
+
+  return context.session
+}
