@@ -10,7 +10,7 @@ export async function middleware(req: NextRequest) {
 	if (req.nextUrl.pathname.startsWith("/logout"))
 	{
 		supabase.auth.signOut();
-		res.cookies.delete("sb-weepggwhsrfmizptbnua-auth-token");
+		res.cookies.delete(process.env.NEXT_COOKIE_AUTH_NAME!);
 		return res;
 	}
 	if (!activeSession.session)
