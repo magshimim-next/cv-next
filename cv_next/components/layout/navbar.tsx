@@ -13,6 +13,14 @@ const navLinks = [
     route: "Feed",
     path: "/feed",
   },
+  {
+    route: "Login",
+    path: "/login",
+  },
+  {
+    route: "Signout",
+    path: "/logout",
+  }
 ]
 
 export default function Navbar() {
