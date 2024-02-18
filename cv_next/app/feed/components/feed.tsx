@@ -9,8 +9,6 @@ import { ReloadButton } from "@/components/ui/reloadButton"
 import Definitions from "@/lib/definitions"
 import { useInView } from "react-intersection-observer"
 
-export const revalidate = 0
-
 export default function Feed() {
   const cvsContextConsumer = useContext(CvsContext)
   const cvsDispatchContextConsumer = useContext(CvsDispatchContext)
