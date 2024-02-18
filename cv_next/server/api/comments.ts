@@ -2,6 +2,9 @@ import "server-only"
 
 import MyLogger from "@/server/base/logger"
 import SupabaseHelper from "./supabaseHelper"
+import Definitions from "@/lib/definitions"
+
+export const revalidate = Definitions.COMMENTS_REVALIDATE_TIME_IN_SECONDS
 
 // async function addNewComment(
 //   comment: CommentModel
