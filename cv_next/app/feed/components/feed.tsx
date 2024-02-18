@@ -55,7 +55,7 @@ export default function Feed() {
 
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
-      var nextPage = page.current + 1
+      const nextPage = page.current + 1
       const response = await fetchCvsForFeed({ page: nextPage })
       if (
         response &&

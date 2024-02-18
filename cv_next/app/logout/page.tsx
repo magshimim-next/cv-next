@@ -1,15 +1,12 @@
-import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { redirect } from "next/navigation"
+import { Button } from "@/components/ui/button"
 
 export default async function Page() {
-  
-  redirect("/");
+  redirect("/")
 
   return (
     <main>
-      <Button>
-        Signout
-      </Button>
+      <Button>Signout</Button>
     </main>
   )
 }

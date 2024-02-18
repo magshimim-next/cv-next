@@ -12,7 +12,7 @@ export default function HeroHeader() {
           <h1 className="text-4xl font-bold lg:text-6xl">
             {inactiveHeader.header}
           </h1>
-          <h2 className="text-muted-foreground text-lg font-light lg:text-3xl">
+          <h2 className="text-lg font-light text-muted-foreground lg:text-3xl">
             {inactiveHeader.subheader}
           </h2>
         </div>

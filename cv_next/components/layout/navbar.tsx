@@ -20,7 +20,7 @@ const navLinks = [
   {
     route: "Signout",
     path: "/logout",
-  }
+  },
 ]
 
 export default function Navbar() {

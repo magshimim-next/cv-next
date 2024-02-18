@@ -1,8 +1,12 @@
-'use client'
+"use client"
 
-import { createContext, useContext, useEffect, useState } from 'react'
-import { Session, SupabaseClient, createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useRouter } from 'next/navigation'
+import { createContext, useContext, useEffect, useState } from "react"
+import {
+  Session,
+  SupabaseClient,
+  createClientComponentClient,
+} from "@supabase/auth-helpers-nextjs"
+import { useRouter } from "next/navigation"
 
 type MaybeSession = Session | null
 
@@ -46,14 +50,14 @@ export default function SupabaseProvider({
 
 export const useSupabase = <
   Database = any,
-  SchemaName extends string & keyof Database = 'public' extends keyof Database
-    ? 'public'
-    : string & keyof Database
+  SchemaName extends string & keyof Database = "public" extends keyof Database
+    ? "public"
+    : string & keyof Database,
 >() => {
   let context = useContext(Context)
 
   if (context === undefined) {
-    throw new Error('useSupabase must be used inside SupabaseProvider')
+    throw new Error("useSupabase must be used inside SupabaseProvider")
   }
 
   return context.supabase as SupabaseClient<Database, SchemaName>
@@ -63,7 +67,7 @@ export const useSession = () => {
   let context = useContext(Context)
 
   if (context === undefined) {
-    throw new Error('useSession must be used inside SupabaseProvider')
+    throw new Error("useSession must be used inside SupabaseProvider")
   }
 
   return context.session
