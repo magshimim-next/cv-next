@@ -2,7 +2,7 @@
 
 import CVItem from "@/app/feed/components/CVItem"
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { fetchCvsForFeed } from "@/app/actions/fetchCvs"
+import { fetchCvsForFeed } from "@/app/actions/cvs/fetchCvs"
 import CVItemRSC from "./CVItemRSC"
 import { CvsContext, CvsDispatchContext } from "@/providers/cvsProvider"
 import { ReloadButton } from "@/components/ui/reloadButton"
