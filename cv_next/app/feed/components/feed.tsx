@@ -8,6 +8,7 @@ import { CvsContext, CvsDispatchContext } from "@/providers/cvsProvider"
 import { ReloadButton } from "@/components/ui/reloadButton"
 import Definitions from "@/lib/definitions"
 import { useInView } from "react-intersection-observer"
+import { FilterPanel, filterObj } from "@/app/feed/components/filterPanel"
 
 export const revalidate = 0
 
@@ -26,6 +27,11 @@ export default function Feed() {
       : Definitions.PAGINATION_INIT_PAGE_NUMBER
   )
   const [loadMore, setLoadMore] = useState(true)
+  const [filters, setFilters] = useState<filterObj>({
+    searchValue: "",
+    categoryId: null
+  })
+
 
   /**
    * Trigger pagination when this element comes into view.
@@ -56,7 +62,7 @@ export default function Feed() {
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
       var nextPage = page.current + 1
-      const response = await fetchCvsForFeed({ page: nextPage })
+      const response = await fetchCvsForFeed({ page: nextPage, forceReset: true, filters: filters })
       if (
         response &&
         response.cvs.length > 0 &&
@@ -68,7 +74,7 @@ export default function Feed() {
         setLoadMore(false)
       }
     }
-  }, [loadMore])
+  }, [loadMore, filters])
 
   useEffect(() => {
     //before unmount, save current cvs state to context for smoother navigation
@@ -96,10 +102,16 @@ export default function Feed() {
     setLoadMore(true)
   }
 
+  const onFilterChange = (filters: filterObj) => {
+    setFilters(filters)
+    forceReload()
+  }
+
   return (
     <main>
+      <FilterPanel defaultFilters={filters} cvs={cvs} onChange={onFilterChange}></FilterPanel>
       <div className="container mx-auto space-y-8 p-6">
-        <div className="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 justify-evenly">
           {cvs ? (
             cvs.map((cv) => (
               <CVItem key={cv.id} cv={cv}>

@@ -30,13 +30,14 @@ export default function Navbar() {
     }
   }, [navbar])
 
-  return (
-    <header className="select-none">
+  return <>
+    <div className="w-full h-[48px]"/>
+    <header className="select-none fixed top-0 w-full z-50 backdrop-blur-3xl bg-black bg-opacity-75">
       <nav className="mx-auto justify-between px-4 md:flex md:items-center md:px-8 lg:max-w-7xl">
         <div>
           <div className="flex items-center justify-between py-3 md:block md:py-5">
             <Link href="/" onClick={handleClick}>
-              <h1 className="text-2xl font-bold duration-200 lg:hover:scale-[1.10]">
+              <h1 className="text-2xl font-bold duration-200 lg:hover:scale-[1.10] text-white">
                 CV-NEXT
               </h1>
             </Link>
@@ -91,7 +92,7 @@ export default function Navbar() {
               {navLinks.map((link) => (
                 <li key={link.route}>
                   <Link
-                    className="text-lg text-primary hover:underline"
+                    className="text-lg text-white hover:underline"
                     href={link.path}
                     onClick={handleClick}
                   >
@@ -107,5 +108,5 @@ export default function Navbar() {
         </div>
       </nav>
     </header>
-  )
+  </> 
 }
