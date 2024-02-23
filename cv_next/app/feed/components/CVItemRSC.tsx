@@ -44,7 +44,7 @@ export default function CVItemRSC({ cv }: CVCardProps) {
           </div>
           <Link
             href={categoryLink}
-            className="absolute bottom-0 right-0 mx-4 mb-2.5 rounded-full bg-neutral-200 px-3 py-1 text-sm font-semibold text-neutral-700 hover:underline hover:bg-white"
+            className="absolute bottom-0 right-0 mx-4 mb-2.5 rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:underline hover:bg-gray-400"
           >
             #{Categories.category[cv.category_id]}
           </Link>

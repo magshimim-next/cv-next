@@ -39,7 +39,7 @@ export const FilterPanel = ({defaultFilters, onChange, cvs}: {
                 getValueById={(id: number) => {return Categories.category[id]}}>
 
             </DropdownInput>
-            <ModeSwitch value={modeValue} values={MODES} onChange={setModeValue}></ModeSwitch>
+            {/* <ModeSwitch value={modeValue} values={MODES} onChange={setModeValue}></ModeSwitch> */}
         </div>
     )
   }

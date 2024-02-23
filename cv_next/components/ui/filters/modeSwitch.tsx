@@ -15,7 +15,7 @@ export const ModeSwitch = ({
     }
 
     return <>
-        <div className={`flex justify-center items-center relative w-1/6 h-2/6 whitespace-nowrap bg-white border-gray-400 border-2 px-10 py-4 rounded-md cursor-pointer box-border`} onClick={onClick}>
+        <div className={`flex justify-center items-center relative w-1/6 h-3/6 whitespace-nowrap bg-white border-gray-40 border-2 px-10 py-4 rounded-md cursor-pointer box-border`} onClick={onClick}>
             <div className='text-black'>
                 {value}
             </div>
