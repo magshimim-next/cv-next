@@ -2,15 +2,13 @@
 
 import CVItem from "@/app/feed/components/CVItem"
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { fetchCvsForFeed } from "@/app/actions/fetchCvs"
+import { fetchCvsForFeed } from "@/app/actions/cvs/fetchCvs"
 import CVItemRSC from "./CVItemRSC"
 import { CvsContext, CvsDispatchContext } from "@/providers/cvsProvider"
 import { ReloadButton } from "@/components/ui/reloadButton"
 import Definitions from "@/lib/definitions"
 import { useInView } from "react-intersection-observer"
 import { FilterPanel, filterObj } from "@/app/feed/components/filterPanel"
-
-export const revalidate = 0
 
 export default function Feed() {
   const cvsContextConsumer = useContext(CvsContext)
@@ -61,12 +59,11 @@ export default function Feed() {
 
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
-      var nextPage = page.current + 1
-      const response = await fetchCvsForFeed({ page: nextPage, forceReset: true, filters: filters })
+      const nextPage = page.current + 1
+      const response = await fetchCvsForFeed({ page: nextPage, filters: filters })
       if (
         response &&
-        response.cvs.length > 0 &&
-        response.page !== page.current
+        response.cvs.length > 0
       ) {
         setCvs((prevCvs) => [...prevCvs, ...response.cvs])
         page.current = nextPage

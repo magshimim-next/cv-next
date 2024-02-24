@@ -7,6 +7,8 @@ import SupabaseHelper from "./supabaseHelper"
 import { PostgrestError } from "@supabase/supabase-js"
 import { filterObj } from "@/app/feed/components/filterPanel"
 
+export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS
+
 /**
  * Retrieves a CV by its ID from the database.
  *
