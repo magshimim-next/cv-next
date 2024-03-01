@@ -1,8 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { useContext } from "react"
 import {
-  Session,
-  SupabaseClient,
-  createClientComponentClient,
+  SupabaseClient
 } from "@supabase/auth-helpers-nextjs"
 import { Context } from "@/providers/supabase-provider"
 

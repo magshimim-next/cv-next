@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useEffect } from "react"
 import {
   Session,
   SupabaseClient,
