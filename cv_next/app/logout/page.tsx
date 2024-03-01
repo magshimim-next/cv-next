@@ -1,15 +1,10 @@
 'use client'
 import { redirect } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { createBrowserClient } from "@supabase/ssr";
-
+import { useSupabase } from "@/hooks/supabaseHooks";
 export default function Page() {
 
-  // This should probably move to a different location, wasnt sure where to put it tho...
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  );
+  const supabase = useSupabase()
   supabase.auth.signOut()
 
   redirect("/")
