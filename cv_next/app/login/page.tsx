@@ -1,20 +1,9 @@
-/* eslint-disable @next/next/no-async-client-component */
-"use client"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import { Auth } from "@supabase/auth-ui-react"
-import { ThemeSupa } from "@supabase/auth-ui-shared"
+import {login} from '../actions/login/gmailAuth'
 
-export default async function Page() {
-  const supabaseClient = createClientComponentClient()
+export default function Page() {
   return (
-    <main>
-      <Auth
-        supabaseClient={supabaseClient}
-        appearance={{ theme: ThemeSupa }}
-        providers={["google"]}
-        theme="dark"
-        onlyThirdPartyProviders
-      />
-    </main>
+    <form>
+      <button formAction={login}>Log in</button>
+    </form>
   )
 }
