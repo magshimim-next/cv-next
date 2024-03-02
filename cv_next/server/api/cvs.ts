@@ -125,12 +125,14 @@ export async function getPaginatedCvs(
     console.log("filters", filters)
     if(filters) {
       if(filters.searchValue){  
-        query = query.textSearch('description', filters.searchValue)
+      query = query.textSearch('description', filters.searchValue, {
+        type:"plain"
+      })
       }
       if(filters.categoryId){  
         console.log("catagory id:", filters.categoryId)
         query = query.eq("category_id", filters.categoryId)
-      }  
+      }
     }    
 
     if (filterOutDeleted) {
