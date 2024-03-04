@@ -75,14 +75,22 @@ export const revalidate = Definitions.COMMENTS_REVALIDATE_TIME_IN_SECONDS
  */
 export async function getAllCommentsByCVId(
   cvId: string,
-  ascending: boolean = false
+  ascending: boolean = false,
+  filterOutDeleted = true
 ): Promise<CommentModel[] | null> {
   try {
-    const { data: comments, error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = SupabaseHelper.getSupabaseInstance()
+    let query = supabase
       .from("comments")
       .select("*")
       .eq("document_id", cvId)
       .order("last_update", { ascending: ascending })
+
+    if (filterOutDeleted) {
+      query = query.eq("deleted", false)
+    }
+
+    const { data: comments, error } = await query
 
     if (error) {
       MyLogger.logInfo("Error @ comments::getAllCommentsByDocumentId", error)

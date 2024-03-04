@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { getCvById } from "@/server/api/cvs"
 import { decodeValue } from "@/lib/utils"
 import { CvPreview } from "./components/cvPreview"
-import { fetchComments } from "@/app/actions/comments/fetchComments"
+import CommentsSection from "./components/commentSection/commentsSection"
 
 export default async function Page({ params }: { params: { cvId: string } }) {
   const { cvId } = params
@@ -13,14 +13,11 @@ export default async function Page({ params }: { params: { cvId: string } }) {
   if (!decodedCvId) {
     notFound()
   }
-
   const cv = await getCvById(decodedCvId)
 
   if (cv === null) {
     notFound()
   }
-
-  const comments = await fetchComments(decodedCvId)
 
   return (
     <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[65%_35%] md:gap-x-4">
@@ -28,11 +25,7 @@ export default async function Page({ params }: { params: { cvId: string } }) {
         {cv ? <CvPreview cv={cv} /> : null}
       </section>
       <section className="h-[78.75rem] flex-col self-start">
-        {comments
-          ? comments.map((comment) => (
-              <div key={comment.id}>{comment.data}</div>
-            ))
-          : null}
+        <CommentsSection cv={cv} />
       </section>
     </div>
   )
