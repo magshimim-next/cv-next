@@ -1,20 +1,19 @@
-/* eslint-disable @next/next/no-async-client-component */
 "use client"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-import { Auth } from "@supabase/auth-ui-react"
-import { ThemeSupa } from "@supabase/auth-ui-shared"
+import { Auth } from '@supabase/auth-ui-react'
+import { useSupabase } from "@/hooks/supabaseHooks";
+import { ThemeSupa } from '@supabase/auth-ui-shared'
 
-export default async function Page() {
-  const supabaseClient = createClientComponentClient()
+export default function Page() {
+  const supabase = useSupabase()
+
   return (
-    <main>
-      <Auth
-        supabaseClient={supabaseClient}
-        appearance={{ theme: ThemeSupa }}
-        providers={["google"]}
-        theme="dark"
-        onlyThirdPartyProviders
-      />
-    </main>
+    <Auth
+      supabaseClient={supabase}
+      appearance={{theme: ThemeSupa}}
+      theme='dark'
+      providers={['google']}
+      redirectTo='http://localhost:3000/auth/callback'
+      onlyThirdPartyProviders
+    />
   )
 }

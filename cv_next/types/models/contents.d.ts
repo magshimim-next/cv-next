@@ -1,4 +1,4 @@
-export type HeroHeader = {
+export type PageHeader = {
   header: string
   subheader: string
   image: string
