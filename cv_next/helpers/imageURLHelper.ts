@@ -7,10 +7,11 @@ const errorUrl = "/public/error.jgp" // TODO: replace with real URL here
  * @param {string} link - The Google Drive share link from which to extract the ID.
  * @return {string | null} The extracted ID or null if no ID is found.
  */
-function getIdFromLink(link: string): string | null {
+export function getIdFromLink(link: string): string | null {
+  console.log(link)
   const idPattern = /\/d\/([a-zA-Z0-9_-]+)/
   const match = link.match(idPattern)
-  return match?.[1] ?? null
+  return match?.[1] ?? null ?? null
 }
 
 /**
@@ -39,7 +40,7 @@ function generateUrlSuffix(
  * @param {boolean} [forceRatio] - Indicates if the image should maintain its aspect ratio.
  * @returns {string} The generated URL.
  */
-export default function generateImageUrl(
+export function getGoogleImageUrl(
   link: string,
   width?: number,
   height?: number,

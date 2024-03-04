@@ -1,7 +1,10 @@
 import Image from "next/image"
 import Link from "next/link"
-import generateImageUrl from "@/helpers/imageURLHelper"
 import Categories from "@/types/models/categories"
+import { useRef, useState } from "react"
+import { getIdFromLink } from "@/helpers/imageURLHelper"
+
+const errorUrl = "/public/error.jgp" // TODO: replace with real URL here
 interface CVCardProps {
   cv: CvModel
 }
@@ -10,8 +13,24 @@ export default function CVItemRSC({ cv }: CVCardProps) {
   const categoryLink = `/feed?category=${Categories.category[
     cv.category_id
   ].toLowerCase()}`
-  const imageUrl = generateImageUrl(cv.document_link)
+  const cvId = getIdFromLink(cv.document_link)
+  if (!cvId) {
+    return null
+  }
+  const imageUrl = getImageURL(cvId) ?? errorUrl
+
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US")
+
+  const [retryCount, setRetryCount] = useState(1)
+  const imageRef = useRef<HTMLImageElement>(null)
+  const handleImageError = () => {
+    if (retryCount <= 30) {
+      setTimeout(() => {
+        imageRef.current!.src = imageUrl
+        setRetryCount(retryCount + 1)
+      }, 2000 * retryCount)
+    }
+  }
 
   return (
     <>
@@ -19,9 +38,11 @@ export default function CVItemRSC({ cv }: CVCardProps) {
         width={500}
         height={500 * 1.4142}
         className="w-full rounded-lg p-2"
+        onError={handleImageError}
         src={imageUrl}
         alt="CV Preview"
         priority
+        ref={imageRef}
       />
       <div className="overlay gradient-blur-backdrop absolute bottom-0 flex h-1/6 w-full rounded-b-lg">
         <div className="overlay absolute bottom-0 h-1/5 w-full rounded-b-lg bg-white p-6">
