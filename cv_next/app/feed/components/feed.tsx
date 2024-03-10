@@ -55,10 +55,7 @@ export default function Feed() {
     if (loadMore) {
       const nextPage = page.current + 1
       const response = await fetchCvsForFeed({ page: nextPage })
-      if (
-        response &&
-        response.cvs.length > 0
-      ) {
+      if (response && response.cvs.length > 0) {
         setCvs((prevCvs) => [...prevCvs, ...response.cvs])
         page.current = nextPage
       } else {

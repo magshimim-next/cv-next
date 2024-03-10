@@ -1,7 +1,5 @@
 import { useContext } from "react"
-import {
-  SupabaseClient
-} from "@supabase/auth-helpers-nextjs"
+import { SupabaseClient } from "@supabase/auth-helpers-nextjs"
 import { Context } from "@/providers/supabase-provider"
 
 export const useSupabase = <
