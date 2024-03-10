@@ -37,7 +37,7 @@ export async function middleware(request: NextRequest) {
         remove(name: string, options: CookieOptions) {
           request.cookies.set({
             name,
-            value: '',
+            value: "",
             ...options,
           })
           response = NextResponse.next({
@@ -47,7 +47,7 @@ export async function middleware(request: NextRequest) {
           })
           response.cookies.set({
             name,
-            value: '',
+            value: "",
             ...options,
           })
         },
@@ -55,17 +55,15 @@ export async function middleware(request: NextRequest) {
     }
   )
   const { data: activatedUser, error } = await supabase.auth.getUser()
-  if(error || !activatedUser?.user) {
+  if (error || !activatedUser?.user) {
     return NextResponse.rewrite(new URL("/login", request.url))
-  }
-  else {
+  } else {
     const { data: user, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", activatedUser.user.id)
-    .single()
-    if (user?.user_type == "inactive" || error)
-    {
+      .from("profiles")
+      .select("*")
+      .eq("id", activatedUser.user.id)
+      .single()
+    if (user?.user_type == "inactive" || error) {
       return NextResponse.rewrite(new URL("/inactive", request.url))
     }
   }
