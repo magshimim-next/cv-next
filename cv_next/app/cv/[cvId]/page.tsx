@@ -5,6 +5,7 @@ import { getCvById } from "@/server/api/cvs"
 import { decodeValue } from "@/lib/utils"
 import { CvPreview } from "./components/cvPreview"
 import CommentsSection from "./components/commentSection/commentsSection"
+import CommentForm from "./components/commentSection/commentForm"
 
 export default async function Page({ params }: { params: { cvId: string } }) {
   const { cvId } = params
@@ -24,7 +25,9 @@ export default async function Page({ params }: { params: { cvId: string } }) {
       <section className="h-[78.75rem] flex-col rounded-lg">
         {cv ? <CvPreview cv={cv} /> : null}
       </section>
+
       <section className="h-[78.75rem] flex-col self-start">
+        <CommentForm cv={cv} userId={"6bd39bb1-b786-44a9-b059-655c6fba2aab"} />
         <CommentsSection cv={cv} />
       </section>
     </div>

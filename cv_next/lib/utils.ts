@@ -1,3 +1,5 @@
+import { Json } from "@/types/database.types"
+import { PostgrestError } from "@supabase/supabase-js"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -41,4 +43,8 @@ export function encodeValue(value: string | undefined) {
 
   const buff = Buffer.from(valueToString, "ascii")
   return buff.toString("base64")
+}
+
+export function PostgressErrorToJson(error: PostgrestError) {
+  return JSON.stringify(error, null, 2)
 }
