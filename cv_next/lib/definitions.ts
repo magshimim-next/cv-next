@@ -1,5 +1,3 @@
-import { PageHeader } from "@/types/models/contents"
-
 export default class Definitions {
   public static readonly undefinedIndex = -1
   public static readonly CVS_PER_PAGE = 6
