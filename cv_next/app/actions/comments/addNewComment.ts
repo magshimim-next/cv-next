@@ -1,8 +1,8 @@
 "use server"
 
+import { Err } from "@/lib/utils"
 import { addNewCommentToCv } from "@/server/api/comments"
 import MyLogger from "@/server/base/logger"
-import { Result, Err } from "ts-results"
 
 /**
  * Adds a new comment to the cv.
@@ -18,7 +18,7 @@ export const addNewComment = async (
     return result
   } else {
     MyLogger.logInfo(result.val)
-    return new Err(
+    return Err(
       "An error has occurred while commenting on the CV. Please try again later."
     )
   }

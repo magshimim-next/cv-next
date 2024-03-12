@@ -45,6 +45,29 @@ export function encodeValue(value: string | undefined) {
   return buff.toString("base64")
 }
 
-export function PostgressErrorToJson(error: PostgrestError) {
-  return JSON.stringify(error, null, 2)
+/**
+ * Creates an Ok Result object with the specified value.
+ *
+ * @param {T} val - the value to be wrapped in the Result object
+ * @return {Result<T, never>} the Result object containing the specified value
+ */
+export function Ok<T>(val: T): Result<T, never> {
+  return { ok: true, val }
+}
+
+export namespace Ok {
+  export const EMPTY = Ok<undefined>(undefined)
+}
+
+/**
+ * Creates an Error Result object with the specified error value.
+ *
+ * @param {E} val - the error value
+ * @return {Result<never, E>} the Result object with ok set to false and containing the specified error value
+ */
+export function Err<E>(
+  val: E,
+  postgrestError?: PostgrestError
+): Result<never, E> {
+  return { ok: false, val, postgrestError }
 }

@@ -2,8 +2,7 @@ import "server-only"
 
 import SupabaseHelper from "./supabaseHelper"
 import Definitions from "@/lib/definitions"
-import { Ok, Err, Result } from "ts-results"
-import { PostgressErrorToJson } from "@/lib/utils"
+import { Ok, Err } from "@/lib/utils"
 
 export const revalidate = Definitions.COMMENTS_REVALIDATE_TIME_IN_SECONDS
 
@@ -22,9 +21,7 @@ export async function addNewCommentToCv(
       .insert(comment)
       .select()
     if (error) {
-      return Err(
-        "Error @ " + addNewCommentToCv.name + "\n" + PostgressErrorToJson(error)
-      )
+      return Err("Error @ " + addNewCommentToCv.name + "\n", error)
     }
     return Ok.EMPTY
   } catch (err) {
@@ -96,12 +93,7 @@ export async function getAllCommentsByCVId(
     const { data: comments, error } = await query
 
     if (error) {
-      return Err(
-        "Error @ " +
-          getAllCommentsByCVId.name +
-          "\n" +
-          PostgressErrorToJson(error)
-      )
+      return Err("Error @ " + getAllCommentsByCVId.name + "\n", error)
     }
     return Ok(comments)
   } catch (error) {

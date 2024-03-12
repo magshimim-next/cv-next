@@ -11,7 +11,7 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
     <>
       {comments
         ? comments.map((comment) => (
-            <Comment key={comment.id} comment={comment} userId={cv.user_id!} />
+            <Comment key={comment.id} comment={comment} />
           ))
         : null}
     </>
