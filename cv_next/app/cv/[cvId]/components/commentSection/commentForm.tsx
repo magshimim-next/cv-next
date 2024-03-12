@@ -1,19 +1,15 @@
 "use client"
 import { addNewComment } from "@/app/actions/comments/addNewComment"
+import { useSupabase } from "@/hooks/supabaseHooks"
 import { useRef } from "react"
 import { RxPaperPlane } from "react-icons/rx"
 import { mutate } from "swr"
 
-export default function CommentForm({
-  cv,
-  userId,
-}: {
-  cv: CvModel
-  userId: string
-}) {
+export default function CommentForm({ cv }: { cv: CvModel }) {
   const formRef = useRef<HTMLFormElement | null>(null)
 
   const formAction = async (formData: FormData) => {
+    const userId = "6bd39bb1-b786-44a9-b059-655c6fba2aab" //(await useSupabase().auth.getUser()).data.user?.id
     const comment: NewCommentModel = {
       data: formData.get("comment") as string,
       document_id: cv.id,

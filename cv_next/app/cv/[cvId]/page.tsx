@@ -19,7 +19,6 @@ export default async function Page({ params }: { params: { cvId: string } }) {
   if (cv === null) {
     notFound()
   }
-
   return (
     <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[65%_35%] md:gap-x-4">
       <section className="h-[78.75rem] flex-col rounded-lg">
@@ -27,7 +26,7 @@ export default async function Page({ params }: { params: { cvId: string } }) {
       </section>
 
       <section className="h-[78.75rem] flex-col self-start">
-        <CommentForm cv={cv} userId={"6bd39bb1-b786-44a9-b059-655c6fba2aab"} />
+        <CommentForm cv={cv} />
         <CommentsSection cv={cv} />
       </section>
     </div>
