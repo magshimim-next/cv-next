@@ -4,7 +4,7 @@ import { useRef } from "react"
 import { RxPaperPlane } from "react-icons/rx"
 import { mutate } from "swr"
 
-export default function commentForm({
+export default function CommentForm({
   cv,
   userId,
 }: {
