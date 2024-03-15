@@ -7,9 +7,10 @@ import { mutate } from "swr"
 
 export default function CommentForm({ cv }: { cv: CvModel }) {
   const formRef = useRef<HTMLFormElement | null>(null)
+  const supabase = useSupabase()
 
   const formAction = async (formData: FormData) => {
-    const userId = "6bd39bb1-b786-44a9-b059-655c6fba2aab" //(await useSupabase().auth.getUser()).data.user?.id
+    const userId = (await supabase.auth.getUser()).data.user?.id || ""
     const comment: NewCommentModel = {
       data: formData.get("comment") as string,
       document_id: cv.id,
