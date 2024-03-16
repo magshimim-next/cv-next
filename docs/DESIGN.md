@@ -24,7 +24,7 @@ We will also provide a general comment section under each post.
 ## Technologies
 **Hosting:** AWS
 
-**DB:** Firebase Firestore
+**DB:** Supabase
 
 **JS Framework:** Next.js
 
