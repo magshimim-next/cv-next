@@ -1,9 +1,9 @@
-import Hero from "@/components/pages/deactivated"
+import Inactive from "./components/inactive"
 
-export default function Inactive() {
+export default function Page() {
   return (
     <main>
-      <Hero />
+      <Inactive />
     </main>
   )
 }
