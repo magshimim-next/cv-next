@@ -1,12 +1,15 @@
 "use client"
+import { deleteComment } from "@/app/actions/comments/deleteComment"
 import { getUser } from "@/app/actions/users/getUser"
-import useSWR from "swr"
+import useSWR, { mutate } from "swr"
 
 export default function Comment({
   comment,
+  userId,
   childDepth = 0,
 }: {
   comment: CommentModel
+  userId: string
   childDepth?: number
 }) {
   const date = new Date(comment.last_update)
@@ -14,8 +17,13 @@ export default function Comment({
     ? `p-3 ml-${6 / childDepth} lg:ml-${12 / childDepth} border-t border-gray-400 dark:border-gray-600`
     : "p-6 mb-3 border-b border-gray-200 rounded-lg"
 
-  const { data } = useSWR(comment.user_id, getUser)
+  const deleteCommentAction = async () => {
+    await deleteComment(comment.id).finally(() => {
+      mutate(comment.document_id)
+    })
+  }
 
+  const { data } = useSWR(comment.user_id, getUser)
   if (data && data.ok) {
     const userName =
       data.val.username && data.val.username.length > 0
@@ -43,6 +51,11 @@ export default function Comment({
           </div>
         </footer>
         <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
+        {comment.user_id === userId ? (
+          <button className="text-red-500" onClick={deleteCommentAction}>
+            Delete
+          </button>
+        ) : null}
       </article>
     )
   } else {

@@ -29,42 +29,28 @@ export async function addNewCommentToCv(
   }
 }
 
-// async function updateComment(
-//   comment: CommentModel
-// ): Promise<DbOperationResult> {
-//   try {
-//     let data = Helper.serializeObjectToFirebaseUsage(comment.removeBaseData())
-//     let res = await FirebaseHelper.updateData(
-//       comment.id,
-//       data,
-//       comment.collectionName
-//     )
-//     return new DbOperationResult(
-//       res,
-//       res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
-//       res
-//     )
-//   } catch (err) {
-//     MyLogger.logInfo("Error @ FirebaseHelper::updateComment", err)
-//     return new DbOperationResult(
-//       false,
-//       typeof err === typeof RateLimitError
-//         ? ErrorReasons.rateLimitPerSecondReached
-//         : ErrorReasons.undefinedErr,
-//       err
-//     )
-//   }
-// }
-
-// async function getAllCommentsByUserId(
-//   userId: string,
-//   filterOutDeleted: boolean = true
-// ): Promise<CommentModel[] | null> {
-//   return this.getAllCommentsByQueryFilter(
-//     where("userID", "==", userId),
-//     filterOutDeleted
-//   )
-// }
+/**
+ * Marks a comment as deleted.
+ *
+ * @param {string} commentId - The ID of the comment to be marked as deleted.
+ * @return {Promise<Result<void, string>>} A promise that resolves to a Result object indicating the success or failure of the operation.
+ */
+export async function markCommentAsDeleted(
+  commentId: string
+): Promise<Result<void, string>> {
+  try {
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from("comments")
+      .update({ deleted: true })
+      .eq("id", commentId)
+    if (error) {
+      return Err("Error @ " + markCommentAsDeleted.name + "\n", error)
+    }
+    return Ok.EMPTY
+  } catch (err) {
+    return Err("Error @ " + markCommentAsDeleted.name + "\n" + err)
+  }
+}
 
 /**
  * Retrieves all comments associated with a specific CV ID.
