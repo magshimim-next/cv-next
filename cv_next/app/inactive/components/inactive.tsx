@@ -2,9 +2,9 @@ import Link from "next/link"
 import Image from "next/image"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { inactiveHeader } from "@/config/contents"
+import { inactiveHeader } from "@/lib/definitions"
 
-export default function HeroHeader() {
+export default function Inactive() {
   return (
     <section className="container flex flex-col gap-4 pb-12 pt-4 text-center lg:items-center lg:gap-8 lg:py-20">
       <div className="flex flex-1 flex-col items-center gap-4 text-center lg:gap-8">
