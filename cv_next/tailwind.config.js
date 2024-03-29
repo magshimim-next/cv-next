@@ -38,6 +38,11 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      gridTemplateColumns: {
+        '1': 'repeat(1, minmax(0, auto))',
+        '2': 'repeat(2, minmax(0, auto))',
+        '3': 'repeat(3, minmax(0, auto))'
+      },
 
       colors: {
         "theme": {

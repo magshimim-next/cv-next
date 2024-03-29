@@ -5,6 +5,7 @@ import Definitions from "../../lib/definitions"
 import SupabaseHelper from "./supabaseHelper"
 import { PostgrestError } from "@supabase/supabase-js"
 import logger from "../base/logger"
+import { filterObj } from "@/app/feed/components/filterPanel"
 
 export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS
 
@@ -108,7 +109,8 @@ export async function getAllCvsByCategory(
  */
 export async function getPaginatedCvs(
   filterOutDeleted: boolean = true,
-  page: number = Definitions.PAGINATION_INIT_PAGE_NUMBER
+  page: number = Definitions.PAGINATION_INIT_PAGE_NUMBER,
+  filters?: filterObj,
 ): Promise<PaginatedCvsModel | null> {
   try {
     const from = page * Definitions.CVS_PER_PAGE
@@ -120,11 +122,25 @@ export async function getPaginatedCvs(
       .select("*")
       .range(from, to - 1)
 
+    console.log("filters", filters)
+    if(filters) {
+      if(filters.searchValue){  
+      query = query.textSearch('description', filters.searchValue, {
+        type:"plain"
+      })
+      }
+      if(filters.categoryId){  
+        console.log("catagory id:", filters.categoryId)
+        query = query.eq("category_id", filters.categoryId)
+      }
+    }    
+
     if (filterOutDeleted) {
       query = query.eq("deleted", false)
     }
 
     const { data: cvs, error } = await query
+    console.log("cvs:", cvs?.map(cv => cv.category_id))
 
     if (error) {
       logger.error("Error @ getPaginatedCvs", error)
