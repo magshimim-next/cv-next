@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -45,6 +45,7 @@
     "types": "^0.1.1",
     "typescript": "5.1.6",
     "utf-8-validate": "^6.0.3",
+    "winston": "^3.12.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {

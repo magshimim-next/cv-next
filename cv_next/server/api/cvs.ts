@@ -1,10 +1,10 @@
 import "server-only"
 
-import MyLogger from "@/server/base/logger"
 import Categories from "@/types/models/categories"
 import Definitions from "../../lib/definitions"
 import SupabaseHelper from "./supabaseHelper"
 import { PostgrestError } from "@supabase/supabase-js"
+import logger from "../base/logger"
 
 export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS
 
@@ -22,7 +22,7 @@ export async function getCvById(cvId: string): Promise<CvModel | null> {
       .eq("id", cvId)
 
     if (error) {
-      MyLogger.logInfo("Error @ cvs::getCvById", error)
+      logger.error("Error @ cvs::getCvById", error)
       return null
     }
 
@@ -35,7 +35,7 @@ export async function getCvById(cvId: string): Promise<CvModel | null> {
 
     return cvs[0] as CvModel
   } catch (error) {
-    MyLogger.logInfo("Error @ cvs::getCvById", error)
+    logger.error("Error @ cvs::getCvById", error)
     return null
   }
 }
@@ -62,13 +62,13 @@ export async function getCvsByUserId(
     const { data: cvs, error } = await query
 
     if (error) {
-      MyLogger.logInfo("Error @ getCvsByUserId", error)
+      logger.error("Error @ getCvsByUserId", error)
       return null
     }
 
     return cvs as CvModel[]
   } catch (error) {
-    MyLogger.logInfo("Error @ getCvsByUserId", error)
+    logger.error("Error @ getCvsByUserId", error)
     return null
   }
 }
@@ -88,13 +88,13 @@ export async function getAllCvsByCategory(
     const { data: cvs, error } = await query
 
     if (error) {
-      MyLogger.logInfo("Error @ getAllCvsByCategory", error)
+      logger.error("Error @ getAllCvsByCategory", error)
       return null
     }
 
     return cvs as CvModel[]
   } catch (error) {
-    MyLogger.logInfo("Error @ getAllCvsByCategory", error)
+    logger.error("Error @ getAllCvsByCategory", error)
     return null
   }
 }
@@ -127,13 +127,13 @@ export async function getPaginatedCvs(
     const { data: cvs, error } = await query
 
     if (error) {
-      MyLogger.logInfo("Error @ getPaginatedCvs", error)
+      logger.error("Error @ getPaginatedCvs", error)
       return null
     }
 
     return { page: page, cvs: cvs as CvModel[] }
   } catch (error) {
-    MyLogger.logInfo("Error @ getPaginatedCvs", error)
+    logger.error("Error @ getPaginatedCvs", error)
     return null
   }
 }
@@ -151,12 +151,12 @@ export async function updateCV(cv: CvModel): Promise<PostgrestError | null> {
       .update(cv)
       .eq("id", cv.id)
     if (error) {
-      MyLogger.logInfo("Error @ cvs::updateCV", error)
+      logger.error("Error @ cvs::updateCV", error)
       return error
     }
     return null
   } catch (error) {
-    MyLogger.logInfo("Error @ cvs::updateCV", error)
+    logger.error("Error @ cvs::updateCV", error)
     //TODO: handle error
     return null
   }

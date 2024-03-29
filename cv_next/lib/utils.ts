@@ -66,8 +66,9 @@ export namespace Ok {
  * @return {Result<never, E>} the Result object with ok set to false and containing the specified error value
  */
 export function Err<E>(
-  val: E,
-  postgrestError?: PostgrestError
+  where: E,
+  postgrestError?: PostgrestError,
+  err?: Error
 ): Result<never, E> {
-  return { ok: false, val, postgrestError }
+  return { ok: false, where, postgrestError, err }
 }

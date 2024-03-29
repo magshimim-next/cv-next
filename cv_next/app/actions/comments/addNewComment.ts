@@ -2,8 +2,7 @@
 
 import { Err } from "@/lib/utils"
 import { addNewCommentToCv } from "@/server/api/comments"
-import MyLogger from "@/server/base/logger"
-
+import logger, { logErrorWithTrace } from "@/server/base/logger"
 /**
  * Adds a new comment to the cv.
  *
@@ -17,7 +16,7 @@ export const addNewComment = async (
   if (result.ok) {
     return result
   } else {
-    MyLogger.logInfo(result.val)
+    logErrorWithTrace(result)
     return Err(
       "An error has occurred while commenting on the CV. Please try again later."
     )

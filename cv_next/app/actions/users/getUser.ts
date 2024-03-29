@@ -1,8 +1,8 @@
 "use server"
 
 import { getUserById } from "@/server/api/users"
-import MyLogger from "@/server/base/logger"
 import { Err } from "@/lib/utils"
+import logger, { logErrorWithTrace } from "@/server/base/logger"
 
 /**
  * Retrieves user data by user ID.
@@ -17,12 +17,7 @@ export const getUser = async (
   if (result.ok) {
     return result
   } else {
-    let message = result.val
-    if (result.postgrestError) {
-      message += "\n" + JSON.stringify(result.postgrestError, null, 2)
-    }
-    MyLogger.logInfo(message)
-
+    logErrorWithTrace(result)
     return Err(
       "An error has occurred while fetching the user data. Please try again later."
     )

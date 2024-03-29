@@ -1,7 +1,7 @@
 "use server"
 
 import { getAllCommentsByCVId } from "@/server/api/comments"
-import MyLogger from "@/server/base/logger"
+import logger, { logErrorWithTrace } from "@/server/base/logger"
 
 /**
  * Fetches comments for the given cvId and returns the comment model array, or null if there is an error.
@@ -16,7 +16,7 @@ export const fetchComments = async (
   if (result.ok) {
     return result.val
   } else {
-    MyLogger.logInfo(result.val)
+    logErrorWithTrace(result)
     return null
   }
 }

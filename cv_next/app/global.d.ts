@@ -8,7 +8,7 @@ declare global {
   type CommentModel = DB["public"]["Tables"]["comments"]["Row"]
   type Result<T, E> =
     | { ok: true; val: T }
-    | { ok: false; val: E; postgrestError?: PostgrestError }
+    | { ok: false; where: E; postgrestError?: PostgrestError; err?: Error }
   type NewCommentModel = Omit<
     CommentModel,
     | "id"

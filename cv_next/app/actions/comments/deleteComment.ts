@@ -2,8 +2,7 @@
 
 import { Err } from "@/lib/utils"
 import { markCommentAsDeleted } from "@/server/api/comments"
-import MyLogger from "@/server/base/logger"
-
+import logger, { logErrorWithTrace } from "@/server/base/logger"
 
 /**
  * Deletes a comment by its ID.
@@ -18,7 +17,7 @@ export const deleteComment = async (
   if (result.ok) {
     return result
   } else {
-    MyLogger.logInfo(result.val)
+    logErrorWithTrace(result)
     return Err(
       "An error has occurred while deleting the comment. Please try again later."
     )

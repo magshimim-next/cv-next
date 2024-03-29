@@ -16,16 +16,26 @@ export async function addNewCommentToCv(
   comment: NewCommentModel
 ): Promise<Result<void, string>> {
   try {
-    const { error } = await SupabaseHelper.getSupabaseInstance()
+    const { data, error } = await SupabaseHelper.getSupabaseInstance()
       .from("comments")
       .insert(comment)
       .select()
-    if (error) {
-      return Err("Error @ " + addNewCommentToCv.name + "\n", error)
+
+    if (error && error.message) {
+      return Err(addNewCommentToCv.name, error)
+    }
+
+    // if no data is returned, the comment was not added
+    if (!data) {
+      return Err(
+        addNewCommentToCv.name,
+        undefined,
+        new Error("adding comment failed")
+      )
     }
     return Ok.EMPTY
   } catch (err) {
-    return Err("Error @ " + addNewCommentToCv.name + "\n" + err)
+    return Err(addNewCommentToCv.name, undefined, err as Error)
   }
 }
 
@@ -44,11 +54,11 @@ export async function markCommentAsDeleted(
       .update({ deleted: true })
       .eq("id", commentId)
     if (error) {
-      return Err("Error @ " + markCommentAsDeleted.name + "\n", error)
+      return Err(markCommentAsDeleted.name, error)
     }
     return Ok.EMPTY
   } catch (err) {
-    return Err("Error @ " + markCommentAsDeleted.name + "\n" + err)
+    return Err(markCommentAsDeleted.name, undefined, err as Error)
   }
 }
 
@@ -75,14 +85,12 @@ export async function getAllCommentsByCVId(
     if (filterOutDeleted) {
       query = query.eq("deleted", false)
     }
-
     const { data: comments, error } = await query
-
     if (error) {
-      return Err("Error @ " + getAllCommentsByCVId.name + "\n", error)
+      return Err(getAllCommentsByCVId.name, error)
     }
     return Ok(comments)
-  } catch (error) {
-    return Err("Error @ " + getAllCommentsByCVId.name + "\n" + error)
+  } catch (err) {
+    return Err(getAllCommentsByCVId.name, undefined, err as Error)
   }
 }
