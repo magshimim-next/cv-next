@@ -1,5 +1,6 @@
 "use client"
 import { deleteComment } from "@/app/actions/comments/deleteComment"
+import { setResolved } from "@/app/actions/comments/setResolved"
 import { getUser } from "@/app/actions/users/getUser"
 import useSWR, { mutate } from "swr"
 
@@ -23,12 +24,24 @@ export default function Comment({
     })
   }
 
-  const { data } = useSWR(comment.user_id, getUser)
-  if (data && data.ok) {
+  const resolveCommentAction = async () => {
+    await setResolved(comment.id, true).finally(() => {
+      mutate(comment.document_id)
+    })
+  }
+
+  const unResolveCommentAction = async () => {
+    await setResolved(comment.id, false).finally(() => {
+      mutate(comment.document_id)
+    })
+  }
+
+  const { data: user } = useSWR(comment.user_id, getUser)
+  if (user && user.ok) {
     const userName =
-      data.val.username && data.val.username.length > 0
-        ? data.val.username
-        : data.val.full_name
+      user.val.username && user.val.username.length > 0
+        ? user.val.username
+        : user.val.full_name
 
     return (
       <article
@@ -52,9 +65,25 @@ export default function Comment({
         </footer>
         <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
         {comment.user_id === userId ? (
-          <button className="text-red-500" onClick={deleteCommentAction}>
-            Delete
-          </button>
+          <>
+            <button className="text-red-500" onClick={deleteCommentAction}>
+              Delete
+            </button>
+            <span> </span>
+            {comment.resolved === true ? (
+              // TODO: change appearence of comment based on if its resolved or not
+              <button
+                className="text-green-500"
+                onClick={unResolveCommentAction}
+              >
+                UnResolve
+              </button>
+            ) : (
+              <button className="text-gray-500" onClick={resolveCommentAction}>
+                Resolve
+              </button>
+            )}
+          </>
         ) : null}
       </article>
     )

@@ -63,6 +63,31 @@ export async function markCommentAsDeleted(
 }
 
 /**
+ * Marks a comment as resolved or unresolved in the database.
+ *
+ * @param {string} commentId - The ID of the comment to mark as resolved or unresolved.
+ * @param {boolean} resolved - Boolean indicating if the comment is resolved.
+ * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ */
+export async function markCommentAsResolved(
+  commentId: string,
+  resolved: boolean
+): Promise<Result<void, string>> {
+  try {
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from("comments")
+      .update({ resolved })
+      .eq("id", commentId)
+    if (error) {
+      return Err(markCommentAsResolved.name, error)
+    }
+    return Ok.EMPTY
+  } catch (err) {
+    return Err(markCommentAsResolved.name, undefined, err as Error)
+  }
+}
+
+/**
  * Retrieves all comments associated with a specific CV ID.
  *
  * @param {string} cvId - The ID of the CV for which to retrieve comments.
