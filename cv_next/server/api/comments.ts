@@ -69,7 +69,7 @@ export async function markCommentAsDeleted(
  * @param {boolean} resolved - Boolean indicating if the comment is resolved.
  * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
  */
-export async function markCommentAsResolved(
+export async function setResolved(
   commentId: string,
   resolved: boolean
 ): Promise<Result<void, string>> {
@@ -79,11 +79,11 @@ export async function markCommentAsResolved(
       .update({ resolved })
       .eq("id", commentId)
     if (error) {
-      return Err(markCommentAsResolved.name, error)
+      return Err(setResolved.name, error)
     }
     return Ok.EMPTY
   } catch (err) {
-    return Err(markCommentAsResolved.name, undefined, err as Error)
+    return Err(setResolved.name, undefined, err as Error)
   }
 }
 

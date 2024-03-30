@@ -1,7 +1,7 @@
 "use server"
 
 import { Err } from "@/lib/utils"
-import { markCommentAsResolved as setCommentResolved } from "@/server/api/comments"
+import { setResolved as setCommentResolved } from "@/server/api/comments"
 import { logErrorWithTrace } from "@/server/base/logger"
 
 /**
