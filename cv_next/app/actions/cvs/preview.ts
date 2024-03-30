@@ -1,12 +1,13 @@
 "use server"
 
+import Definitions from "@/lib/definitions"
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper"
 import SupabaseHelper from "@/server/api/supabaseHelper"
 
 export async function revalidatePreview(cvId: string): Promise<void> {
   const id = getIdFromLink(cvId)
   const fileName = id + ".png"
-  const response = await fetch(getGoogleImageUrl(cvId))
+  const response = await fetch(getGoogleImageUrl(cvId), { next: { revalidate: Definitions.FETCH_WAIT_TIME } })
   const blob = await response.blob()
 
   const { data, error } = await SupabaseHelper.getSupabaseInstance()
@@ -23,7 +24,8 @@ export async function revalidatePreview(cvId: string): Promise<void> {
   }
 }
 export async function getImageURL(cvId: string): Promise<string | null> {
-  return SupabaseHelper.getSupabaseInstance()
+  let data = SupabaseHelper.getSupabaseInstance()
     .storage.from("cvs")
     .getPublicUrl(cvId + ".png").data.publicUrl
+  return data
 }

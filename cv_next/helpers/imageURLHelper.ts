@@ -8,7 +8,6 @@ const errorUrl = "/public/error.jgp" // TODO: replace with real URL here
  * @return {string | null} The extracted ID or null if no ID is found.
  */
 export function getIdFromLink(link: string): string | null {
-  console.log(link)
   const idPattern = /\/d\/([a-zA-Z0-9_-]+)/
   const match = link.match(idPattern)
   return match?.[1] ?? null ?? null
