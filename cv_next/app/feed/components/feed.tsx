@@ -8,6 +8,7 @@ import { CvsContext, CvsDispatchContext } from "@/providers/cvsProvider"
 import { ReloadButton } from "@/components/ui/reloadButton"
 import Definitions from "@/lib/definitions"
 import { useInView } from "react-intersection-observer"
+import ReactLoading from 'react-loading';
 
 export default function Feed() {
   const cvsContextConsumer = useContext(CvsContext)
@@ -114,7 +115,9 @@ export default function Feed() {
           </div>
         ) : (
           //TODO: replace with proper spinner
-          <div className="z-10 flex justify-center">Loading...</div>
+          <div className="z-10 flex justify-center">
+            <ReactLoading type={"spinningBubbles"} color={"#000"} height={667} width={375} />
+          </div>
         )}
       </div>
     </main>
