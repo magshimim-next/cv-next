@@ -7,6 +7,7 @@ import { getImageURL, revalidatePreview } from "@/app/actions/cvs/preview"
 import ReactLoading from 'react-loading';
 import Definitions from "@/lib/definitions"
 
+
 const errorUrl = "/public/error.jgp" // TODO: replace with real URL here
 interface CVCardProps {
   cv: CvModel
@@ -14,7 +15,6 @@ interface CVCardProps {
 
 export default function CVItemRSC({ cv }: CVCardProps) {
 
-  const [retryCount, setRetryCount] = useState(1)
   const imageRef = useRef<HTMLImageElement>(null)
   const [realURL, setRealURL] = useState("");
 
@@ -30,7 +30,6 @@ export default function CVItemRSC({ cv }: CVCardProps) {
           await revalidatePreview(cv.document_link);
           const imageUrl = await getImageURL(getIdFromLink(cv.document_link) || "") ?? errorUrl;
           let validatedURL = imageUrl;
-
           imageRef.current!.src = validatedURL;
           setRealURL(validatedURL);
       } catch (error) {
@@ -45,7 +44,7 @@ export default function CVItemRSC({ cv }: CVCardProps) {
     const interval = setInterval(revalidateImage, Definitions.FETCH_WAIT_TIME * 1000); // Revalidate every 2 minutes
 
     return () => clearInterval(interval);
-  }, [cv.document_link, realURL]); // Add dependencies of revalidateImage
+  }, [cv.document_link, realURL]); 
 
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US")
   const handleImageError = () => {
