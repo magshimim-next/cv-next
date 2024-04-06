@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import Categories from "@/types/models/categories"
-import { useRef, useState, useEffect } from "react"
+import { useRef, useState, useEffect, cache } from "react"
 import { getIdFromLink } from "@/helpers/imageURLHelper"
 import { getImageURL, revalidatePreview } from "@/app/actions/cvs/preview"
 import ReactLoading from 'react-loading';
@@ -12,6 +12,10 @@ const errorUrl = "/public/error.jgp" // TODO: replace with real URL here
 interface CVCardProps {
   cv: CvModel
 }
+
+const getURL = cache(async (cvId: string) => {
+    return await getImageURL(cvId)
+});
 
 export default function CVItemRSC({ cv }: CVCardProps) {
 
@@ -28,7 +32,7 @@ export default function CVItemRSC({ cv }: CVCardProps) {
     const revalidateImage = async () => {
       try {
           await revalidatePreview(cv.document_link);
-          const imageUrl = await getImageURL(getIdFromLink(cv.document_link) || "") ?? errorUrl;
+          const imageUrl = await getURL(getIdFromLink(cv.document_link) || "") ?? errorUrl;
           let validatedURL = imageUrl;
           imageRef.current!.src = validatedURL;
           setRealURL(validatedURL);
