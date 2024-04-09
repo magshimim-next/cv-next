@@ -119,3 +119,44 @@ export async function getAllCommentsByCVId(
     return Err(getAllCommentsByCVId.name, undefined, err as Error)
   }
 }
+
+async function getCommentLikes(commentId: string): Promise<string[]> {
+  const { data } = await SupabaseHelper.getSupabaseInstance()
+    .from("comments")
+    .select("upvotes")
+    .eq("id", commentId)
+    .limit(1)
+  return data && data[0].upvotes ? data[0].upvotes : []
+}
+
+export async function setLiked(
+  commentId: string,
+  liked: boolean,
+  userId: string
+): Promise<Result<void, string>> {
+  try {
+    let likes = await getCommentLikes(commentId)
+    if (likes.includes(userId)) {
+      if (!liked) {
+        likes = likes.filter((item) => item !== userId)
+      }
+    } else {
+      if (liked) {
+        likes = [...likes, userId]
+      }
+    }
+
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from("comments")
+      .update({ upvotes: likes })
+      .eq("id", commentId)
+      .select("upvotes")
+
+    if (error) {
+      return Err(setResolved.name, error)
+    }
+    return Ok.EMPTY
+  } catch (err) {
+    return Err(setResolved.name, undefined, err as Error)
+  }
+}

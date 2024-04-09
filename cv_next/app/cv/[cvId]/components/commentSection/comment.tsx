@@ -1,6 +1,7 @@
 "use client"
 import { deleteComment } from "@/app/actions/comments/deleteComment"
 import { setResolved } from "@/app/actions/comments/setResolved"
+import { upvoteComment } from "@/app/actions/comments/setLike"
 import { getUser } from "@/app/actions/users/getUser"
 import useSWR, { mutate } from "swr"
 
@@ -24,14 +25,14 @@ export default function Comment({
     })
   }
 
-  const resolveCommentAction = async () => {
-    await setResolved(comment.id, true).finally(() => {
+  const setResolvedCommentAction = async (resolved: boolean) => {
+    await setResolved(comment.id, resolved).finally(() => {
       mutate(comment.document_id)
     })
   }
 
-  const unResolveCommentAction = async () => {
-    await setResolved(comment.id, false).finally(() => {
+  const setLikedCommentAction = async (liked: boolean) => {
+    await upvoteComment(comment.id, liked, userId).finally(() => {
       mutate(comment.document_id)
     })
   }
@@ -74,17 +75,36 @@ export default function Comment({
               // TODO: change appearence of comment based on if its resolved or not
               <button
                 className="text-green-500"
-                onClick={unResolveCommentAction}
+                onClick={() => setResolvedCommentAction(false)}
               >
                 UnResolve
               </button>
             ) : (
-              <button className="text-gray-500" onClick={resolveCommentAction}>
+              <button
+                className="text-gray-500"
+                onClick={() => setResolvedCommentAction(true)}
+              >
                 Resolve
               </button>
             )}
           </>
         ) : null}
+        <span> </span>
+        {comment.upvotes && comment.upvotes.includes(userId) ? (
+          <button
+            className="text-gray-500"
+            onClick={() => setLikedCommentAction(false)}
+          >
+            UnLike {comment.upvotes?.length || 0}
+          </button>
+        ) : (
+          <button
+            className="text-gray-500"
+            onClick={() => setLikedCommentAction(true)}
+          >
+            Like {comment.upvotes?.length || 0}
+          </button>
+        )}
       </article>
     )
   } else {
