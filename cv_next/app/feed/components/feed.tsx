@@ -27,9 +27,8 @@ export default function Feed() {
   const [loadMore, setLoadMore] = useState(true)
   const [filters, setFilters] = useState<filterObj>({
     searchValue: "",
-    categoryId: null
+    categoryId: null,
   })
-
 
   /**
    * Trigger pagination when this element comes into view.
@@ -60,7 +59,10 @@ export default function Feed() {
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
       const nextPage = page.current + 1
-      const response = await fetchCvsForFeed({ page: nextPage, filters: filters })
+      const response = await fetchCvsForFeed({
+        page: nextPage,
+        filters: filters,
+      })
       if (response && response.cvs.length > 0) {
         setCvs((prevCvs) => [...prevCvs, ...response.cvs])
         page.current = nextPage
@@ -103,9 +105,13 @@ export default function Feed() {
 
   return (
     <main>
-      <FilterPanel defaultFilters={filters} cvs={cvs} onChange={onFilterChange}></FilterPanel>
+      <FilterPanel
+        defaultFilters={filters}
+        cvs={cvs}
+        onChange={onFilterChange}
+      ></FilterPanel>
       <div className="container mx-auto space-y-8 p-6">
-        <div className="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 justify-evenly">
+        <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
           {cvs ? (
             cvs.map((cv) => (
               <CVItem key={cv.id} cv={cv}>
