@@ -1,7 +1,7 @@
 "use client"
 import { redirect } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { useSupabase } from "@/hooks/supabaseHooks"
+import { useSupabase } from "@/hooks/supabase"
 export default function Page() {
   const supabase = useSupabase()
   supabase.auth.signOut()

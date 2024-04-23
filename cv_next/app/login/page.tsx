@@ -1,6 +1,6 @@
 "use client"
 import { Auth } from "@supabase/auth-ui-react"
-import { useSupabase } from "@/hooks/supabaseHooks"
+import { useSupabase } from "@/hooks/supabase"
 import { ThemeSupa } from "@supabase/auth-ui-shared"
 
 export default function Page() {
