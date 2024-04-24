@@ -105,23 +105,24 @@ async function getAllCvsByCategories(
   filterOutDeleted: boolean = true
 ): Promise<any> {
   try {
-    let query = supabase.from("cvs").select("*").in("category_id", categories);
+    const supabase = SupabaseHelper.getSupabaseInstance()
+    let query = supabase.from("cvs").select("*").in("category_id", categories)
 
     if (filterOutDeleted) {
-      query = query.eq("deleted", false);
+      query = query.eq("deleted", false)
     }
 
-    const { data: cvs, error } = await query;
+    const { data: cvs, error } = await query
 
     if (error) {
-      console.log("Error @ getAllCvsByCategories", error);
-      return error;
+      console.log("Error @ getAllCvsByCategories", error)
+      return error
     }
-    console.log(cvs);
-    return cvs as CvModel[];
+    console.log(cvs)
+    return cvs as CvModel[]
   } catch (error) {
-    console.log("Error @ getAllCvsByCategories", error);
-    return error;
+    console.log("Error @ getAllCvsByCategories", error)
+    return error
   }
 }
 
