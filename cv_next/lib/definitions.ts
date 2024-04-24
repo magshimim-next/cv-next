@@ -5,6 +5,7 @@ export default class Definitions {
   public static readonly MAX_OPERATIONS = 10
   public static readonly MAX_OPERATIONS_REFILL_PER_SECOND = 2
   public static readonly CVS_REVALIDATE_TIME_IN_SECONDS = 0
+  public static readonly AUTH_REDIRECT = "/auth/callback"
 }
 
 export const heroHeader: PageHeader = {
