@@ -4,9 +4,8 @@ import Categories from "@/types/models/categories"
 import { useRef, useState, useEffect, cache } from "react"
 import { getIdFromLink } from "@/helpers/imageURLHelper"
 import { getImageURL, revalidatePreview } from "@/app/actions/cvs/preview"
-import ReactLoading from 'react-loading';
+import ReactLoading from "react-loading"
 import Definitions from "@/lib/definitions"
-
 
 const errorUrl = "/public/error.jgp" // TODO: replace with real URL here
 interface CVCardProps {
@@ -14,15 +13,14 @@ interface CVCardProps {
 }
 
 const getURL = cache(async (cvId: string) => {
-    return await getImageURL(cvId)
-});
+  return await getImageURL(cvId)
+})
 
 export default function CVItemRSC({ cv }: CVCardProps) {
-
   const imageRef = useRef<HTMLImageElement>(null)
-  const [realURL, setRealURL] = useState("");
+  const [realURL, setRealURL] = useState("")
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true)
 
   const categoryLink = `/feed?category=${Categories.category[
     cv.category_id
@@ -31,24 +29,28 @@ export default function CVItemRSC({ cv }: CVCardProps) {
   useEffect(() => {
     const revalidateImage = async () => {
       try {
-          await revalidatePreview(cv.document_link);
-          const imageUrl = await getURL(getIdFromLink(cv.document_link) || "") ?? errorUrl;
-          let validatedURL = imageUrl;
-          imageRef.current!.src = validatedURL;
-          setRealURL(validatedURL);
+        await revalidatePreview(cv.document_link)
+        const imageUrl =
+          (await getURL(getIdFromLink(cv.document_link) || "")) ?? errorUrl
+        let validatedURL = imageUrl
+        imageRef.current!.src = validatedURL
+        setRealURL(validatedURL)
       } catch (error) {
-          console.error('Error revalidating image:', error);
+        console.error("Error revalidating image:", error)
       } finally {
-          setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    revalidateImage(); // Immediately invoke revalidateImage
+    revalidateImage() // Immediately invoke revalidateImage
 
-    const interval = setInterval(revalidateImage, Definitions.FETCH_WAIT_TIME * 1000); // Revalidate every 2 minutes
+    const interval = setInterval(
+      revalidateImage,
+      Definitions.FETCH_WAIT_TIME * 1000
+    ) // Revalidate every 2 minutes
 
-    return () => clearInterval(interval);
-  }, [cv.document_link, realURL]); 
+    return () => clearInterval(interval)
+  }, [cv.document_link, realURL])
 
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US")
   const handleImageError = () => {
@@ -56,9 +58,16 @@ export default function CVItemRSC({ cv }: CVCardProps) {
   }
 
   if (isLoading) {
-    return <ReactLoading type={"spinningBubbles"} color={"#000"} height={667} width={375} />
+    return (
+      <ReactLoading
+        type={"spinningBubbles"}
+        color={"#000"}
+        height={667}
+        width={375}
+      />
+    )
   }
-  
+
   return (
     <>
       <Image
