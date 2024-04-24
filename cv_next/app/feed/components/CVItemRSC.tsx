@@ -17,11 +17,6 @@ export default function CVItemRSC({ cv }: CVCardProps) {
 
   const [imgSrc, setImgSrc] = useState<StaticImageData | string>(imageUrl)
 
-  const handleImgError = (e: any) => {
-    e.stopPropagation()
-    setImgSrc(blankCvImg)
-  }
-
   return (
     <>
       <Image
@@ -29,7 +24,7 @@ export default function CVItemRSC({ cv }: CVCardProps) {
         height={500 * 1.4142}
         className="w-full rounded-lg p-2"
         src={imgSrc}
-        onError={handleImgError}
+        placeholder="data:image/public/images/blackCv.png"
         alt="CV Preview"
         priority
       />
