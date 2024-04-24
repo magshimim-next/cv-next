@@ -7,6 +7,7 @@ import {
   type CookieOptions,
 } from "@supabase/ssr"
 import { cookies } from "next/headers"
+import MyLogger from "@/server/base/logger"
 
 export default class SupabaseHelper<T> {
   private static supabase: SupabaseClient
@@ -50,18 +51,20 @@ export default class SupabaseHelper<T> {
             try {
               cookieStore.set({ name, value, ...options })
             } catch (error) {
-              // The `set` method was called from a Server Component.
-              // This can be ignored if you have middleware refreshing
-              // user sessions.
+              MyLogger.logInfo(
+                "Error @ SupabaseHelper::createServerComponent",
+                error
+              )
             }
           },
           remove(name: string, options: CookieOptions) {
             try {
               cookieStore.set({ name, value: "", ...options })
             } catch (error) {
-              // The `delete` method was called from a Server Component.
-              // This can be ignored if you have middleware refreshing
-              // user sessions.
+              MyLogger.logInfo(
+                "Error @ SupabaseHelper::createServerComponent",
+                error
+              )
             }
           },
         },
