@@ -3,7 +3,6 @@ import Link from "next/link"
 import generateImageUrl from "@/helpers/imageURLHelper"
 import Categories from "@/types/models/categories"
 import { useState } from "react"
-import blankCvImg from "@/public/images/blackCv.png"
 interface CVCardProps {
   cv: CvModel
 }
