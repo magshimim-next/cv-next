@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { SearchBox } from "../../../components/ui/filters/searchbar"
 import { DropdownInput } from "../../../components/ui/filters/valueSelect"
 import Categories from "@/types/models/categories"
+// eslint-disable-next-line unused-imports/no-unused-imports
 import { ModeSwitch } from "@/components/ui/filters/modeSwitch"
 
 export interface filterValues {
@@ -14,6 +15,7 @@ export const MODES: [string, string] = ["review", "published"]
 export const FilterPanel = ({
   defaultFilters,
   onChange,
+  // eslint-disable-next-line unused-imports/no-unused-vars
   cvs,
 }: {
   defaultFilters: filterValues
@@ -22,7 +24,7 @@ export const FilterPanel = ({
 }) => {
   const [searchValue, setSearchValue] = useState(defaultFilters.searchValue)
   const [categoryId, setCategoryId] = useState(defaultFilters.categoryId)
-  const [modeValue, setModeValue] = useState(MODES[0])
+  const [_modeValue, _setModeValue] = useState(MODES[0])
 
   useEffect(() => {
     onChange({

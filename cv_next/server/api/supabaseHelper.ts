@@ -5,7 +5,7 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import MyLogger from "@/server/base/logger"
 
-export default class SupabaseHelper<T> {
+export default class SupabaseHelper {
   private static supabase: SupabaseClient
 
   /**

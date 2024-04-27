@@ -100,7 +100,7 @@ export async function getAllCvsByCategory(
   }
 }
 
-async function getAllCvsByCategories(
+async function _getAllCvsByCategories(
   categories: Categories.category[],
   filterOutDeleted: boolean = true
 ): Promise<any> {
@@ -115,13 +115,13 @@ async function getAllCvsByCategories(
     const { data: cvs, error } = await query
 
     if (error) {
-      console.log("Error @ getAllCvsByCategories", error)
+      MyLogger.logInfo("Error @ getAllCvsByCategories", error)
       return error
     }
-    console.log(cvs)
+    MyLogger.logDebug("Fetched CVs: ", cvs)
     return cvs as CvModel[]
   } catch (error) {
-    console.log("Error @ getAllCvsByCategories", error)
+    MyLogger.logInfo("Error @ getAllCvsByCategories", error)
     return error
   }
 }
@@ -148,7 +148,7 @@ export async function getPaginatedCvs(
       .select("*")
       .range(from, to - 1)
 
-    console.log("filters", filters)
+    MyLogger.logDebug("filters", filters)
     if (filters) {
       if (filters.searchValue) {
         query = query.textSearch("description", filters.searchValue, {
@@ -156,7 +156,7 @@ export async function getPaginatedCvs(
         })
       }
       if (filters.categoryId) {
-        console.log("catagory id:", filters.categoryId)
+        MyLogger.logDebug("catagory id:", filters.categoryId)
         query = query.eq("category_id", filters.categoryId)
       }
     }
@@ -166,7 +166,7 @@ export async function getPaginatedCvs(
     }
 
     const { data: cvs, error } = await query
-    console.log(
+    MyLogger.logDebug(
       "cvs:",
       cvs?.map((cv) => cv.category_id)
     )

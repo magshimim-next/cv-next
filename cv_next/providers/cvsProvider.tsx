@@ -9,7 +9,7 @@ const initialValue: PaginatedCvsModel = {
 }
 
 export const CvsContext = createContext(initialValue)
-export const CvsDispatchContext = createContext((action: CvAction) => {})
+export const CvsDispatchContext = createContext((_action: CvAction) => {})
 
 /**
  * CvsProvider component that provides the CVS state and dispatcher to its children.
