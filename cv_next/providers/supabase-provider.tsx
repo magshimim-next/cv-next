@@ -32,7 +32,7 @@ export default function SupabaseProvider({
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_, _session) => {
       if (_session?.access_token !== session?.access_token) {
-        router.refresh()
+        // router.refresh()
       }
     })
 
