@@ -4,7 +4,7 @@ import { DropdownInput } from "../../../components/ui/filters/valueSelect"
 import Categories from "@/types/models/categories"
 import { ModeSwitch } from "@/components/ui/filters/modeSwitch"
 
-export interface filterObj {
+export interface filterValues {
   searchValue: string
   categoryId: number | null
 }
@@ -16,9 +16,9 @@ export const FilterPanel = ({
   onChange,
   cvs,
 }: {
-  defaultFilters: filterObj
+  defaultFilters: filterValues
   cvs: CvModel[]
-  onChange: (filters: filterObj) => void
+  onChange: (filters: filterValues) => void
 }) => {
   const [searchValue, setSearchValue] = useState(defaultFilters.searchValue)
   const [categoryId, setCategoryId] = useState(defaultFilters.categoryId)
