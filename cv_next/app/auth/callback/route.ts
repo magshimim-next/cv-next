@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       return NextResponse.redirect(
-        `${origin}` + Definitions.AUTH_DEFAULT_REDIRECT
+        `${origin}` + Definitions.AUTH_DEFAULT_REDIRECT + "feed"
       );
     }
   }
