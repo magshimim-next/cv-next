@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { SearchBox } from "../../../components/ui/filters/searchbar";
-import { DropdownInput } from "../../../components/ui/filters/valueSelect";
+import { SearchBox } from "./filters/searchbar";
+import { DropdownInput } from "./filters/valueSelect";
 import Categories from "@/types/models/categories";
 
 export interface filterValues {
