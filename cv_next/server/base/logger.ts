@@ -4,6 +4,7 @@ namespace MyLogger {
   const isDebugMode = process.env.NODE_ENV === "development"
 
   function logOperation(operation: string, type: string, obj?: unknown) {
+    // eslint-disable-next-line no-console
     console.log(
       `----------------------\n` +
         `${type} Application LOG: ${new Date().toUTCString()}\n${operation}\n`,

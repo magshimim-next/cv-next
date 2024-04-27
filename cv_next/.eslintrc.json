@@ -13,6 +13,7 @@
         "args": "after-used",
         "argsIgnorePattern": "^_"
       }
-    ]
+    ],
+    "no-console": "warn"
   }
 }
