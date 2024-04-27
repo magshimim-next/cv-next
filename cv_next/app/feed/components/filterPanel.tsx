@@ -8,8 +8,6 @@ export interface filterValues {
   categoryId: number | null;
 }
 
-export const MODES: [string, string] = ["review", "published"];
-
 export const FilterPanel = ({
   defaultFilters,
   onChange,
