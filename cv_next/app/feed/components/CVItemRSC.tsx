@@ -20,7 +20,8 @@ export default function CVItemRSC({ cv }: CVCardProps) {
         height={500 * 1.4142}
         className="w-full rounded-lg p-2"
         src={imageUrl}
-        placeholder="data:image/public/images/blackCv.png"
+        placeholder="blur"
+        blurDataURL="data:iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPs7p5fDwAFlAI2LB7hbAAAAABJRU5ErkJggg=="
         alt="CV Preview"
         priority
       />
