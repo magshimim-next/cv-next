@@ -1,11 +1,7 @@
 import "server-only"
 
 import { createClient, SupabaseClient } from "@supabase/supabase-js"
-import {
-  createBrowserClient,
-  createServerClient,
-  type CookieOptions,
-} from "@supabase/ssr"
+import { createServerClient, type CookieOptions } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import MyLogger from "@/server/base/logger"
 
