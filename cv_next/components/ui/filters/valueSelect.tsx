@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from "react"
 
 export const DropdownInput = ({
   placeHolder,
@@ -8,19 +8,19 @@ export const DropdownInput = ({
   getValueById,
   text,
 }: {
-  placeHolder: string;
-  valueIds: number[];
-  valueId: number | null;
-  getValueById: (id: number) => string;
-  onChange: (newValue: number | null) => void;
-  text: string;
+  placeHolder: string
+  valueIds: number[]
+  valueId: number | null
+  getValueById: (id: number) => string
+  onChange: (newValue: number | null) => void
+  text: string
 }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const isPlaceHolder = valueId === null;
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const isPlaceHolder = valueId === null
 
   const changeIsMenuOpen = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+    setIsMenuOpen(!isMenuOpen)
+  }
 
   return (
     <>
@@ -44,15 +44,16 @@ export const DropdownInput = ({
             return (
               // eslint-disable-next-line react/jsx-key
               <div
+                key={possibleValueId}
                 className="flex h-8 w-full items-center justify-center bg-white text-black hover:bg-slate-200"
                 onClick={() => onChange(possibleValueId)}
               >
                 {`${getValueById(possibleValueId)}`}
               </div>
-            );
+            )
           })}
         </div>
       </div>
     </>
-  );
-};
+  )
+}
