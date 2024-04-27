@@ -1,8 +1,7 @@
-import Image, { StaticImageData } from "next/image"
+import Image from "next/image"
 import Link from "next/link"
 import generateImageUrl from "@/helpers/imageURLHelper"
 import Categories from "@/types/models/categories"
-import { useState } from "react"
 interface CVCardProps {
   cv: CvModel
 }
@@ -14,15 +13,13 @@ export default function CVItemRSC({ cv }: CVCardProps) {
   const imageUrl = generateImageUrl(cv.document_link)
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US")
 
-  const [imgSrc, setImgSrc] = useState<StaticImageData | string>(imageUrl)
-
   return (
     <>
       <Image
         width={500}
         height={500 * 1.4142}
         className="w-full rounded-lg p-2"
-        src={imgSrc}
+        src={imageUrl}
         placeholder="data:image/public/images/blackCv.png"
         alt="CV Preview"
         priority
