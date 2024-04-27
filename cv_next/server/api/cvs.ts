@@ -5,7 +5,7 @@ import Categories from "@/types/models/categories"
 import Definitions from "../../lib/definitions"
 import SupabaseHelper from "./supabaseHelper"
 import { PostgrestError } from "@supabase/supabase-js"
-import { filterObj } from "@/app/feed/components/filterPanel"
+import { filterValues } from "@/app/feed/components/filterPanel"
 
 export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS
 
@@ -136,7 +136,7 @@ async function getAllCvsByCategories(
 export async function getPaginatedCvs(
   filterOutDeleted: boolean = true,
   page: number = Definitions.PAGINATION_INIT_PAGE_NUMBER,
-  filters?: filterObj
+  filters?: filterValues
 ): Promise<PaginatedCvsModel | null> {
   try {
     const from = page * Definitions.CVS_PER_PAGE
