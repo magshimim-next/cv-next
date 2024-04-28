@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { ModeToggle } from "@/components/ui/mode-toggle"
-import settignsIcon from "../../public/images/settigns.png"
-import Image from "next/image"
-import Popup from "./popup"
+import { useState } from "react";
+import Link from "next/link";
+import { ModeToggle } from "@/components/ui/mode-toggle";
+import settignsIcon from "../../public/images/settigns.png";
+import Image from "next/image";
+import Popup from "./popup";
 
 const navLinks = [
   {
@@ -16,23 +16,15 @@ const navLinks = [
     route: "Feed",
     path: "/feed",
   },
-]
+];
 
 export default function Navbar() {
-  const [isNavbarMenuOpen, setIsNavbarMenuOpen] = useState(false)
-  const [isSettignsOpen, setIsSettignsOpen] = useState(false)
+  const [isNavbarMenuOpen, setIsNavbarMenuOpen] = useState(false);
+  const [isSettignsOpen, setIsSettignsOpen] = useState(false);
 
   const handleClick = async () => {
-    setIsNavbarMenuOpen(false)
-  }
-
-  useEffect(() => {
-    if (isSettignsOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "auto"
-    }
-  }, [isSettignsOpen])
+    setIsNavbarMenuOpen(false);
+  };
 
   return (
     <>
@@ -135,5 +127,5 @@ export default function Navbar() {
         </div>
       </header>
     </>
-  )
+  );
 }
