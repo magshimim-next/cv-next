@@ -1,8 +1,8 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import Navbar from "@/components/layout/navbar/navbar";
-import { ThemeProvider } from "@/components/theme-provider";
-import { CvsProvider } from "@/providers/cvsProvider";
+import { ThemeProvider } from "@/providers/theme-provider";
+import { CvsProvider } from "@/providers/cvs-provider";
 import SupabaseProvider from "@/providers/supabase-provider";
 import { Viewport } from "next/dist/lib/metadata/types/metadata-interface";
 
