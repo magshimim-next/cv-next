@@ -1,6 +1,6 @@
 "use client";
 import { getUser } from "@/app/actions/users/getUser";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import Categories from "@/types/models/categories";
 import Image from "next/image";
 import settignsIcon from "@/public/images/settigns.png";
