@@ -3,15 +3,20 @@ export const SearchBox = ({
   value,
   onChange,
 }: {
-  placeHolder: string,
-  value: string
-  onChange: (newValue: string) => void
+  placeHolder: string;
+  value: string;
+  onChange: (newValue: string) => void;
 }) => {
-  const isPlaceHolder = value === ""
+  const isPlaceHolder = value === "";
+  const searchColor = isPlaceHolder ? "text-gray-400" : "text-black";
   return (
-    <input 
-      className={`w-5/6 h-3/6 bg-white border-gray-40 border-2 px-10 py-4 ${isPlaceHolder ? 'text-gray-400' : 'text-black'} rounded-md`} 
-      onChange={(event) => {onChange(event.target.value)}} value={value}
-      placeholder={placeHolder}/>
-  )
-}
+    <input
+      className={`border-gray-40 h-3/6 w-5/6 border-2 bg-white px-10 py-4 ${searchColor} rounded-md`}
+      onChange={(event) => {
+        onChange(event.target.value);
+      }}
+      value={value}
+      placeholder={placeHolder}
+    />
+  );
+};
