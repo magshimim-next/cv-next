@@ -1,11 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { ModeToggle } from "@/components/ui/mode-toggle";
-import settignsIcon from "../../public/images/settigns.png";
-import Image from "next/image";
-import Popup from "./popup";
+import { ModeToggle } from "@/components/layout/navbar/mode-toggle";
+import { PopupToggle } from "./popup-toggle";
 
 const navLinks = [
   {
@@ -19,8 +16,6 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-  const [isSettignsOpen, setIsSettignsOpen] = useState(false);
-
   return (
     <>
       <header className="relative top-0 h-[72px] w-full select-none">
@@ -62,19 +57,8 @@ export default function Navbar() {
 
             <div className="hidden h-[40px] flex-row justify-evenly space-x-5 align-middle md:flex">
               <ModeToggle />
-              <div className="cursor-pointer rounded-full hover:bg-[#27374e]">
-                <Image
-                  alt="settings"
-                  height={40}
-                  width={40}
-                  src={settignsIcon}
-                  onClick={() => setIsSettignsOpen(!isSettignsOpen)}
-                ></Image>
-              </div>
+              <PopupToggle />
             </div>
-            {isSettignsOpen && (
-              <Popup closeCb={() => setIsSettignsOpen(false)}></Popup>
-            )}
           </nav>
         </div>
       </header>

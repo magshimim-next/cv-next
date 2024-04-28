@@ -1,6 +1,6 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
-import Navbar from "@/components/layout/navbar";
+import Navbar from "@/components/layout/navbar/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { CvsProvider } from "@/providers/cvsProvider";
 import SupabaseProvider from "@/providers/supabase-provider";
