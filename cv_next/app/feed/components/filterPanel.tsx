@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { SearchBox } from "./filters/searchbar";
 import { DropdownInput } from "./filters/valueSelect";
 import Categories from "@/types/models/categories";
+import { useMemo } from "react";
 
 export interface filterValues {
   searchValue: string;
@@ -28,6 +29,13 @@ export const FilterPanel = ({
     });
   }, [searchValue, categoryId]);
 
+  const mapCategories: number[] = useMemo(() => {
+    const keys = Object.keys(Categories.category)
+      .map((key) => parseInt(key))
+      .filter((key) => !isNaN(key));
+    return keys;
+  }, []);
+
   return (
     <div className="mx-10 my-[10px] flex flex-row items-center justify-between gap-2">
       <SearchBox
@@ -37,9 +45,7 @@ export const FilterPanel = ({
       ></SearchBox>
       <DropdownInput
         placeHolder="all"
-        valueIds={Object.keys(Categories.category)
-          .map((key) => parseInt(key))
-          .filter((key) => !isNaN(key))}
+        valueIds={mapCategories}
         text="catagory"
         valueId={categoryId}
         onChange={setCategoryId}
