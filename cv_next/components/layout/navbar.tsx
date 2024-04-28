@@ -19,12 +19,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-  const [isNavbarMenuOpen, setIsNavbarMenuOpen] = useState(false);
   const [isSettignsOpen, setIsSettignsOpen] = useState(false);
-
-  const handleClick = async () => {
-    setIsNavbarMenuOpen(false);
-  };
 
   return (
     <>
@@ -35,24 +30,20 @@ export default function Navbar() {
         </div>
         <div className="fixed top-0 z-50 h-[72px] w-full">
           <nav className="mx-auto justify-between px-4 md:flex md:items-center md:px-8 lg:max-w-7xl">
-            <div>
-              <div className="flex items-center justify-between py-3 md:block md:py-5">
-                <Link href="/" onClick={handleClick}>
-                  <h1 className="text-2xl font-bold text-white duration-200 lg:hover:scale-[1.10]">
-                    CV-NEXT
-                  </h1>
-                </Link>
-              </div>
+            <div className="flex items-center justify-between py-3 md:block md:py-5">
+              <Link href="/">
+                <h1 className="text-2xl font-bold text-white duration-200 lg:hover:scale-[1.10]">
+                  CV-NEXT
+                </h1>
+              </Link>
             </div>
             <div className="reletive">
               <div
-                className={`absolute left-0 right-0 z-10 m-auto justify-self-center rounded-md border-2 p-4 backdrop-blur-xl md:static md:mt-0 md:block md:border-none md:p-0 ${
-                  isNavbarMenuOpen ? "block" : "hidden"
-                }`}
+                className={`absolute left-0 right-0 z-10 m-auto hidden justify-self-center rounded-md border-2 p-4 backdrop-blur-xl md:static md:mt-0 md:block md:border-none md:p-0`}
                 style={{ width: "100%", maxWidth: "20rem" }}
               >
                 <div
-                  className={`absolute bg-black ${isNavbarMenuOpen ? "block" : "hidden"} left-0 top-0 -z-10 h-full w-full rounded-md opacity-60 md:w-0`}
+                  className={`absolute left-0 top-0 -z-10 hidden h-full w-full rounded-md bg-black opacity-60 md:w-0`}
                 ></div>
                 <ul className="flex flex-col items-center space-y-4 text-primary md:flex-row md:space-x-6 md:space-y-0">
                   {navLinks.map((link) => (
@@ -60,7 +51,6 @@ export default function Navbar() {
                       <Link
                         className="text-lg font-medium text-white hover:underline"
                         href={link.path}
-                        onClick={handleClick}
                       >
                         {link.route}
                       </Link>
