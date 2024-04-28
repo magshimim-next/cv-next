@@ -33,9 +33,7 @@ export const FilterPanel = ({
       <SearchBox
         placeHolder=" input text to search"
         value={searchValue}
-        onChange={(value: string) => {
-          setSearchValue(value);
-        }}
+        onChange={setSearchValue}
       ></SearchBox>
       <DropdownInput
         placeHolder="all"
@@ -44,9 +42,7 @@ export const FilterPanel = ({
           .filter((key) => !isNaN(key))}
         text="catagory"
         valueId={categoryId}
-        onChange={(value: number | null) => {
-          setCategoryId(value);
-        }}
+        onChange={setCategoryId}
         getValueById={(id: number) => {
           return Categories.category[id];
         }}
