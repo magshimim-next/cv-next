@@ -3,8 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import generateImageUrl from "@/helpers/imageURLHelper";
 import Categories from "@/types/models/categories";
-import { useEffect, useState } from "react";
+import { useEffect, useState, cache } from "react";
 import { getBlurredCv } from "@/app/actions/cvs/getBlurCv";
+
+const getBlur = cache(async (imageURL: string) => {
+  return await getBlurredCv(imageURL);
+});
 interface CVCardProps {
   cv: CvModel;
 }
@@ -22,7 +26,7 @@ export default function CVItemRSC({ cv }: CVCardProps) {
 
   useEffect(() => {
     (async () => {
-      const base64 = await getBlurredCv(imageUrl);
+      const base64 = await getBlur(imageUrl);
       setBase64Data(base64);
       console.log("here", base64);
     })();
