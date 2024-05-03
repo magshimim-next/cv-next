@@ -24,15 +24,19 @@ export const DropdownInput = ({
 
   const menuBorderStyle = isMenuOpen ? "outline-b-0 rounded-b-none" : "";
   const selectionStyle = isMenuOpen ? "block" : "hidden";
+  const textValue = isPlaceHolder ? (
+    <div className="text-black">{`${text}: ${placeHolder}`}</div>
+  ) : (
+    <div className="text-grey">{`${text}: ${getValueById(valueId)}`}</div>
+  );
+
   return (
     <>
       <div
         className={`outline-gray-40 relative flex h-2/6 w-1/6 items-center justify-center whitespace-nowrap bg-white outline-2 ${menuBorderStyle} box-border cursor-pointer rounded-md px-10 py-4`}
         onClick={changeIsMenuOpen}
       >
-        <div className={`${isPlaceHolder ? "text-gray-400" : "text-black"}`}>
-          {`${text}: ${isPlaceHolder ? placeHolder : getValueById(valueId)}`}
-        </div>
+        {textValue}
         <div
           className={`absolute top-full z-10 block h-fit w-full bg-white ${selectionStyle} border-gray-40 max-h-40 divide-y-2 overflow-y-auto border-2 border-t-0`}
         >
