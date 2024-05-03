@@ -43,3 +43,15 @@ export async function getImageURL(cvId: string): Promise<string | null> {
     .getPublicUrl(cvId + ".png").data.publicUrl;
   return data;
 }
+
+export async function getUserName(userId: string): Promise<string | null> {
+  const { data: user, error } = await SupabaseHelper.getSupabaseInstance()
+    .from("profiles")
+    .select("*")
+    .eq("id", userId)
+    .single();
+  if (error) {
+    return null;
+  }
+  return user.full_name;
+}

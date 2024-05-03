@@ -3,7 +3,11 @@ import Link from "next/link";
 import Categories from "@/types/models/categories";
 import { useRef, useState, useEffect, cache } from "react";
 import { getIdFromLink } from "@/helpers/imageURLHelper";
-import { getImageURL, revalidatePreview } from "@/app/actions/cvs/preview";
+import {
+  getImageURL,
+  revalidatePreview,
+  getUserName,
+} from "@/app/actions/cvs/preview";
 import ReactLoading from "react-loading";
 import Definitions from "@/lib/definitions";
 
@@ -19,7 +23,7 @@ const getURL = cache(async (cvId: string) => {
 export default function CVItemRSC({ cv }: CVCardProps) {
   const imageRef = useRef<HTMLImageElement>(null);
   const [realURL, setRealURL] = useState("");
-
+  const [authorName, setAuthorName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   const categoryLink = `/feed?category=${Categories.category[
@@ -43,7 +47,11 @@ export default function CVItemRSC({ cv }: CVCardProps) {
         setIsLoading(false);
       }
     };
-
+    const getAuthorName = async () => {
+      const userUploading = (await getUserName(cv.user_id || "")) || "";
+      setAuthorName(userUploading);
+    };
+    getAuthorName();
     revalidateImage(); // Immediately invoke revalidateImage
 
     const interval = setInterval(
@@ -52,7 +60,7 @@ export default function CVItemRSC({ cv }: CVCardProps) {
     ); // Revalidate every 2 minutes
 
     return () => clearInterval(interval);
-  }, [cv.document_link, realURL]);
+  }, [cv, realURL]);
 
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
   const handleImageError = () => {
@@ -88,7 +96,7 @@ export default function CVItemRSC({ cv }: CVCardProps) {
         <div className="overlay absolute bottom-0 h-1/5 w-full rounded-b-lg bg-white p-6">
           <div className="absolute bottom-0 left-0 mx-5 mb-2.5">
             <div className="mr-2 inline text-xl font-bold text-neutral-700">
-              {cv.user_id}
+              {authorName}
             </div>
             <p className="inline text-xs text-neutral-700/75">
               {formattedDate}
