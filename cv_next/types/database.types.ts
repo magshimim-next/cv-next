@@ -1,3 +1,4 @@
+"server-only"
 export type Json =
   | string
   | number
