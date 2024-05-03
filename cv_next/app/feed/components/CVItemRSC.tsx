@@ -1,61 +1,64 @@
-import Image from "next/image"
-import Link from "next/link"
-import Categories from "@/types/models/categories"
-import { useRef, useState, useEffect, cache } from "react"
-import { getIdFromLink } from "@/helpers/imageURLHelper"
-import { getImageURL, revalidatePreview } from "@/app/actions/cvs/preview"
-import ReactLoading from "react-loading"
-import Definitions from "@/lib/definitions"
+import Image from "next/image";
+import Link from "next/link";
+import Categories from "@/types/models/categories";
+import { useRef, useState, useEffect, cache } from "react";
+import { getIdFromLink } from "@/helpers/imageURLHelper";
+import { getImageURL, revalidatePreview } from "@/app/actions/cvs/preview";
+import ReactLoading from "react-loading";
+import Definitions from "@/lib/definitions";
 
-const errorUrl = "/public/error.jgp" // TODO: replace with real URL here
+const errorUrl = "/error.webp";
 interface CVCardProps {
-  cv: CvModel
+  cv: CvModel;
 }
 
 const getURL = cache(async (cvId: string) => {
-  return await getImageURL(cvId)
-})
+  return await getImageURL(cvId);
+});
 
 export default function CVItemRSC({ cv }: CVCardProps) {
-  const imageRef = useRef<HTMLImageElement>(null)
-  const [realURL, setRealURL] = useState("")
+  const imageRef = useRef<HTMLImageElement>(null);
+  const [realURL, setRealURL] = useState("");
 
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
 
   const categoryLink = `/feed?category=${Categories.category[
     cv.category_id
-  ].toLowerCase()}`
+  ].toLowerCase()}`;
 
   useEffect(() => {
     const revalidateImage = async () => {
       try {
-        await revalidatePreview(cv.document_link)
+        await revalidatePreview(cv.document_link);
         const imageUrl =
-          (await getURL(getIdFromLink(cv.document_link) || "")) ?? errorUrl
-        let validatedURL = imageUrl
-        imageRef.current!.src = validatedURL
-        setRealURL(validatedURL)
+          (await getURL(getIdFromLink(cv.document_link) || "")) ?? errorUrl;
+        let validatedURL = imageUrl;
+        if (imageRef.current) {
+          imageRef.current.src = validatedURL;
+        }
+        setRealURL(validatedURL);
       } catch (error) {
-        console.error("Error revalidating image:", error)
+        console.error("Error revalidating image:", error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    revalidateImage() // Immediately invoke revalidateImage
+    revalidateImage(); // Immediately invoke revalidateImage
 
     const interval = setInterval(
       revalidateImage,
       Definitions.FETCH_WAIT_TIME * 1000
-    ) // Revalidate every 2 minutes
+    ); // Revalidate every 2 minutes
 
-    return () => clearInterval(interval)
-  }, [cv.document_link, realURL])
+    return () => clearInterval(interval);
+  }, [cv.document_link, realURL]);
 
-  const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US")
+  const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
   const handleImageError = () => {
-    console.log("Error loading image")
-  }
+    console.log("Error loading image");
+    setRealURL(errorUrl);
+  };
 
   if (isLoading) {
     return (
@@ -65,7 +68,7 @@ export default function CVItemRSC({ cv }: CVCardProps) {
         height={667}
         width={375}
       />
-    )
+    );
   }
 
   return (
@@ -100,5 +103,5 @@ export default function CVItemRSC({ cv }: CVCardProps) {
         </div>
       </div>
     </>
-  )
+  );
 }
