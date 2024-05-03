@@ -57,6 +57,37 @@ export default function Popup({ closeCb }: PopupProps) {
   };
   const matchThemePlaceholderImage =
     theme == "dark" ? { filter: "invert(0)" } : { filter: "invert(1)" };
+
+  const userDataComponent = userData ? (
+    <div>
+      <Image
+        alt="profile"
+        src={userData.user.user_metadata.avatar_url}
+        width={30}
+        height={30 * 1.4142}
+        className="w-20 rounded-lg p-2"
+      ></Image>
+
+      <Link
+        className="text-lg font-medium hover:underline"
+        href="/profile"
+        onClick={closeCb}
+      >
+        {userData.user.user_metadata.full_name}
+      </Link>
+    </div>
+  ) : (
+    <div style={matchThemePlaceholderImage}>
+      <Image
+        alt="profile"
+        src={settignsIcon}
+        width={10}
+        height={10 * 1.4142}
+        className="w-20 rounded-lg p-2"
+      ></Image>
+    </div>
+  );
+
   return (
     <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center">
       <div
@@ -77,22 +108,7 @@ export default function Popup({ closeCb }: PopupProps) {
         <ul className="mt-10 flex w-full flex-col items-center">
           {userData ? (
             <div className="mt-10 flex w-full flex-col items-center">
-              <Image
-                alt="profile"
-                src={userData.user.user_metadata.avatar_url}
-                width={30}
-                height={30 * 1.4142}
-                className="w-20 rounded-lg p-2"
-              ></Image>
-
-              <Link
-                className="text-lg font-medium hover:underline"
-                href="/profile"
-                onClick={closeCb}
-              >
-                {userData.user.user_metadata.full_name}
-              </Link>
-
+              {userDataComponent}
               {navLinks.map((link) =>
                 link.req_login ? (
                   <li key={link.route}>
@@ -113,15 +129,7 @@ export default function Popup({ closeCb }: PopupProps) {
             </div>
           ) : (
             <div className="mt-10 flex w-full flex-col items-center">
-              <div style={matchThemePlaceholderImage}>
-                <Image
-                  alt="profile"
-                  src={settignsIcon}
-                  width={10}
-                  height={10 * 1.4142}
-                  className="w-20 rounded-lg p-2"
-                ></Image>
-              </div>
+              {userDataComponent}
 
               {navLinks.map((link) =>
                 !link.req_login ? (
