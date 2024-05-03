@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import CVItem from "@/app/feed/components/CVItem"
-import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { fetchCvsForFeed } from "@/app/actions/cvs/fetchCvs"
-import CVItemRSC from "./CVItemRSC"
-import { CvsContext, CvsDispatchContext } from "@/providers/cvsProvider"
-import { ReloadButton } from "@/components/ui/reloadButton"
-import Definitions from "@/lib/definitions"
-import { useInView } from "react-intersection-observer"
-import ReactLoading from 'react-loading';
+import CVItem from "@/app/feed/components/CVItem";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { fetchCvsForFeed } from "@/app/actions/cvs/fetchCvs";
+import CVItemRSC from "./CVItemRSC";
+import { CvsContext, CvsDispatchContext } from "@/providers/cvsProvider";
+import { ReloadButton } from "@/components/ui/reloadButton";
+import Definitions from "@/lib/definitions";
+import { useInView } from "react-intersection-observer";
+import ReactLoading from "react-loading";
 
 export default function Feed() {
-  const cvsContextConsumer = useContext(CvsContext)
-  const cvsDispatchContextConsumer = useContext(CvsDispatchContext)
+  const cvsContextConsumer = useContext(CvsContext);
+  const cvsDispatchContextConsumer = useContext(CvsDispatchContext);
   const initialCvs = cvsContextConsumer.cvs?.length
     ? cvsContextConsumer.cvs
-    : []
+    : [];
 
-  const [cvs, setCvs] = useState<CvModel[]>(initialCvs)
-  const cvsRef = useRef<CvModel[] | null>()
+  const [cvs, setCvs] = useState<CvModel[]>(initialCvs);
+  const cvsRef = useRef<CvModel[] | null>();
   const page = useRef<number>(
     cvsContextConsumer.cvs?.length
       ? cvsContextConsumer.page
       : Definitions.PAGINATION_INIT_PAGE_NUMBER
-  )
-  const [loadMore, setLoadMore] = useState(true)
+  );
+  const [loadMore, setLoadMore] = useState(true);
 
   /**
    * Trigger pagination when this element comes into view.
@@ -35,38 +35,35 @@ export default function Feed() {
   function TriggerPagination({
     callbackTrigger,
   }: {
-    callbackTrigger: () => Promise<void>
+    callbackTrigger: () => Promise<void>;
   }) {
-    const [triggerRef, inView] = useInView()
+    const [triggerRef, inView] = useInView();
 
     useEffect(() => {
       if (inView) {
-        callbackTrigger()
+        callbackTrigger();
       }
-    }, [callbackTrigger, inView])
+    }, [callbackTrigger, inView]);
 
-    return <div ref={triggerRef}></div>
+    return <div ref={triggerRef}></div>;
   }
 
   useEffect(() => {
-    cvsRef.current = cvs
-  }, [cvs])
+    cvsRef.current = cvs;
+  }, [cvs]);
 
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
-      const nextPage = page.current + 1
-      const response = await fetchCvsForFeed({ page: nextPage })
-      if (
-        response &&
-        response.cvs.length > 0
-      ) {
-        setCvs((prevCvs) => [...prevCvs, ...response.cvs])
-        page.current = nextPage
+      const nextPage = page.current + 1;
+      const response = await fetchCvsForFeed({ page: nextPage });
+      if (response && response.cvs.length > 0) {
+        setCvs((prevCvs) => [...prevCvs, ...response.cvs]);
+        page.current = nextPage;
       } else {
-        setLoadMore(false)
+        setLoadMore(false);
       }
     }
-  }, [loadMore])
+  }, [loadMore]);
 
   useEffect(() => {
     //before unmount, save current cvs state to context for smoother navigation
@@ -76,10 +73,10 @@ export default function Feed() {
         cvsDispatchContextConsumer({
           type: `replace`,
           payload: { cvs: cvsRef.current, page: page.current },
-        })
+        });
       }
-    }
-  }, [cvsDispatchContextConsumer])
+    };
+  }, [cvsDispatchContextConsumer]);
 
   const forceReload = () => {
     cvsDispatchContextConsumer({
@@ -88,11 +85,11 @@ export default function Feed() {
         cvs: [],
         page: Definitions.PAGINATION_INIT_PAGE_NUMBER,
       },
-    })
-    setCvs([])
-    page.current = Definitions.PAGINATION_INIT_PAGE_NUMBER
-    setLoadMore(true)
-  }
+    });
+    setCvs([]);
+    page.current = Definitions.PAGINATION_INIT_PAGE_NUMBER;
+    setLoadMore(true);
+  };
 
   return (
     <main>
@@ -114,12 +111,16 @@ export default function Feed() {
             <ReloadButton callback={forceReload}>Reload</ReloadButton>
           </div>
         ) : (
-          //TODO: replace with proper spinner
           <div className="z-10 flex justify-center">
-            <ReactLoading type={"spinningBubbles"} color={"#000"} height={667} width={375} />
+            <ReactLoading
+              type={"spinningBubbles"}
+              color={"#000"}
+              height={667}
+              width={375}
+            />
           </div>
         )}
       </div>
     </main>
-  )
+  );
 }
