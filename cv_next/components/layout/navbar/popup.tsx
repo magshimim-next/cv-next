@@ -2,18 +2,21 @@
 
 import Image from "next/image";
 import closeIcon from "@/public/images/closeIcon.png";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSupabase } from "@/hooks/supabase";
+import settignsIcon from "@/public/images/settigns.png";
 
 const navLinks = [
   {
     route: "Login",
     path: "/login",
+    req_login: false,
   },
   {
     route: "Signout",
     path: "/",
+    req_login: true,
   },
 ];
 
@@ -23,12 +26,26 @@ interface PopupProps {
 
 export default function Popup({ closeCb }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const [userData, setUserData] = useState<any>(null);
+  const supabase = useSupabase();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: connectedUser, error } = await supabase.auth.getUser();
+      if (error || !connectedUser?.user) {
+        setUserData(null);
+      } else {
+        setUserData(connectedUser);
+      }
+    };
+    fetchUser();
+  }, [supabase]);
+
   useEffect(() => {
     if (dialogRef.current) {
       dialogRef.current.show();
     }
   }, []);
-  const supabase = useSupabase();
 
   const handleSelection = (route: string) => {
     if (route === "Signout") {
@@ -55,17 +72,70 @@ export default function Popup({ closeCb }: PopupProps) {
           <Image alt="closeIcon" src={closeIcon}></Image>
         </div>
         <ul className="mt-10 flex w-full flex-col items-center">
-          {navLinks.map((link) => (
-            <li key={link.route}>
+          {userData ? (
+            <div className="mt-10 flex w-full flex-col items-center">
+              <Image
+                alt="profile"
+                src={userData.user.user_metadata.avatar_url}
+                width={30}
+                height={30 * 1.4142}
+                className="w-20 rounded-lg p-2"
+              ></Image>
+
               <Link
-                className="text-lg font-medium hover:underline"
-                href={link.path}
-                onClick={() => handleSelection(link.route)}
+                className="text-lg font-medium text-white hover:underline"
+                href="/profile"
+                onClick={closeCb}
               >
-                {link.route}
+                {userData.user.user_metadata.full_name}
               </Link>
-            </li>
-          ))}
+
+              {navLinks.map((link) =>
+                link.req_login ? (
+                  <li key={link.route}>
+                    <Link
+                      className="text-lg font-medium text-white hover:underline"
+                      href={link.path}
+                      onClick={() => {
+                        handleSelection(link.route);
+                      }}
+                    >
+                      {link.route}
+                    </Link>
+                  </li>
+                ) : (
+                  <></>
+                )
+              )}
+            </div>
+          ) : (
+            <div className="mt-10 flex w-full flex-col items-center">
+              <Image
+                alt="profile"
+                src={settignsIcon}
+                width={10}
+                height={10 * 1.4142}
+                className="w-20 rounded-lg p-2"
+              ></Image>
+              {navLinks.map((link) =>
+                !link.req_login ? (
+                  <li key={link.route}>
+                    <Link
+                      className="text-lg font-medium text-white hover:underline"
+                      href={link.path}
+                      onClick={() => {
+                        handleSelection(link.route);
+                      }}
+                    >
+                      {link.route}
+                    </Link>
+                  </li>
+                ) : (
+                  <></>
+                )
+              )}
+            </div>
+          )}
         </ul>
       </dialog>
     </div>
