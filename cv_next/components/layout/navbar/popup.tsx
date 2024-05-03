@@ -6,6 +6,7 @@ import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSupabase } from "@/hooks/supabase";
 import settignsIcon from "@/public/images/settigns.png";
+import { useTheme } from "next-themes";
 
 const navLinks = [
   {
@@ -28,6 +29,7 @@ export default function Popup({ closeCb }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [userData, setUserData] = useState<any>(null);
   const supabase = useSupabase();
+  const { theme } = useTheme();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -53,7 +55,8 @@ export default function Popup({ closeCb }: PopupProps) {
     }
     closeCb();
   };
-
+  const matchThemePlaceholderImage =
+    theme == "dark" ? { filter: "invert(0)" } : { filter: "invert(1)" };
   return (
     <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center">
       <div
@@ -110,13 +113,16 @@ export default function Popup({ closeCb }: PopupProps) {
             </div>
           ) : (
             <div className="mt-10 flex w-full flex-col items-center">
-              <Image
-                alt="profile"
-                src={settignsIcon}
-                width={10}
-                height={10 * 1.4142}
-                className="w-20 rounded-lg p-2"
-              ></Image>
+              <div style={matchThemePlaceholderImage}>
+                <Image
+                  alt="profile"
+                  src={settignsIcon}
+                  width={10}
+                  height={10 * 1.4142}
+                  className="w-20 rounded-lg p-2"
+                ></Image>
+              </div>
+
               {navLinks.map((link) =>
                 !link.req_login ? (
                   <li key={link.route}>
