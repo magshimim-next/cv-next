@@ -59,7 +59,7 @@ export default function Popup({ closeCb }: PopupProps) {
     theme == "dark" ? { filter: "invert(0)" } : { filter: "invert(1)" };
 
   const userDataComponent = userData ? (
-    <div>
+    <div className="mt-10 flex w-full flex-col items-center">
       <Image
         alt="profile"
         src={userData.user.user_metadata.avatar_url}
@@ -130,7 +130,6 @@ export default function Popup({ closeCb }: PopupProps) {
           ) : (
             <div className="mt-10 flex w-full flex-col items-center">
               {userDataComponent}
-
               {navLinks.map((link) =>
                 !link.req_login ? (
                   <li key={link.route}>
