@@ -1,15 +1,14 @@
 "use client";
-import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 export function ModeToggle() {
   const [isClient, setIsClient] = useState(false);
   const { theme, setTheme } = useTheme();
 
-  React.useEffect(() => {
+  useEffect(() => {
     setIsClient(true);
   }, []);
 

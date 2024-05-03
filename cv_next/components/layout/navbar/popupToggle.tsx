@@ -1,5 +1,4 @@
 "use client";
-import * as React from "react";
 import settignsIcon from "@/public/images/settigns.png";
 import Image from "next/image";
 import { useState } from "react";
