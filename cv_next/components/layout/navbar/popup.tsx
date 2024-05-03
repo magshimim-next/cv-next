@@ -83,7 +83,7 @@ export default function Popup({ closeCb }: PopupProps) {
               ></Image>
 
               <Link
-                className="text-lg font-medium text-white hover:underline"
+                className="text-lg font-medium hover:underline"
                 href="/profile"
                 onClick={closeCb}
               >
@@ -94,7 +94,7 @@ export default function Popup({ closeCb }: PopupProps) {
                 link.req_login ? (
                   <li key={link.route}>
                     <Link
-                      className="text-lg font-medium text-white hover:underline"
+                      className="text-lg font-medium hover:underline"
                       href={link.path}
                       onClick={() => {
                         handleSelection(link.route);
@@ -121,7 +121,7 @@ export default function Popup({ closeCb }: PopupProps) {
                 !link.req_login ? (
                   <li key={link.route}>
                     <Link
-                      className="text-lg font-medium text-white hover:underline"
+                      className="text-lg font-medium hover:underline"
                       href={link.path}
                       onClick={() => {
                         handleSelection(link.route);
