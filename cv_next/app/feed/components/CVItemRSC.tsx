@@ -1,17 +1,32 @@
-import Image from "next/image"
-import Link from "next/link"
-import generateImageUrl from "@/helpers/imageURLHelper"
-import Categories from "@/types/models/categories"
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import generateImageUrl from "@/helpers/imageURLHelper";
+import Categories from "@/types/models/categories";
+import { useEffect, useState } from "react";
+import { getBlurredCv } from "@/app/actions/cvs/getBlurCv";
 interface CVCardProps {
-  cv: CvModel
+  cv: CvModel;
 }
 
 export default function CVItemRSC({ cv }: CVCardProps) {
+  const [base64Data, setBase64Data] = useState(
+    "data:iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPs7p5fDwAFlAI2LB7hbAAAAABJRU5ErkJggg=="
+  );
+
   const categoryLink = `/feed?category=${Categories.category[
     cv.category_id
-  ].toLowerCase()}`
-  const imageUrl = generateImageUrl(cv.document_link)
-  const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US")
+  ].toLowerCase()}`;
+  const imageUrl = generateImageUrl(cv.document_link);
+  const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
+
+  useEffect(() => {
+    (async () => {
+      const base64 = await getBlurredCv(imageUrl);
+      setBase64Data(base64);
+      console.log("here", base64);
+    })();
+  }, []);
 
   return (
     <>
@@ -21,7 +36,7 @@ export default function CVItemRSC({ cv }: CVCardProps) {
         className="w-full rounded-lg p-2"
         src={imageUrl}
         placeholder="blur"
-        blurDataURL="data:iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPs7p5fDwAFlAI2LB7hbAAAAABJRU5ErkJggg=="
+        blurDataURL={base64Data}
         alt="CV Preview"
         priority
       />
@@ -42,5 +57,5 @@ export default function CVItemRSC({ cv }: CVCardProps) {
         </div>
       </div>
     </>
-  )
+  );
 }
