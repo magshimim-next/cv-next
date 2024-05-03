@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ModeToggle } from "@/components/layout/navbar/mode-toggle";
-import { PopupToggle } from "./popup-toggle";
+import { ModeToggle } from "@/components/layout/navbar/modeToggle";
+import { PopupToggle } from "./popupToggle";
 
 const navLinks = [
   {
