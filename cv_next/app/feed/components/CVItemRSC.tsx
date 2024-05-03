@@ -28,9 +28,8 @@ export default function CVItemRSC({ cv }: CVCardProps) {
     (async () => {
       const base64 = await getBlur(imageUrl);
       setBase64Data(base64);
-      console.log("here", base64);
     })();
-  }, []);
+  }, [imageUrl]);
 
   return (
     <>
