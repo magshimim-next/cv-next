@@ -70,7 +70,7 @@ export default function HeroHeader() {
             ))
           }
         </div>
-        <div className="h-10 w-full bg-black opacity-10 absolute bottom-0 flex items-center justify-center text-primary">
+        <div className="h-10 w-full bottom-0 flex items-center justify-center text-primary shadow-inner text-xs px-2 rounded-md opacity-50">
           credit to our team: Ron Peer, Arad Donenfeld, Avner Mindelis, Nevo Sznajder, Yechiam Weiss, Nehoray Gil, Adam Liberov, Denis Granovsky and Ethan Krimer 
         </div>
       </div>
