@@ -6,17 +6,7 @@ import { ModeToggle } from "@/components/ui/mode-toggle"
 import settignsIcon from "../../public/images/settigns.png"
 import Image from "next/image"
 import Popup from "./popup"
-
-const navLinks = [
-  {
-    route: "Home",
-    path: "/",
-  },
-  {
-    route: "Feed",
-    path: "/feed",
-  }
-]
+import { routes } from "@/lib/definitions"
 
 export default function Navbar() {
   const [isNavbarMenuOpen, setIsNavbarMenuOpen] = useState(false)
@@ -97,7 +87,7 @@ export default function Navbar() {
             >
               <div className={`absolute bg-black ${isNavbarMenuOpen ? "block" : "hidden"} w-full h-full top-0 left-0 -z-10 opacity-60 rounded-md md:w-0`}></div>
               <ul className="flex flex-col items-center space-y-4 text-primary md:flex-row md:space-x-6 md:space-y-0">
-                {navLinks.map((link) => (
+                {routes.filter(link => link.UILocation === 'navbar').map((link) => (
                   <li key={link.route}>
                     <Link
                       className="text-lg text-white font-medium hover:underline"

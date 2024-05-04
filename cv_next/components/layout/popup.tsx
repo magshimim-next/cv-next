@@ -3,17 +3,7 @@
 import Image from "next/image";
 import settignsIcon from "../../public/images/closeIcon.png"
 import Link from "next/link";
-
-const navLinks = [
-  {
-    route: "Login",
-    path: "/login",
-  },
-  {
-    route: "Signout",
-    path: "/logout",
-  },
-]
+import { routes } from "@/lib/definitions";
 
 interface PopupProps {
   closeCb: () => void;
@@ -27,7 +17,7 @@ export default function Popup({ closeCb }: PopupProps) {
         <Image alt="closeIcon" src={settignsIcon}></Image>
       </div>
       <ul className="flex flex-col items-center w-full mt-10">
-        {navLinks.map((link) => (
+        {routes.filter(link => link.UILocation === 'profile').map((link) => (
           <li key={link.route}>
             <Link className="text-lg text-white font-medium hover:underline" href={link.path} onClick={closeCb} >
               {link.route}

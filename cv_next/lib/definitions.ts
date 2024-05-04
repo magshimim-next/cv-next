@@ -8,9 +8,12 @@ export default class Definitions {
 }
 
 export const heroHeader: PageHeader = {
-  header: `Landing pages made easy`,
-  subheader: `Easy to setup. Customizable. Quick. Responsive.`,
-  image: `/hero-img.webp`,
+  header: `Next`,
+  image: `/images/logo.png`,
+  subheader: `improve the magshimim next community's resumes.`,
+  explenetion: `we as a magshimim next community can help each other get jobs by improving our memeber's resumes.
+  this website is a place to uplode resumes, let other review them and make them better.
+  we will not tolerate any abuse, hateful commects, griffing, pentesting and etc... `
 }
 
 export const inactiveHeader: PageHeader = {
@@ -18,3 +21,31 @@ export const inactiveHeader: PageHeader = {
   subheader: `This page requieres that you get approved by the moderators`,
   image: `/access-denied.webp`,
 }
+
+
+export const routes: routes[] = [
+  {
+    route: "Home",
+    path: "/",
+    image: '/images/home.png',
+    UILocation: 'navbar'
+  },
+  {
+    route: "Feed",
+    path: "/feed",
+    image: '/images/feed.png',
+    UILocation: 'navbar'
+  },
+  {
+    route: "Login",
+    path: "/login",
+    image: '',
+    UILocation: 'profile'
+  },
+  {
+    route: "Signout",
+    path: "/logout",
+    image: '',
+    UILocation: 'profile'
+  },
+]

@@ -8,7 +8,14 @@ declare global {
   type UserModel = DB["public"]["Tables"]["users"]["Row"]
   type PageHeader = {
     header: string
-    subheader: string
+    subheader: string,
+    explenetion?: string,
     image: string
+  }
+  type routes = {
+    route: string,
+    path: string,
+    image: string,
+    UILocation: 'navbar' | 'profile'
   }
 }
