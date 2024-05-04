@@ -1,48 +1,70 @@
-"use client"
-import { deleteComment } from "@/app/actions/comments/deleteComment"
-import { setResolved } from "@/app/actions/comments/setResolved"
-import { upvoteComment } from "@/app/actions/comments/setLike"
-import { getUser } from "@/app/actions/users/getUser"
-import useSWR, { mutate } from "swr"
+"use client";
+import { deleteComment } from "@/app/actions/comments/deleteComment";
+import { setResolved } from "@/app/actions/comments/setResolved";
+import { upvoteComment } from "@/app/actions/comments/setLike";
+import { getUser } from "@/app/actions/users/getUser";
+import useSWR, { mutate } from "swr";
 
 export default function Comment({
   comment,
   userId,
   childDepth = 0,
+  setCommentsOfCommentsEdit,
+  CommentsOnCommentsEdit,
+  setCommentStatus,
+  isOnEdit = false,
+  commentStatus,
 }: {
-  comment: CommentModel
-  userId: string
-  childDepth?: number
+  comment: CommentModel;
+  userId: string;
+  childDepth?: number;
+  isOnEdit?: boolean;
+  CommentsOnCommentsEdit: Map<string, boolean>;
+  commentStatus: boolean;
+  setCommentStatus: (value: boolean) => void;
+  setCommentsOfCommentsEdit: (value: Map<string, boolean>) => void;
 }) {
-  const date = new Date(comment.last_update)
+  const date = new Date(comment.last_update);
   const childOrParentStyling = childDepth
     ? `p-3 ml-${6 / childDepth} lg:ml-${12 / childDepth} border-t border-gray-400 dark:border-gray-600`
-    : "p-6 mb-3 border-b border-gray-200 rounded-lg"
+    : "p-6 mb-3 border-b border-gray-200 rounded-lg";
 
   const deleteCommentAction = async () => {
     await deleteComment(comment.id).finally(() => {
-      mutate(comment.document_id)
-    })
-  }
+      mutate(comment.document_id);
+    });
+  };
 
   const setResolvedCommentAction = async (resolved: boolean) => {
     await setResolved(comment.id, resolved).finally(() => {
-      mutate(comment.document_id)
-    })
-  }
+      mutate(comment.document_id);
+    });
+  };
 
   const setLikedCommentAction = async (liked: boolean) => {
     await upvoteComment(comment.id, liked, userId).finally(() => {
-      mutate(comment.document_id)
-    })
-  }
+      mutate(comment.document_id);
+    });
+  };
 
-  const { data: user } = useSWR(comment.user_id, getUser)
+  const commentOnComment = async (toComment: boolean) => {
+    console.log(CommentsOnCommentsEdit);
+    let repOfCommentsOnCommentsEdit = CommentsOnCommentsEdit;
+    setCommentsOfCommentsEdit(
+      repOfCommentsOnCommentsEdit.set(
+        comment.id,
+        !repOfCommentsOnCommentsEdit.get(comment.id)
+      )
+    );
+    setCommentStatus(!commentStatus);
+  };
+
+  const { data: user } = useSWR(comment.user_id, getUser);
   if (user && user.ok) {
     const userName =
       user.val.username && user.val.username.length > 0
         ? user.val.username
-        : user.val.full_name
+        : user.val.full_name;
 
     return (
       <article
@@ -88,7 +110,14 @@ export default function Comment({
               </button>
             )}
           </>
-        ) : null}
+        ) : (
+          <button
+            className="text-green-500"
+            onClick={() => commentOnComment(true)}
+          >
+            Comment
+          </button>
+        )}
         <span> </span>
         {comment.upvotes && comment.upvotes.includes(userId) ? (
           <button
@@ -105,10 +134,13 @@ export default function Comment({
             Like {comment.upvotes?.length || 0}
           </button>
         )}
+        {CommentsOnCommentsEdit.get(comment.id) ? (
+          <p className="underline underline-offset-4">edit param</p>
+        ) : null}
       </article>
-    )
+    );
   } else {
     // TODO: Show error
-    return null
+    return null;
   }
 }
