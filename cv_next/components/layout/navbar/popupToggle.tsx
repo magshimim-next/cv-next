@@ -8,7 +8,7 @@ import { useSupabase } from "@/hooks/supabase";
 export function PopupToggle() {
   const [isSettignsOpen, setIsSettignsOpen] = useState(false);
   const [profileImage, setProfileImage] = useState(settignsIcon);
-  const [userData, setUserData] = useState<UserModel>(null);
+  const [userData, setUserData] = useState<any>(null);
   const [signedOut, setSignout] = useState(true);
   const supabase = useSupabase();
 

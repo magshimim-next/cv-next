@@ -23,7 +23,7 @@ const navLinks = [
 
 interface PopupProps {
   closeCb: () => void;
-  userData: UserModel;
+  userData: any;
   updateSignOut: () => void;
 }
 
