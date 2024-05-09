@@ -28,7 +28,7 @@ interface PopupProps {
 
 export default function Popup({ closeCb }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const [userData, setUserData] = useState<any>(null);
+  const [userData, setUserData] = useState<UserModel>(null);
   const [loading, setLoading] = useState(true);
   const supabase = useSupabase();
   const { theme } = useTheme();
