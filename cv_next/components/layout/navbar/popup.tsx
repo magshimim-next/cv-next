@@ -2,12 +2,11 @@
 
 import Image from "next/image";
 import closeIcon from "@/public/images/closeIcon.png";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { useSupabase } from "@/hooks/supabase";
 import settignsIcon from "@/public/images/settigns.png";
 import { useTheme } from "next-themes";
-import ReactLoading from "react-loading";
 
 const navLinks = [
   {
@@ -24,27 +23,18 @@ const navLinks = [
 
 interface PopupProps {
   closeCb: () => void;
+  userData: UserModel;
+  updateSignOut: () => void;
 }
 
-export default function Popup({ closeCb }: PopupProps) {
+export default function Popup({
+  closeCb,
+  userData,
+  updateSignOut,
+}: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const [userData, setUserData] = useState<UserModel>(null);
-  const [loading, setLoading] = useState(true);
   const supabase = useSupabase();
   const { theme } = useTheme();
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data: connectedUser, error } = await supabase.auth.getUser();
-      if (error || !connectedUser?.user) {
-        setUserData(null);
-      } else {
-        setUserData(connectedUser);
-      }
-      setLoading(false);
-    };
-    fetchUser();
-  }, [supabase]);
 
   useEffect(() => {
     if (dialogRef.current) {
@@ -55,12 +45,13 @@ export default function Popup({ closeCb }: PopupProps) {
   const handleSelection = (route: string) => {
     if (route === "Signout") {
       supabase.auth.signOut();
+      updateSignOut();
     }
     closeCb();
   };
+
   const matchThemePlaceholderImage =
     theme == "dark" ? { filter: "invert(0)" } : { filter: "invert(1)" };
-  const matchThemeLoading = theme == "dark" ? "#FFF" : "#000";
 
   const userDataComponent = userData ? (
     <div className="mt-10 flex w-full flex-col items-center">
@@ -110,14 +101,7 @@ export default function Popup({ closeCb }: PopupProps) {
           <Image alt="closeIcon" src={closeIcon}></Image>
         </div>
         <ul className="mt-10 flex w-full flex-col items-center">
-          {loading ? (
-            <ReactLoading
-              type={"bubbles"}
-              color={matchThemeLoading}
-              height={100}
-              width={100}
-            />
-          ) : userData ? (
+          {userData ? (
             <div className="mt-10 flex w-full flex-col items-center">
               {userDataComponent}
               {navLinks.map((link) =>
