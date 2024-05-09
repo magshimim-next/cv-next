@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useSupabase } from "@/hooks/supabase";
 import settignsIcon from "@/public/images/settigns.png";
 import { useTheme } from "next-themes";
+import ReactLoading from "react-loading";
 
 const navLinks = [
   {
@@ -28,6 +29,7 @@ interface PopupProps {
 export default function Popup({ closeCb }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [userData, setUserData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const supabase = useSupabase();
   const { theme } = useTheme();
 
@@ -39,6 +41,7 @@ export default function Popup({ closeCb }: PopupProps) {
       } else {
         setUserData(connectedUser);
       }
+      setLoading(false);
     };
     fetchUser();
   }, [supabase]);
@@ -57,6 +60,7 @@ export default function Popup({ closeCb }: PopupProps) {
   };
   const matchThemePlaceholderImage =
     theme == "dark" ? { filter: "invert(0)" } : { filter: "invert(1)" };
+  const matchThemeLoading = theme == "dark" ? "#FFF" : "#000";
 
   const userDataComponent = userData ? (
     <div className="mt-10 flex w-full flex-col items-center">
@@ -106,7 +110,14 @@ export default function Popup({ closeCb }: PopupProps) {
           <Image alt="closeIcon" src={closeIcon}></Image>
         </div>
         <ul className="mt-10 flex w-full flex-col items-center">
-          {userData ? (
+          {loading ? (
+            <ReactLoading
+              type={"bubbles"}
+              color={matchThemeLoading}
+              height={100}
+              width={100}
+            />
+          ) : userData ? (
             <div className="mt-10 flex w-full flex-col items-center">
               {userDataComponent}
               {navLinks.map((link) =>
