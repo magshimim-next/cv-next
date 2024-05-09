@@ -27,6 +27,7 @@ export const FilterPanel = ({
       categoryId: categoryId,
       searchValue: searchValue,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue, categoryId]);
 
   const mapCategories: number[] = useMemo(() => {
