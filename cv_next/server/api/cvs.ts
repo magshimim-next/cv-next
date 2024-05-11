@@ -149,11 +149,16 @@ export async function getPaginatedCvs(
       .from("cvs")
       .select("*")
       .range(from, to - 1);
-
+    let queryUserId = supabase
+      .from("cvs")
+      .select("id");
+    let userId = null;
     MyLogger.logDebug("filters", filters);
     if (filters) {
       if (filters.searchValue) {
+        queryUserId = queryUserId.textSearch("full_name", filters.searchValue);
         query = query.textSearch("description", filters.searchValue);
+        userId = await queryUserId;
       }
       if (filters.categoryId) {
         MyLogger.logDebug("catagory id:", filters.categoryId);
@@ -164,7 +169,7 @@ export async function getPaginatedCvs(
     if (filterOutDeleted) {
       query = query.eq("deleted", false);
     }
-
+    
     const { data: cvs, error } = await query;
     MyLogger.logDebug(
       "cvs:",
@@ -175,7 +180,10 @@ export async function getPaginatedCvs(
       MyLogger.logInfo("Error @ getPaginatedCvs", error);
       return null;
     }
-
+    if(userId){
+      cvsId = getCvsByUserId(iserId[0]);
+      cvs.concat(cvsId);
+    }
     return { page: page, cvs: cvs as CvModel[] };
   } catch (error) {
     MyLogger.logInfo("Error @ getPaginatedCvs", error);
