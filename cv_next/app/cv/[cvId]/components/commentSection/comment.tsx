@@ -2,28 +2,43 @@
 import { deleteComment } from "@/app/actions/comments/deleteComment";
 import { setResolved } from "@/app/actions/comments/setResolved";
 import { upvoteComment } from "@/app/actions/comments/setLike";
+import { addNewComment } from "@/app/actions/comments/addNewComment"
 import { getUser } from "@/app/actions/users/getUser";
+import { RxPlus } from "react-icons/rx";
+import { useEffect, useState } from "react";
+
 import useSWR, { mutate } from "swr";
 
 export default function Comment({
   comment,
   userId,
   childDepth = 0,
-  setCommentsOfCommentsEdit,
-  CommentsOnCommentsEdit,
-  setCommentStatus,
-  isOnEdit = false,
-  commentStatus,
+  cv,
+  commentsOfComment = [],
 }: {
   comment: CommentModel;
   userId: string;
   childDepth?: number;
-  isOnEdit?: boolean;
-  CommentsOnCommentsEdit: Map<string, boolean>;
-  commentStatus: boolean;
-  setCommentStatus: (value: boolean) => void;
-  setCommentsOfCommentsEdit: (value: Map<string, boolean>) => void;
+  cv: CvModel,
+  commentsOfComment: any []
 }) {
+
+  const [commentOnCommentStatus, setCommentOnCommentStatus] = useState<boolean>(false);
+  const [commentOnComment, setCommentOnComment] = useState<string>("");
+  const [submitCommentOnComment, setSubmitCommentOnComment] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!userId) throw new Error("User not found") // TODO: handle this
+    const commentToAdd: NewCommentModel = {
+      data: commentOnComment,
+      document_id: cv.id,
+      parent_comment_Id: comment.id,
+      user_id: userId,
+    }
+    addNewComment(commentToAdd);
+    setCommentOnCommentStatus(false);
+  }, [submitCommentOnComment])
+
   const date = new Date(comment.last_update);
   const childOrParentStyling = childDepth
     ? `p-3 ml-${6 / childDepth} lg:ml-${12 / childDepth} border-t border-gray-400 dark:border-gray-600`
@@ -47,17 +62,6 @@ export default function Comment({
     });
   };
 
-  const commentOnComment = async (toComment: boolean) => {
-    console.log(CommentsOnCommentsEdit);
-    let repOfCommentsOnCommentsEdit = CommentsOnCommentsEdit;
-    setCommentsOfCommentsEdit(
-      repOfCommentsOnCommentsEdit.set(
-        comment.id,
-        !repOfCommentsOnCommentsEdit.get(comment.id)
-      )
-    );
-    setCommentStatus(!commentStatus);
-  };
 
   const { data: user } = useSWR(comment.user_id, getUser);
   if (user && user.ok) {
@@ -113,7 +117,7 @@ export default function Comment({
         ) : (
           <button
             className="text-green-500"
-            onClick={() => commentOnComment(true)}
+            onClick={() => setCommentOnCommentStatus(!commentOnCommentStatus)}
           >
             Comment
           </button>
@@ -134,9 +138,13 @@ export default function Comment({
             Like {comment.upvotes?.length || 0}
           </button>
         )}
-        {CommentsOnCommentsEdit.get(comment.id) ? (
-          <p className="underline underline-offset-4">edit param</p>
-        ) : null}
+        {commentOnCommentStatus ? (
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+              <input  type="text" onChange={e => setCommentOnComment(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+              <RxPlus style={{fontSize: "5vh"}} onClick={() => setSubmitCommentOnComment(!submitCommentOnComment)} />
+            </div>
+          ) : null}
+        {commentsOfComment?.map(comment => <p>{comment.data}</p>)}
       </article>
     );
   } else {
