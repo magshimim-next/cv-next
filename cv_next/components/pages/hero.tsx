@@ -4,6 +4,19 @@ import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { heroHeader, routes } from "@/lib/definitions"
 
+const credit = [
+  'Ron Peer', 
+  'Arad Donenfeld', 
+  'Avner Mindelis', 
+  'Nevo Sznajder', 
+  'Yechiam Weiss', 
+  'Nehoray Gil', 
+  'Adam Liberov', 
+  'Denis Granovsky', 
+  'Ethan Krimer',
+  'Ilan Yashuk'
+]
+
 export default function HeroHeader() {
   return (
     <section className="container flex flex-col gap-4 pb-12 pt-4 text-center lg:items-center lg:gap-8 lg:py-20">
@@ -71,7 +84,9 @@ export default function HeroHeader() {
           }
         </div>
         <div className="h-10 w-full bottom-0 flex items-center justify-center text-primary shadow-inner text-xs px-2 rounded-md opacity-50">
-          credit to our team: Ron Peer, Arad Donenfeld, Avner Mindelis, Nevo Sznajder, Yechiam Weiss, Nehoray Gil, Adam Liberov, Denis Granovsky and Ethan Krimer 
+          {
+            `credit to our team: ${ [credit.slice(0,-1).join(', '), credit.slice(-1)].join(' and ')} `
+          } 
         </div>
       </div>
       
