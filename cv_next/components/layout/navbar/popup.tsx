@@ -15,6 +15,11 @@ const navLinks = [
     req_login: false,
   },
   {
+    route: "Feed",
+    path: "/feed",
+    req_login: true,
+  },
+  {
     route: "Signout",
     path: "/",
     req_login: true,
