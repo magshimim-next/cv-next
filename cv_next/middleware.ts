@@ -2,6 +2,7 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -61,11 +62,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.rewrite(new URL("/login", request.url));
   } else {
     const { data: user, error } = await supabase
-      .from("profiles")
+      .from(Tables.cvs)
       .select("*")
-      .eq("id", activatedUser.user.id)
+      .eq(ProfileKeys.id, activatedUser.user.id)
       .single();
-    if (user?.user_type == "inactive" || error) {
+    if (user?.user_type == ProfileKeys.user_types.inactive || error) {
       return NextResponse.rewrite(new URL("/inactive", request.url));
     }
   }
