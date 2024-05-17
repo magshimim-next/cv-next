@@ -25,9 +25,9 @@ export const DropdownInput = ({
   const menuBorderStyle = isMenuOpen ? "outline-b-0 rounded-b-none" : "";
   const selectionStyle = isMenuOpen ? "block" : "hidden";
   const textValue = isPlaceHolder ? (
-    <div className="text-black">{`${text}: ${placeHolder}`}</div>
+    <div className="text-gray-400">{`${text}: ${placeHolder}`}</div>
   ) : (
-    <div className="text-grey">{`${text}: ${getValueById(valueId)}`}</div>
+    <div className="text-black">{`${text}: ${getValueById(valueId)}`}</div>
   );
 
   return (
