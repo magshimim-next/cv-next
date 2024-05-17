@@ -2,7 +2,8 @@ import "server-only";
 
 import MyLogger from "@/server/base/logger";
 import Categories from "@/types/models/categories";
-import Definitions from "../../lib/definitions";
+import Definitions from "@/lib/definitions";
+import { Tables, CvKeys } from "@/lib/supabase-definitions";
 import SupabaseHelper from "./supabaseHelper";
 import { PostgrestError } from "@supabase/supabase-js";
 import { filterValues } from "@/app/feed/components/filterPanel";
@@ -18,9 +19,9 @@ export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS;
 export async function getCvById(cvId: string): Promise<CvModel | null> {
   try {
     const { data: cvs, error } = await SupabaseHelper.getSupabaseInstance()
-      .from("cvs")
+      .from(Tables.cvs)
       .select("*")
-      .eq("id", cvId);
+      .eq(CvKeys.id, cvId);
 
     if (error) {
       MyLogger.logInfo("Error @ cvs::getCvById", error);
@@ -54,10 +55,13 @@ export async function getCvsByUserId(
 ): Promise<CvModel[] | null> {
   try {
     const supabase = SupabaseHelper.getSupabaseInstance();
-    let query = supabase.from("cvs").select("*").eq("user_id", userId);
+    let query = supabase
+      .from(Tables.cvs)
+      .select("*")
+      .eq(CvKeys.user_id, userId);
 
     if (filterOutDeleted) {
-      query = query.eq("deleted", false);
+      query = query.eq(CvKeys.deleted, false);
     }
 
     const { data: cvs, error } = await query;
@@ -80,10 +84,13 @@ export async function getAllCvsByCategory(
 ): Promise<CvModel[] | null> {
   try {
     const supabase = SupabaseHelper.getSupabaseInstance();
-    let query = supabase.from("cvs").select("*").eq("category_id", category);
+    let query = supabase
+      .from(Tables.cvs)
+      .select("*")
+      .eq(CvKeys.category_id, category);
 
     if (filterOutDeleted) {
-      query = query.eq("deleted", false);
+      query = query.eq(CvKeys.deleted, false);
     }
 
     const { data: cvs, error } = await query;
@@ -106,10 +113,13 @@ async function _getAllCvsByCategories(
 ): Promise<any> {
   try {
     const supabase = SupabaseHelper.getSupabaseInstance();
-    let query = supabase.from("cvs").select("*").in("category_id", categories);
+    let query = supabase
+      .from(Tables.cvs)
+      .select("*")
+      .in(CvKeys.category_id, categories);
 
     if (filterOutDeleted) {
-      query = query.eq("deleted", false);
+      query = query.eq(CvKeys.deleted, false);
     }
 
     const { data: cvs, error } = await query;
@@ -146,23 +156,23 @@ export async function getPaginatedCvs(
 
     const supabase = SupabaseHelper.getSupabaseInstance();
     let query = supabase
-      .from("cvs")
+      .from(Tables.cvs)
       .select("*")
       .range(from, to - 1);
 
     MyLogger.logDebug("filters", filters);
     if (filters) {
       if (filters.searchValue) {
-        query = query.textSearch("description", filters.searchValue);
+        query = query.textSearch(CvKeys.description, filters.searchValue);
       }
       if (filters.categoryId) {
         MyLogger.logDebug("catagory id:", filters.categoryId);
-        query = query.eq("category_id", filters.categoryId);
+        query = query.eq(CvKeys.category_id, filters.categoryId);
       }
     }
 
     if (filterOutDeleted) {
-      query = query.eq("deleted", false);
+      query = query.eq(CvKeys.deleted, false);
     }
 
     const { data: cvs, error } = await query;
@@ -192,9 +202,9 @@ export async function getPaginatedCvs(
 export async function updateCV(cv: CvModel): Promise<PostgrestError | null> {
   try {
     const { error } = await SupabaseHelper.getSupabaseInstance()
-      .from("cvs")
+      .from(Tables.cvs)
       .update(cv)
-      .eq("id", cv.id);
+      .eq(CvKeys.id, cv.id);
     if (error) {
       MyLogger.logInfo("Error @ cvs::updateCV", error);
       return error;
