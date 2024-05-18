@@ -24,6 +24,7 @@ export default async function Page({
   if (profile === null) {
     notFound();
   }
+
   return (
     <div>hey</div>
     /*<div>
