@@ -1,6 +1,6 @@
 "use server";
 import { getPlaiceholder } from "plaiceholder";
-import MyLogger from "@/server/base/logger";
+import logger from "@/server/base/logger";
 
 export async function getBlurredCv(cvLink: string): Promise<string> {
   try {
@@ -10,7 +10,7 @@ export async function getBlurredCv(cvLink: string): Promise<string> {
     const { base64 } = await getPlaiceholder(buffer, { size: 10 });
     return base64;
   } catch (error: any) {
-    MyLogger.logInfo(error);
+    logger.error(error);
     return "data:iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPs7p5fDwAFlAI2LB7hbAAAAABJRU5ErkJggg==";
   }
 }

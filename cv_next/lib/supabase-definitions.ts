@@ -1,7 +1,7 @@
 export const Tables = {
-  cvs: "cvs",
-  comments: "comments",
-  profiles: "profiles",
+  cvs: "cvs" as const,
+  comments: "comments" as const,
+  profiles: "profiles" as const,
 };
 
 export const CvKeys = {

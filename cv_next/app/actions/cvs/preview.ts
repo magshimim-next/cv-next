@@ -4,6 +4,7 @@ import Definitions from "@/lib/definitions";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { compareHashes } from "@/helpers/blobHelper";
+import logger from "@/server/base/logger";
 
 const blobDataMap = new Map<string, Blob>();
 
@@ -30,9 +31,9 @@ export async function revalidatePreview(cvId: string) {
       });
 
     if (error) {
-      console.error("Upload error:", error);
+      logger.error("Upload error:", error);
     } else {
-      console.log("File uploaded successfully:", data);
+      logger.log("File uploaded successfully:", data);
     }
   }
 }

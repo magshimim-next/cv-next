@@ -6,6 +6,7 @@ export default class Definitions {
   public static readonly MAX_OPERATIONS_REFILL_PER_SECOND = 2;
   public static readonly CVS_REVALIDATE_TIME_IN_SECONDS = 0;
   public static readonly FETCH_WAIT_TIME = 120;
+  public static readonly COMMENTS_REVALIDATE_TIME_IN_SECONDS = 0;
   public static readonly AUTH_CALLBACK_REDIRECT = "/auth/callback";
   public static readonly AUTH_DEFAULT_REDIRECT = "/";
 }
