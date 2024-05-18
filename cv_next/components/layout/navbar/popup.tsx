@@ -70,7 +70,7 @@ export default function Popup({
 
       <Link
         className="text-lg font-medium hover:underline"
-        href="/profile"
+        href={`/profile/${userData.user.id}`}
         onClick={closeCb}
       >
         {userData.user.user_metadata.full_name}
