@@ -1,13 +1,12 @@
 "use client";
-import settignsIcon from "@/public/images/settigns.png";
+import profileIcon from "@/public/images/profile.png";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import Popup from "./popup";
 import { useSupabase } from "@/hooks/supabase";
 
 export function PopupToggle() {
-  const [isSettignsOpen, setIsSettignsOpen] = useState(false);
-  const [profileImage, setProfileImage] = useState(settignsIcon);
+  const [profileImage, setProfileImage] = useState(profileIcon);
   const [userData, setUserData] = useState<any>(null);
   const [signedOut, setSignout] = useState(true);
   const supabase = useSupabase();
@@ -17,7 +16,7 @@ export function PopupToggle() {
       const { data: connectedUser, error } = await supabase.auth.getUser();
       if (error || !connectedUser?.user) {
         setUserData(null);
-        setProfileImage(settignsIcon);
+        setProfileImage(profileIcon);
       } else {
         setUserData(connectedUser);
         setProfileImage(connectedUser.user.user_metadata.avatar_url);
@@ -25,21 +24,22 @@ export function PopupToggle() {
     };
     fetchUser();
   }, [signedOut, supabase.auth]);
+  const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
 
   return (
     <div>
       <div className="cursor-pointer rounded-full hover:bg-[#27374e]">
         <Image
-          alt="settings"
+          alt="profile"
           height={40}
           width={40}
           src={profileImage}
-          onClick={() => setIsSettignsOpen(!isSettignsOpen)}
+          onClick={() => setIsProfilePopupOpen(!isProfilePopupOpen)}
         ></Image>
       </div>
-      {isSettignsOpen && (
+      {isProfilePopupOpen && (
         <Popup
-          closeCb={() => setIsSettignsOpen(false)}
+          closeCb={() => setIsProfilePopupOpen(false)}
           userData={userData}
           updateSignOut={() => setSignout(!signedOut)}
         ></Popup>

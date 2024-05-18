@@ -27,7 +27,7 @@ export const FilterPanel = ({
       categoryId: categoryId,
       searchValue: searchValue,
     });
-  }, [searchValue, categoryId]);
+  }, [searchValue, categoryId, onChange]);
 
   const mapCategories: number[] = useMemo(() => {
     const keys = Object.keys(Categories.category)

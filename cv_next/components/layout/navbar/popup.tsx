@@ -5,7 +5,7 @@ import closeIcon from "@/public/images/closeIcon.png";
 import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { useSupabase } from "@/hooks/supabase";
-import settignsIcon from "@/public/images/settigns.png";
+import profileIcon from "@/public/images/profile.png";
 import { useTheme } from "next-themes";
 
 const navLinks = [
@@ -80,7 +80,7 @@ export default function Popup({
     <div style={matchThemePlaceholderImage}>
       <Image
         alt="profile"
-        src={settignsIcon}
+        src={profileIcon}
         width={10}
         height={10 * 1.4142}
         className="w-20 rounded-lg p-2"

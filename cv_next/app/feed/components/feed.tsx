@@ -85,7 +85,7 @@ export default function Feed() {
     };
   }, [cvsDispatchContextConsumer]);
 
-  const forceReload = () => {
+  const forceReload = useCallback(() => {
     cvsDispatchContextConsumer({
       type: `reset`,
       payload: {
@@ -96,12 +96,15 @@ export default function Feed() {
     setCvs([]);
     page.current = Definitions.PAGINATION_INIT_PAGE_NUMBER;
     setLoadMore(true);
-  };
+  }, [cvsDispatchContextConsumer]);
 
-  const onFilterChange = (filters: filterValues) => {
-    setFilters(filters);
+  useEffect(() => {
     forceReload();
-  };
+  }, [filters, forceReload])
+
+  const onFilterChange = useCallback((filters: filterValues) => {
+    setFilters(filters);
+  }, []);
 
   return (
     <main>
