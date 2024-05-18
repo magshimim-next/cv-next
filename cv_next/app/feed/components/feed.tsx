@@ -9,6 +9,7 @@ import { ReloadButton } from "@/components/ui/reloadButton";
 import Definitions from "@/lib/definitions";
 import { useInView } from "react-intersection-observer";
 import { FilterPanel, filterValues } from "@/app/feed/components/filterPanel";
+import ReactLoading from "react-loading";
 
 export default function Feed() {
   const cvsContextConsumer = useContext(CvsContext);
@@ -100,7 +101,7 @@ export default function Feed() {
 
   useEffect(() => {
     forceReload();
-  }, [filters, forceReload])
+  }, [filters, forceReload]);
 
   const onFilterChange = useCallback((filters: filterValues) => {
     setFilters(filters);
@@ -131,8 +132,14 @@ export default function Feed() {
             <ReloadButton callback={forceReload}>Reload</ReloadButton>
           </div>
         ) : (
-          //TODO: replace with proper spinner
-          <div className="z-10 flex justify-center">Loading...</div>
+          <div className="z-10 flex justify-center">
+            <ReactLoading
+              type={"spinningBubbles"}
+              color={"#000"}
+              height={667}
+              width={375}
+            />
+          </div>
         )}
       </div>
     </main>

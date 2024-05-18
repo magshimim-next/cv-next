@@ -58,6 +58,7 @@ export async function middleware(request: NextRequest) {
   );
 
   const { data: activatedUser, error } = await supabase.auth.getUser();
+
   if (error || !activatedUser?.user) {
     return NextResponse.rewrite(new URL("/login", request.url));
   } else {
