@@ -2,7 +2,6 @@
 
 import { notFound } from "next/navigation";
 import { getUserById } from "@/server/api/users";
-import { decodeValue } from "@/lib/utils";
 /*import { CvPreview } from "./components/cvPreview";
 import CommentsSection from "./components/commentSection/commentsSection";
 import CommentForm from "./components/commentSection/commentForm";
@@ -15,11 +14,7 @@ export default async function Page({
 }) {
   const { profileId } = params;
 
-  const decodedProfileId = decodeValue(decodeURIComponent(profileId));
-  if (!decodedProfileId) {
-    notFound();
-  }
-  const profile = await getUserById(decodedProfileId);
+  const profile = await getUserById(profileId);
 
   if (profile === null) {
     notFound();
