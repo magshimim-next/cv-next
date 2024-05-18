@@ -9,11 +9,6 @@ import Link from "next/link";
 export default function CvData({ cv }: { cv: CvModel }) {
   const { data: user } = useSWR(cv.user_id, getUser);
   if (user && user.ok) {
-    const userName =
-      user.val.username && user.val.username.length > 0
-        ? user.val.username
-        : user.val.full_name;
-
     return (
       <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[65%_35%] md:gap-x-4">
         <article
