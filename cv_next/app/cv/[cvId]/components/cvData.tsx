@@ -4,6 +4,7 @@ import useSWR from "swr";
 import Categories from "@/types/models/categories";
 import Image from "next/image";
 import profileIcon from "@/public/images/profile.png";
+import Link from "next/link";
 
 export default function CvData({ cv }: { cv: CvModel }) {
   const { data: user } = useSWR(cv.user_id, getUser);
@@ -29,7 +30,12 @@ export default function CvData({ cv }: { cv: CvModel }) {
                 className="w-10 rounded-lg p-2"
               ></Image>
               <p className="mr-3 inline-flex items-center text-sm font-semibold text-gray-900 dark:text-white">
-                {userName}
+                <Link
+                  className="text-lg font-medium hover:underline"
+                  href={`/profile/${user.val.id}`}
+                >
+                  {user.val.full_name || user.val.username}
+                </Link>
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 {Categories.category[cv.category_id]}
