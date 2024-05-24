@@ -2,11 +2,8 @@
 
 import { notFound } from "next/navigation";
 import { getUser } from "@/app/actions/users/getUser";
+import ProfileData from "./components/profileData";
 //import Feed from "../../feed/components/feed";
-import Image from "next/image";
-import profileIcon from "@/public/images/profile.png";
-import CategoryCounter from "./components/categoryCounter";
-import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 
 /*import { CvPreview } from "./components/cvPreview";
 import CommentsSection from "./components/commentSection/commentsSection";
@@ -38,30 +35,7 @@ export default async function Page({
           <div
             className={`mb-3 rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800`}
           >
-            <div className="flex flex-col items-center">
-              <div className="flex justify-center">
-                <DynamicProfileImage
-                  isPlaceholder={result.val.avatar_url ? false : true}
-                >
-                  <Image
-                    alt="profile"
-                    src={result.val.avatar_url || profileIcon}
-                    width={90}
-                    height={60 * 1.4142}
-                    className="rounded-lg p-2"
-                    priority={true}
-                  ></Image>
-                </DynamicProfileImage>
-              </div>
-              <div className="mb-3 flex justify-center">
-                <p className="inline-flex items-center text-xl font-semibold text-gray-900 dark:text-white">
-                  {result.val.full_name || result.val.username}
-                </p>
-              </div>
-              <div className="flex justify-center">
-                <CategoryCounter profileId={profileId} />
-              </div>
-            </div>
+            <ProfileData user={result.val} />
             {/*<p className="text-gray-500 dark:text-gray-400">{comment.data}</p>*/}
           </div>
         </section>
