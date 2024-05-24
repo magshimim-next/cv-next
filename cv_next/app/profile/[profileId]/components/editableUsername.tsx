@@ -5,6 +5,9 @@ import { useSupabase } from "@/hooks/supabase";
 
 export default function EditableUsername({ user }: { user: UserModel }) {
   const [value, setValue] = useState(user.username || user.full_name || "");
+  const [tempValue, setTempValue] = useState(
+    user.username || user.full_name || ""
+  );
   const [isEditing, setIsEditing] = useState(false);
   const [viewingCurrentUser, setViewingCurrentUser] = useState(false);
 
@@ -19,23 +22,24 @@ export default function EditableUsername({ user }: { user: UserModel }) {
       }
     }
     getUser();
-  });
+  }, [supabase.auth, user.id]);
 
   function handleStartEditing() {
     setIsEditing(true);
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setValue(event.target.value);
+    setTempValue(event.target.value);
   }
 
   function handleSave() {
     setIsEditing(false);
-    // Here you can perform any actions to save the edited value, e.g., update it in the database
+    setValue(tempValue);
   }
 
   function handleCancel() {
     setIsEditing(false);
+    setTempValue(value);
   }
 
   if (!viewingCurrentUser) {
@@ -54,7 +58,7 @@ export default function EditableUsername({ user }: { user: UserModel }) {
         <div className="flex items-center">
           <input
             type="text"
-            value={value}
+            value={tempValue}
             onChange={handleChange}
             autoFocus
             className="mr-2 rounded-md border border-gray-300 p-2 text-xl font-semibold text-gray-900 dark:text-white"
