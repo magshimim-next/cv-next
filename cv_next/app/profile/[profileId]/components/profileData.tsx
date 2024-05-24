@@ -4,6 +4,7 @@ import Image from "next/image";
 import profileIcon from "@/public/images/profile.png";
 import CategoryCounter from "./categoryCounter";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
+import EditableUsername from "./editableUsername";
 
 export default async function ProfileData({ user }: { user: UserModel }) {
   return (
@@ -20,10 +21,8 @@ export default async function ProfileData({ user }: { user: UserModel }) {
           ></Image>
         </DynamicProfileImage>
       </div>
-      <div className="mb-3 flex justify-center">
-        <p className="inline-flex items-center text-xl font-semibold text-gray-900 dark:text-white">
-          {user.username || user.full_name}
-        </p>
+      <div className="flex justify-center">
+        <EditableUsername user={user} />
       </div>
       <div className="flex justify-center">
         <CategoryCounter user={user} />
