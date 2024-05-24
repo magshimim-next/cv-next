@@ -35,6 +35,8 @@ export default function EditableUsername({ user }: { user: UserModel }) {
           } else {
             setError("Error updating the username!");
           }
+          setValue(user.username || user.full_name || "");
+          setTempValue(user.username || user.full_name || "");
         }
       }
     })();
@@ -42,6 +44,8 @@ export default function EditableUsername({ user }: { user: UserModel }) {
 
   function handleStartEditing() {
     setIsEditing(true);
+    setTempValue(value);
+    setError("");
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -93,16 +97,25 @@ export default function EditableUsername({ user }: { user: UserModel }) {
           </button>
         </div>
       ) : (
-        <div className="flex items-center">
-          <p className="inline-flex items-center text-xl font-semibold text-gray-900 dark:text-white">
-            {value}
-          </p>
-          <button
-            onClick={handleStartEditing}
-            className="ml-2 text-gray-600 dark:text-gray-300"
-          >
-            <PencilIcon size={20} />
-          </button>
+        <div>
+          <div className="flex justify-center">
+            <p className="inline-flex items-center text-xl font-semibold text-gray-900 dark:text-white">
+              {value}
+            </p>
+            <button
+              onClick={handleStartEditing}
+              className="ml-2 text-gray-600 dark:text-gray-300"
+            >
+              <PencilIcon size={20} />
+            </button>
+          </div>
+          <div className="flex justify-center">
+            {errorUpdating && (
+              <p className="mt-2 text-red-600 dark:text-red-400">
+                {errorUpdating}
+              </p>
+            )}
+          </div>
         </div>
       )}
     </div>
