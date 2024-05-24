@@ -26,7 +26,7 @@ export default async function ProfileData({ user }: { user: UserModel }) {
         </p>
       </div>
       <div className="flex justify-center">
-        <CategoryCounter profileId={user.id} />
+        <CategoryCounter user={user} />
       </div>
     </div>
   );
