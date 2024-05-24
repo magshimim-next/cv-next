@@ -20,8 +20,6 @@ export const setNewUsername = async (
     return result;
   } else {
     logErrorWithTrace(result);
-    return Err(
-      "An error has occurred while fetching the user data. Please try again later."
-    );
+    return Err("Couldn't update the name", result.postgrestError);
   }
 };

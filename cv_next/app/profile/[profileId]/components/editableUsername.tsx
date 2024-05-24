@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { PencilIcon, Check, X } from "lucide-react";
 import { useSupabase } from "@/hooks/supabase";
+import { setNewUsername } from "@/app/actions/users/updateUser";
 
 export default function EditableUsername({ user }: { user: UserModel }) {
   const [value, setValue] = useState(user.username || user.full_name || "");
@@ -10,19 +11,34 @@ export default function EditableUsername({ user }: { user: UserModel }) {
   );
   const [isEditing, setIsEditing] = useState(false);
   const [viewingCurrentUser, setViewingCurrentUser] = useState(false);
-
+  const [errorUpdating, setError] = useState("");
   const supabase = useSupabase();
 
   useEffect(() => {
     async function getUser() {
       const userId = (await supabase.auth.getUser()).data.user?.id;
       if (!userId) throw new Error("User not found");
-      if (userId == user.id) {
+      if (userId === user.id) {
         setViewingCurrentUser(true);
       }
     }
     getUser();
   }, [supabase.auth, user.id]);
+
+  useEffect(() => {
+    (async () => {
+      if (value != (user.username || user.full_name) && viewingCurrentUser) {
+        const result = await setNewUsername(user.id, value);
+        if (!result.ok) {
+          if (result.postgrestError?.message.includes("duplicate key value")) {
+            setError("Name unavailable!");
+          } else {
+            setError("Error updating the username!");
+          }
+        }
+      }
+    })();
+  }, [value, user, viewingCurrentUser]);
 
   function handleStartEditing() {
     setIsEditing(true);
@@ -32,15 +48,15 @@ export default function EditableUsername({ user }: { user: UserModel }) {
     setTempValue(event.target.value);
   }
 
-  function handleSave() {
-    setIsEditing(false);
-    setValue(tempValue);
-  }
-
   function handleCancel() {
     setIsEditing(false);
     setTempValue(value);
   }
+
+  const handleSave = async () => {
+    setIsEditing(false);
+    setValue(tempValue);
+  };
 
   if (!viewingCurrentUser) {
     return (
