@@ -48,7 +48,7 @@ export default async function Page({
                 ></Image>
               </div>
               <div className="flex justify-center">
-                <p className="mr-3 inline-flex items-center text-lg font-semibold text-gray-900 dark:text-white">
+                <p className="inline-flex items-center text-lg font-semibold text-gray-900 dark:text-white">
                   {result.val.full_name || result.val.username}
                 </p>
               </div>
