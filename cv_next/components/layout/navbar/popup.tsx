@@ -6,7 +6,7 @@ import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { useSupabase } from "@/hooks/supabase";
 import profileIcon from "@/public/images/profile.png";
-import { useTheme } from "next-themes";
+import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 
 const navLinks = [
   {
@@ -39,7 +39,6 @@ export default function Popup({
 }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const supabase = useSupabase();
-  const { theme } = useTheme();
 
   useEffect(() => {
     if (dialogRef.current) {
@@ -55,36 +54,15 @@ export default function Popup({
     closeCb();
   };
 
-  const matchThemePlaceholderImage =
-    theme == "dark" ? { filter: "invert(0)" } : { filter: "invert(1)" };
-
-  const userDataComponent = userData ? (
-    <div className="mt-10 flex w-full flex-col items-center">
-      <Image
-        alt="profile"
-        src={userData.user.user_metadata.avatar_url}
-        width={30}
-        height={30 * 1.4142}
-        className="w-20 rounded-lg p-2"
-      ></Image>
-
+  const userDataComponent = (
+    <div className="flex w-full flex-col items-center">
       <Link
         className="text-lg font-medium hover:underline"
-        href={`/profile/${userData.user.id}`}
+        href={`/profile/${userData?.user?.id}`}
         onClick={closeCb}
       >
-        {userData.user.user_metadata.full_name}
+        {userData?.user?.user_metadata?.full_name}
       </Link>
-    </div>
-  ) : (
-    <div style={matchThemePlaceholderImage}>
-      <Image
-        alt="profile"
-        src={profileIcon}
-        width={10}
-        height={10 * 1.4142}
-        className="w-20 rounded-lg p-2"
-      ></Image>
     </div>
   );
 
@@ -105,9 +83,22 @@ export default function Popup({
         >
           <Image alt="closeIcon" src={closeIcon}></Image>
         </div>
-        <ul className="mt-10 flex w-full flex-col items-center">
+        <ul className="mt-20 flex w-full flex-col items-center">
+          <DynamicProfileImage
+            isPlaceholder={
+              userData?.user?.user_metadata?.avatar_url ? false : true
+            }
+          >
+            <Image
+              alt="profile"
+              src={userData?.user?.user_metadata?.avatar_url || profileIcon}
+              width={10}
+              height={10 * 1.4142}
+              className="w-20 rounded-lg p-2"
+            ></Image>
+          </DynamicProfileImage>
           {userData ? (
-            <div className="mt-10 flex w-full flex-col items-center">
+            <div className="flex w-full flex-col items-center">
               {userDataComponent}
               {navLinks.map((link) =>
                 link.req_login ? (
@@ -128,8 +119,7 @@ export default function Popup({
               )}
             </div>
           ) : (
-            <div className="mt-10 flex w-full flex-col items-center">
-              {userDataComponent}
+            <div className="flex w-full flex-col items-center">
               {navLinks.map((link) =>
                 !link.req_login ? (
                   <li key={link.route}>
