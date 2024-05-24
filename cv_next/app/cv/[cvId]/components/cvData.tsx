@@ -5,6 +5,7 @@ import Categories from "@/types/models/categories";
 import Image from "next/image";
 import profileIcon from "@/public/images/profile.png";
 import Link from "next/link";
+import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 
 export default function CvData({ cv }: { cv: CvModel }) {
   const { data: user } = useSWR(cv.user_id, getUser);
@@ -17,13 +18,17 @@ export default function CvData({ cv }: { cv: CvModel }) {
         >
           <footer className="mb-2 flex items-center justify-between">
             <div className="flex items-center">
-              <Image
-                alt="profile"
-                src={user.val.avatar_url || profileIcon}
-                width={30}
-                height={30 * 1.4142}
-                className="w-10 rounded-lg p-2"
-              ></Image>
+              <DynamicProfileImage
+                isPlaceholder={user.val.avatar_url ? false : true}
+              >
+                <Image
+                  alt="profile"
+                  src={user.val.avatar_url || profileIcon}
+                  width={30}
+                  height={30 * 1.4142}
+                  className="w-10 rounded-lg p-2"
+                />
+              </DynamicProfileImage>
               <p className="mr-3 inline-flex items-center text-sm font-semibold text-gray-900 dark:text-white">
                 <Link
                   className="text-lg font-medium hover:underline"
