@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { PencilIcon, Check } from "lucide-react";
+import { PencilIcon, Check, X } from "lucide-react";
 import { useSupabase } from "@/hooks/supabase";
 
 export default function EditableUsername({ user }: { user: UserModel }) {
@@ -34,6 +34,10 @@ export default function EditableUsername({ user }: { user: UserModel }) {
     // Here you can perform any actions to save the edited value, e.g., update it in the database
   }
 
+  function handleCancel() {
+    setIsEditing(false);
+  }
+
   if (!viewingCurrentUser) {
     return (
       <div className="flex items-center">
@@ -60,6 +64,12 @@ export default function EditableUsername({ user }: { user: UserModel }) {
             className="text-xl text-gray-600 dark:text-gray-300"
           >
             <Check />
+          </button>
+          <button
+            onClick={handleCancel}
+            className="text-xl text-gray-600 dark:text-gray-300"
+          >
+            <X />
           </button>
         </div>
       ) : (
