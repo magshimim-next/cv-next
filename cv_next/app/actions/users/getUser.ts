@@ -1,8 +1,8 @@
 "use server";
 
-import { getUserById } from "@/server/api/users";
+import { getUserById, getCurrentUserModel } from "@/server/api/users";
 import { Err } from "@/lib/utils";
-import { logErrorWithTrace } from "@/server/base/logger";
+import logger, { logErrorWithTrace } from "@/server/base/logger";
 
 /**
  * Retrieves user data by user ID.
@@ -21,5 +21,22 @@ export const getUser = async (
     return Err(
       "An error has occurred while fetching the user data. Please try again later."
     );
+  }
+};
+
+/**
+ * Retrieves the UserModel of the currently signed in user
+ *
+ * @return {Promise<Result<UserModel, string>>} A promise that resolves to a Result containing the user data or an error message
+ */
+export const getCurrentUser = async (): Promise<UserModel | null> => {
+  const result = await getCurrentUserModel();
+  if (result) {
+    return result;
+  } else {
+    logger.error(
+      "An error has occurred while fetching the user data. Please try again later."
+    );
+    return null;
   }
 };
