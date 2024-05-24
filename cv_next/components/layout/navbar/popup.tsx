@@ -28,7 +28,7 @@ const navLinks = [
 
 interface PopupProps {
   closeCb: () => void;
-  userData: any;
+  userData: UserModel;
   updateSignOut: () => void;
 }
 
@@ -58,10 +58,10 @@ export default function Popup({
     <div className="flex w-full flex-col items-center">
       <Link
         className="text-lg font-medium hover:underline"
-        href={`/profile/${userData?.user?.id}`}
+        href={`/profile/${userData?.id}`}
         onClick={closeCb}
       >
-        {userData?.user?.user_metadata?.full_name}
+        {userData?.username || userData?.full_name}
       </Link>
     </div>
   );
@@ -85,13 +85,11 @@ export default function Popup({
         </div>
         <ul className="mt-20 flex w-full flex-col items-center">
           <DynamicProfileImage
-            isPlaceholder={
-              userData?.user?.user_metadata?.avatar_url ? false : true
-            }
+            isPlaceholder={userData?.avatar_url ? false : true}
           >
             <Image
               alt="profile"
-              src={userData?.user?.user_metadata?.avatar_url || profileIcon}
+              src={userData?.avatar_url || profileIcon}
               width={10}
               height={10 * 1.4142}
               className="w-20 rounded-lg p-2"

@@ -4,9 +4,13 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import Popup from "./popup";
 import { useSupabase } from "@/hooks/supabase";
+import { getUser } from "@/app/actions/users/getUser";
+import { StaticImageData } from "next/image";
 
 export function PopupToggle() {
-  const [profileImage, setProfileImage] = useState(profileIcon);
+  const [profileImage, setProfileImage] = useState<string | StaticImageData>(
+    profileIcon
+  );
   const [userData, setUserData] = useState<any>(null);
   const [signedOut, setSignout] = useState(true);
   const supabase = useSupabase();
@@ -18,8 +22,11 @@ export function PopupToggle() {
         setUserData(null);
         setProfileImage(profileIcon);
       } else {
-        setUserData(connectedUser);
-        setProfileImage(connectedUser.user.user_metadata.avatar_url);
+        const result = await getUser(connectedUser.user.id);
+        if (result.ok) {
+          setUserData(result.val);
+          setProfileImage(result.val.avatar_url || profileIcon);
+        }
       }
     };
     fetchUser();

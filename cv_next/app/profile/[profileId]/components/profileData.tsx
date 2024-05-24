@@ -22,7 +22,7 @@ export default async function ProfileData({ user }: { user: UserModel }) {
       </div>
       <div className="mb-3 flex justify-center">
         <p className="inline-flex items-center text-xl font-semibold text-gray-900 dark:text-white">
-          {user.full_name || user.username}
+          {user.username || user.full_name}
         </p>
       </div>
       <div className="flex justify-center">

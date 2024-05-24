@@ -54,5 +54,5 @@ export async function getUserName(userId: string): Promise<string | null> {
   if (error) {
     return null;
   }
-  return user.full_name;
+  return user.username || user.full_name;
 }

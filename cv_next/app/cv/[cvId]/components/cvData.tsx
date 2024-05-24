@@ -29,7 +29,7 @@ export default function CvData({ cv }: { cv: CvModel }) {
                   className="text-lg font-medium hover:underline"
                   href={`/profile/${user.val.id}`}
                 >
-                  {user.val.full_name || user.val.username}
+                  {user.val.username || user.val.full_name}
                 </Link>
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
