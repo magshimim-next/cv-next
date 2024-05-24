@@ -32,19 +32,6 @@ export default async function CategoryCounter({
   const top3CategoryIds = categoryCountArray
     .slice(0, 3)
     .map((item) => item.categoryId);
-  /*
-  return (
-    <div>
-      <h3 className="text-sm">Most CVs are categorized under</h3>
-      <div>
-        {top3CategoryIds.map((categoryId) => (
-          <div className=" flex justify-center text-xs" key={categoryId}>
-            {Categories.category[categoryId]}
-          </div>
-        ))}
-      </div>
-    </div>
-  );*/
 
   const categoryElements = top3CategoryIds.map((categoryId, index) => (
     <span
