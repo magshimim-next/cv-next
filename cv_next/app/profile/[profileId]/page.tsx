@@ -6,6 +6,7 @@ import { getUser } from "@/app/actions/users/getUser";
 import Image from "next/image";
 import profileIcon from "@/public/images/profile.png";
 import CategoryCounter from "./components/categoryCounter";
+import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 
 /*import { CvPreview } from "./components/cvPreview";
 import CommentsSection from "./components/commentSection/commentsSection";
@@ -39,13 +40,18 @@ export default async function Page({
           >
             <div className="flex flex-col items-center">
               <div className="flex justify-center">
-                <Image
-                  alt="profile"
-                  src={result.val.avatar_url || profileIcon}
-                  width={90}
-                  height={60 * 1.4142}
-                  className="rounded-lg p-2"
-                ></Image>
+                <DynamicProfileImage
+                  isPlaceholder={result.val.avatar_url ? false : true}
+                >
+                  <Image
+                    alt="profile"
+                    src={result.val.avatar_url || profileIcon}
+                    width={90}
+                    height={60 * 1.4142}
+                    className="rounded-lg p-2"
+                    priority={true}
+                  ></Image>
+                </DynamicProfileImage>
               </div>
               <div className="mb-3 flex justify-center">
                 <p className="inline-flex items-center text-xl font-semibold text-gray-900 dark:text-white">
