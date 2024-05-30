@@ -1,13 +1,13 @@
 "use client";
 
 import useSWR from "swr";
-import { fetchComments } from "@/app/actions/comments/fetchComments";
+import { fetchCvComments } from "@/app/actions/comments/fetchComments";
 import Comment from "./comment";
 import { useEffect, useState } from "react";
 import { useSupabase } from "@/hooks/supabase";
 
 export default function CommentsSection({ cv }: { cv: CvModel }) {
-  const { data: comments } = useSWR(cv.id, fetchComments);
+  const { data: comments } = useSWR(cv.id, fetchCvComments);
 
   const supabase = useSupabase();
   const [userId, setUserId] = useState<string>("");
