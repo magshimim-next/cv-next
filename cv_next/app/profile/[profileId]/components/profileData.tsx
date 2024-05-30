@@ -5,6 +5,7 @@ import profileIcon from "@/public/images/profile.png";
 import CategoryCounter from "./categoryCounter";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import EditableUsername from "./editableUsername";
+import ProfileComments from "./profileComments";
 
 export default async function ProfileData({ user }: { user: UserModel }) {
   return (
@@ -26,6 +27,9 @@ export default async function ProfileData({ user }: { user: UserModel }) {
       </div>
       <div className="flex justify-center">
         <CategoryCounter user={user} />
+      </div>
+      <div className="flex justify-center">
+        <ProfileComments user={user} />
       </div>
     </div>
   );
