@@ -5,7 +5,7 @@ import CommentModel from "@/types//models/comment";
 import MyLogger from "@/server/base/logger";
 import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils";
 
-//TODO: implement CommentsApi with supabase t
+//TODO: implement CommentsApi with supabase
 
 export default class CommentsApi {
   /**
