@@ -14,8 +14,7 @@ export default async function ProfileComments({ user }: { user: UserModel }) {
     <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
       {commentsResult ? (
         commentsResult.map((comment) => (
-          // eslint-disable-next-line react/jsx-key
-          <Comment comment={comment} />
+          <Comment key={comment.id} comment={comment} />
         ))
       ) : (
         <></>
