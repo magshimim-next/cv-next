@@ -16,6 +16,7 @@ export const DropdownInput = ({
   text: string;
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const isPlaceHolder = valueId === null;
 
   const changeIsMenuOpen = () => {
@@ -29,6 +30,18 @@ export const DropdownInput = ({
   ) : (
     <div className="text-black">{`${text}: ${getValueById(valueId)}`}</div>
   );
+
+  const handleCheckboxChange = (categoryId: number) => {
+    setSelectedCategories((prevSelectedIds) => {
+      if (prevSelectedIds.includes(categoryId)) {
+        return prevSelectedIds.filter(
+          (selectedId) => selectedId !== categoryId
+        );
+      } else {
+        return [...prevSelectedIds, categoryId];
+      }
+    });
+  };
 
   return (
     <>
@@ -46,18 +59,25 @@ export const DropdownInput = ({
           >
             {"all"}
           </div>
-          {valueIds.map((possibleValueId) => {
-            return (
-              // eslint-disable-next-line react/jsx-key
-              <div
-                key={possibleValueId}
-                className="flex h-8 w-full items-center justify-center bg-white text-black hover:bg-slate-200"
-                onClick={() => onChange(possibleValueId)}
-              >
-                {`${getValueById(possibleValueId)}`}
-              </div>
-            );
-          })}
+          {valueIds.map((possibleValueId) => (
+            <label
+              key={possibleValueId}
+              className="flex h-8 w-full items-center justify-between bg-white text-black hover:bg-slate-200"
+            >
+              <input
+                type="checkbox"
+                checked={selectedCategories.includes(possibleValueId)}
+                onChange={() => handleCheckboxChange(possibleValueId)}
+              />
+              {`${getValueById(possibleValueId)}`}
+            </label>
+          ))}
+          <div
+            className="flex h-10 w-full items-center justify-center bg-white text-black hover:bg-slate-200"
+            onClick={() => onChange(selectedCategories[0])}
+          >
+            {"Apply"}
+          </div>
         </div>
       </div>
     </>
