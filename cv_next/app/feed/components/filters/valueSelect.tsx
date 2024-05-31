@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export const DropdownInput = ({
   placeHolder,
@@ -56,6 +56,10 @@ export const DropdownInput = ({
       onChange(selectedCategories.length ? selectedCategories[0] : null);
     }
   };
+
+  useEffect(() => {
+    onChange(selectedCategories.length ? selectedCategories[0] : null);
+  }, [selectedCategories, onChange]);
 
   return (
     <>
