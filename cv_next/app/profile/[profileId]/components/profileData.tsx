@@ -1,5 +1,6 @@
 "use server";
-
+import { getCvsByUserId } from "@/server/api/cvs";
+import logger from "@/server/base/logger";
 import Image from "next/image";
 import profileIcon from "@/public/images/profile.png";
 import CategoryCounter from "./categoryCounter";
@@ -7,6 +8,13 @@ import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import EditableUsername from "./editableUsername";
 
 export default async function ProfileData({ user }: { user: UserModel }) {
+  const cvs = await getCvsByUserId(user.id);
+
+  if (cvs === null) {
+    logger.error("Couldn't get CVs by user");
+    return <div>Error Fetching user&apos;s CVs</div>;
+  }
+
   return (
     <div className="flex flex-col items-center">
       <div className="flex justify-center">
@@ -25,7 +33,7 @@ export default async function ProfileData({ user }: { user: UserModel }) {
         <EditableUsername user={user} />
       </div>
       <div className="flex justify-center">
-        <CategoryCounter user={user} />
+        <CategoryCounter cvs={cvs} />
       </div>
     </div>
   );

@@ -1,16 +1,8 @@
 "use server";
-import { getCvsByUserId } from "@/server/api/cvs";
-import logger from "@/server/base/logger";
+
 import Categories from "@/types/models/categories";
 
-export default async function CategoryCounter({ user }: { user: UserModel }) {
-  const cvs = await getCvsByUserId(user.id);
-
-  if (cvs === null) {
-    logger.error("Couldn't get CVs by user");
-    return <div>Error Fetching user&apos;s CVs</div>;
-  }
-
+export default async function CategoryCounter({ cvs }: { cvs: CvModel[] }) {
   const categoryCount: { [key: number]: number } = {};
   cvs.forEach((cv) => {
     categoryCount[cv.category_id] = (categoryCount[cv.category_id] || 0) + 1;
