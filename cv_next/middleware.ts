@@ -74,4 +74,4 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-export const config = { matcher: ["/feed"] };
+export const config = { matcher: [] };
