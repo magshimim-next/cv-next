@@ -1,6 +1,6 @@
 import "server-only";
 
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { SupabaseClient } from "@supabase/supabase-js";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import MyLogger from "@/server/base/logger";
@@ -12,17 +12,14 @@ export default class SupabaseHelper {
    * Returns the Supabase client instance. If the instance is not already
    * created, it creates a new instance and returns it.
    *
-   * @return {SupabaseClient<Database>} The Supabase client instance
+   * @return {SupabaseClient} The Supabase client instance
    */
-  public static getSupabaseInstance(): SupabaseClient<Database> {
+  public static getSupabaseInstance(): SupabaseClient {
     if (
       SupabaseHelper.supabase === null ||
       SupabaseHelper.supabase === undefined
     ) {
-      SupabaseHelper.supabase = createClient<Database>(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      );
+      SupabaseHelper.supabase = SupabaseHelper.createServerComponent();
     }
     return SupabaseHelper.supabase;
   }
@@ -32,7 +29,7 @@ export default class SupabaseHelper {
    *
    * @return {SupabaseClient} The Supabase client instance
    */
-  public static createServerComponent(): SupabaseClient {
+  private static createServerComponent(): SupabaseClient {
     const cookieStore = cookies();
 
     return createServerClient<Database>(
