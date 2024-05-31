@@ -41,10 +41,18 @@ export default async function ProfileData({ user }: { user: UserModel }) {
         <EditableUsername user={user} />
       </div>
       <div className="flex justify-center">
-        <CategoryCounter cvs={cvs} />
+        <CategoryCounter
+          cvs={cvs}
+          title="Most CVs are categorized under"
+          error="No CVs found"
+        />
       </div>
       <div className="flex justify-center">
-        <CategoryCounter cvs={CVsFromComments} />
+        <CategoryCounter
+          cvs={CVsFromComments}
+          title="Most comments are from CVs are categorized under"
+          error="No CVs found"
+        />
       </div>
     </div>
   );

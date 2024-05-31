@@ -2,7 +2,15 @@
 
 import Categories from "@/types/models/categories";
 
-export default async function CategoryCounter({ cvs }: { cvs: CvModel[] }) {
+export default async function CategoryCounter({
+  cvs,
+  title,
+  error,
+}: {
+  cvs: CvModel[];
+  title: string;
+  error: string;
+}) {
   const categoryCount: { [key: number]: number } = {};
   cvs.forEach((cv) => {
     categoryCount[cv.category_id] = (categoryCount[cv.category_id] || 0) + 1;
@@ -35,15 +43,13 @@ export default async function CategoryCounter({ cvs }: { cvs: CvModel[] }) {
     <div>
       {cvs.length ? (
         <div>
-          <div className="mb-2 flex justify-center text-base">
-            Most CVs are categorized under
-          </div>
+          <div className="mb-2 flex justify-center text-base">{title}</div>
           <div className="flex justify-center text-base">
             {categoryElements}
           </div>
         </div>
       ) : (
-        <div className="mb-2 flex justify-center text-base">No CVs found</div>
+        <div className="mb-2 flex justify-center text-base">{error}</div>
       )}
     </div>
   );
