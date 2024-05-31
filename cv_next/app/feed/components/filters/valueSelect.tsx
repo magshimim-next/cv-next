@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 export const DropdownInput = ({
   placeHolder,
@@ -18,6 +18,7 @@ export const DropdownInput = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const isPlaceHolder = valueId === null;
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const menuBorderStyle = isMenuOpen ? "outline-b-0 rounded-b-none" : "";
   const selectionStyle = isMenuOpen ? "block" : "hidden";
@@ -49,11 +50,21 @@ export const DropdownInput = ({
     onChange(null);
   };
 
+  const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
+    if (!dropdownRef.current?.contains(event.relatedTarget as Node)) {
+      setIsMenuOpen(false);
+      onChange(selectedCategories.length ? selectedCategories[0] : null);
+    }
+  };
+
   return (
     <>
       <div
         className={`outline-gray-40 relative flex h-2/6 w-1/6 items-center justify-center whitespace-nowrap bg-white outline-2 ${menuBorderStyle} box-border cursor-pointer rounded-md px-10 py-4`}
         onClick={changeIsMenuOpen}
+        onBlur={handleBlur}
+        ref={dropdownRef}
+        tabIndex={-1}
       >
         {textValue}
         <div
