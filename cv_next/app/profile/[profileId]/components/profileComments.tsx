@@ -11,7 +11,7 @@ export default async function ProfileComments({ user }: { user: UserModel }) {
   }
 
   return (
-    <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 justify-evenly gap-x-4 md:grid-cols-2 lg:grid-cols-3">
       {commentsResult ? (
         commentsResult.map((comment) => (
           <Comment key={comment.id} comment={comment} />

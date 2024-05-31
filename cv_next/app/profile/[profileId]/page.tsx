@@ -33,7 +33,7 @@ export default async function Page({
           >
             <ProfileData user={result.val} />
           </div>
-          <div className="flex justify-center">
+          <div className="mt-5 flex justify-center">
             <ProfileComments user={result.val} />
           </div>
         </section>
