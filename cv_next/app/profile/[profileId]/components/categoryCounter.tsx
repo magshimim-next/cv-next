@@ -41,10 +41,18 @@ export default async function CategoryCounter({ user }: { user: UserModel }) {
 
   return (
     <div>
-      <div className="mb-2 flex justify-center text-base">
-        Most CVs are categorized under
-      </div>
-      <div className="flex justify-center text-base">{categoryElements}</div>
+      {cvs.length ? (
+        <div>
+          <div className="mb-2 flex justify-center text-base">
+            Most CVs are categorized under
+          </div>
+          <div className="flex justify-center text-base">
+            {categoryElements}
+          </div>
+        </div>
+      ) : (
+        <div className="mb-2 flex justify-center text-base">No CVs found</div>
+      )}
     </div>
   );
 }
