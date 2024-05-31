@@ -1,12 +1,12 @@
-import "server-only"
+import "server-only";
 
-import { createClient, SupabaseClient } from "@supabase/supabase-js"
-import { createServerClient, type CookieOptions } from "@supabase/ssr"
-import { cookies } from "next/headers"
-import MyLogger from "@/server/base/logger"
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import MyLogger from "@/server/base/logger";
 
 export default class SupabaseHelper {
-  private static supabase: SupabaseClient
+  private static supabase: SupabaseClient;
 
   /**
    * Returns the Supabase client instance. If the instance is not already
@@ -22,9 +22,9 @@ export default class SupabaseHelper {
       SupabaseHelper.supabase = createClient<Database>(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      )
+      );
     }
-    return SupabaseHelper.supabase
+    return SupabaseHelper.supabase;
   }
 
   /**
@@ -33,38 +33,38 @@ export default class SupabaseHelper {
    * @return {SupabaseClient} The Supabase client instance
    */
   public static createServerComponent(): SupabaseClient {
-    const cookieStore = cookies()
+    const cookieStore = cookies();
 
-    return createServerClient(
+    return createServerClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
           get(name: string) {
-            return cookieStore.get(name)?.value
+            return cookieStore.get(name)?.value;
           },
           set(name: string, value: string, options: CookieOptions) {
             try {
-              cookieStore.set({ name, value, ...options })
+              cookieStore.set({ name, value, ...options });
             } catch (error) {
               MyLogger.logInfo(
                 "Error @ SupabaseHelper::createServerComponent",
                 error
-              )
+              );
             }
           },
           remove(name: string, options: CookieOptions) {
             try {
-              cookieStore.set({ name, value: "", ...options })
+              cookieStore.set({ name, value: "", ...options });
             } catch (error) {
               MyLogger.logInfo(
                 "Error @ SupabaseHelper::createServerComponent",
                 error
-              )
+              );
             }
           },
         },
       }
-    )
+    );
   }
 }
