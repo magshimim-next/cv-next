@@ -14,7 +14,7 @@ export default class SupabaseHelper {
    *
    * @return {SupabaseClient} The Supabase client instance
    */
-  public static getSupabaseInstance(): SupabaseClient {
+  public static getSupabaseInstance(): SupabaseClient<Database> {
     if (
       SupabaseHelper.supabase === null ||
       SupabaseHelper.supabase === undefined
