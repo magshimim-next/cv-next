@@ -6,6 +6,8 @@ import profileIcon from "@/public/images/profile.png";
 import CategoryCounter from "./categoryCounter";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import EditableUsername from "./editableUsername";
+import { fetchUserComments } from "@/app/actions/comments/fetchComments";
+import { getCvsFromComments } from "@/app/actions/cvs/fetchCvs";
 
 export default async function ProfileData({ user }: { user: UserModel }) {
   const cvs = await getCvsByUserId(user.id);
@@ -14,6 +16,12 @@ export default async function ProfileData({ user }: { user: UserModel }) {
     logger.error("Couldn't get CVs by user");
     return <div>Error Fetching user&apos;s CVs</div>;
   }
+  const commentsResult = await fetchUserComments(user.id);
+  if (commentsResult === null) {
+    logger.error("Couldn't get CVs by user");
+    return <div>Error Fetching user&apos;s CVs</div>;
+  }
+  const CVsFromComments = await getCvsFromComments(commentsResult);
 
   return (
     <div className="flex flex-col items-center">
@@ -34,6 +42,9 @@ export default async function ProfileData({ user }: { user: UserModel }) {
       </div>
       <div className="flex justify-center">
         <CategoryCounter cvs={cvs} />
+      </div>
+      <div className="flex justify-center">
+        <CategoryCounter cvs={CVsFromComments} />
       </div>
     </div>
   );
