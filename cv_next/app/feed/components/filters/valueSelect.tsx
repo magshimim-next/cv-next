@@ -19,10 +19,6 @@ export const DropdownInput = ({
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const isPlaceHolder = valueId === null;
 
-  const changeIsMenuOpen = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
   const menuBorderStyle = isMenuOpen ? "outline-b-0 rounded-b-none" : "";
   const selectionStyle = isMenuOpen ? "block" : "hidden";
   const textValue = isPlaceHolder ? (
@@ -30,6 +26,10 @@ export const DropdownInput = ({
   ) : (
     <div className="text-black">{`${text}: ${getValueById(valueId)}`}</div>
   );
+
+  const changeIsMenuOpen = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   const handleCheckboxChange = (categoryId: number) => {
     setSelectedCategories((prevSelectedIds) => {
@@ -41,6 +41,12 @@ export const DropdownInput = ({
         return [...prevSelectedIds, categoryId];
       }
     });
+    setIsMenuOpen(true);
+  };
+
+  const handleAllSelection = () => {
+    setSelectedCategories([]);
+    onChange(null);
   };
 
   return (
@@ -55,7 +61,7 @@ export const DropdownInput = ({
         >
           <div
             className="flex h-10 w-full items-center justify-center bg-white text-gray-400 hover:bg-slate-200"
-            onClick={() => onChange(null)}
+            onClick={handleAllSelection}
           >
             {"all"}
           </div>
@@ -63,18 +69,25 @@ export const DropdownInput = ({
             <label
               key={possibleValueId}
               className="flex h-8 w-full items-center justify-between bg-white text-black hover:bg-slate-200"
+              style={{ paddingLeft: "20px", paddingRight: "20px" }}
+              htmlFor={`checkbox-${possibleValueId}`}
             >
               <input
+                id={`checkbox-${possibleValueId}`}
                 type="checkbox"
                 checked={selectedCategories.includes(possibleValueId)}
-                onChange={() => handleCheckboxChange(possibleValueId)}
+                onChange={() => {
+                  handleCheckboxChange(possibleValueId);
+                }}
               />
               {`${getValueById(possibleValueId)}`}
             </label>
           ))}
           <div
             className="flex h-10 w-full items-center justify-center bg-white text-black hover:bg-slate-200"
-            onClick={() => onChange(selectedCategories[0])}
+            onClick={() =>
+              onChange(selectedCategories.length ? selectedCategories[0] : null)
+            }
           >
             {"Apply"}
           </div>
