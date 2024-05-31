@@ -2,6 +2,7 @@
 import { getUser } from "@/app/actions/users/getUser";
 import useSWR from "swr";
 import Link from "next/link";
+import { encodeValue } from "@/lib/utils";
 
 export default function Comment({
   comment,
@@ -27,9 +28,9 @@ export default function Comment({
             <p className="mr-3 inline-flex items-center text-sm font-semibold text-gray-900 dark:text-white">
               <Link
                 className="text-lg font-medium hover:underline"
-                href={`/profile/${user.val.id}`}
+                href={`/cv/${encodeValue(comment.document_id)}`}
               >
-                {user.val.username || user.val.full_name}
+                Go to CV
               </Link>
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400">
