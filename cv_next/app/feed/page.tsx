@@ -1,5 +1,5 @@
-import { Suspense } from "react"
-import Feed from "./components/feed"
+import { Suspense } from "react";
+import Feed from "./components/feed";
 
 export default async function Page() {
   return (
@@ -8,5 +8,5 @@ export default async function Page() {
         <Feed />
       </Suspense>
     </main>
-  )
+  );
 }
