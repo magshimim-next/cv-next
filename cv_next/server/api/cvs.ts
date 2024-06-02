@@ -1,277 +1,218 @@
-import "server-only"
+import "server-only";
 
-import Helper from "@/server/base/helper"
-import MyLogger from "@/server/base/logger"
-import Categories from "@/types/models/categories"
-import CvModel from "@/types/models/cv"
-import {
-  DocumentData,
-  Query,
-  QueryDocumentSnapshot,
-  QueryFieldFilterConstraint,
-  collection,
-  limit,
-  orderBy,
-  query,
-  startAfter,
-  where,
-  documentId,
-  CollectionReference,
-} from "firebase/firestore"
-import Definitions from "../base/definitions"
-import FirebaseHelper from "./firebaseHelper"
-import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils"
+import MyLogger from "@/server/base/logger";
+import Categories from "@/types/models/categories";
+import Definitions from "@/lib/definitions";
+import { Tables, CvKeys } from "@/lib/supabase-definitions";
+import SupabaseHelper from "./supabaseHelper";
+import { PostgrestError } from "@supabase/supabase-js";
+import { filterValues } from "@/app/feed/components/filterPanel";
 
-const queryLimit: number = Definitions.CVS_PER_PAGE
-  Definitions.DEFAULT_PAGINATION_FIRST_PAGE_NUMBER
+export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS;
 
 /**
- * Converts a document snapshot to a CV model.
+ * Retrieves a CV by its ID from the database.
  *
- * @param {QueryDocumentSnapshot} documentSnapshot - The document snapshot to convert.
- * @return {CvModel} The CV model created from the document snapshot.
+ * @param {string} cvId - The ID of the CV to retrieve
+ * @return {Promise<CvModel | null>} The retrieved CV or null if not found
  */
-export function documentSnapshotToCV(
-  documentSnapshot: QueryDocumentSnapshot
-): CvModel {
-  const documentData = documentSnapshot.data() as DocumentData
-  return new CvModel(
-    documentSnapshot.id,
-    documentData.userID,
-    documentData.documentLink,
-    documentData.categoryID,
-    documentData.description,
-    documentData.resolved,
-    documentData.deleted,
-    documentData.uploadDate
-  )
-}
+export async function getCvById(cvId: string): Promise<CvModel | null> {
+  try {
+    const { data: cvs, error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.cvs)
+      .select("*")
+      .eq(CvKeys.id, cvId);
 
-/**
- * Retrieves paginated CVs based on a query filter and optionally filters out deleted CVs.
- * If last document id is given, retreive the "page" that starts after it.
- *
- * @param {QueryFieldFilterConstraint} queryFilter - Optional query filter to apply to the CVs.
- * @param {boolean} filterOutDeleted - Optional flag to filter out deleted CVs. Defaults to true.
- * @param {string?} lastId - Optional last cv document id to start the query after.
- * @return {Promise<CvModel[] | null>} A promise that resolves to an array of CV models or null if an error occurred.
- */
-export async function getPaginatedCvsByQueryFilter(
-  queryFilter?: QueryFieldFilterConstraint,
-  filterOutDeleted: boolean = true,
-  lastId?: string
-): Promise<CvModel[] | null> {
-  let pageQuery: Query<DocumentData>
-  let collectionRef = collection(
-    FirebaseHelper.getFirestoreInstance(),
-    CvModel.CollectionName
-  )
-  let filterDeletedQuery = where("deleted", "==", !filterOutDeleted);
-  
-  if (lastId) {
-    const lastDoc = await getCvById(lastId, collectionRef, false);
-    if (!lastDoc || lastDoc instanceof CvModel) {
+    if (error) {
+      MyLogger.logInfo("Error @ cvs::getCvById", error);
       return null;
     }
-    pageQuery =
-    queryFilter !== undefined
-    ? query(
-        collectionRef,
-        orderBy("uploadDate", "desc"),
-        limit(queryLimit),
-        startAfter(lastDoc),
-        filterDeletedQuery,
-        queryFilter
-      )
-    : query(
-        collectionRef,
-        orderBy("uploadDate", "desc"),
-        limit(queryLimit),
-        startAfter(lastDoc),
-        filterDeletedQuery
+
+    if (!cvs || cvs.length !== 1) {
+      throw new Error(
+        "Expected only one match for query; cvs found: " +
+          (cvs ? cvs.length : 0)
       );
-  } else {
-    pageQuery =
-    queryFilter !== undefined
-    ? query(
-        collectionRef,
-        orderBy("uploadDate", "desc"),
-        limit(queryLimit),
-        filterDeletedQuery,
-        queryFilter
-      )
-    : query(
-        collectionRef,
-        orderBy("uploadDate", "desc"),
-        limit(queryLimit),
-        filterDeletedQuery
-      );
-  }
-  
-  try {
-    const querySnapshot = await FirebaseHelper.myGetDocs(pageQuery)
-    const matchingDocuments: CvModel[] = []
-
-    querySnapshot.forEach((documentSnapshot) => {
-      matchingDocuments.push(documentSnapshotToCV(documentSnapshot))
-    })
-    return matchingDocuments
-  } catch (error) {
-    MyLogger.logInfo(
-      "Error @ FirebaseHelper::paginatedGetAllCvsByQueryFilter",
-      error
-    )
-  }
-
-  return null
-}
-
-export async function getCvById(cvId: string,
-  collectionRefParam?: CollectionReference<DocumentData, DocumentData>,
-  translateSnapshot: boolean = true)
-  : Promise<CvModel | QueryDocumentSnapshot<DocumentData, DocumentData> | undefined> {
-  const collectionRef = collectionRefParam ?? collection(
-    FirebaseHelper.getFirestoreInstance(),
-    CvModel.CollectionName
-  )
-  const findDocQuery = query(collectionRef,
-    where(documentId(), "==", cvId)
-    );
-  
-  try {
-    const querySnapshot = await FirebaseHelper.myGetDocs(findDocQuery);
-    if (querySnapshot.size != 1) {
-      throw new Error("Expected only one match for query; documents found: " + querySnapshot.docs);
     }
-    if (translateSnapshot) {
-      const matchingDocuments: CvModel[] = []
 
-      querySnapshot.forEach((documentSnapshot) => {
-        matchingDocuments.push(documentSnapshotToCV(documentSnapshot))
-      })
-      return matchingDocuments.at(0)
-    } else {
-      return querySnapshot.docs.at(0)
-    }
+    return cvs[0] as CvModel;
   } catch (error) {
-    MyLogger.logInfo(
-      "Error @ FirebaseHelper::paginatedGetAllCvsByQueryFilter",
-      error
-    )
+    MyLogger.logInfo("Error @ cvs::getCvById", error);
+    return null;
   }
 }
 
 /**
- * Retrieves all CVs from the database based on a given query filter and
- * optionally filters out deleted CVs.
+ * Retrieves CVs by user ID.
  *
- * @param {QueryFieldFilterConstraint} queryFilter - The query filter to apply.
- * @param {boolean} filterOutDeleted - Whether to filter out deleted CVs.
- * @return {Promise<CvModel[] | null>} An array of CV models that match the
- * query filter, or null if there was an error.
+ * @param {string} userId - The user ID
+ * @param {boolean} filterOutDeleted - Whether to filter out deleted CVs (default true)
+ * @return {Promise<CvModel[] | null>} The retrieved CVs or null if an error occurs
  */
-export async function _getAllCvsByQueryFilter(
-  queryFilter?: QueryFieldFilterConstraint,
-  filterOutDeleted: boolean = true
-): Promise<CvModel[] | null> {
-  try {
-    let collectionRef = collection(
-      FirebaseHelper.getFirestoreInstance(),
-      CvModel.CollectionName
-    )
-    let filterDeletedQuery = where("deleted", "==", !filterOutDeleted)
-    const q =
-      queryFilter !== undefined
-        ? query(collectionRef, queryFilter, filterDeletedQuery)
-        : query(collectionRef, filterDeletedQuery)
-    const querySnapshot = await FirebaseHelper.myGetDocs(q)
-    const matchingDocuments: CvModel[] = []
-
-    querySnapshot.forEach((documentSnapshot) => {
-      matchingDocuments.push(documentSnapshotToCV(documentSnapshot))
-    })
-    return matchingDocuments
-  } catch (error) {
-    MyLogger.logInfo("Error @ FirebaseHelper::_getAllCvsByQueryFilter", error)
-  }
-  return null
-}
-
-/**
- * Retrieves all CVs by user ID.
- *
- * @param {string} userId - The ID of the user.
- * @param {boolean} filterOutDeleted - Whether to filter out deleted CVs.
- * @return {Promise<CvModel[] | null>} - A promise that resolves to an array of CV models or null.
- */
-export async function getAllCvsByUserId(
+export async function getCvsByUserId(
   userId: string,
-  filterOutDeleted: boolean = true
+  filterOutDeleted = true
 ): Promise<CvModel[] | null> {
-  return _getAllCvsByQueryFilter(
-    where("userID", "==", userId),
-    filterOutDeleted
-  )
+  try {
+    const supabase = SupabaseHelper.getSupabaseInstance();
+    let query = supabase
+      .from(Tables.cvs)
+      .select("*")
+      .eq(CvKeys.user_id, userId);
+
+    if (filterOutDeleted) {
+      query = query.eq(CvKeys.deleted, false);
+    }
+
+    const { data: cvs, error } = await query;
+
+    if (error) {
+      MyLogger.logInfo("Error @ getCvsByUserId", error);
+      return null;
+    }
+
+    return cvs as CvModel[];
+  } catch (error) {
+    MyLogger.logInfo("Error @ getCvsByUserId", error);
+    return null;
+  }
 }
 
-/**
- * Retrieves all CVs by category.
- *
- * @param {Categories.category} category - The category to filter CVs by.
- * @param {boolean} filterOutDeleted - Whether to exclude deleted CVs from the result. Defaults to true.
- * @return {Promise<CvModel[] | null>} - A promise that resolves to an array of CV models or null.
- */
 export async function getAllCvsByCategory(
   category: Categories.category,
   filterOutDeleted: boolean = true
 ): Promise<CvModel[] | null> {
-  return _getAllCvsByQueryFilter(
-    where("categoryID", "==", category),
-    filterOutDeleted
-  )
+  try {
+    const supabase = SupabaseHelper.getSupabaseInstance();
+    let query = supabase
+      .from(Tables.cvs)
+      .select("*")
+      .eq(CvKeys.category_id, category);
+
+    if (filterOutDeleted) {
+      query = query.eq(CvKeys.deleted, false);
+    }
+
+    const { data: cvs, error } = await query;
+
+    if (error) {
+      MyLogger.logInfo("Error @ getAllCvsByCategory", error);
+      return null;
+    }
+
+    return cvs as CvModel[];
+  } catch (error) {
+    MyLogger.logInfo("Error @ getAllCvsByCategory", error);
+    return null;
+  }
+}
+
+async function _getAllCvsByCategories(
+  categories: Categories.category[],
+  filterOutDeleted: boolean = true
+): Promise<any> {
+  try {
+    const supabase = SupabaseHelper.getSupabaseInstance();
+    let query = supabase
+      .from(Tables.cvs)
+      .select("*")
+      .in(CvKeys.category_id, categories);
+
+    if (filterOutDeleted) {
+      query = query.eq(CvKeys.deleted, false);
+    }
+
+    const { data: cvs, error } = await query;
+
+    if (error) {
+      MyLogger.logInfo("Error @ getAllCvsByCategories", error);
+      return error;
+    }
+    MyLogger.logDebug("Fetched CVs: ", cvs);
+    return cvs as CvModel[];
+  } catch (error) {
+    MyLogger.logInfo("Error @ getAllCvsByCategories", error);
+    return error;
+  }
 }
 
 /**
- * Retrieves paginated CVs from the database.
+ * Retrieves a paginated list of CVs based on the provided page number.
  *
- * @param {boolean} filterOutDeleted - Whether to filter out deleted CVs.
- * @param {string?} lastId - optionally pass the last cv id to start the query after. 
- * @return {Promise<CvModel[] | null>} - A promise that resolves to an array of CV models or null.
+ * @param {boolean} filterOutDeleted - Indicates whether deleted CVs should be filtered out.
+ * @param {number} page - The page number for pagination.
+ * @return {Promise<CvModel[] | null>} A Promise that resolves with an array of CvModel or null.
  */
 export async function getPaginatedCvs(
   filterOutDeleted: boolean = true,
-  lastId?: string
-): Promise<CvModel[] | null> {
-  let res = getPaginatedCvsByQueryFilter(undefined, filterOutDeleted, lastId)
-  MyLogger.logDebug(
-    `requested all cvs(pagination) - last cv id: ${lastId}`
-  )
-  return res
+  page: number = Definitions.PAGINATION_INIT_PAGE_NUMBER,
+  filters?: filterValues
+): Promise<PaginatedCvsModel | null> {
+  try {
+    const from = page * Definitions.CVS_PER_PAGE;
+    const to = page
+      ? from + Definitions.CVS_PER_PAGE
+      : Definitions.CVS_PER_PAGE;
+
+    const supabase = SupabaseHelper.getSupabaseInstance();
+    let query = supabase
+      .from(Tables.cvs)
+      .select("*")
+      .range(from, to - 1);
+
+    MyLogger.logDebug("filters", filters);
+    if (filters) {
+      if (filters.searchValue) {
+        query = query.textSearch(CvKeys.description, filters.searchValue);
+      }
+      if (filters.categoryId) {
+        MyLogger.logDebug("catagory id:", filters.categoryId);
+        query = query.eq(CvKeys.category_id, filters.categoryId);
+      }
+    }
+
+    if (filterOutDeleted) {
+      query = query.eq(CvKeys.deleted, false);
+    }
+
+    const { data: cvs, error } = await query;
+    MyLogger.logDebug(
+      "cvs:",
+      cvs?.map((cv) => cv.category_id)
+    );
+
+    if (error) {
+      MyLogger.logInfo("Error @ getPaginatedCvs", error);
+      return null;
+    }
+
+    return { page: page, cvs: cvs as CvModel[] };
+  } catch (error) {
+    MyLogger.logInfo("Error @ getPaginatedCvs", error);
+    return null;
+  }
 }
 
 /**
  * Updates a CV in the database.
  *
- * @param {CvModel} cv - The CV model to be updated.
- * @return {Promise<DbOperationResult>} A promise that resolves to a DbOperationResult object.
+ * @param {CvModel} cv - the CV to be updated
+ * @return {Promise<PostgrestError | null>} the error, if any, or null if the update was successful
  */
-export async function updateCV(cv: CvModel): Promise<DbOperationResult> {
+export async function updateCV(cv: CvModel): Promise<PostgrestError | null> {
   try {
-    let data = Helper.serializeObjectToFirebaseUsage(cv.removeBaseData())
-    let res = await FirebaseHelper.updateData(cv.id, data, cv.collectionName)
-    return new DbOperationResult(
-      res,
-      res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
-      res
-    )
-  } catch (err) {
-    MyLogger.logInfo("Error @ FirebaseHelper::updateCV", err)
-    return new DbOperationResult(
-      false,
-      typeof err === typeof RateLimitError
-        ? ErrorReasons.rateLimitPerSecondReached
-        : ErrorReasons.undefinedErr,
-      err
-    )
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.cvs)
+      .update(cv)
+      .eq(CvKeys.id, cv.id);
+    if (error) {
+      MyLogger.logInfo("Error @ cvs::updateCV", error);
+      return error;
+    }
+    return null;
+  } catch (error) {
+    MyLogger.logInfo("Error @ cvs::updateCV", error);
+    //TODO: handle error
+    return null;
   }
 }

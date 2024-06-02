@@ -1,19 +1,11 @@
-import 'server-only'
+import "server-only"
 
-import Helper from "@/server/base/helper";
-import {
-  collection,
-  where,
-  query,
-  DocumentData,
-  QueryDocumentSnapshot,
-  QueryFieldFilterConstraint,
-  QuerySnapshot,
-} from "firebase/firestore";
-import UserModel from "@/types/models/user";
-import MyLogger from "@/server/base/logger";
-import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils";
-import FirebaseHelper from './firebaseHelper'
+import Helper from "@/server/base/helper"
+import UserModel from "@/types/models/user"
+import MyLogger from "@/server/base/logger"
+import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils"
+
+//TODO: implement UsersApi with supabase
 
 export default class UsersApi {
   /**
@@ -24,30 +16,26 @@ export default class UsersApi {
    */
   public static async addNewUser(user: UserModel): Promise<DbOperationResult> {
     try {
-      let userByEmail = await this.getUserByEmail(user.email);
+      let userByEmail = await this.getUserByEmail(user.email)
       if (userByEmail !== null && userByEmail.length > 0) {
-        return new DbOperationResult(
-          false,
-          ErrorReasons.emailExists,
-          undefined
-        );
+        return new DbOperationResult(false, ErrorReasons.emailExists, undefined)
       }
-      let data = Helper.serializeObjectToFirebaseUsage(user.removeBaseData());
-      let res = await FirebaseHelper.addData(data, user.collectionName);
+      let data = Helper.serializeObjectToFirebaseUsage(user.removeBaseData())
+      let res = await FirebaseHelper.addData(data, user.collectionName)
       return new DbOperationResult(
         typeof res === "string",
         res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
         res
-      );
+      )
     } catch (err) {
-      MyLogger.logInfo("Error @ FirebaseHelper::addNewUser", err);
+      MyLogger.logInfo("Error @ FirebaseHelper::addNewUser", err)
       return new DbOperationResult(
         false,
         typeof err === typeof RateLimitError
           ? ErrorReasons.rateLimitPerSecondReached
           : ErrorReasons.undefinedErr,
         err
-      );
+      )
     }
   }
 
@@ -58,33 +46,33 @@ export default class UsersApi {
    */
   public static async updateUser(user: UserModel): Promise<DbOperationResult> {
     try {
-      let data = Helper.serializeObjectToFirebaseUsage(user.removeBaseData());
+      let data = Helper.serializeObjectToFirebaseUsage(user.removeBaseData())
       let res = await FirebaseHelper.updateData(
         user.id,
         data,
         user.collectionName
-      );
+      )
       return new DbOperationResult(
         res,
         res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
         res
-      );
+      )
     } catch (err) {
-      MyLogger.logInfo("Error @ FirebaseHelper::updateUser", err);
+      MyLogger.logInfo("Error @ FirebaseHelper::updateUser", err)
       return new DbOperationResult(
         false,
         typeof err === typeof RateLimitError
           ? ErrorReasons.rateLimitPerSecondReached
           : ErrorReasons.undefinedErr,
         err
-      );
+      )
     }
   }
 
   private static documentSnapshotToUser(
     documentSnapshot: QueryDocumentSnapshot
   ): UserModel {
-    const documentData = documentSnapshot.data() as DocumentData;
+    const documentData = documentSnapshot.data() as DocumentData
     return new UserModel(
       documentSnapshot.id,
       documentData.name,
@@ -93,7 +81,7 @@ export default class UsersApi {
       documentData.active,
       documentData.created,
       documentData.lastLogin
-    );
+    )
   }
 
   private static async getAllUsersByQueryFilter(
@@ -104,37 +92,35 @@ export default class UsersApi {
       let collectionRef = collection(
         FirebaseHelper.getFirestoreInstance(),
         UserModel.CollectionName
-      );
-      let querySnapshot: QuerySnapshot;
-      let activeWhere = where("active", "==", true);
+      )
+      let querySnapshot: QuerySnapshot
+      let activeWhere = where("active", "==", true)
       if (w !== undefined) {
         const q = filterOutInactive
           ? query(collectionRef, w, activeWhere)
-          : query(collectionRef, w);
-        querySnapshot = await FirebaseHelper.myGetDocs(q);
+          : query(collectionRef, w)
+        querySnapshot = await FirebaseHelper.myGetDocs(q)
       } else {
         if (filterOutInactive) {
-          const q = query(collectionRef, activeWhere);
-          querySnapshot = await FirebaseHelper.myGetDocs(q);
+          const q = query(collectionRef, activeWhere)
+          querySnapshot = await FirebaseHelper.myGetDocs(q)
         } else {
-          querySnapshot = await FirebaseHelper.myGetDocs(collectionRef);
+          querySnapshot = await FirebaseHelper.myGetDocs(collectionRef)
         }
       }
-      const matchingDocuments: UserModel[] = [];
+      const matchingDocuments: UserModel[] = []
 
       querySnapshot.forEach((documentSnapshot) => {
-        matchingDocuments.push(
-          this.documentSnapshotToUser(documentSnapshot)
-        );
-      });
-      return matchingDocuments;
+        matchingDocuments.push(this.documentSnapshotToUser(documentSnapshot))
+      })
+      return matchingDocuments
     } catch (error) {
       MyLogger.logInfo(
         "Error @ FirebaseHelper::getAllUsersByQueryFilter",
         error
-      );
+      )
     }
-    return null;
+    return null
   }
 
   /**
@@ -150,7 +136,7 @@ export default class UsersApi {
     return this.getAllUsersByQueryFilter(
       where("name", "==", name),
       filterOutInactive
-    );
+    )
   }
 
   /**
@@ -166,7 +152,7 @@ export default class UsersApi {
     return this.getAllUsersByQueryFilter(
       where("email", "==", email),
       filterOutInactive
-    );
+    )
   }
 
   /**
@@ -177,9 +163,6 @@ export default class UsersApi {
   public static async getAllUsers(
     filterOutInactive: boolean = false
   ): Promise<UserModel[] | null> {
-    return this.getAllUsersByQueryFilter(
-      undefined,
-      filterOutInactive
-    );
+    return this.getAllUsersByQueryFilter(undefined, filterOutInactive)
   }
 }

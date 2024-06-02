@@ -1,22 +1,20 @@
-"use client";
+"use client"
 
-import { useRouter } from "next/navigation";
-import { ClientCvModel } from "@/types/models/cv";
-import { encodeValue } from "@/lib/utils";
+import { useRouter } from "next/navigation"
+import { encodeValue } from "@/lib/utils"
 interface CVCardProps {
-  cv: ClientCvModel,
+  cv: CvModel
   children: React.ReactNode
 }
 
 export default function CVItem({ cv, children }: CVCardProps) {
+  const router = useRouter()
+  const encodedId = encodeValue(cv.id)
 
-  const router = useRouter();
-  const encodedId = encodeValue(cv.id);
-  
   return (
     <div
       id={cv.id}
-      className={`relative w-full max-w-sm rounded-lg bg-white object-cover shadow-lg cursor-pointer`}
+      className={`relative w-full max-w-sm cursor-pointer rounded-xl bg-white object-cover shadow-2xl`}
       onClick={() => router.push(`/cv/${encodedId}`)}
     >
       {children}

@@ -1,16 +1,18 @@
 import { Suspense } from "react";
-import { fetchCvs } from "@/app/actions/fetchCvs";
 import Feed from "./components/feed";
+import { handleCurrentUser } from "../actions/user/userActive";
+import { redirect } from "next/navigation";
 
 export default async function Page() {
-
-  const fetchedCvs = await fetchCvs({lastId: undefined});
-
+  const redirectOutput = await handleCurrentUser("/feed");
+  if (redirectOutput != "/feed") {
+    redirect(redirectOutput);
+  }
   return (
     <main>
       <Suspense fallback={<div>Loading...</div>}>
-        <Feed initialBatch={fetchedCvs} />
+        <Feed />
       </Suspense>
     </main>
-  )
+  );
 }

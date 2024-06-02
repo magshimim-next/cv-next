@@ -1,0 +1,16 @@
+repos:
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.56.0
+    hooks:
+      - id: eslint
+        files: \.[t]sx?$ # *.ts and *.tsx
+        types: [file]
+        entry: eslint
+  - repo: local
+    hooks:
+      - id: lint-staged
+          name: lint-staged
+          entry: npx lint-staged
+          language: node
+          files: .*
+          stages: [commit]

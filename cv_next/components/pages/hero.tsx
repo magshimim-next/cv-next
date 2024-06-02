@@ -2,7 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { heroHeader } from "@/config/contents"
+import { heroHeader } from "@/lib/definitions"
 
 export default function HeroHeader() {
   return (
@@ -12,7 +12,7 @@ export default function HeroHeader() {
           <h1 className="text-4xl font-bold lg:text-6xl">
             {heroHeader.header}
           </h1>
-          <h2 className="text-muted-foreground text-lg font-light lg:text-3xl">
+          <h2 className="text-lg font-light text-muted-foreground lg:text-3xl">
             {heroHeader.subheader}
           </h2>
         </div>

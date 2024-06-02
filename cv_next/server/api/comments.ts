@@ -1,19 +1,11 @@
-import 'server-only'
+import "server-only";
 
 import Helper from "@/server/base/helper";
-import {
-  collection,
-  where,
-  query,
-  DocumentData,
-  QueryDocumentSnapshot,
-  QueryFieldFilterConstraint,
-} from "firebase/firestore";
 import CommentModel from "@/types//models/comment";
 import MyLogger from "@/server/base/logger";
 import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils";
-import FirebaseHelper from './firebaseHelper'
 
+//TODO: implement CommentsApi with supabase
 
 export default class CommentsApi {
   /**
