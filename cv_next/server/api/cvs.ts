@@ -5,13 +5,7 @@ import Definitions from "../../lib/definitions"
 import SupabaseHelper from "./supabaseHelper"
 import { PostgrestError } from "@supabase/supabase-js"
 import logger from "../base/logger"
-import { filterObj } from "@/app/feed/components/filterPanel"
-import MyLogger from "@/server/base/logger";
-import Categories from "@/types/models/categories";
-import Definitions from "@/lib/definitions";
 import { Tables, CvKeys } from "@/lib/supabase-definitions";
-import SupabaseHelper from "./supabaseHelper";
-import { PostgrestError } from "@supabase/supabase-js";
 import { filterValues } from "@/app/feed/components/filterPanel";
 
 export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS;
@@ -108,7 +102,7 @@ export async function getAllCvsByCategory(
 
     return cvs as CvModel[];
   } catch (error) {
-    MyLogger.logInfo("Error @ getAllCvsByCategory", error);
+    logger.error("Error @ getAllCvsByCategory", error);
     return null;
   }
 }
@@ -131,10 +125,10 @@ async function _getAllCvsByCategories(
     const { data: cvs, error } = await query;
 
     if (error) {
-      MyLogger.logInfo("Error @ getAllCvsByCategories", error);
+      logger.error("Error @ getAllCvsByCategories", error);
       return error;
     }
-    MyLogger.logDebug("Fetched CVs: ", cvs);
+    logger.debug("Fetched CVs: ", cvs);
     return cvs as CvModel[];
   } catch (error) {
     logger.error("Error @ getAllCvsByCategory", error)
@@ -166,13 +160,13 @@ export async function getPaginatedCvs(
       .select("*")
       .range(from, to - 1);
 
-    MyLogger.logDebug("filters", filters);
+    logger.debug("filters", filters);
     if (filters) {
       if (filters.searchValue) {
         query = query.textSearch(CvKeys.description, filters.searchValue);
       }
       if (filters.categoryId) {
-        MyLogger.logDebug("catagory id:", filters.categoryId);
+        logger.debug("catagory id:", filters.categoryId);
         query = query.eq(CvKeys.category_id, filters.categoryId);
       }
     }
@@ -182,7 +176,7 @@ export async function getPaginatedCvs(
     }
 
     const { data: cvs, error } = await query;
-    MyLogger.logDebug(
+    logger.debug(
       "cvs:",
       cvs?.map((cv) => cv.category_id)
     );

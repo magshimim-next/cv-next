@@ -2,7 +2,7 @@
 
 import { getUserById } from "@/server/api/users"
 import { Err } from "@/lib/utils"
-import logger, { logErrorWithTrace } from "@/server/base/logger"
+import { logErrorWithTrace } from "@/server/base/logger"
 
 /**
  * Retrieves user data by user ID.

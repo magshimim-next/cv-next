@@ -1,7 +1,7 @@
 "use server"
 
 import { getAllCommentsByCVId } from "@/server/api/comments"
-import logger, { logErrorWithTrace } from "@/server/base/logger"
+import { logErrorWithTrace } from "@/server/base/logger"
 
 /**
  * Fetches comments for the given cvId and returns the comment model array, or null if there is an error.

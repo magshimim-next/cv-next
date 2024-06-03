@@ -4,7 +4,7 @@ import useSWR from "swr"
 import { fetchComments } from "@/app/actions/comments/fetchComments"
 import Comment from "./comment"
 import { useEffect, useState } from "react"
-import { useSupabase } from "@/hooks/supabaseHooks"
+import { useSupabase } from "@/hooks/supabase"
 
 export default function CommentsSection({ cv }: { cv: CvModel }) {
   const { data: comments } = useSWR(cv.id, fetchComments)

@@ -2,7 +2,7 @@
 
 import { Err } from "@/lib/utils"
 import { markCommentAsDeleted } from "@/server/api/comments"
-import logger, { logErrorWithTrace } from "@/server/base/logger"
+import { logErrorWithTrace } from "@/server/base/logger"
 
 /**
  * Deletes a comment by its ID.

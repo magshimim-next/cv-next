@@ -2,7 +2,7 @@
 
 import { Err } from "@/lib/utils"
 import { addNewCommentToCv } from "@/server/api/comments"
-import logger, { logErrorWithTrace } from "@/server/base/logger"
+import { logErrorWithTrace } from "@/server/base/logger"
 /**
  * Adds a new comment to the cv.
  *

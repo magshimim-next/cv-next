@@ -1,4 +1,3 @@
-import { Json } from "@/types/database.types"
 import { PostgrestError } from "@supabase/supabase-js"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"

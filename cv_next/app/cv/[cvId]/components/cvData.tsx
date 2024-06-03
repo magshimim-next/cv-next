@@ -3,7 +3,7 @@ import { getUser } from "@/app/actions/users/getUser";
 import useSWR from "swr";
 import Categories from "@/types/models/categories";
 import Image from "next/image";
-import settignsIcon from "@/public/images/settigns.png";
+import profileIcon from "@/public/images/profile.png";
 
 export default function CvData({ cv }: { cv: CvModel }) {
   const { data: user } = useSWR(cv.user_id, getUser);
@@ -23,7 +23,7 @@ export default function CvData({ cv }: { cv: CvModel }) {
             <div className="flex items-center">
               <Image
                 alt="profile"
-                src={user.val.avatar_url || settignsIcon}
+                src={user.val.avatar_url || profileIcon}
                 width={30}
                 height={30 * 1.4142}
                 className="w-10 rounded-lg p-2"
