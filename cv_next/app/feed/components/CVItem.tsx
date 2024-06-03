@@ -17,7 +17,7 @@ export default function CVItem({ cv, children }: CVCardProps) {
       className={`relative w-full max-w-sm cursor-pointer rounded-xl bg-white object-cover shadow-2xl`}
       onClick={() => router.push(`/cv/${encodedId}`)}
     >
-        {children}
+      {children}
     </div>
   )
 }

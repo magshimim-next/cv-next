@@ -1,4 +1,4 @@
-import "server-only"
+import "server-only";
 
 import SupabaseHelper from "./supabaseHelper"
 import Definitions from "@/lib/definitions"

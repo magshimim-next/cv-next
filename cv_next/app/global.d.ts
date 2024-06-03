@@ -1,3 +1,4 @@
+import { Database as DB } from "@/types/database.types";
 import { Database as DB } from "@/types/database.types"
 import { PostgrestError } from "@supabase/supabase-js"
 
@@ -21,8 +22,8 @@ declare global {
   >
   type UserModel = DB["public"]["Tables"]["profiles"]["Row"]
   type PageHeader = {
-    header: string
-    subheader: string
-    image: string
-  }
+    header: string;
+    subheader: string;
+    image: string;
+  };
 }

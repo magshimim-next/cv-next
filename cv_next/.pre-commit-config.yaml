@@ -6,3 +6,11 @@ repos:
         files: \.[t]sx?$ # *.ts and *.tsx
         types: [file]
         entry: eslint
+  - repo: local
+    hooks:
+      - id: lint-staged
+          name: lint-staged
+          entry: npx lint-staged
+          language: node
+          files: .*
+          stages: [commit]
