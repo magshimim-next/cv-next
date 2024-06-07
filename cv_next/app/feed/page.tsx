@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Feed from "./components/feed";
-import { handleCurrentUser } from "../actions/user/fetchUserInfo";
+import { handleCurrentUser } from "../actions/users/getUser";
 import { redirect } from "next/navigation";
 
 export default async function Page() {
