@@ -1,12 +1,14 @@
-import "server-only"
+import "server-only";
 
-import MyLogger from "@/server/base/logger"
-import Categories from "@/types/models/categories"
-import Definitions from "../../lib/definitions"
-import SupabaseHelper from "./supabaseHelper"
-import { PostgrestError } from "@supabase/supabase-js"
+import MyLogger from "@/server/base/logger";
+import Categories from "@/types/models/categories";
+import Definitions from "@/lib/definitions";
+import { Tables, CvKeys } from "@/lib/supabase-definitions";
+import SupabaseHelper from "./supabaseHelper";
+import { PostgrestError } from "@supabase/supabase-js";
+import { filterValues } from "@/app/feed/components/filterPanel";
 
-export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS
+export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS;
 
 /**
  * Retrieves a CV by its ID from the database.
@@ -17,26 +19,26 @@ export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS
 export async function getCvById(cvId: string): Promise<CvModel | null> {
   try {
     const { data: cvs, error } = await SupabaseHelper.getSupabaseInstance()
-      .from("cvs")
+      .from(Tables.cvs)
       .select("*")
-      .eq("id", cvId)
+      .eq(CvKeys.id, cvId);
 
     if (error) {
-      MyLogger.logInfo("Error @ cvs::getCvById", error)
-      return null
+      MyLogger.logInfo("Error @ cvs::getCvById", error);
+      return null;
     }
 
     if (!cvs || cvs.length !== 1) {
       throw new Error(
         "Expected only one match for query; cvs found: " +
           (cvs ? cvs.length : 0)
-      )
+      );
     }
 
-    return cvs[0] as CvModel
+    return cvs[0] as CvModel;
   } catch (error) {
-    MyLogger.logInfo("Error @ cvs::getCvById", error)
-    return null
+    MyLogger.logInfo("Error @ cvs::getCvById", error);
+    return null;
   }
 }
 
@@ -52,24 +54,27 @@ export async function getCvsByUserId(
   filterOutDeleted = true
 ): Promise<CvModel[] | null> {
   try {
-    const supabase = SupabaseHelper.getSupabaseInstance()
-    let query = supabase.from("cvs").select("*").eq("user_id", userId)
+    const supabase = SupabaseHelper.getSupabaseInstance();
+    let query = supabase
+      .from(Tables.cvs)
+      .select("*")
+      .eq(CvKeys.user_id, userId);
 
     if (filterOutDeleted) {
-      query = query.eq("deleted", false)
+      query = query.eq(CvKeys.deleted, false);
     }
 
-    const { data: cvs, error } = await query
+    const { data: cvs, error } = await query;
 
     if (error) {
-      MyLogger.logInfo("Error @ getCvsByUserId", error)
-      return null
+      MyLogger.logInfo("Error @ getCvsByUserId", error);
+      return null;
     }
 
-    return cvs as CvModel[]
+    return cvs as CvModel[];
   } catch (error) {
-    MyLogger.logInfo("Error @ getCvsByUserId", error)
-    return null
+    MyLogger.logInfo("Error @ getCvsByUserId", error);
+    return null;
   }
 }
 
@@ -78,24 +83,56 @@ export async function getAllCvsByCategory(
   filterOutDeleted: boolean = true
 ): Promise<CvModel[] | null> {
   try {
-    const supabase = SupabaseHelper.getSupabaseInstance()
-    let query = supabase.from("cvs").select("*").eq("category_id", category)
+    const supabase = SupabaseHelper.getSupabaseInstance();
+    let query = supabase
+      .from(Tables.cvs)
+      .select("*")
+      .eq(CvKeys.category_id, category);
 
     if (filterOutDeleted) {
-      query = query.eq("deleted", false)
+      query = query.eq(CvKeys.deleted, false);
     }
 
-    const { data: cvs, error } = await query
+    const { data: cvs, error } = await query;
 
     if (error) {
-      MyLogger.logInfo("Error @ getAllCvsByCategory", error)
-      return null
+      MyLogger.logInfo("Error @ getAllCvsByCategory", error);
+      return null;
     }
 
-    return cvs as CvModel[]
+    return cvs as CvModel[];
   } catch (error) {
-    MyLogger.logInfo("Error @ getAllCvsByCategory", error)
-    return null
+    MyLogger.logInfo("Error @ getAllCvsByCategory", error);
+    return null;
+  }
+}
+
+async function _getAllCvsByCategories(
+  categories: Categories.category[],
+  filterOutDeleted: boolean = true
+): Promise<any> {
+  try {
+    const supabase = SupabaseHelper.getSupabaseInstance();
+    let query = supabase
+      .from(Tables.cvs)
+      .select("*")
+      .in(CvKeys.category_id, categories);
+
+    if (filterOutDeleted) {
+      query = query.eq(CvKeys.deleted, false);
+    }
+
+    const { data: cvs, error } = await query;
+
+    if (error) {
+      MyLogger.logInfo("Error @ getAllCvsByCategories", error);
+      return error;
+    }
+    MyLogger.logDebug("Fetched CVs: ", cvs);
+    return cvs as CvModel[];
+  } catch (error) {
+    MyLogger.logInfo("Error @ getAllCvsByCategories", error);
+    return error;
   }
 }
 
@@ -108,33 +145,51 @@ export async function getAllCvsByCategory(
  */
 export async function getPaginatedCvs(
   filterOutDeleted: boolean = true,
-  page: number = Definitions.PAGINATION_INIT_PAGE_NUMBER
+  page: number = Definitions.PAGINATION_INIT_PAGE_NUMBER,
+  filters?: filterValues
 ): Promise<PaginatedCvsModel | null> {
   try {
-    const from = page * Definitions.CVS_PER_PAGE
-    const to = page ? from + Definitions.CVS_PER_PAGE : Definitions.CVS_PER_PAGE
+    const from = page * Definitions.CVS_PER_PAGE;
+    const to = page
+      ? from + Definitions.CVS_PER_PAGE
+      : Definitions.CVS_PER_PAGE;
 
-    const supabase = SupabaseHelper.getSupabaseInstance()
+    const supabase = SupabaseHelper.getSupabaseInstance();
     let query = supabase
-      .from("cvs")
+      .from(Tables.cvs)
       .select("*")
-      .range(from, to - 1)
+      .range(from, to - 1);
+
+    MyLogger.logDebug("filters", filters);
+    if (filters) {
+      if (filters.searchValue) {
+        query = query.textSearch(CvKeys.description, filters.searchValue);
+      }
+      if (filters.categoryId) {
+        MyLogger.logDebug("catagory id:", filters.categoryId);
+        query = query.eq(CvKeys.category_id, filters.categoryId);
+      }
+    }
 
     if (filterOutDeleted) {
-      query = query.eq("deleted", false)
+      query = query.eq(CvKeys.deleted, false);
     }
 
-    const { data: cvs, error } = await query
+    const { data: cvs, error } = await query;
+    MyLogger.logDebug(
+      "cvs:",
+      cvs?.map((cv) => cv.category_id)
+    );
 
     if (error) {
-      MyLogger.logInfo("Error @ getPaginatedCvs", error)
-      return null
+      MyLogger.logInfo("Error @ getPaginatedCvs", error);
+      return null;
     }
 
-    return { page: page, cvs: cvs as CvModel[] }
+    return { page: page, cvs: cvs as CvModel[] };
   } catch (error) {
-    MyLogger.logInfo("Error @ getPaginatedCvs", error)
-    return null
+    MyLogger.logInfo("Error @ getPaginatedCvs", error);
+    return null;
   }
 }
 
@@ -147,17 +202,17 @@ export async function getPaginatedCvs(
 export async function updateCV(cv: CvModel): Promise<PostgrestError | null> {
   try {
     const { error } = await SupabaseHelper.getSupabaseInstance()
-      .from("cvs")
+      .from(Tables.cvs)
       .update(cv)
-      .eq("id", cv.id)
+      .eq(CvKeys.id, cv.id);
     if (error) {
-      MyLogger.logInfo("Error @ cvs::updateCV", error)
-      return error
+      MyLogger.logInfo("Error @ cvs::updateCV", error);
+      return error;
     }
-    return null
+    return null;
   } catch (error) {
-    MyLogger.logInfo("Error @ cvs::updateCV", error)
+    MyLogger.logInfo("Error @ cvs::updateCV", error);
     //TODO: handle error
-    return null
+    return null;
   }
 }

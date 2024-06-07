@@ -1,8 +1,9 @@
 /** @type {import('next').NextConfig} */
+import withPlaiceholder from "@plaiceholder/next";
 
 const nextConfig = {
   images: {
-    domains: ["lh5.googleusercontent.com", "weepggwhsrfmizptbnua.supabase.co"],
+    domains: ["lh5.googleusercontent.com"],
     unoptimized: true,
   },
   webpack: (config) => {
@@ -14,4 +15,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default withPlaiceholder(nextConfig);
