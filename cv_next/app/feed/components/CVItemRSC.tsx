@@ -51,6 +51,11 @@ export default function CVItemRSC({ cv }: CVCardProps) {
       const userUploading = (await getCachedUserName(cv.user_id || "")) || "";
       setAuthorName(userUploading);
     };
+    const getBlurCv = async () => {
+      const base64 = await getBlur(getGoogleImageUrl(cv.document_link));
+      setBase64Data(base64);
+    };
+    getBlurCv();
     getAuthorName();
     revalidateImage(); // Immediately invoke revalidateImage
 
@@ -63,13 +68,6 @@ export default function CVItemRSC({ cv }: CVCardProps) {
   }, [cv]);
 
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
-
-  useEffect(() => {
-    (async () => {
-      const base64 = await getBlur(getGoogleImageUrl(cv.document_link));
-      setBase64Data(base64);
-    })();
-  }, [cv]);
 
   return (
     <>
