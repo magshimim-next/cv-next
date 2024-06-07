@@ -130,6 +130,8 @@ export type Database = {
           updated_at: string | null;
           user_type: Database["public"]["Enums"]["user_type"];
           username: string | null;
+          work_status: Database["public"]["Enums"]["work_status"];
+          work_status_categories: number[] | null;
         };
         Insert: {
           avatar_url?: string | null;
@@ -138,6 +140,8 @@ export type Database = {
           updated_at?: string | null;
           user_type?: Database["public"]["Enums"]["user_type"];
           username?: string | null;
+          work_status?: Database["public"]["Enums"]["work_status"];
+          work_status_categories?: number[] | null;
         };
         Update: {
           avatar_url?: string | null;
@@ -146,6 +150,8 @@ export type Database = {
           updated_at?: string | null;
           user_type?: Database["public"]["Enums"]["user_type"];
           username?: string | null;
+          work_status?: Database["public"]["Enums"]["work_status"];
+          work_status_categories?: number[] | null;
         };
         Relationships: [
           {
@@ -212,6 +218,7 @@ export type Database = {
     };
     Enums: {
       user_type: "inactive" | "active" | "admin";
+      work_status: "Open to work" | "Hiring" | "Neither";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -223,7 +230,6 @@ type PublicSchema = Database[Extract<keyof Database, "public">];
 
 export type Tables<
   PublicTableNameOrOptions extends
-    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
     | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
@@ -250,7 +256,6 @@ export type Tables<
 export type TablesInsert<
   PublicTableNameOrOptions extends
     | keyof PublicSchema["Tables"]
-    | keyof PublicSchema["Tables"]
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
@@ -272,7 +277,6 @@ export type TablesInsert<
 export type TablesUpdate<
   PublicTableNameOrOptions extends
     | keyof PublicSchema["Tables"]
-    | keyof PublicSchema["Tables"]
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
@@ -293,7 +297,6 @@ export type TablesUpdate<
 
 export type Enums<
   PublicEnumNameOrOptions extends
-    | keyof PublicSchema["Enums"]
     | keyof PublicSchema["Enums"]
     | { schema: keyof Database },
   EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
