@@ -1,14 +1,14 @@
 "use client";
 
-import CVItem from "@/app/feed/components/CVItem";;
-import { useCallback, useContext, useEffect, useRef, useState } from "react";;
-import { fetchCvsForFeed } from "@/app/actions/cvs/fetchCvs";;
-import CVItemRSC from "./CVItemRSC";;
-import { CvsContext, CvsDispatchContext } from "@/providers/cvs-provider";;
-import { ReloadButton } from "@/components/ui/reloadButton";;
-import Definitions from "@/lib/definitions";;
+import CVItem from "@/app/feed/components/CVItem";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { fetchCvsForFeed } from "@/app/actions/cvs/fetchCvs";
+import CVItemRSC from "./CVItemRSC";
+import { CvsContext, CvsDispatchContext } from "@/providers/cvs-provider";
+import { ReloadButton } from "@/components/ui/reloadButton";
+import Definitions from "@/lib/definitions";
 import { useInView } from "react-intersection-observer";
-import { FilterPanel, filterValues } from "@/app/feed/components/filterPanel";;
+import { FilterPanel, filterValues } from "@/app/feed/components/filterPanel";
 import ReactLoading from "react-loading";
 
 export default function Feed() {
@@ -101,7 +101,7 @@ export default function Feed() {
 
   useEffect(() => {
     forceReload();
-  }, [filters, forceReload])
+  }, [filters, forceReload]);
 
   const onFilterChange = useCallback((filters: filterValues) => {
     setFilters(filters);
