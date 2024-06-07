@@ -28,7 +28,7 @@ const navLinks = [
 
 interface PopupProps {
   closeCb: () => void;
-  userData: any;
+  userData: UserModel | null;
   updateSignOut: () => void;
 }
 
@@ -62,7 +62,7 @@ export default function Popup({
     <div className="mt-10 flex w-full flex-col items-center">
       <Image
         alt="profile"
-        src={userData.user.user_metadata.avatar_url}
+        src={userData.avatar_url ?? profileIcon}
         width={30}
         height={30 * 1.4142}
         className="w-20 rounded-lg p-2"
@@ -73,7 +73,7 @@ export default function Popup({
         href="/profile"
         onClick={closeCb}
       >
-        {userData.user.user_metadata.full_name}
+        {userData.username || userData.full_name}
       </Link>
     </div>
   ) : (
