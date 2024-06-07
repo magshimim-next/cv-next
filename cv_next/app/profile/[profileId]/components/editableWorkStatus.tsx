@@ -9,7 +9,6 @@ import { ProfileKeys } from "@/lib/supabase-definitions";
 export default function EditableWorkStatus({ user }: { user: UserModel }) {
   const [tempWorkStatus, setTempWorkStatus] = useState(user.work_status);
   const [viewingCurrentUser, setViewingCurrentUser] = useState(false);
-  const [errorUpdating, setError] = useState("");
   const supabase = useSupabase();
 
   const [workStatus, setWorkStatus] = useState(user.work_status);
@@ -28,11 +27,8 @@ export default function EditableWorkStatus({ user }: { user: UserModel }) {
   useEffect(() => {
     (async () => {
       if (workStatus != user.work_status && viewingCurrentUser) {
-        console.log(workStatus);
         const result = await setNewWorkStatus(user.id, workStatus);
         if (!result.ok) {
-          console.log(result.err);
-          setError("Error updating the status!");
           setWorkStatus(user.work_status);
           setTempWorkStatus(user.work_status);
         }
