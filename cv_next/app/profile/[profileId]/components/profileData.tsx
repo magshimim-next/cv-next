@@ -50,7 +50,7 @@ export default async function ProfileData({ user }: { user: UserModel }) {
       <div className="flex justify-center">
         <CategoryCounter
           cvs={CVsFromComments}
-          title="Most comments are from CVs are categorized under"
+          title="Most comments are from CVs that are categorized under"
           error="No CVs found"
         />
       </div>
