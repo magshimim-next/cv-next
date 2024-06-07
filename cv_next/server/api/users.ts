@@ -54,3 +54,34 @@ export async function setUserName(
     return Err(setUserName.name, undefined, err as Error);
   }
 }
+
+/**
+ * Changes the status of a given user.
+ *
+ * @param {string} userId - The ID of the user to update.
+ * @param {string} newWorkStatus - The new status.
+ * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ */
+export async function setWorkStatusName(
+  userId: string,
+  newWorkStatus: string
+): Promise<Result<void, string>> {
+  try {
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.profiles)
+      .update({
+        work_status: newWorkStatus as
+          | "open_to_work"
+          | "hiring"
+          | "nothing"
+          | undefined,
+      })
+      .eq(ProfileKeys.id, userId);
+    if (error) {
+      return Err(setUserName.name, error);
+    }
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(setUserName.name, undefined, err as Error);
+  }
+}

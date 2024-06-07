@@ -6,6 +6,7 @@ import profileIcon from "@/public/images/profile.png";
 import CategoryCounter from "./categoryCounter";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import EditableUsername from "./editableUsername";
+import EditableWorkStatus from "./editableWorkStatus";
 import { fetchUserComments } from "@/app/actions/comments/fetchComments";
 import { getCvsFromComments } from "@/app/actions/cvs/fetchCvs";
 
@@ -41,6 +42,9 @@ export default async function ProfileData({ user }: { user: UserModel }) {
         <EditableUsername user={user} />
       </div>
       <div className="flex justify-center">
+        <EditableWorkStatus user={user} />
+      </div>
+      <div className="col-md-12 mt-5 flex justify-center">
         <CategoryCounter
           cvs={cvs}
           title="Most CVs are categorized under"
