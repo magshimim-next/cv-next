@@ -25,6 +25,10 @@ const getURL = cache(async (cvId: string) => {
   return await getImageURL(cvId);
 });
 
+const getCachedUserName = cache(async (userId: string) => {
+  return await getUserName(userId);
+});
+
 export default function CVItemRSC({ cv }: CVCardProps) {
   const imageRef = useRef<HTMLImageElement>(null);
   const [realURL, setRealURL] = useState("");
@@ -41,16 +45,16 @@ export default function CVItemRSC({ cv }: CVCardProps) {
   useEffect(() => {
     const revalidateImage = async () => {
       await revalidatePreview(cv.document_link);
-        const imageUrl =
-          (await getURL(getIdFromLink(cv.document_link) || "")) ?? errorUrl;
-        let validatedURL = imageUrl;
-        if (imageRef.current) {
-          imageRef.current.src = validatedURL;
-        }
-        setRealURL(validatedURL);
+      const imageUrl =
+        (await getURL(getIdFromLink(cv.document_link) || "")) ?? errorUrl;
+      let validatedURL = imageUrl;
+      if (imageRef.current) {
+        imageRef.current.src = validatedURL;
+      }
+      setRealURL(validatedURL);
     };
     const getAuthorName = async () => {
-      const userUploading = (await getUserName(cv.user_id || "")) || "";
+      const userUploading = (await getCachedUserName(cv.user_id || "")) || "";
       setAuthorName(userUploading);
     };
     getAuthorName();
