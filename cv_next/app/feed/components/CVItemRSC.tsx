@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Categories from "@/types/models/categories";
 import { useState, useEffect, cache } from "react";
-import { getIdFromLink } from "@/helpers/imageURLHelper";
+import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import {
   getImageURL,
   revalidatePreview,
@@ -29,9 +29,7 @@ const getCachedUserName = cache(async (userId: string) => {
 });
 
 export default function CVItemRSC({ cv }: CVCardProps) {
-  const [realURL, setRealURL] = useState(
-    "data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPs7p5fDwAFlAI2LB7hbAAAAABJRU5ErkJggg=="
-  );
+  const [realURL, setRealURL] = useState("");
   const [authorName, setAuthorName] = useState("");
 
   const [base64Data, setBase64Data] = useState(
@@ -47,8 +45,7 @@ export default function CVItemRSC({ cv }: CVCardProps) {
       await revalidatePreview(cv.document_link);
       const imageUrl =
         (await getURL(getIdFromLink(cv.document_link) || "")) ?? "";
-      let validatedURL = imageUrl;
-      setRealURL(validatedURL);
+      setRealURL(imageUrl);
     };
     const getAuthorName = async () => {
       const userUploading = (await getCachedUserName(cv.user_id || "")) || "";
@@ -63,31 +60,45 @@ export default function CVItemRSC({ cv }: CVCardProps) {
     ); // Revalidate every 2 minutes
 
     return () => clearInterval(interval);
-  }, [cv, realURL]);
+  }, [cv]);
 
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
 
   useEffect(() => {
     (async () => {
-      if (realURL != base64Data) {
-        const base64 = await getBlur(realURL);
-        setBase64Data(base64);
-      }
+      const base64 = await getBlur(getGoogleImageUrl(cv.document_link));
+      setBase64Data(base64);
     })();
-  }, [realURL, base64Data]);
+  }, [cv]);
 
   return (
     <>
-      <Image
-        width={500}
-        height={500 * 1.4142}
-        className="w-full rounded-lg p-2"
-        src={realURL}
-        placeholder="blur"
-        blurDataURL={base64Data}
-        alt="CV Preview"
-        priority
-      />
+      {realURL ? (
+        <Image
+          width={500}
+          height={500 * 1.4142}
+          className="w-full rounded-lg p-2"
+          src={realURL}
+          placeholder="blur"
+          blurDataURL={base64Data}
+          alt="CV Preview"
+          priority
+        />
+      ) : (
+        <div style={{ width: "380px", height: `400px`, overflow: "hidden" }}>
+          <Image
+            width={500}
+            height={500}
+            className="w-full rounded-lg p-2"
+            src={base64Data}
+            placeholder="blur"
+            blurDataURL={base64Data}
+            alt="CV Preview"
+            priority
+          />
+        </div>
+      )}
+
       <div className="overlay gradient-blur-backdrop absolute bottom-0 flex h-full w-full rounded-lg backdrop-blur-[0.5px] transition hover:via-transparent hover:backdrop-blur-none">
         <div className="overlay absolute bottom-0 h-1/5 w-full rounded-xl bg-transparent p-6">
           <div className="absolute bottom-0 left-0 mx-5 mb-2.5">
