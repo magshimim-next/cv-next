@@ -22,6 +22,11 @@ export const ProfileKeys = {
   user_type: "user_type",
   username: "username",
   id: "id",
+  work_status: {
+    open_to_work: "Open to work",
+    hiring: "Hiring",
+    nothing: "Nothing",
+  },
   user_types: {
     inactive: "inactive",
     active: "active",

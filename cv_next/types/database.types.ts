@@ -218,7 +218,7 @@ export type Database = {
     };
     Enums: {
       user_type: "inactive" | "active" | "admin";
-      work_status: "Open to work" | "Hiring" | "Neither";
+      work_status: "Open to work" | "Hiring" | "Nothing";
     };
     CompositeTypes: {
       [_ in never]: never;
