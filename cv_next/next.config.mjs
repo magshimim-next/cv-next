@@ -6,6 +6,9 @@ const nextConfig = {
     domains: ["lh5.googleusercontent.com", "weepggwhsrfmizptbnua.supabase.co"],
     unoptimized: true,
   },
+  compiler: {
+    styledComponents: true,
+  },
   webpack: (config) => {
     config.externals.push({
       "utf-8-validate": "commonjs utf-8-validate",

@@ -4,14 +4,11 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import Popup from "./popup";
 import { useSupabase } from "@/hooks/supabase";
-import { getUser } from "@/app/actions/users/getUser";
-import { StaticImageData } from "next/image";
+import { getUserFromId } from "@/app/actions/user/fetchUserInfo";
 
 export function PopupToggle() {
-  const [profileImage, setProfileImage] = useState<string | StaticImageData>(
-    profileIcon
-  );
-  const [userData, setUserData] = useState<any>(null);
+  const [profileImage, setProfileImage] = useState<any>(profileIcon);
+  const [userData, setUserData] = useState<UserModel | null>(null);
   const [signedOut, setSignout] = useState(true);
   const supabase = useSupabase();
 
@@ -22,10 +19,13 @@ export function PopupToggle() {
         setUserData(null);
         setProfileImage(profileIcon);
       } else {
-        const result = await getUser(connectedUser.user.id);
-        if (result.ok) {
-          setUserData(result.val);
-          setProfileImage(result.val.avatar_url || profileIcon);
+        const currentUserObject = await getUserFromId(connectedUser.user.id);
+        if (currentUserObject) {
+          setUserData(currentUserObject);
+          setProfileImage(currentUserObject.avatar_url || profileIcon);
+        } else {
+          setUserData(null);
+          setProfileImage(profileIcon);
         }
       }
     };
@@ -47,7 +47,7 @@ export function PopupToggle() {
       {isProfilePopupOpen && (
         <Popup
           closeCb={() => setIsProfilePopupOpen(false)}
-          userData={userData}
+          userData={userData || null}
           updateSignOut={() => setSignout(!signedOut)}
         ></Popup>
       )}
