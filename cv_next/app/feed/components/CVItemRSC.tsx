@@ -3,7 +3,7 @@ import { getBlurredCv } from "@/app/actions/cvs/getBlurCv";
 import Image from "next/image";
 import Link from "next/link";
 import Categories from "@/types/models/categories";
-import { useRef, useState, useEffect, cache } from "react";
+import { useState, useEffect, cache } from "react";
 import { getIdFromLink } from "@/helpers/imageURLHelper";
 import {
   getImageURL,
@@ -12,7 +12,6 @@ import {
 } from "@/app/actions/cvs/preview";
 import Definitions from "@/lib/definitions";
 
-const errorUrl = "/error.webp";
 interface CVCardProps {
   cv: CvModel;
 }
@@ -30,7 +29,6 @@ const getCachedUserName = cache(async (userId: string) => {
 });
 
 export default function CVItemRSC({ cv }: CVCardProps) {
-  const imageRef = useRef<HTMLImageElement>(null);
   const [realURL, setRealURL] = useState(
     "data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPs7p5fDwAFlAI2LB7hbAAAAABJRU5ErkJggg=="
   );
@@ -50,9 +48,6 @@ export default function CVItemRSC({ cv }: CVCardProps) {
       const imageUrl =
         (await getURL(getIdFromLink(cv.document_link) || "")) ?? "";
       let validatedURL = imageUrl;
-      // if (imageRef.current) {
-      //   imageRef.current.src = validatedURL;
-      // }
       setRealURL(validatedURL);
     };
     const getAuthorName = async () => {
@@ -92,7 +87,6 @@ export default function CVItemRSC({ cv }: CVCardProps) {
         blurDataURL={base64Data}
         alt="CV Preview"
         priority
-        // ref={imageRef}
       />
       <div className="overlay gradient-blur-backdrop absolute bottom-0 flex h-full w-full rounded-lg backdrop-blur-[0.5px] transition hover:via-transparent hover:backdrop-blur-none">
         <div className="overlay absolute bottom-0 h-1/5 w-full rounded-xl bg-transparent p-6">
