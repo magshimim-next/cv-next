@@ -4,7 +4,7 @@ import MyLogger from "@/server/base/logger";
 import Categories from "@/types/models/categories";
 import Definitions from "../../lib/definitions";
 import SupabaseHelper from "./supabaseHelper";
-import { PostgrestError } from "@supabase/supabase-js";
+import { PostgrestError, } from "@supabase/supabase-js";
 import { filterValues } from "@/app/feed/components/filterPanel";
 
 export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS;
@@ -147,18 +147,18 @@ export async function getPaginatedCvs(
     const supabase = SupabaseHelper.getSupabaseInstance();
     let query = supabase
       .from("cvs")
-      .select("*")
-      .range(from, to - 1);
+      .select("*");
     let queryUserId = supabase
-      .from("cvs")
-      .select("id");
-    let userId = null;
+      .from("profiles")
+      .select("*");
+    let checkNames = false;
+    let ids = null;
     MyLogger.logDebug("filters", filters);
     if (filters) {
       if (filters.searchValue) {
-        queryUserId = queryUserId.textSearch("full_name", filters.searchValue);
         query = query.textSearch("description", filters.searchValue);
-        userId = await queryUserId;
+        queryUserId = queryUserId.textSearch("full_name", filters.searchValue);
+        checkNames = true;
       }
       if (filters.categoryId) {
         MyLogger.logDebug("catagory id:", filters.categoryId);
@@ -168,6 +168,9 @@ export async function getPaginatedCvs(
 
     if (filterOutDeleted) {
       query = query.eq("deleted", false);
+    }
+    if(checkNames){
+      ids = await queryUserId;
     }
     
     const { data: cvs, error } = await query;
@@ -180,11 +183,21 @@ export async function getPaginatedCvs(
       MyLogger.logInfo("Error @ getPaginatedCvs", error);
       return null;
     }
-    if(userId){
-      cvsId = getCvsByUserId(iserId[0]);
-      cvs.concat(cvsId);
+    if(ids && ids['data'].length > 0){
+      let cvsId = await getCvsByUserId(ids['data'][0]['id']);
+      if(cvsId){
+        MyLogger.logDebug(
+          "ids:",
+          cvsId
+        );
+        let ret_tmp = cvs.concat(cvsId);
+        let ret = [...ret_tmp.reduce((map, obj) => map.set(obj.id, obj), new Map()).values()].slice(from, to);
+
+        return {page: page, cvs: ret as CvModel[]};
+      }
+      
     }
-    return { page: page, cvs: cvs as CvModel[] };
+    return { page: page, cvs: cvs.slice(from, to) as CvModel[] };
   } catch (error) {
     MyLogger.logInfo("Error @ getPaginatedCvs", error);
     return null;
