@@ -3,7 +3,7 @@ import "server-only";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import MyLogger from "@/server/base/logger";
+import logger from "@/server/base/logger";
 
 export default class SupabaseHelper {
   private static supabase: SupabaseClient;
@@ -44,7 +44,7 @@ export default class SupabaseHelper {
             try {
               cookieStore.set({ name, value, ...options });
             } catch (error) {
-              MyLogger.logInfo(
+              logger.info(
                 "Error @ SupabaseHelper::createServerComponent",
                 error
               );
@@ -54,7 +54,7 @@ export default class SupabaseHelper {
             try {
               cookieStore.set({ name, value: "", ...options });
             } catch (error) {
-              MyLogger.logInfo(
+              logger.info(
                 "Error @ SupabaseHelper::createServerComponent",
                 error
               );
