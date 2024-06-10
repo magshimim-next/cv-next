@@ -31,17 +31,18 @@ export default function Comment({
         key={comment.id}
         className={`bg-white text-base dark:bg-theme-800 ${childOrParentStyling}`}
       >
-        <footer className="mb-2 flex items-center justify-between">
-          <div className="flex items-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              <time
-                dateTime={date.toLocaleString()}
-                title={date.toLocaleString()}
-              >
-                {date.toLocaleString()}
-              </time>
-            </p>
-          </div>
+        <footer className="mb-2 items-center justify-between">
+          <p
+            className="text-sm text-gray-600 dark:text-gray-400"
+            style={{ textAlign: "right" }}
+          >
+            <time
+              dateTime={date.toLocaleString()}
+              title={date.toLocaleString()}
+            >
+              {date.toLocaleString()}
+            </time>
+          </p>
         </footer>
         {comment.data.length > 10 ? (
           <>
