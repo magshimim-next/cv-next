@@ -46,6 +46,18 @@ export default function EditableWorkStatus({ user }: { user: UserModel }) {
     )
   );
 
+  if (workCategories && workCategories.length < 3 && viewingCurrentUser) {
+    const emptySpans = new Array(3 - workCategories.length).fill(
+      <span
+        key={`empty-${workCategories.length + 1}`}
+        className="right-0 mx-4 mb-2 justify-center rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400"
+      >
+        Empty
+      </span>
+    );
+    workCategories.push(...emptySpans);
+  }
+
   if (!viewingCurrentUser && user.work_status != "nothing") {
     return (
       <div className="flex-col items-center">
