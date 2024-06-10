@@ -9,9 +9,8 @@ import { ProfileKeys } from "@/lib/supabase-definitions";
 export default function EditableWorkStatus({ user }: { user: UserModel }) {
   const [tempWorkStatus, setTempWorkStatus] = useState(user.work_status);
   const [viewingCurrentUser, setViewingCurrentUser] = useState(false);
-  const supabase = useSupabase();
-
   const [workStatus, setWorkStatus] = useState(user.work_status);
+  const supabase = useSupabase();
 
   useEffect(() => {
     async function getUser() {
@@ -35,14 +34,6 @@ export default function EditableWorkStatus({ user }: { user: UserModel }) {
       }
     })();
   }, [workStatus, user, viewingCurrentUser]);
-
-  function handleCancel() {
-    setTempWorkStatus(workStatus);
-  }
-
-  function handleSave() {
-    setWorkStatus(tempWorkStatus);
-  }
 
   const workCategories = user.work_status_categories?.map(
     (categoryId, index) => (
@@ -95,13 +86,13 @@ export default function EditableWorkStatus({ user }: { user: UserModel }) {
             {tempWorkStatus != workStatus ? (
               <div>
                 <button
-                  onClick={handleSave}
+                  onClick={() => setWorkStatus(tempWorkStatus)}
                   className="text-xl text-gray-600 dark:text-gray-300"
                 >
                   <Check />
                 </button>
                 <button
-                  onClick={handleCancel}
+                  onClick={() => setTempWorkStatus(workStatus)}
                   className="text-xl text-gray-600 dark:text-gray-300"
                 >
                   <X />
