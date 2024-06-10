@@ -1,8 +1,9 @@
 "use client";
 import { getUser } from "@/app/actions/users/getUser";
 import useSWR from "swr";
-import Link from "next/link";
 import { encodeValue } from "@/lib/utils";
+import { Link } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Comment({
   comment,
@@ -17,6 +18,7 @@ export default function Comment({
     : "p-6 mb-3 border-b border-gray-200 rounded-lg";
 
   const { data: user } = useSWR(comment.user_id, getUser);
+  const router = useRouter();
   if (user && user.ok) {
     return (
       <article
@@ -25,14 +27,6 @@ export default function Comment({
       >
         <footer className="mb-2 flex items-center justify-between">
           <div className="flex items-center">
-            <p className="mr-3 inline-flex items-center text-sm font-semibold text-gray-900 dark:text-white">
-              <Link
-                className="text-lg font-medium hover:underline"
-                href={`/cv/${encodeValue(comment.document_id)}`}
-              >
-                Go to CV
-              </Link>
-            </p>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               <time
                 dateTime={date.toLocaleString()}
@@ -44,7 +38,19 @@ export default function Comment({
           </div>
         </footer>
         <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
-        {comment.upvotes?.length || 0} Likes
+        <div className="flex items-center justify-between">
+          <p>{comment.upvotes?.length || 0} Likes</p>
+          <p>
+            <button
+              onClick={() =>
+                router.push(`/cv/${encodeValue(comment.document_id)}`)
+              }
+              title="Go to CV"
+            >
+              <Link />
+            </button>
+          </p>
+        </div>
       </article>
     );
   } else {
