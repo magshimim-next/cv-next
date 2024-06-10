@@ -37,7 +37,24 @@ export default function Comment({
             </p>
           </div>
         </footer>
-        <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
+        {comment.data.length > 10 ? (
+          <>
+            <p className="text-gray-500 dark:text-gray-400">
+              {comment.data.substring(0, 10)}...
+            </p>
+            <button
+              onClick={() =>
+                router.push(`/cv/${encodeValue(comment.document_id)}`)
+              }
+              title="Go to CV"
+              className="text-blue-500"
+            >
+              Read more
+            </button>
+          </>
+        ) : (
+          <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
+        )}
         <div className="flex items-center justify-between">
           <p>{comment.upvotes?.length || 0} Likes</p>
           <p>
