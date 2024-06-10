@@ -22,6 +22,12 @@ export default function Comment({
   if (user && user.ok) {
     return (
       <article
+        style={{
+          width: "100%", // Each cell takes up 100% of its column width
+          minHeight: "100px", // Adjust the minimum height as needed
+          padding: "1rem", // Adjust the padding as needed
+          overflow: "hidden", // Prevents content from overflowing
+        }}
         key={comment.id}
         className={`bg-white text-base dark:bg-theme-800 ${childOrParentStyling}`}
       >
