@@ -104,7 +104,7 @@ export default function EditableWorkStatus({ user }: { user: UserModel }) {
           </div>
         </div>
         <div className="flex justify-center text-base">
-          {user.work_status != "nothing"
+          {user.work_status != "nothing" || workStatus != "nothing"
             ? workCategories
             : "Update your work status and share it with the community!"}
         </div>
