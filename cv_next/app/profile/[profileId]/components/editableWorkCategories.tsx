@@ -122,8 +122,13 @@ export default function EditableWorkCategories({
         <div className="flex justify-center text-base">
           {editableCategories}
         </div>
-        <div>
-          {!arraysHaveSameContent(tempWorkCategories, workCategories) ? (
+        <div className="flex justify-center text-base">
+          {!arraysHaveSameContent(
+            tempWorkCategories,
+            workCategories.concat(
+              Array(Math.max(0, 3 - workCategories.length)).fill(0)
+            )
+          ) ? (
             <div>
               <button
                 onClick={() => setWorkCategories(tempWorkCategories)}
@@ -132,7 +137,13 @@ export default function EditableWorkCategories({
                 <Check />
               </button>
               <button
-                onClick={() => setTempWorkCategories(workCategories)}
+                onClick={() =>
+                  setTempWorkCategories(
+                    workCategories.concat(
+                      Array(Math.max(0, 3 - workCategories.length)).fill(0)
+                    )
+                  )
+                }
                 className="text-xl text-gray-600 dark:text-gray-300"
               >
                 <X />
