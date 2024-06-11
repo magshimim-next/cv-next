@@ -105,11 +105,13 @@ export default function CVItemRSC({ cv }: CVCardProps) {
             </div>
             <p className="inline text-xs text-neutral-400">{formattedDate}</p>
           </div>
-          <Link
-            href={categoryLink}
-            className="absolute bottom-0 right-0 mx-4 mb-2.5 rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
-          >
-            #{Categories.category[cv.category_id]}
+          <Link href={categoryLink}>
+            <div
+              onClick={(e) => e.stopPropagation()} // Add the onClick event handler to prevent redirection and handle the inner click event
+              className="absolute bottom-0 right-0 mx-4 mb-2.5 rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
+            >
+              #{Categories.category[cv.category_id]}
+            </div>
           </Link>
         </div>
       </div>
