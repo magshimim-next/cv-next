@@ -46,12 +46,15 @@ export default function EditableWorkCategories({
 
   const workCategoriesComponent = tempWorkCategories.map(
     (categoryId, index) => (
-      <span
-        key={index}
-        className="right-0 mx-4 mb-2 justify-center rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400"
-      >
-        {Categories.category[categoryId]}
-      </span>
+      <div key={index}>
+        {categoryId != Categories.category.Undefined ? (
+          <span className="right-0 mx-4 mb-2 justify-center rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400">
+            {Categories.category[categoryId]}
+          </span>
+        ) : (
+          <></>
+        )}
+      </div>
     )
   );
 
