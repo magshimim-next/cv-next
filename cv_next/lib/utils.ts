@@ -71,3 +71,31 @@ export function Err<E>(
 ): Result<never, E> {
   return { ok: false, where, postgrestError, err };
 }
+
+/**
+ * Checks if 2 arrays have the same values in them
+ *
+ * @param {number[]} arr1 - the first array
+ * @param {number[]} arr2 - the second array
+ * @return {boolean} true if arrays have the same values, false otherwise
+ */
+export function arraysHaveSameContent(arr1: number[], arr2: number[]) {
+  // Check if the arrays have the same length
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  // Sort the arrays to ensure the elements are in the same order
+  const sortedArr1 = arr1.slice().sort();
+  const sortedArr2 = arr2.slice().sort();
+
+  // Compare each element in the sorted arrays
+  for (let i = 0; i < sortedArr1.length; i++) {
+    if (sortedArr1[i] !== sortedArr2[i]) {
+      return false;
+    }
+  }
+
+  // If all elements are the same, return true
+  return true;
+}

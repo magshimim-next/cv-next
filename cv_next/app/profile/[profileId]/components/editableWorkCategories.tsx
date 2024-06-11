@@ -1,10 +1,9 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
 import { Check, X } from "lucide-react";
-import { useSupabase } from "@/hooks/supabase";
-import { setNewWorkStatus } from "@/app/actions/users/updateUser";
 import Categories from "@/types/models/categories";
-import { ProfileKeys } from "@/lib/supabase-definitions";
+import { arraysHaveSameContent } from "@/lib/utils";
+import { setNewWorkCategories } from "@/app/actions/users/updateUser";
 
 export default function EditableWorkCategories({
   user,
@@ -14,25 +13,29 @@ export default function EditableWorkCategories({
   viewingCurrentUser: boolean;
 }) {
   const [workCategories, setWorkCategories] = useState(
-    user.work_status_categories
+    user.work_status_categories || []
   );
   const [tempWorkCategories, setTempWorkCategories] = useState(
     user.work_status_categories || []
   );
 
-  const supabase = useSupabase();
-
-  //   useEffect(() => {
-  //     (async () => {
-  //       if (workStatus != user.work_status && viewingCurrentUser) {
-  //         const result = await setNewWorkStatus(user.id, workStatus);
-  //         if (!result.ok) {
-  //           setWorkStatus(user.work_status);
-  //           setTempWorkStatus(user.work_status);
-  //         }
-  //       }
-  //     })();
-  //   }, [workStatus, user, viewingCurrentUser]);
+  useEffect(() => {
+    (async () => {
+      if (
+        !arraysHaveSameContent(
+          workCategories,
+          user.work_status_categories || []
+        ) &&
+        viewingCurrentUser
+      ) {
+        const result = await setNewWorkCategories(user.id, workCategories);
+        if (!result.ok) {
+          setWorkCategories(user.work_status_categories || []);
+          setTempWorkCategories(user.work_status_categories || []);
+        }
+      }
+    })();
+  }, [workCategories, user, viewingCurrentUser]);
 
   const mapCategories: number[] = useMemo(() => {
     const keys = Object.keys(Categories.category)
@@ -115,6 +118,26 @@ export default function EditableWorkCategories({
       <div className="flex-col items-center ">
         <div className="flex justify-center text-base">
           {editableCategories}
+        </div>
+        <div>
+          {!arraysHaveSameContent(tempWorkCategories, workCategories) ? (
+            <div>
+              <button
+                onClick={() => setWorkCategories(tempWorkCategories)}
+                className="text-xl text-gray-600 dark:text-gray-300"
+              >
+                <Check />
+              </button>
+              <button
+                onClick={() => setTempWorkCategories(workCategories)}
+                className="text-xl text-gray-600 dark:text-gray-300"
+              >
+                <X />
+              </button>
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     );
