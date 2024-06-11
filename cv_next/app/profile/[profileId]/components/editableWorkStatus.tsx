@@ -41,7 +41,8 @@ export default function EditableWorkStatus({ user }: { user: UserModel }) {
     return (
       <div className="flex-col items-center">
         <div className="mb-2 flex justify-center text-base">
-          {user.username || user.full_name} is {workStatus}!
+          {user.username || user.full_name} is{" "}
+          {ProfileKeys.work_status[workStatus]}!
         </div>
         <div className="flex justify-center text-base">
           <EditableWorkCategories
