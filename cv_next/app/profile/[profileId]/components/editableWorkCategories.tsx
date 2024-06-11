@@ -124,7 +124,9 @@ export default function EditableWorkCategories({
         </div>
         <div className="flex justify-center text-base">
           {!arraysHaveSameContent(
-            tempWorkCategories,
+            tempWorkCategories.concat(
+              Array(Math.max(0, 3 - tempWorkCategories.length)).fill(0)
+            ),
             workCategories.concat(
               Array(Math.max(0, 3 - workCategories.length)).fill(0)
             )
