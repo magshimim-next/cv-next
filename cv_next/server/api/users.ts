@@ -62,7 +62,7 @@ export async function setUserName(
  * @param {string} newWorkStatus - The new status.
  * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
  */
-export async function setWorkStatusName(
+export async function setWorkStatus(
   userId: string,
   newWorkStatus: string
 ): Promise<Result<void, string>> {
@@ -78,10 +78,37 @@ export async function setWorkStatusName(
       })
       .eq(ProfileKeys.id, userId);
     if (error) {
-      return Err(setUserName.name, error);
+      return Err(setWorkStatus.name, error);
     }
     return Ok.EMPTY;
   } catch (err) {
-    return Err(setUserName.name, undefined, err as Error);
+    return Err(setWorkStatus.name, undefined, err as Error);
+  }
+}
+
+/**
+ * Changes the categories of a given user.
+ *
+ * @param {string} userId - The ID of the user to update.
+ * @param {number[] | null | undefined} newWorkCategories - The new categories.
+ * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ */
+export async function setWorkCategories(
+  userId: string,
+  newWorkCategories: number[] | null | undefined
+): Promise<Result<void, string>> {
+  try {
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.profiles)
+      .update({
+        work_status_categories: newWorkCategories,
+      })
+      .eq(ProfileKeys.id, userId);
+    if (error) {
+      return Err(setWorkCategories.name, error);
+    }
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(setWorkCategories.name, undefined, err as Error);
   }
 }
