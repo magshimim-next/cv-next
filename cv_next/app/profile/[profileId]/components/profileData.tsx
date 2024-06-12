@@ -5,8 +5,8 @@ import Image from "next/image";
 import profileIcon from "@/public/images/profile.png";
 import CategoryCounter from "./categoryCounter";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
-import EditableUsername from "./editableUsername";
-import EditableWorkStatus from "./editableWorkStatus";
+import EditableUsername from "./editables/editableUsername";
+import EditableWorkStatus from "./editables/editableWorkStatus";
 import { fetchUserComments } from "@/app/actions/comments/fetchComments";
 import { getCvsFromComments } from "@/app/actions/cvs/fetchCvs";
 

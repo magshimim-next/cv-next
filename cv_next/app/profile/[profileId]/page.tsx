@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getUser } from "@/app/actions/users/getUser";
 import ProfileData from "./components/profileData";
 import Feed from "../../feed/components/feed";
-import ProfileComments from "./components/profileComments";
+import ProfileComments from "./components/comments/profileComments";
 
 export default async function Page({
   params,
