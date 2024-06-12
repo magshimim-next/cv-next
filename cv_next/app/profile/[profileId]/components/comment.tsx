@@ -54,13 +54,30 @@ export default function Comment({
                 router.push(`/cv/${encodeValue(comment.document_id)}`)
               }
               title="Go to CV"
-              className="text-blue-500"
+              style={{
+                fontSize: "1rem",
+                lineHeight: "1.5",
+                color: "#3b82f6",
+              }}
             >
               Read more
             </button>
           </>
         ) : (
-          <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
+          <>
+            <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
+            <div
+              style={{
+                fontSize: "1rem",
+                lineHeight: "1.5",
+                visibility: "hidden",
+                pointerEvents: "none",
+                display: "inline-block",
+              }}
+            >
+              End of comment
+            </div>
+          </>
         )}
         <div className="flex items-center justify-between">
           <p>{comment.upvotes?.length || 0} Likes</p>
