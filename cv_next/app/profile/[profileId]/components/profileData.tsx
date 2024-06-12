@@ -26,37 +26,52 @@ export default async function ProfileData({ user }: { user: UserModel }) {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex justify-center">
-        <DynamicProfileImage isPlaceholder={user.avatar_url ? false : true}>
-          <Image
-            alt="profile"
-            src={user.avatar_url || profileIcon}
-            width={90}
-            height={60 * 1.4142}
-            className="rounded-lg p-2"
-            priority={true}
-          ></Image>
-        </DynamicProfileImage>
+      <div
+        style={{ width: "100%" }}
+        className={`fill-available mb-3 rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800`}
+      >
+        <div className="flex justify-center">
+          <DynamicProfileImage isPlaceholder={user.avatar_url ? false : true}>
+            <Image
+              alt="profile"
+              src={user.avatar_url || profileIcon}
+              width={90}
+              height={60 * 1.4142}
+              className="rounded-lg p-2"
+              priority={true}
+            ></Image>
+          </DynamicProfileImage>
+        </div>
+        <div className="flex justify-center">
+          <EditableUsername user={user} />
+        </div>
+        <div className="flex justify-center">
+          <EditableWorkStatus user={user} />
+        </div>
       </div>
-      <div className="flex justify-center">
-        <EditableUsername user={user} />
-      </div>
-      <div className="flex justify-center">
-        <EditableWorkStatus user={user} />
-      </div>
-      <div className="col-md-12 mt-5 flex justify-center">
-        <CategoryCounter
-          cvs={cvs}
-          title="Most CVs are categorized under"
-          error="No CVs found"
-        />
-      </div>
-      <div className="flex justify-center">
-        <CategoryCounter
-          cvs={CVsFromComments}
-          title="Most comments are from CVs that are categorized under"
-          error="No CVs found"
-        />
+      <div
+        className={`mb-3 rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800`}
+        style={{ width: "100%" }}
+      >
+        <div className="flex justify-center">
+          <p className="inline-flex items-center text-xl font-semibold text-gray-900 dark:text-white">
+            Statistics
+          </p>
+        </div>
+        <div className="col-md-12 mt-2 flex justify-center">
+          <CategoryCounter
+            cvs={cvs}
+            title="Most CVs are categorized under"
+            error="No CVs found"
+          />
+        </div>
+        <div className="flex justify-center">
+          <CategoryCounter
+            cvs={CVsFromComments}
+            title="Most comments are from CVs that are categorized under"
+            error="No CVs found"
+          />
+        </div>
       </div>
     </div>
   );

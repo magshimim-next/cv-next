@@ -28,9 +28,7 @@ export default async function Page({
         </section>
 
         <section className="h-[78.75rem] flex-col self-start">
-          <div
-            className={`mb-3 rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800`}
-          >
+          <div>
             <ProfileData user={result.val} />
           </div>
           <div className="mt-5 justify-center">
