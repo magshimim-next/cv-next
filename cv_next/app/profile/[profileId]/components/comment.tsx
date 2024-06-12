@@ -66,6 +66,7 @@ export default function Comment({
         ) : (
           <>
             <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
+            {/*Used for symmetry */}
             <div
               style={{
                 fontSize: "1rem",
