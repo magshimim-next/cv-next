@@ -29,14 +29,10 @@ const navLinks = [
 interface PopupProps {
   closeCb: () => void;
   userData: UserModel | null;
-  updateSignOut: () => void;
+  updateSignIn: () => void;
 }
 
-export default function Popup({
-  closeCb,
-  userData,
-  updateSignOut,
-}: PopupProps) {
+export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const supabase = useSupabase();
   const { theme } = useTheme();
@@ -50,7 +46,7 @@ export default function Popup({
   const handleSelection = (route: string) => {
     if (route === "Signout") {
       supabase.auth.signOut();
-      updateSignOut();
+      updateSignIn();
     }
     closeCb();
   };

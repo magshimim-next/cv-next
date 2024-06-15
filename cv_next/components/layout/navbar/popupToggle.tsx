@@ -11,7 +11,7 @@ export function PopupToggle() {
     profileIcon
   );
   const [userData, setUserData] = useState<UserModel | null>(null);
-  const [signedOut, setSignout] = useState(true);
+  const [signedIn, setSignIn] = useState(false);
   const supabase = useSupabase();
 
   useEffect(() => {
@@ -25,6 +25,7 @@ export function PopupToggle() {
         if (currentUserObject) {
           setUserData(currentUserObject);
           setProfileImage(currentUserObject.avatar_url || profileIcon);
+          setSignIn(true);
         } else {
           setUserData(null);
           setProfileImage(profileIcon);
@@ -32,7 +33,7 @@ export function PopupToggle() {
       }
     };
     fetchUser();
-  }, [signedOut, supabase.auth]);
+  }, [signedIn, supabase.auth]);
   const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
 
   return (
@@ -50,7 +51,7 @@ export function PopupToggle() {
         <Popup
           closeCb={() => setIsProfilePopupOpen(false)}
           userData={userData || null}
-          updateSignOut={() => setSignout(!signedOut)}
+          updateSignIn={() => setSignIn(!signedIn)}
         ></Popup>
       )}
     </div>
