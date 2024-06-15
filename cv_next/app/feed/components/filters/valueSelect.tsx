@@ -13,7 +13,7 @@ export const DropdownInput = ({
   valueId: number | null;
   getValueById: (id: number) => string;
   onChange: (newValue: number | null) => void;
-  text: string;
+  text?: string;
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isPlaceHolder = valueId === null;
@@ -24,21 +24,22 @@ export const DropdownInput = ({
 
   const menuBorderStyle = isMenuOpen ? "outline-b-0 rounded-b-none" : "";
   const selectionStyle = isMenuOpen ? "block" : "hidden";
+  const newText = text ?  `${text}:` : '' 
   const textValue = isPlaceHolder ? (
-    <div className="text-black">{`${text}: ${placeHolder}`}</div>
+    <div className="text-black">{`${newText} ${placeHolder}`}</div>
   ) : (
-    <div className="text-grey">{`${text}: ${getValueById(valueId)}`}</div>
+    <div className="text-grey">{`${newText} ${getValueById(valueId)}`}</div>
   );
 
   return (
     <>
       <div
-        className={`outline-gray-40 relative flex h-2/6 w-1/6 items-center justify-center whitespace-nowrap bg-white outline-2 ${menuBorderStyle} box-border cursor-pointer rounded-md px-10 py-4`}
+        className={`outline-gray-40 text-black flex h-2/6 w-2/6 items-center justify-center whitespace-nowrap bg-white outline-2 ${menuBorderStyle} box-border cursor-pointer rounded-md px-10 py-4`}
         onClick={changeIsMenuOpen}
       >
         {textValue}
         <div
-          className={`absolute top-full z-10 block h-fit w-full bg-white ${selectionStyle} border-gray-40 max-h-40 divide-y-2 overflow-y-auto border-2 border-t-0`}
+          className={`absolute top-full block h-fit w-full bg-white ${selectionStyle} border-b-gray-40 max-h-40 divide-y-2 overflow-y-auto border-t-0`}
         >
           <div
             className="flex h-10 w-full items-center justify-center bg-white text-gray-400 hover:bg-slate-200"

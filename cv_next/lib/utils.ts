@@ -42,3 +42,7 @@ export function encodeValue(value: string | undefined) {
   const buff = Buffer.from(valueToString, "ascii")
   return buff.toString("base64")
 }
+
+export function getAllNumbersFromArr(arr: string[]) {
+    return arr.filter(value => !isNaN(parseInt(value))).map(value => parseInt(value))
+}

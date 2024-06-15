@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SearchBox } from "./filters/searchbar";
+import { InputBox } from "./inputbar";
 import { DropdownInput } from "./filters/valueSelect";
 import Categories from "@/types/models/categories";
 import { useMemo } from "react";
@@ -39,11 +39,11 @@ export const FilterPanel = ({
 
   return (
     <div className="mx-10 my-[10px] flex flex-row items-center justify-between gap-2">
-      <SearchBox
+      <InputBox
         placeHolder=" input text to search"
         value={searchValue}
         onChange={setSearchValue}
-      ></SearchBox>
+      ></InputBox>
       <DropdownInput
         placeHolder="all"
         valueIds={mapCategories}
