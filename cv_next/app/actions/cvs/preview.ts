@@ -9,6 +9,12 @@ import { Tables, ProfileKeys, Storage } from "@/lib/supabase-definitions";
 
 const blobDataMap = new Map<string, Blob>();
 
+/**
+ * Revalidate the image a given CV in supabase
+ * If the hash of the CV that was saved in the map is similar to the one that just got fetched
+ * nothing is done. If something changed, the image is uploaded to supabase again
+ * @param {string} cvId - The cv to validate
+ */
 export async function revalidatePreview(cvId: string) {
   const id = getIdFromLink(cvId);
   const fileName = id + ".png";
@@ -41,6 +47,12 @@ export async function revalidatePreview(cvId: string) {
   }
 }
 
+/**
+ * Get the image URL of a given CV from supabase
+ *
+ * @param {string} cvId - The cv we want to show
+ * @return {Promise<string | null>} a promised string with the imag eurl from supabase or null
+ */
 export async function getImageURL(cvId: string): Promise<string | null> {
   let data = SupabaseHelper.getSupabaseInstance()
     .storage.from(Storage.cvs)
@@ -48,6 +60,12 @@ export async function getImageURL(cvId: string): Promise<string | null> {
   return data;
 }
 
+/**
+ * Fetch the name of a user
+ *
+ * @param {string} userId - The user
+ * @return {Promise<boolean>} a promised string with the full name of the user, it's username, or null
+ */
 export async function getUserName(userId: string): Promise<string | null> {
   const { data: user, error } = await SupabaseHelper.getSupabaseInstance()
     .from(Tables.profiles)
@@ -57,5 +75,5 @@ export async function getUserName(userId: string): Promise<string | null> {
   if (error) {
     MyLogger.logError("Error getting username:", error);
   }
-  return user?.full_name ?? null;
+  return user?.full_name ?? user?.username ?? null;
 }
