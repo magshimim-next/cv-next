@@ -1,13 +1,15 @@
 "use client";
 import profileIcon from "@/public/images/profile.png";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { useState, useEffect } from "react";
 import Popup from "./popup";
 import { useSupabase } from "@/hooks/supabase";
 import { getUserFromId } from "@/app/actions/user/fetchUserInfo";
 
 export function PopupToggle() {
-  const [profileImage, setProfileImage] = useState<any>(profileIcon);
+  const [profileImage, setProfileImage] = useState<StaticImageData | string>(
+    profileIcon
+  );
   const [userData, setUserData] = useState<UserModel | null>(null);
   const [signedOut, setSignout] = useState(true);
   const supabase = useSupabase();
