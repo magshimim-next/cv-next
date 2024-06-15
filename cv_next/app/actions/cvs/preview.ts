@@ -32,9 +32,9 @@ export async function revalidatePreview(cvId: string) {
       });
 
     if (error) {
-      MyLogger.logInfo("Upload error:", error);
+      MyLogger.logError("Upload error:", error);
     } else {
-      MyLogger.logInfo("File uploaded successfully:", data);
+      MyLogger.logDebug("File uploaded successfully:", data);
     }
   }
 }

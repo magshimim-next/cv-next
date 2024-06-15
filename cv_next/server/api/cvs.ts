@@ -24,7 +24,7 @@ export async function getCvById(cvId: string): Promise<CvModel | null> {
       .eq(CvKeys.id, cvId);
 
     if (error) {
-      MyLogger.logInfo("Error @ cvs::getCvById", error);
+      MyLogger.logError("Error @ cvs::getCvById", error);
       return null;
     }
 
@@ -37,7 +37,7 @@ export async function getCvById(cvId: string): Promise<CvModel | null> {
 
     return cvs[0] as CvModel;
   } catch (error) {
-    MyLogger.logInfo("Error @ cvs::getCvById", error);
+    MyLogger.logError("Error @ cvs::getCvById", error);
     return null;
   }
 }
@@ -67,13 +67,13 @@ export async function getCvsByUserId(
     const { data: cvs, error } = await query;
 
     if (error) {
-      MyLogger.logInfo("Error @ getCvsByUserId", error);
+      MyLogger.logError("Error @ getCvsByUserId", error);
       return null;
     }
 
     return cvs as CvModel[];
   } catch (error) {
-    MyLogger.logInfo("Error @ getCvsByUserId", error);
+    MyLogger.logError("Error @ getCvsByUserId", error);
     return null;
   }
 }
@@ -96,13 +96,13 @@ export async function getAllCvsByCategory(
     const { data: cvs, error } = await query;
 
     if (error) {
-      MyLogger.logInfo("Error @ getAllCvsByCategory", error);
+      MyLogger.logError("Error @ getAllCvsByCategory", error);
       return null;
     }
 
     return cvs as CvModel[];
   } catch (error) {
-    MyLogger.logInfo("Error @ getAllCvsByCategory", error);
+    MyLogger.logError("Error @ getAllCvsByCategory", error);
     return null;
   }
 }
@@ -125,13 +125,13 @@ async function _getAllCvsByCategories(
     const { data: cvs, error } = await query;
 
     if (error) {
-      MyLogger.logInfo("Error @ getAllCvsByCategories", error);
+      MyLogger.logError("Error @ getAllCvsByCategories", error);
       return error;
     }
     MyLogger.logDebug("Fetched CVs: ", cvs);
     return cvs as CvModel[];
   } catch (error) {
-    MyLogger.logInfo("Error @ getAllCvsByCategories", error);
+    MyLogger.logError("Error @ getAllCvsByCategories", error);
     return error;
   }
 }
@@ -182,13 +182,13 @@ export async function getPaginatedCvs(
     );
 
     if (error) {
-      MyLogger.logInfo("Error @ getPaginatedCvs", error);
+      MyLogger.logError("Error @ getPaginatedCvs", error);
       return null;
     }
 
     return { page: page, cvs: cvs as CvModel[] };
   } catch (error) {
-    MyLogger.logInfo("Error @ getPaginatedCvs", error);
+    MyLogger.logError("Error @ getPaginatedCvs", error);
     return null;
   }
 }
@@ -206,12 +206,12 @@ export async function updateCV(cv: CvModel): Promise<PostgrestError | null> {
       .update(cv)
       .eq(CvKeys.id, cv.id);
     if (error) {
-      MyLogger.logInfo("Error @ cvs::updateCV", error);
+      MyLogger.logError("Error @ cvs::updateCV", error);
       return error;
     }
     return null;
   } catch (error) {
-    MyLogger.logInfo("Error @ cvs::updateCV", error);
+    MyLogger.logError("Error @ cvs::updateCV", error);
     //TODO: handle error
     return null;
   }
