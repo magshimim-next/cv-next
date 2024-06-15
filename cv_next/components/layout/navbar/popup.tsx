@@ -109,43 +109,41 @@ export default function Popup({
           {userData ? (
             <div className="mt-10 flex w-full flex-col items-center">
               {userDataComponent}
-              {navLinks.map((link) =>
-                link.req_login ? (
-                  <li key={link.route}>
-                    <Link
-                      className="text-lg font-medium hover:underline"
-                      href={link.path}
-                      onClick={() => {
-                        handleSelection(link.route);
-                      }}
-                    >
-                      {link.route}
-                    </Link>
-                  </li>
-                ) : (
-                  <></>
-                )
+              {navLinks.map(
+                (link) =>
+                  link.req_login && (
+                    <li key={link.route}>
+                      <Link
+                        className="text-lg font-medium hover:underline"
+                        href={link.path}
+                        onClick={() => {
+                          handleSelection(link.route);
+                        }}
+                      >
+                        {link.route}
+                      </Link>
+                    </li>
+                  )
               )}
             </div>
           ) : (
             <div className="mt-10 flex w-full flex-col items-center">
               {userDataComponent}
-              {navLinks.map((link) =>
-                !link.req_login ? (
-                  <li key={link.route}>
-                    <Link
-                      className="text-lg font-medium hover:underline"
-                      href={link.path}
-                      onClick={() => {
-                        handleSelection(link.route);
-                      }}
-                    >
-                      {link.route}
-                    </Link>
-                  </li>
-                ) : (
-                  <></>
-                )
+              {navLinks.map(
+                (link) =>
+                  !link.req_login && (
+                    <li key={link.route}>
+                      <Link
+                        className="text-lg font-medium hover:underline"
+                        href={link.path}
+                        onClick={() => {
+                          handleSelection(link.route);
+                        }}
+                      >
+                        {link.route}
+                      </Link>
+                    </li>
+                  )
               )}
             </div>
           )}
