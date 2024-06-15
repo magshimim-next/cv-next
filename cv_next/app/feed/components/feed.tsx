@@ -1,9 +1,9 @@
 "use client";
 
-import CVItem from "@/app/feed/components/CVItem";
+import CVItemLink from "@/app/feed/components/CVItemLink";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { fetchCvsForFeed } from "@/app/actions/cvs/fetchCvs";
-import CVItemRSC from "./CVItemRSC";
+import CVItem from "./CVItem";
 import { CvsContext, CvsDispatchContext } from "@/providers/cvs-provider";
 import { ReloadButton } from "@/components/ui/reloadButton";
 import Definitions from "@/lib/definitions";
@@ -118,9 +118,9 @@ export default function Feed() {
         <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
           {cvs ? (
             cvs.map((cv) => (
-              <CVItem key={cv.id} cv={cv}>
-                <CVItemRSC cv={cv} />
-              </CVItem>
+              <CVItemLink key={cv.id} cv={cv}>
+                <CVItem cv={cv} />
+              </CVItemLink>
             ))
           ) : (
             <></>
