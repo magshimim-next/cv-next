@@ -32,10 +32,53 @@ interface PopupProps {
   updateSignIn: () => void;
 }
 
+const UserDataComponent: React.FC<{
+  userData: UserModel | null;
+  closeCb: () => void;
+}> = ({ userData, closeCb }) => {
+  const { theme } = useTheme();
+
+  const matchThemePlaceholderImage =
+    theme == "dark" ? { filter: "invert(0)" } : { filter: "invert(1)" };
+
+  return (
+    <div className="mt-10 flex w-full flex-col items-center">
+      {userData ? (
+        <div className="mt-10 flex w-full flex-col items-center">
+          <Image
+            alt="profile"
+            src={userData.avatar_url ?? defaultProfileIcon}
+            width={30}
+            height={30 * 1.4142}
+            className="w-20 rounded-lg p-2"
+          />
+
+          <Link
+            className="text-lg font-medium hover:underline"
+            href="/profile" // TODO: redirect to actual user's profile
+            onClick={closeCb}
+          >
+            {userData.username || userData.full_name}
+          </Link>
+        </div>
+      ) : (
+        <div style={matchThemePlaceholderImage}>
+          <Image
+            alt="profile"
+            src={defaultProfileIcon}
+            width={10}
+            height={10 * 1.4142}
+            className="w-20 rounded-lg p-2"
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const supabase = useSupabase();
-  const { theme } = useTheme();
 
   useEffect(() => {
     if (dialogRef.current) {
@@ -50,39 +93,6 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
     }
     closeCb();
   };
-
-  const matchThemePlaceholderImage =
-    theme == "dark" ? { filter: "invert(0)" } : { filter: "invert(1)" };
-
-  const userDataComponent = userData ? (
-    <div className="mt-10 flex w-full flex-col items-center">
-      <Image
-        alt="profile"
-        src={userData.avatar_url ?? defaultProfileIcon}
-        width={30}
-        height={30 * 1.4142}
-        className="w-20 rounded-lg p-2"
-      ></Image>
-
-      <Link
-        className="text-lg font-medium hover:underline"
-        href="/profile" // TODO: redirect to actual user's profile
-        onClick={closeCb}
-      >
-        {userData.username || userData.full_name}
-      </Link>
-    </div>
-  ) : (
-    <div style={matchThemePlaceholderImage}>
-      <Image
-        alt="profile"
-        src={defaultProfileIcon}
-        width={10}
-        height={10 * 1.4142}
-        className="w-20 rounded-lg p-2"
-      ></Image>
-    </div>
-  );
 
   return (
     <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center">
@@ -104,7 +114,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
         <ul className="mt-10 flex w-full flex-col items-center">
           {userData ? (
             <div className="mt-10 flex w-full flex-col items-center">
-              {userDataComponent}
+              <UserDataComponent userData={userData} closeCb={closeCb} />
               {navLinks.map(
                 (link) =>
                   link.req_login && (
@@ -124,7 +134,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
             </div>
           ) : (
             <div className="mt-10 flex w-full flex-col items-center">
-              {userDataComponent}
+              <UserDataComponent userData={userData} closeCb={closeCb} />
               {navLinks.map(
                 (link) =>
                   !link.req_login && (
