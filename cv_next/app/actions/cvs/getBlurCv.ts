@@ -8,6 +8,8 @@ export async function getBlurredCv(cvLink: string): Promise<string> {
   });
   const arrayBuffer = await resp.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
-  const { base64 } = await getPlaiceholder(buffer, { size: 15 });
+  const { base64 } = await getPlaiceholder(buffer, {
+    size: Definitions.PLAICEHOLDER_IMAGE_SIZE,
+  });
   return base64;
 }

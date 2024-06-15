@@ -7,7 +7,8 @@ export default class Definitions {
   public static readonly CVS_REVALIDATE_TIME_IN_SECONDS = 0;
   public static readonly AUTH_CALLBACK_REDIRECT = "/auth/callback";
   public static readonly AUTH_DEFAULT_REDIRECT = "/";
-  public static readonly FETCH_WAIT_TIME = 120
+  public static readonly FETCH_WAIT_TIME = 120;
+  public static readonly PLAICEHOLDER_IMAGE_SIZE = 15;
 }
 
 export const heroHeader: PageHeader = {
