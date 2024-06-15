@@ -50,7 +50,7 @@ export function PopupToggle() {
       {isProfilePopupOpen && (
         <Popup
           closeCb={() => setIsProfilePopupOpen(false)}
-          userData={userData || null}
+          userData={userData}
           updateSignIn={() => setSignIn(!signedIn)}
         ></Popup>
       )}
