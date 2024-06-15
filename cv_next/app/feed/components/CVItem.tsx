@@ -57,7 +57,7 @@ export default function CVItem({ cv }: CVCardProps) {
     };
     getAuthorName();
     getBlurCv();
-    revalidateImage(); // Immediately invoke revalidateImage
+    revalidateImage();
 
     const interval = setInterval(
       revalidateImage,
