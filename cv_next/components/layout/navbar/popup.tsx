@@ -5,7 +5,7 @@ import closeIcon from "@/public/images/closeIcon.png";
 import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { useSupabase } from "@/hooks/supabase";
-import profileIcon from "@/public/images/profile.png";
+import defaultProfileIcon from "@/public/images/profile.png";
 import { useTheme } from "next-themes";
 
 const navLinks = [
@@ -58,7 +58,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
     <div className="mt-10 flex w-full flex-col items-center">
       <Image
         alt="profile"
-        src={userData.avatar_url ?? profileIcon}
+        src={userData.avatar_url ?? defaultProfileIcon}
         width={30}
         height={30 * 1.4142}
         className="w-20 rounded-lg p-2"
@@ -76,7 +76,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
     <div style={matchThemePlaceholderImage}>
       <Image
         alt="profile"
-        src={profileIcon}
+        src={defaultProfileIcon}
         width={10}
         height={10 * 1.4142}
         className="w-20 rounded-lg p-2"

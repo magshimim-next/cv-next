@@ -1,5 +1,5 @@
 "use client";
-import profileIcon from "@/public/images/profile.png";
+import defaultProfileIcon from "@/public/images/profile.png";
 import Image, { StaticImageData } from "next/image";
 import { useState, useEffect } from "react";
 import Popup from "./popup";
@@ -8,7 +8,7 @@ import { getUserFromId } from "@/app/actions/user/fetchUserInfo";
 
 export function PopupToggle() {
   const [profileImage, setProfileImage] = useState<StaticImageData | string>(
-    profileIcon
+    defaultProfileIcon
   );
   const [userData, setUserData] = useState<UserModel | null>(null);
   const [signedIn, setSignIn] = useState(false);
@@ -19,16 +19,16 @@ export function PopupToggle() {
       const { data: connectedUser, error } = await supabase.auth.getUser();
       if (error || !connectedUser?.user) {
         setUserData(null);
-        setProfileImage(profileIcon);
+        setProfileImage(defaultProfileIcon);
       } else {
         const currentUserObject = await getUserFromId(connectedUser.user.id);
         if (currentUserObject) {
           setUserData(currentUserObject);
-          setProfileImage(currentUserObject.avatar_url || profileIcon);
+          setProfileImage(currentUserObject.avatar_url || defaultProfileIcon);
           setSignIn(true);
         } else {
           setUserData(null);
-          setProfileImage(profileIcon);
+          setProfileImage(defaultProfileIcon);
         }
       }
     };
