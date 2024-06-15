@@ -3,7 +3,7 @@ import { getBlurredCv } from "@/app/actions/cvs/getBlurCv";
 import Image from "next/image";
 import Link from "next/link";
 import Categories from "@/types/models/categories";
-import { useState, useEffect, cache } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import {
   getImageURL,
@@ -16,18 +16,6 @@ interface CVCardProps {
   cv: CvModel;
 }
 
-const getBlur = cache(async (imageURL: string) => {
-  return await getBlurredCv(imageURL);
-});
-
-const getURL = cache(async (cvId: string) => {
-  return await getImageURL(cvId);
-});
-
-const getCachedUserName = cache(async (userId: string) => {
-  return await getUserName(userId);
-});
-
 export default function CVItem({ cv }: CVCardProps) {
   const [realURL, setRealURL] = useState("");
   const [authorName, setAuthorName] = useState("");
@@ -39,6 +27,27 @@ export default function CVItem({ cv }: CVCardProps) {
   const categoryLink = `/feed?category=${Categories.category[
     cv.category_id
   ].toLowerCase()}`;
+
+  const getBlur = useMemo(
+    () => async (imageURL: string) => {
+      return await getBlurredCv(imageURL);
+    },
+    []
+  );
+
+  const getURL = useMemo(
+    () => async (cvId: string) => {
+      return await getImageURL(cvId);
+    },
+    []
+  );
+
+  const getCachedUserName = useMemo(
+    () => async (userId: string) => {
+      return await getUserName(userId);
+    },
+    []
+  );
 
   useEffect(() => {
     const revalidateImage = async () => {
@@ -65,7 +74,7 @@ export default function CVItem({ cv }: CVCardProps) {
     ); // Revalidate every 2 minutes
 
     return () => clearInterval(interval);
-  }, [cv]);
+  }, [cv, getBlur, getURL, getCachedUserName]);
 
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
 

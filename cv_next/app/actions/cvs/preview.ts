@@ -36,6 +36,8 @@ export async function revalidatePreview(cvId: string) {
     } else {
       MyLogger.logDebug("File uploaded successfully:", data);
     }
+  } else {
+    MyLogger.logDebug("Files were similar");
   }
 }
 
