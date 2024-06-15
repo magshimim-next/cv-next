@@ -9,8 +9,14 @@ import { ReloadButton } from "@/components/ui/reloadButton";
 import Definitions from "@/lib/definitions";
 import { useInView } from "react-intersection-observer";
 import { FilterPanel, filterValues } from "@/app/feed/components/filterPanel";
+import {useSearchParams} from 'next/navigation';
+import Categories from "@/types/models/categories";
+
+
 
 export default function Feed() {
+  //const searchParams = useSearchParams();
+  //const optionalCategory = searchParams.get("category");
   const cvsContextConsumer = useContext(CvsContext);
   const cvsDispatchContextConsumer = useContext(CvsDispatchContext);
   const initialCvs = cvsContextConsumer.cvs?.length
@@ -27,7 +33,7 @@ export default function Feed() {
   const [loadMore, setLoadMore] = useState(true);
   const [filters, setFilters] = useState<filterValues>({
     searchValue: "",
-    categoryId: null,
+    categoryId: /*(optionalCategory) ? Categories.category[optionalCategory] :*/ null,
   });
 
   /**

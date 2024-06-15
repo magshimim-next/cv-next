@@ -1,4 +1,4 @@
-import "server-only";
+//import "server-only";
 
 import { SupabaseClient } from "@supabase/supabase-js";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
@@ -14,12 +14,12 @@ export default class SupabaseHelper {
    *
    * @return {SupabaseClient} The Supabase client instance
    */
-  public static getSupabaseInstance(): SupabaseClient<Database> {
+  public static async getSupabaseInstance(): Promise<SupabaseClient<Database>> {
     if (
       SupabaseHelper.supabase === null ||
       SupabaseHelper.supabase === undefined
     ) {
-      SupabaseHelper.supabase = SupabaseHelper.createServerComponent();
+      SupabaseHelper.supabase = await SupabaseHelper.createServerComponent();
     }
     return SupabaseHelper.supabase;
   }
@@ -29,7 +29,8 @@ export default class SupabaseHelper {
    *
    * @return {SupabaseClient} The Supabase client instance
    */
-  private static createServerComponent(): SupabaseClient {
+  private static async createServerComponent(): Promise<SupabaseClient> {
+    'use server';
     const cookieStore = cookies();
 
     return createServerClient<Database>(
@@ -45,7 +46,7 @@ export default class SupabaseHelper {
               cookieStore.set({ name, value, ...options });
             } catch (error) {
               MyLogger.logInfo(
-                "Error @ SupabaseHelper::createServerComponent",
+                "Error 6@ SupabaseHelper::createServerComponent",
                 error
               );
             }

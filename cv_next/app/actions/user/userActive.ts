@@ -6,7 +6,7 @@ import { ProfileKeys, Tables } from "@/lib/supabase-definitions";
 export const handleCurrentUser = async (
   finalRedirect: string
 ): Promise<string> => {
-  const supabase = SupabaseHelper.getSupabaseInstance();
+  const supabase = await SupabaseHelper.getSupabaseInstance();
   const { data: activatedUser, error } = await supabase.auth.getUser();
   if (error || !activatedUser?.user) {
     return "/login";
