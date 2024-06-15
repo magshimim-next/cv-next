@@ -9,6 +9,8 @@ export default class Definitions {
   public static readonly AUTH_DEFAULT_REDIRECT = "/";
   public static readonly FETCH_WAIT_TIME = 120;
   public static readonly PLAICEHOLDER_IMAGE_SIZE = 15;
+  public static readonly PLAICEHOLDER_IMAGE_DATA =
+    "data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPs7p5fDwAFlAI2LB7hbAAAAABJRU5ErkJggg==";
 }
 
 export const heroHeader: PageHeader = {

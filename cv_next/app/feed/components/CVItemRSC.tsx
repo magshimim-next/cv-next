@@ -33,7 +33,7 @@ export default function CVItemRSC({ cv }: CVCardProps) {
   const [authorName, setAuthorName] = useState("");
 
   const [base64Data, setBase64Data] = useState(
-    "data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPs7p5fDwAFlAI2LB7hbAAAAABJRU5ErkJggg=="
+    Definitions.PLAICEHOLDER_IMAGE_DATA
   );
 
   const categoryLink = `/feed?category=${Categories.category[
