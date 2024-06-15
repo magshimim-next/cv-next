@@ -53,3 +53,9 @@ export const ProfileKeys: {
     admin: "admin",
   },
 };
+
+export const Storage: {
+  cvs: "cvs";
+} = {
+  cvs: "cvs",
+};

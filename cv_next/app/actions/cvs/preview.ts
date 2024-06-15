@@ -5,6 +5,7 @@ import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { compareHashes } from "@/helpers/blobHelper";
 import MyLogger from "@/server/base/logger";
+import { Tables, ProfileKeys, Storage } from "@/lib/supabase-definitions";
 
 const blobDataMap = new Map<string, Blob>();
 
@@ -24,7 +25,7 @@ export async function revalidatePreview(cvId: string) {
     blobDataMap.set(id || "", blob);
 
     const { data, error } = await SupabaseHelper.getSupabaseInstance()
-      .storage.from("cvs")
+      .storage.from(Tables.cvs)
       .upload(fileName, blob, {
         cacheControl: "3600",
         upsert: true, // Replace if exists
@@ -40,16 +41,16 @@ export async function revalidatePreview(cvId: string) {
 
 export async function getImageURL(cvId: string): Promise<string | null> {
   let data = SupabaseHelper.getSupabaseInstance()
-    .storage.from("cvs")
+    .storage.from(Storage.cvs)
     .getPublicUrl(cvId + ".png").data.publicUrl;
   return data;
 }
 
 export async function getUserName(userId: string): Promise<string | null> {
   const { data: user, error } = await SupabaseHelper.getSupabaseInstance()
-    .from("profiles")
+    .from(Tables.profiles)
     .select("*")
-    .eq("id", userId)
+    .eq(ProfileKeys.id, userId)
     .single();
   if (error) {
     return null;
