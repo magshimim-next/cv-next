@@ -53,7 +53,7 @@ export async function getUserName(userId: string): Promise<string | null> {
     .eq(ProfileKeys.id, userId)
     .single();
   if (error) {
-    return null;
+    MyLogger.logError("Error getting username:", error);
   }
-  return user.full_name;
+  return user?.full_name ?? null;
 }
