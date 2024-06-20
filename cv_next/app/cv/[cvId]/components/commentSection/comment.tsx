@@ -1,13 +1,18 @@
-"use client";
-import { deleteComment } from "@/app/actions/comments/deleteComment";
-import { setResolved } from "@/app/actions/comments/setResolved";
-import { upvoteComment } from "@/app/actions/comments/setLike";
+"use client"
+import { deleteComment } from "@/app/actions/comments/deleteComment"
+import { setResolved } from "@/app/actions/comments/setResolved"
+import { upvoteComment } from "@/app/actions/comments/setLike"
 import { addNewComment } from "@/app/actions/comments/addNewComment"
-import { getUser } from "@/app/actions/users/getUser";
-import { RxPlus } from "react-icons/rx";
-import { useEffect, useState } from "react";
+import { getUser } from "@/app/actions/users/getUser"
+import { RxPlus } from "react-icons/rx"
+import { GoCheck } from "react-icons/go"
+import { AiTwotoneLike } from "react-icons/ai"
+import { AiFillLike } from "react-icons/ai"
 
-import useSWR, { mutate } from "swr";
+import { useEffect, useState } from "react"
+import Alert from "../../../../../components/layout/alert"
+
+import useSWR, { mutate } from "swr"
 
 export default function Comment({
   comment,
@@ -15,60 +20,90 @@ export default function Comment({
   childDepth = 0,
   cv,
   commentsOfComment = [],
+  setCommentsOfComments,
 }: {
-  comment: CommentModel;
-  userId: string;
-  childDepth?: number;
-  cv: CvModel,
-  commentsOfComment: any []
+  comment: CommentModel
+  userId: string
+  childDepth?: number
+  cv: CvModel
+  commentsOfComment: any[]
+  setCommentsOfComments: (
+    update: (prev: Map<string, any[]>) => Map<string, any[]>
+  ) => void
 }) {
+  const [commentOnCommentStatus, setCommentOnCommentStatus] =
+    useState<boolean>(false)
+  const [commentOnComment, setCommentOnComment] = useState<string>("")
+  const [submitCommentOnComment, setSubmitCommentOnComment] =
+    useState<boolean>(false)
 
-  const [commentOnCommentStatus, setCommentOnCommentStatus] = useState<boolean>(false);
-  const [commentOnComment, setCommentOnComment] = useState<string>("");
-  const [submitCommentOnComment, setSubmitCommentOnComment] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false)
+  const onAlertClick = async (type: boolean) => {
+    if (type) await deleteCommentAction()
+    setShowAlert(false)
+  }
 
-  useEffect(() => {
-    if (!userId) throw new Error("User not found") // TODO: handle this
+  const addNewCommentClickEvent = async () => {
+    if (!userId) throw new Error("User not found")
     const commentToAdd: NewCommentModel = {
       data: commentOnComment,
       document_id: cv.id,
       parent_comment_Id: comment.id,
       user_id: userId,
     }
-    addNewComment(commentToAdd);
-    setCommentOnCommentStatus(false);
-  }, [submitCommentOnComment])
 
-  const date = new Date(comment.last_update);
+    await addNewComment(commentToAdd).finally(() => {
+      setCommentsOfComments((prev: Map<string, any[]>) => {
+        const newCommentsOfComments = new Map<string, any[]>(prev)
+        newCommentsOfComments.set(
+          comment.id,
+          newCommentsOfComments
+            .get(comment.id)
+            ?.concat([commentToAdd]) as Array<any>
+        )
+        return newCommentsOfComments
+      })
+      setCommentOnCommentStatus(false)
+    })
+    mutate(comment.document_id)
+  }
+
+  const date = new Date(
+    comment.last_update ? comment.last_update : new Date().getTime()
+  )
   const childOrParentStyling = childDepth
     ? `p-3 ml-${6 / childDepth} lg:ml-${12 / childDepth} border-t border-gray-400 dark:border-gray-600`
-    : "p-6 mb-3 border-b border-gray-200 rounded-lg";
+    : "p-6 mb-3 border-b border-gray-200 rounded-lg"
 
   const deleteCommentAction = async () => {
     await deleteComment(comment.id).finally(() => {
-      mutate(comment.document_id);
-    });
-  };
+      setCommentsOfComments((prev: Map<string, any[]>) => {
+        const newCommentsOfComments = new Map<string, any[]>(prev)
+        newCommentsOfComments.delete(comment.id)
+        return newCommentsOfComments
+      })
+      mutate(comment.document_id)
+    })
+  }
 
   const setResolvedCommentAction = async (resolved: boolean) => {
     await setResolved(comment.id, resolved).finally(() => {
-      mutate(comment.document_id);
-    });
-  };
+      mutate(comment.document_id)
+    })
+  }
 
   const setLikedCommentAction = async (liked: boolean) => {
     await upvoteComment(comment.id, liked, userId).finally(() => {
-      mutate(comment.document_id);
-    });
-  };
+      mutate(comment.document_id)
+    })
+  }
 
-
-  const { data: user } = useSWR(comment.user_id, getUser);
+  const { data: user } = useSWR(comment.user_id, getUser)
   if (user && user.ok) {
     const userName =
       user.val.username && user.val.username.length > 0
         ? user.val.username
-        : user.val.full_name;
+        : user.val.full_name
 
     return (
       <article
@@ -91,64 +126,111 @@ export default function Comment({
           </div>
         </footer>
         <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
-        {comment.user_id === userId ? (
-          <>
-            <button className="text-red-500" onClick={deleteCommentAction}>
-              Delete
+        <div>
+          {comment.user_id === userId ? (
+            <span>
+              <>
+                <button
+                  className="text-red-500"
+                  onClick={() => setShowAlert(true)}
+                >
+                  Delete
+                </button>
+                <span> </span>
+                {comment.resolved === true ? (
+                  // TODO: change appearence of comment based on if its resolved or not
+                  <button
+                    className="text-green-500"
+                    onClick={() => setResolvedCommentAction(false)}
+                  >
+                    UnResolve
+                  </button>
+                ) : (
+                  <button
+                    className="text-gray-500"
+                    onClick={() => setResolvedCommentAction(true)}
+                  >
+                    Resolve
+                  </button>
+                )}
+              </>
+            </span>
+          ) : !comment.parent_comment_Id ? (
+            <button
+              className="text-green-500"
+              onClick={() => setCommentOnCommentStatus(!commentOnCommentStatus)}
+            >
+              Comment
             </button>
-            <span> </span>
-            {comment.resolved === true ? (
-              // TODO: change appearence of comment based on if its resolved or not
-              <button
-                className="text-green-500"
-                onClick={() => setResolvedCommentAction(false)}
-              >
-                UnResolve
+          ) : null}
+          <span>
+            {comment.upvotes && comment.upvotes.includes(userId) ? (
+              <button style={{ marginLeft: "0.5rem" }}>
+                <AiFillLike
+                  onClick={() => setLikedCommentAction(false)}
+                  size="1.4rem"
+                  style={{
+                    transform: "translateY(2px)",
+                  }}
+                />
               </button>
             ) : (
-              <button
-                className="text-gray-500"
-                onClick={() => setResolvedCommentAction(true)}
-              >
-                Resolve
+              <button style={{ marginLeft: "0.5rem" }}>
+                <AiTwotoneLike
+                  size="1.4rem"
+                  color="grey"
+                  style={{
+                    transform: "translateY(2px)",
+                  }}
+                  onClick={() => setLikedCommentAction(true)}
+                />
               </button>
             )}
-          </>
-        ) : (
-          <button
-            className="text-green-500"
-            onClick={() => setCommentOnCommentStatus(!commentOnCommentStatus)}
-          >
-            Comment
-          </button>
-        )}
-        <span> </span>
-        {comment.upvotes && comment.upvotes.includes(userId) ? (
-          <button
-            className="text-gray-500"
-            onClick={() => setLikedCommentAction(false)}
-          >
-            UnLike {comment.upvotes?.length || 0}
-          </button>
-        ) : (
-          <button
-            className="text-gray-500"
-            onClick={() => setLikedCommentAction(true)}
-          >
-            Like {comment.upvotes?.length || 0}
-          </button>
-        )}
+          </span>
+        </div>
+        <Alert
+          display={showAlert ? "flex" : "none"}
+          message="You sure you want to delete this comment?"
+          color="red"
+          onClick={onAlertClick}
+        ></Alert>
         {commentOnCommentStatus ? (
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-              <input  type="text" onChange={e => setCommentOnComment(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
-              <RxPlus style={{fontSize: "5vh"}} onClick={() => setSubmitCommentOnComment(!submitCommentOnComment)} />
-            </div>
-          ) : null}
-        {commentsOfComment?.map(comment => <p>{comment.data}</p>)}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <input
+              type="text"
+              onChange={(e) => setCommentOnComment(e.target.value)}
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+              required
+            />
+            <RxPlus
+              style={{ fontSize: "5vh" }}
+              onClick={async () => {
+                await addNewCommentClickEvent()
+              }}
+            />
+          </div>
+        ) : null}
+        {commentsOfComment?.map((comment) => (
+          <Comment
+            key={comment.id}
+            comment={comment}
+            userId={userId}
+            cv={cv}
+            childDepth={1}
+            commentsOfComment={[]}
+            setCommentsOfComments={setCommentsOfComments}
+          />
+        ))}
       </article>
-    );
+    )
   } else {
     // TODO: Show error
-    return null;
+    return null
   }
 }
