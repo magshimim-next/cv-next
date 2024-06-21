@@ -1,27 +1,39 @@
-import "server-only"
+/* eslint-disable no-console */
+import "server-only";
+import winston from "winston";
 
-namespace MyLogger {
-  const isDebugMode = process.env.NODE_ENV === "development"
+const logger = winston.createLogger({
+  level: "debug",
+});
 
-  function logOperation(operation: string, type: string, obj?: unknown) {
-    // eslint-disable-next-line no-console
-    console.log(
-      `----------------------\n` +
-        `${type} Application LOG: ${new Date().toUTCString()}\n${operation}\n`,
-      obj !== undefined && obj !== null ? obj : "",
-      `\n----------------------\n`
-    )
+const formatMeta = (meta: any) => {
+  const splat = meta[Symbol.for("splat")];
+  if (splat && splat.length) {
+    return splat.length === 1
+      ? JSON.stringify(splat[0])
+      : JSON.stringify(splat);
   }
+  return "";
+};
 
-  export function logDebug(message: string, obj?: unknown) {
-    if (isDebugMode) {
-      logOperation(message, "DEBUG", obj)
-    }
-  }
+const customFormat = winston.format.printf(
+  ({ timestamp, level, message = "", ...meta }) =>
+    `[${timestamp}] ${level}\t ${message} ${formatMeta(meta)}`
+);
 
-  export function logInfo(message: string, obj?: unknown) {
-    logOperation(message, "INFO", obj)
-  }
-}
-
-export default MyLogger
+// Todo: log into a file on production builds
+// logger.add(new winston.transports.Console({ format: winston.format.json() }))
+logger.add(
+  new winston.transports.Console({
+    format: winston.format.combine(
+      winston.format.colorize({
+        level: true,
+      }),
+      winston.format.timestamp({
+        format: "YY-MM-DD HH:mm:SS",
+      }),
+      customFormat
+    ),
+  })
+);
+export default logger;

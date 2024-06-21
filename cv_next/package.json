@@ -44,7 +44,8 @@
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.6",
     "types": "^0.1.1",
-    "utf-8-validate": "^6.0.3"
+    "utf-8-validate": "^6.0.3",
+    "winston": "^3.13.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.0.2",
