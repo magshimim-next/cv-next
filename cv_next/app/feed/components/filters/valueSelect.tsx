@@ -10,9 +10,9 @@ export const DropdownInput = ({
 }: {
   placeHolder: string;
   valueIds: number[];
-  valueId: number | null;
+  valueId: number[] | null;
   getValueById: (id: number) => string;
-  onChange: (newValue: number | null) => void;
+  onChange: (newValue: number[] | null) => void;
   text: string;
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,8 +24,10 @@ export const DropdownInput = ({
   const selectionStyle = isMenuOpen ? "block" : "hidden";
   const textValue = isPlaceHolder ? (
     <div className="text-gray-400">{`${text}: ${placeHolder}`}</div>
+  ) : valueId.length > 1 ? (
+    <div className="text-black">{`${text}: ${getValueById(valueId[0])} +${valueId.length - 1}`}</div>
   ) : (
-    <div className="text-black">{`${text}: ${getValueById(valueId)}`}</div>
+    <div className="text-black">{`${text}: ${getValueById(valueId[0])}`}</div>
   );
 
   const changeIsMenuOpen = () => {
@@ -53,12 +55,12 @@ export const DropdownInput = ({
   const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
     if (!dropdownRef.current?.contains(event.relatedTarget as Node)) {
       setIsMenuOpen(false);
-      onChange(selectedCategories.length ? selectedCategories[0] : null);
+      onChange(selectedCategories.length ? selectedCategories : null);
     }
   };
 
   useEffect(() => {
-    onChange(selectedCategories.length ? selectedCategories[0] : null);
+    onChange(selectedCategories.length ? selectedCategories : null);
   }, [selectedCategories, onChange]);
 
   return (
@@ -101,7 +103,7 @@ export const DropdownInput = ({
           <div
             className="flex h-10 w-full items-center justify-center bg-white text-black hover:bg-slate-200"
             onClick={() =>
-              onChange(selectedCategories.length ? selectedCategories[0] : null)
+              onChange(selectedCategories.length ? selectedCategories : null)
             }
           >
             {"Apply"}

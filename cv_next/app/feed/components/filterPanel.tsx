@@ -6,7 +6,7 @@ import { useMemo } from "react";
 
 export interface filterValues {
   searchValue: string;
-  categoryId: number | null;
+  categoryId: number[] | null;
 }
 
 export const FilterPanel = ({
@@ -46,7 +46,7 @@ export const FilterPanel = ({
       <DropdownInput
         placeHolder="all"
         valueIds={mapCategories}
-        text="Catagory"
+        text="Category"
         valueId={categoryId}
         onChange={setCategoryId}
         getValueById={(id: number) => {
