@@ -5,8 +5,7 @@ import closeIcon from "@/public/images/closeIcon.png";
 import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { useSupabase } from "@/hooks/supabase";
-import defaultProfileIcon from "@/public/images/profile.png";
-import { useTheme } from "next-themes";
+import { FaUserCircle } from "react-icons/fa";
 
 const navLinks = [
   {
@@ -36,22 +35,25 @@ const UserDataComponent: React.FC<{
   userData: UserModel | null;
   closeCb: () => void;
 }> = ({ userData, closeCb }) => {
-  const { theme } = useTheme();
-
-  const matchThemePlaceholderImage =
-    theme == "dark" ? { filter: "invert(0)" } : { filter: "invert(1)" };
+  const defaultProfileIcon = <FaUserCircle size={70} />;
 
   return (
     <div className="mt-10 flex w-full flex-col items-center">
       {userData ? (
         <div className="mt-10 flex w-full flex-col items-center">
-          <Image
-            alt="profile"
-            src={userData.avatar_url ?? defaultProfileIcon}
-            width={30}
-            height={30 * 1.4142}
-            className="w-20 rounded-lg p-2"
-          />
+          <div style={{ marginBottom: "10px" }}>
+            {userData.avatar_url ? (
+              <Image
+                alt="profile"
+                src={userData.avatar_url}
+                width={30}
+                height={30 * 1.4142}
+                className="w-20 rounded-lg p-2"
+              />
+            ) : (
+              <div>{defaultProfileIcon}</div>
+            )}
+          </div>
 
           <Link
             className="text-lg font-medium hover:underline"
@@ -62,15 +64,7 @@ const UserDataComponent: React.FC<{
           </Link>
         </div>
       ) : (
-        <div style={matchThemePlaceholderImage}>
-          <Image
-            alt="profile"
-            src={defaultProfileIcon}
-            width={10}
-            height={10 * 1.4142}
-            className="w-20 rounded-lg p-2"
-          />
-        </div>
+        <div style={{ marginBottom: "10px" }}>{defaultProfileIcon}</div>
       )}
     </div>
   );
