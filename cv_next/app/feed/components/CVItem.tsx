@@ -50,30 +50,34 @@ export default function CVItem({ cv }: CVCardProps) {
   );
 
   useEffect(() => {
-    const revalidateImage = async () => {
-      await revalidatePreview(cv.document_link);
-      const imageUrl =
-        (await getURL(getIdFromLink(cv.document_link) || "")) ?? "";
-      setRealURL(imageUrl);
+    const fetchData = async () => {
+      const revalidateImage = async () => {
+        await revalidatePreview(cv.document_link);
+        const imageUrl =
+          (await getURL(getIdFromLink(cv.document_link) || "")) ?? "";
+        setRealURL(imageUrl);
+      };
+  
+      const getAuthorName = async () => {
+        const userUploading = (await getCachedUserName(cv.user_id || "")) || "";
+        setAuthorName(userUploading);
+      };
+  
+      const getBlurCv = async () => {
+        const base64 = await getBlur(getGoogleImageUrl(cv.document_link));
+        setBase64Data(base64);
+      };
+  
+      getAuthorName();
+      await getBlurCv();
+      revalidateImage();      
+  
+      const interval = setInterval(revalidateImage, Definitions.FETCH_WAIT_TIME * 1000); // Revalidate every 2 minutes
+  
+      return () => clearInterval(interval);
     };
-    const getAuthorName = async () => {
-      const userUploading = (await getCachedUserName(cv.user_id || "")) || "";
-      setAuthorName(userUploading);
-    };
-    const getBlurCv = async () => {
-      const base64 = await getBlur(getGoogleImageUrl(cv.document_link));
-      setBase64Data(base64);
-    };
-    getAuthorName();
-    getBlurCv();
-    revalidateImage();
 
-    const interval = setInterval(
-      revalidateImage,
-      Definitions.FETCH_WAIT_TIME * 1000
-    ); // Revalidate every 2 minutes
-
-    return () => clearInterval(interval);
+    fetchData();
   }, [cv, getBlur, getURL, getCachedUserName]);
 
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
