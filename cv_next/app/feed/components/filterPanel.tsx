@@ -46,7 +46,7 @@ export const FilterPanel = ({
       <DropdownInput
         placeHolder="all"
         valueIds={mapCategories}
-        text="Catagory"
+        text="Category"
         valueId={categoryId}
         onChange={setCategoryId}
         getValueById={(id: number) => {
