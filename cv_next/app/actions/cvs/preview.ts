@@ -38,9 +38,9 @@ export async function revalidatePreview(cvId: string) {
       });
 
     if (error) {
-      logger.error("Upload error:", error);
+      logger.error(error, "Upload error:");
     } else {
-      logger.debug("File uploaded successfully:", data);
+      logger.debug(data, "File uploaded successfully:");
     }
   } else {
     logger.debug("Files were similar");
@@ -73,7 +73,7 @@ export async function getUserName(userId: string): Promise<string | null> {
     .eq(ProfileKeys.id, userId)
     .single();
   if (error) {
-    logger.error("Error getting username:", error);
+    logger.error(error, "Error getting username");
   }
   return user?.full_name ?? user?.username ?? null;
 }

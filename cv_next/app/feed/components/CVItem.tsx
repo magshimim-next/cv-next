@@ -57,23 +57,26 @@ export default function CVItem({ cv }: CVCardProps) {
           (await getURL(getIdFromLink(cv.document_link) || "")) ?? "";
         setRealURL(imageUrl);
       };
-  
+
       const getAuthorName = async () => {
         const userUploading = (await getCachedUserName(cv.user_id || "")) || "";
         setAuthorName(userUploading);
       };
-  
+
       const getBlurCv = async () => {
         const base64 = await getBlur(getGoogleImageUrl(cv.document_link));
         setBase64Data(base64);
       };
-  
+
       getAuthorName();
       await getBlurCv();
-      revalidateImage();      
-  
-      const interval = setInterval(revalidateImage, Definitions.FETCH_WAIT_TIME * 1000); // Revalidate every 2 minutes
-  
+      revalidateImage();
+
+      const interval = setInterval(
+        revalidateImage,
+        Definitions.FETCH_WAIT_TIME * 1000
+      ); // Revalidate every 2 minutes
+
       return () => clearInterval(interval);
     };
 

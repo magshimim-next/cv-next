@@ -44,14 +44,14 @@ export default class SupabaseHelper {
             try {
               cookieStore.set({ name, value, ...options });
             } catch (error) {
-              logger.error("SupabaseHelper::createServerComponent", error);
+              logger.error(error, "SupabaseHelper::createServerComponent");
             }
           },
           remove(name: string, options: CookieOptions) {
             try {
               cookieStore.set({ name, value: "", ...options });
             } catch (error) {
-              logger.error("SupabaseHelper::createServerComponent", error);
+              logger.error(error, "SupabaseHelper::createServerComponent");
             }
           },
         },

@@ -46,6 +46,6 @@ export const getUserFromId = async (
   if (!error) {
     return user;
   }
-  logger.error("Error fetching user", error);
+  logger.error(error, "Error fetching user");
   return null;
 };
