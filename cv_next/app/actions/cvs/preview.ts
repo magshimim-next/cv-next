@@ -4,7 +4,7 @@ import Definitions from "@/lib/definitions";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { compareHashes } from "@/helpers/blobHelper";
-import MyLogger from "@/server/base/logger";
+import logger from "@/server/base/logger";
 import { Tables, ProfileKeys, Storage } from "@/lib/supabase-definitions";
 
 const blobDataMap = new Map<string, Blob>();
@@ -38,12 +38,12 @@ export async function revalidatePreview(cvId: string) {
       });
 
     if (error) {
-      MyLogger.logError("Upload error:", error);
+      logger.error("Upload error:", error);
     } else {
-      MyLogger.logDebug("File uploaded successfully:", data);
+      logger.debug("File uploaded successfully:", data);
     }
   } else {
-    MyLogger.logDebug("Files were similar");
+    logger.debug("Files were similar");
   }
 }
 
@@ -73,7 +73,7 @@ export async function getUserName(userId: string): Promise<string | null> {
     .eq(ProfileKeys.id, userId)
     .single();
   if (error) {
-    MyLogger.logError("Error getting username:", error);
+    logger.error("Error getting username:", error);
   }
   return user?.full_name ?? user?.username ?? null;
 }
