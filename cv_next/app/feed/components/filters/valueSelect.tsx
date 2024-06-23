@@ -19,6 +19,7 @@ export const DropdownInput = ({
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const isPlaceHolder = valueId === null;
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [selectTitle, setSelectTitle] = useState("");
 
   const menuBorderStyle = isMenuOpen ? "outline-b-0 rounded-b-none" : "";
   const selectionStyle = isMenuOpen ? "block" : "hidden";
@@ -61,7 +62,8 @@ export const DropdownInput = ({
 
   useEffect(() => {
     onChange(selectedCategories.length ? selectedCategories : null);
-  }, [selectedCategories, onChange]);
+    setSelectTitle(selectedCategories.map(getValueById).join(", "));
+  }, [selectedCategories, onChange, setSelectTitle, getValueById]);
 
   return (
     <>
@@ -71,6 +73,7 @@ export const DropdownInput = ({
         onBlur={handleBlur}
         ref={dropdownRef}
         tabIndex={-1}
+        title={selectTitle}
       >
         {textValue}
         <div
