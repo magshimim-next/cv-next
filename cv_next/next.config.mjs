@@ -3,7 +3,7 @@ import withPlaiceholder from "@plaiceholder/next";
 
 const nextConfig = {
   images: {
-    domains: ["lh5.googleusercontent.com"],
+    domains: ["lh5.googleusercontent.com", "weepggwhsrfmizptbnua.supabase.co"],
     unoptimized: true,
   },
   webpack: (config) => {
