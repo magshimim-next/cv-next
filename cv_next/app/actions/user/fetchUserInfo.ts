@@ -4,6 +4,14 @@ import SupabaseHelper from "@/server/api/supabaseHelper";
 import { ProfileKeys, Tables } from "@/lib/supabase-definitions";
 import MyLogger from "@/server/base/logger";
 
+/**
+ * Handle which user can enter a given route(used instead of the middleware to reduce server requests)
+ * If there's no user connect, return login and redirect there
+ * If the user is inactive, return inactive and redirect there
+ * If the user is active, return the given finalRedirect and redirect there
+ * @param {string} finalRedirect - The path the user wants to access
+ * @return {Promise<string>} a promised string with where to redirect the user to
+ */
 export const handleCurrentUser = async (
   finalRedirect: string
 ): Promise<string> => {
