@@ -2,6 +2,7 @@
 
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { ProfileKeys, Tables } from "@/lib/supabase-definitions";
+import MyLogger from "@/server/base/logger";
 
 /**
  * Handle which user can enter a given route(used instead of the middleware to reduce server requests)
@@ -30,4 +31,21 @@ export const handleCurrentUser = async (
     }
   }
   return finalRedirect;
+};
+
+export const getUserFromId = async (
+  userId: string
+): Promise<UserModel | null> => {
+  const supabase = SupabaseHelper.getSupabaseInstance();
+  const { data: user, error } = await supabase
+    .from(Tables.profiles)
+    .select("*")
+    .eq(ProfileKeys.id, userId)
+    .single();
+
+  if (!error) {
+    return user;
+  }
+  MyLogger.logInfo("Error fetching user", error);
+  return null;
 };
