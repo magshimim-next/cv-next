@@ -5,34 +5,85 @@ import closeIcon from "@/public/images/closeIcon.png";
 import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { useSupabase } from "@/hooks/supabase";
+import { FaUserCircle } from "react-icons/fa";
 
 const navLinks = [
   {
     route: "Login",
     path: "/login",
+    req_login: false,
+  },
+  {
+    route: "Feed",
+    path: "/feed",
+    req_login: true,
   },
   {
     route: "Signout",
     path: "/",
+    req_login: true,
   },
 ];
 
 interface PopupProps {
   closeCb: () => void;
+  userData: UserModel | null;
+  updateSignIn: () => void;
 }
 
-export default function Popup({ closeCb }: PopupProps) {
+const UserDataComponent: React.FC<{
+  userData: UserModel | null;
+  closeCb: () => void;
+}> = ({ userData, closeCb }) => {
+  const defaultProfileIcon = <FaUserCircle size={70} />;
+
+  return (
+    <div className="mt-10 flex w-full flex-col items-center">
+      {userData ? (
+        <div className="mt-10 flex w-full flex-col items-center">
+          <div style={{ marginBottom: "10px" }}>
+            {userData.avatar_url ? (
+              <Image
+                alt="profile"
+                src={userData.avatar_url}
+                width={30}
+                height={30 * 1.4142}
+                className="w-20 rounded-lg p-2"
+              />
+            ) : (
+              <div>{defaultProfileIcon}</div>
+            )}
+          </div>
+
+          <Link
+            className="text-lg font-medium hover:underline"
+            href="/profile" // TODO: redirect to actual user's profile
+            onClick={closeCb}
+          >
+            {userData.username || userData.full_name}
+          </Link>
+        </div>
+      ) : (
+        <div style={{ marginBottom: "10px" }}>{defaultProfileIcon}</div>
+      )}
+    </div>
+  );
+};
+
+export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const supabase = useSupabase();
+
   useEffect(() => {
     if (dialogRef.current) {
       dialogRef.current.show();
     }
   }, []);
-  const supabase = useSupabase();
 
   const handleSelection = (route: string) => {
     if (route === "Signout") {
       supabase.auth.signOut();
+      updateSignIn();
     }
     closeCb();
   };
@@ -55,17 +106,47 @@ export default function Popup({ closeCb }: PopupProps) {
           <Image alt="closeIcon" src={closeIcon}></Image>
         </div>
         <ul className="mt-10 flex w-full flex-col items-center">
-          {navLinks.map((link) => (
-            <li key={link.route}>
-              <Link
-                className="text-lg font-medium hover:underline"
-                href={link.path}
-                onClick={() => handleSelection(link.route)}
-              >
-                {link.route}
-              </Link>
-            </li>
-          ))}
+          {userData ? (
+            <div className="mt-10 flex w-full flex-col items-center">
+              <UserDataComponent userData={userData} closeCb={closeCb} />
+              {navLinks.map(
+                (link) =>
+                  link.req_login && (
+                    <li key={link.route}>
+                      <Link
+                        className="text-lg font-medium hover:underline"
+                        href={link.path}
+                        onClick={() => {
+                          handleSelection(link.route);
+                        }}
+                      >
+                        {link.route}
+                      </Link>
+                    </li>
+                  )
+              )}
+            </div>
+          ) : (
+            <div className="mt-10 flex w-full flex-col items-center">
+              <UserDataComponent userData={userData} closeCb={closeCb} />
+              {navLinks.map(
+                (link) =>
+                  !link.req_login && (
+                    <li key={link.route}>
+                      <Link
+                        className="text-lg font-medium hover:underline"
+                        href={link.path}
+                        onClick={() => {
+                          handleSelection(link.route);
+                        }}
+                      >
+                        {link.route}
+                      </Link>
+                    </li>
+                  )
+              )}
+            </div>
+          )}
         </ul>
       </dialog>
     </div>

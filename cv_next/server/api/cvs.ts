@@ -167,7 +167,7 @@ export async function getPaginatedCvs(
       }
       if (filters.categoryId) {
         logger.debug("category id:", filters.categoryId);
-        query = query.eq(CvKeys.category_id, filters.categoryId);
+        query = query.in(CvKeys.category_id, filters.categoryId);
       }
     }
 

@@ -6,7 +6,7 @@ import { useMemo } from "react";
 
 export interface filterValues {
   searchValue: string;
-  categoryId: number | null;
+  categoryId: number[] | null;
 }
 
 export const FilterPanel = ({
