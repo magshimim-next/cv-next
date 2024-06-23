@@ -44,7 +44,7 @@ export default class SupabaseHelper {
             try {
               cookieStore.set({ name, value, ...options });
             } catch (error) {
-              MyLogger.logInfo(
+              MyLogger.logError(
                 "Error @ SupabaseHelper::createServerComponent",
                 error
               );
@@ -54,7 +54,7 @@ export default class SupabaseHelper {
             try {
               cookieStore.set({ name, value: "", ...options });
             } catch (error) {
-              MyLogger.logInfo(
+              MyLogger.logError(
                 "Error @ SupabaseHelper::createServerComponent",
                 error
               );
