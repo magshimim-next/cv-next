@@ -4,8 +4,8 @@ import Image from "next/image";
 import closeIcon from "@/public/images/closeIcon.png";
 import { useRef, useEffect } from "react";
 import Link from "next/link";
-import { useSupabase } from "@/hooks/supabase";
 import { FaUserCircle } from "react-icons/fa";
+import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 
 const navLinks = [
   {
@@ -72,7 +72,7 @@ const UserDataComponent: React.FC<{
 
 export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const supabase = useSupabase();
+  const supabase = createClientComponent();
 
   useEffect(() => {
     if (dialogRef.current) {
