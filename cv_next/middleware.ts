@@ -2,7 +2,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -57,21 +56,12 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: activatedUser, error } = await supabase.auth.getUser();
-  if (error || !activatedUser?.user) {
+  const { data: activatedUser, error } = await supabase.auth.getSession();
+  if (error || !activatedUser.session?.user) {
     return NextResponse.rewrite(new URL("/login", request.url));
-  } else {
-    const { data: user, error } = await supabase
-      .from(Tables.profiles)
-      .select("*")
-      .eq(ProfileKeys.id, activatedUser.user.id)
-      .single();
-
-    if (user?.user_type == ProfileKeys.user_types.inactive || error) {
-      return NextResponse.rewrite(new URL("/inactive", request.url));
-    }
   }
+
   return response;
 }
 
-export const config = { matcher: [] };
+export const config = { matcher: ["/feed"] };
