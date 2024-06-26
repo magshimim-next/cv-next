@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useSupabase } from "@/hooks/supabase";
 import profileIcon from "@/public/images/profile.png";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
+import { FaUserCircle } from "react-icons/fa";
 
 const navLinks = [
   {
@@ -29,14 +30,49 @@ const navLinks = [
 interface PopupProps {
   closeCb: () => void;
   userData: UserModel | null;
-  updateSignOut: () => void;
+  updateSignIn: () => void;
 }
 
-export default function Popup({
-  closeCb,
-  userData,
-  updateSignOut,
-}: PopupProps) {
+const UserDataComponent: React.FC<{
+  userData: UserModel | null;
+  closeCb: () => void;
+}> = ({ userData, closeCb }) => {
+  const defaultProfileIcon = <FaUserCircle size={70} />;
+
+  return (
+    <div className="mt-10 flex w-full flex-col items-center">
+      {userData ? (
+        <div className="mt-10 flex w-full flex-col items-center">
+          <div style={{ marginBottom: "10px" }}>
+            {userData.avatar_url ? (
+              <Image
+                alt="profile"
+                src={userData.avatar_url}
+                width={30}
+                height={30 * 1.4142}
+                className="w-20 rounded-lg p-2"
+              />
+            ) : (
+              <div>{defaultProfileIcon}</div>
+            )}
+          </div>
+
+          <Link
+            className="text-lg font-medium hover:underline"
+            href="/profile" // TODO: redirect to actual user's profile
+            onClick={closeCb}
+          >
+            {userData.username || userData.full_name}
+          </Link>
+        </div>
+      ) : (
+        <div style={{ marginBottom: "10px" }}>{defaultProfileIcon}</div>
+      )}
+    </div>
+  );
+};
+
+export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const supabase = useSupabase();
 
@@ -49,22 +85,10 @@ export default function Popup({
   const handleSelection = (route: string) => {
     if (route === "Signout") {
       supabase.auth.signOut();
-      updateSignOut();
+      updateSignIn();
     }
     closeCb();
   };
-
-  const userDataComponent = (
-    <div className="flex w-full flex-col items-center">
-      <Link
-        className="text-lg font-medium hover:underline"
-        href={`/profile/${userData?.id}`}
-        onClick={closeCb}
-      >
-        {userData?.username || userData?.full_name}
-      </Link>
-    </div>
-  );
 
   return (
     <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center">
@@ -96,44 +120,43 @@ export default function Popup({
             ></Image>
           </DynamicProfileImage>
           {userData ? (
-            <div className="flex w-full flex-col items-center">
-              {userDataComponent}
-              {navLinks.map((link) =>
-                link.req_login ? (
-                  <li key={link.route}>
-                    <Link
-                      className="text-lg font-medium hover:underline"
-                      href={link.path}
-                      onClick={() => {
-                        handleSelection(link.route);
-                      }}
-                    >
-                      {link.route}
-                    </Link>
-                  </li>
-                ) : (
-                  <></>
-                )
+            <div className="mt-10 flex w-full flex-col items-center">
+              <UserDataComponent userData={userData} closeCb={closeCb} />
+              {navLinks.map(
+                (link) =>
+                  link.req_login && (
+                    <li key={link.route}>
+                      <Link
+                        className="text-lg font-medium hover:underline"
+                        href={link.path}
+                        onClick={() => {
+                          handleSelection(link.route);
+                        }}
+                      >
+                        {link.route}
+                      </Link>
+                    </li>
+                  )
               )}
             </div>
           ) : (
-            <div className="flex w-full flex-col items-center">
-              {navLinks.map((link) =>
-                !link.req_login ? (
-                  <li key={link.route}>
-                    <Link
-                      className="text-lg font-medium hover:underline"
-                      href={link.path}
-                      onClick={() => {
-                        handleSelection(link.route);
-                      }}
-                    >
-                      {link.route}
-                    </Link>
-                  </li>
-                ) : (
-                  <></>
-                )
+            <div className="mt-10 flex w-full flex-col items-center">
+              <UserDataComponent userData={userData} closeCb={closeCb} />
+              {navLinks.map(
+                (link) =>
+                  !link.req_login && (
+                    <li key={link.route}>
+                      <Link
+                        className="text-lg font-medium hover:underline"
+                        href={link.path}
+                        onClick={() => {
+                          handleSelection(link.route);
+                        }}
+                      >
+                        {link.route}
+                      </Link>
+                    </li>
+                  )
               )}
             </div>
           )}

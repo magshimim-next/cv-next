@@ -10,7 +10,7 @@ const errorUrl = "/error.webp";
 export function getIdFromLink(link: string): string | null {
   const idPattern = /\/d\/([a-zA-Z0-9_-]+)/;
   const match = link.match(idPattern);
-  return match?.[1] ?? null ?? null;
+  return match?.[1] ?? null;
 }
 
 /**

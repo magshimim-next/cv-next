@@ -1,16 +1,21 @@
 "use server";
 import { getPlaiceholder } from "plaiceholder";
-import logger from "@/server/base/logger";
+import Definitions from "@/lib/definitions";
 
+/**
+ * Get a blurred version of a cv
+ *
+ * @param {string} cvId - The cv to get a blurred version of
+ * @return {Promise<string>} a promised string with the base64 of the blur
+ */
 export async function getBlurredCv(cvLink: string): Promise<string> {
-  try {
-    const resp = await fetch(cvLink);
-    const arrayBuffer = await resp.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const { base64 } = await getPlaiceholder(buffer, { size: 10 });
-    return base64;
-  } catch (error: any) {
-    logger.error(error);
-    return "data:iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPs7p5fDwAFlAI2LB7hbAAAAABJRU5ErkJggg==";
-  }
+  const resp = await fetch(cvLink, {
+    next: { revalidate: Definitions.FETCH_WAIT_TIME },
+  });
+  const arrayBuffer = await resp.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const { base64 } = await getPlaiceholder(buffer, {
+    size: Definitions.PLAICEHOLDER_IMAGE_SIZE,
+  });
+  return base64;
 }
