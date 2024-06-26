@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import Popup from "./popup";
 import { useSupabase } from "@/hooks/supabase";
-import { getUserFromId } from "@/app/actions/user/fetchUserInfo";
+import { getUser } from "@/app/actions/users/getUser";
 import { FaUserCircle } from "react-icons/fa";
 
 export function PopupToggle() {
@@ -22,10 +22,10 @@ export function PopupToggle() {
         setUserData(null);
         setProfileImage("");
       } else {
-        const currentUserObject = await getUserFromId(connectedUser.user.id);
-        if (currentUserObject) {
-          setUserData(currentUserObject);
-          setProfileImage(currentUserObject.avatar_url || "");
+        const currentUserObject = await getUser(connectedUser.user.id);
+        if (currentUserObject.ok) {
+          setUserData(currentUserObject.val);
+          setProfileImage(currentUserObject.val.avatar_url || "");
           setSignIn(true);
         } else {
           setUserData(null);
