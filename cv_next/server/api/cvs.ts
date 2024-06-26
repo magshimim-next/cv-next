@@ -1,10 +1,10 @@
 import "server-only";
 
-import Categories from "@/types/models/categories"
-import Definitions from "../../lib/definitions"
-import SupabaseHelper from "./supabaseHelper"
-import { PostgrestError } from "@supabase/supabase-js"
-import logger from "../base/logger"
+import Categories from "@/types/models/categories";
+import Definitions from "../../lib/definitions";
+import SupabaseHelper from "./supabaseHelper";
+import { PostgrestError } from "@supabase/supabase-js";
+import logger from "../base/logger";
 import { Tables, CvKeys } from "@/lib/supabase-definitions";
 import { filterValues } from "@/app/feed/components/filterPanel";
 
@@ -24,8 +24,8 @@ export async function getCvById(cvId: string): Promise<CvModel | null> {
       .eq(CvKeys.id, cvId);
 
     if (error) {
-      logger.error("Error @ cvs::getCvById", error)
-      return null
+      logger.error(error, "cvs::getCvById");
+      return null;
     }
 
     if (!cvs || cvs.length !== 1) {
@@ -37,8 +37,8 @@ export async function getCvById(cvId: string): Promise<CvModel | null> {
 
     return cvs[0] as CvModel;
   } catch (error) {
-    logger.error("Error @ cvs::getCvById", error)
-    return null
+    logger.error(error, "cvs::getCvById");
+    return null;
   }
 }
 
@@ -67,14 +67,14 @@ export async function getCvsByUserId(
     const { data: cvs, error } = await query;
 
     if (error) {
-      logger.error("Error @ getCvsByUserId", error)
-      return null
+      logger.error(error, "getCvsByUserId");
+      return null;
     }
 
     return cvs as CvModel[];
   } catch (error) {
-    logger.error("Error @ getCvsByUserId", error)
-    return null
+    logger.error(error, "getCvsByUserId");
+    return null;
   }
 }
 
@@ -96,13 +96,13 @@ export async function getAllCvsByCategory(
     const { data: cvs, error } = await query;
 
     if (error) {
-      logger.error("Error @ getAllCvsByCategory", error)
-      return null
+      logger.error(error, "getAllCvsByCategory");
+      return null;
     }
 
     return cvs as CvModel[];
   } catch (error) {
-    logger.error("Error @ getAllCvsByCategory", error);
+    logger.error(error, "getAllCvsByCategory");
     return null;
   }
 }
@@ -125,14 +125,14 @@ async function _getAllCvsByCategories(
     const { data: cvs, error } = await query;
 
     if (error) {
-      logger.error("Error @ getAllCvsByCategories", error);
+      logger.error(error, "getAllCvsByCategories");
       return error;
     }
-    logger.debug("Fetched CVs: ", cvs);
+    logger.debug(cvs, "Fetched CVs: ");
     return cvs as CvModel[];
   } catch (error) {
-    logger.error("Error @ getAllCvsByCategory", error)
-    return null
+    logger.error(error, "getAllCvsByCategories");
+    return error;
   }
 }
 
@@ -160,14 +160,14 @@ export async function getPaginatedCvs(
       .select("*")
       .range(from, to - 1);
 
-    logger.debug("filters", filters);
+    logger.debug(filters, "filters");
     if (filters) {
       if (filters.searchValue) {
         query = query.textSearch(CvKeys.description, filters.searchValue);
       }
       if (filters.categoryId) {
-        logger.debug("catagory id:", filters.categoryId);
-        query = query.eq(CvKeys.category_id, filters.categoryId);
+        logger.debug(filters.categoryId, "category id");
+        query = query.in(CvKeys.category_id, filters.categoryId);
       }
     }
 
@@ -176,20 +176,17 @@ export async function getPaginatedCvs(
     }
 
     const { data: cvs, error } = await query;
-    logger.debug(
-      "cvs:",
-      cvs?.map((cv) => cv.category_id)
-    );
+    logger.debug(cvs?.map((cv) => cv.category_id, "cvs"));
 
     if (error) {
-      logger.error("Error @ getPaginatedCvs", error)
-      return null
+      logger.error(error, "getPaginatedCvs");
+      return null;
     }
 
     return { page: page, cvs: cvs as CvModel[] };
   } catch (error) {
-    logger.error("Error @ getPaginatedCvs", error)
-    return null
+    logger.error(error, "getPaginatedCvs");
+    return null;
   }
 }
 
@@ -206,12 +203,12 @@ export async function updateCV(cv: CvModel): Promise<PostgrestError | null> {
       .update(cv)
       .eq(CvKeys.id, cv.id);
     if (error) {
-      logger.error("Error @ cvs::updateCV", error)
-      return error
+      logger.error(error, "cvs::updateCV");
+      return error;
     }
     return null;
   } catch (error) {
-    logger.error("Error @ cvs::updateCV", error)
+    logger.error(error, "cvs::updateCV");
     //TODO: handle error
     return null;
   }
