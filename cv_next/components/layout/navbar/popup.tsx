@@ -45,8 +45,8 @@ const UserDataComponent: React.FC<{
               <Image
                 alt="profile"
                 src={userData?.avatar_url || ""}
-                width={10}
-                height={10 * 1.4142}
+                width={30}
+                height={30 * 1.4142}
                 className="w-20 rounded-lg p-2"
               ></Image>
             </DynamicProfileImage>
@@ -105,17 +105,6 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
           <Image alt="closeIcon" src={closeIcon}></Image>
         </div>
         <ul className="mt-20 flex w-full flex-col items-center">
-          <DynamicProfileImage
-            isPlaceholder={userData?.avatar_url ? false : true}
-          >
-            <Image
-              alt="profile"
-              src={userData?.avatar_url || ""}
-              width={10}
-              height={10 * 1.4142}
-              className="w-20 rounded-lg p-2"
-            ></Image>
-          </DynamicProfileImage>
           {userData ? (
             <div className="mt-10 flex w-full flex-col items-center">
               <UserDataComponent userData={userData} closeCb={closeCb} />
