@@ -6,8 +6,8 @@ import { useTheme } from "next-themes";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 
 export default function Page() {
-  const supabase = createClientComponent();
   const { theme } = useTheme();
+  const supabase = createClientComponent();
   return (
     <Auth
       supabaseClient={supabase}
