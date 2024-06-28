@@ -1,7 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import logger from "./server/base/logger";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -57,7 +56,6 @@ export async function middleware(request: NextRequest) {
   const { data: activatedUser, error } = await supabase.auth.getUser();
 
   if (error || !activatedUser?.user) {
-    if (error?.name != "AuthSessionMissingError") logger.error(error);
     return NextResponse.rewrite(new URL("/login", request.url));
   }
 
