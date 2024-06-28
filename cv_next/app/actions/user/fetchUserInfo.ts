@@ -18,6 +18,7 @@ export const handleCurrentUser = async (
   const supabase = SupabaseHelper.getSupabaseInstance();
   const { data: activatedUser, error } = await supabase.auth.getUser();
   if (error || !activatedUser?.user) {
+    if (error) logger.error(error, "Error getting current user");
     return "/login";
   } else {
     const { data: user, error } = await supabase
@@ -27,6 +28,7 @@ export const handleCurrentUser = async (
       .single();
 
     if (user?.user_type == ProfileKeys.user_types.inactive || error) {
+      if (error) logger.error(error, "Error getting current user from DB");
       return "/inactive";
     }
   }

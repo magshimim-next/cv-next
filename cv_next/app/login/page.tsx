@@ -1,9 +1,9 @@
 "use client";
-
 import Definitions from "@/lib/definitions";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "@/components/ui/button";
+
 export default function Page() {
   const supabase = createClientComponent();
 
