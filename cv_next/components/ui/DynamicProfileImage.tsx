@@ -4,16 +4,18 @@ import { FaUserCircle } from "react-icons/fa";
 
 interface ThemeImageProps {
   children?: React.ReactNode;
-  placeHolderSize?: number;
+  placeHolderStyle?: React.CSSProperties;
   isPlaceholder: boolean;
 }
 
 const DynamicProfileImage: React.FC<ThemeImageProps> = ({
   children,
   isPlaceholder,
-  placeHolderSize,
+  placeHolderStyle,
 }) => {
-  const defaultProfileIcon = <FaUserCircle size={placeHolderSize || 70} />;
+  const defaultProfileIcon = (
+    <FaUserCircle style={placeHolderStyle || { fontSize: "70px" }} />
+  );
 
   if (isPlaceholder) {
     return <div>{defaultProfileIcon}</div>;
