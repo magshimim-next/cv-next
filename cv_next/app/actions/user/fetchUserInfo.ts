@@ -21,13 +21,13 @@ export const handleCurrentUser = async (
     if (error) logger.error(error, "Error getting current user");
     return "/login";
   } else {
-    const { data: user, error } = await supabase
-      .from(Tables.profiles)
+    const { data: whitelisted, error } = await supabase
+      .from("whitelisted")
       .select("*")
       .eq(ProfileKeys.id, activatedUser.user.id)
       .single();
 
-    if (user?.user_type == ProfileKeys.user_types.inactive || error) {
+    if (whitelisted?.id == null || error) {
       if (error) logger.error(error, "Error getting current user from DB");
       return "/inactive";
     }
