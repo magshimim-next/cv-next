@@ -25,9 +25,9 @@ export default function CvData({ cv }: { cv: CvModel }) {
                 <Image
                   alt="profile"
                   src={user.val.avatar_url || profileIcon}
-                  width={30}
+                  width={50}
                   height={30 * 1.4142}
-                  className="w-10 rounded-lg p-2"
+                  className="rounded-lg p-2"
                 />
               </DynamicProfileImage>
               <div className="flex items-center" style={{ marginLeft: "10px" }}>
