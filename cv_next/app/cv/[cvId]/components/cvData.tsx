@@ -3,7 +3,6 @@ import { getUser } from "@/app/actions/users/getUser";
 import useSWR from "swr";
 import Categories from "@/types/models/categories";
 import Image from "next/image";
-import profileIcon from "@/public/images/profile.png";
 import Link from "next/link";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 
@@ -20,11 +19,11 @@ export default function CvData({ cv }: { cv: CvModel }) {
             <div className="flex items-center">
               <DynamicProfileImage
                 isPlaceholder={user.val.avatar_url ? false : true}
-                placeHolderSize={35}
+                placeHolderStyle={{ fontSize: "35px" }}
               >
                 <Image
                   alt="profile"
-                  src={user.val.avatar_url || profileIcon}
+                  src={user.val.avatar_url || ""}
                   width={50}
                   height={30 * 1.4142}
                   className="rounded-lg p-2"
