@@ -21,6 +21,7 @@ export default function CvData({ cv }: { cv: CvModel }) {
         >
           <footer className="mb-2 flex items-center justify-between">
             <div className="flex items-center">
+              {/* TODO: update so it uses the dynamic profile image from the profile page*/}
               <Image
                 alt="profile"
                 src={user.val.avatar_url || profileIcon}
