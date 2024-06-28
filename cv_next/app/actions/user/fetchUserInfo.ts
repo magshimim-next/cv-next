@@ -3,8 +3,8 @@
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { ProfileKeys, Tables } from "@/lib/supabase-definitions";
 import logger from "@/server/base/logger";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import Definitions from "@/lib/definitions";
 
 /**
  * Handle which user can enter a given route(used instead of the middleware to reduce server requests)
@@ -24,7 +24,7 @@ export const handleCurrentUser = async (
     return "/login";
   } else {
     const { data: whitelisted, error } = await supabase
-      .from("whitelisted")
+      .from(Tables.whitelisted)
       .select("*")
       .eq(ProfileKeys.id, activatedUser.user.id)
       .single();
@@ -37,6 +37,11 @@ export const handleCurrentUser = async (
   return finalRedirect;
 };
 
+/**
+ * Get the user based on a given ID
+ * @param userId A string representing the user's ID
+ * @returns UserModel of the user or null on error
+ */
 export const getUserFromId = async (
   userId: string
 ): Promise<UserModel | null> => {
@@ -55,12 +60,12 @@ export const getUserFromId = async (
 };
 
 export async function signInWithSocialProvider(provider: any) {
-  const origin = headers().get("origin");
   const { data, error } =
     await SupabaseHelper.getSupabaseInstance().auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${origin}/auth/callback`,
+        redirectTo:
+          process.env.NEXT_PUBLIC_BASE_URL + Definitions.AUTH_CALLBACK_REDIRECT,
       },
     });
   if (error) logger.error(error, "Error signin");
