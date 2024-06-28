@@ -54,7 +54,7 @@ const UserDataComponent: React.FC<{
 
           <Link
             className="text-lg font-medium hover:underline"
-            href="/profile" // TODO: redirect to actual user's profile
+            href={`/profile/${userData?.id}`}
             onClick={closeCb}
           >
             {userData.username || userData.full_name}
