@@ -20,6 +20,7 @@ export default function CvData({ cv }: { cv: CvModel }) {
             <div className="flex items-center">
               <DynamicProfileImage
                 isPlaceholder={user.val.avatar_url ? false : true}
+                placeHolderSize={35}
               >
                 <Image
                   alt="profile"
@@ -29,17 +30,19 @@ export default function CvData({ cv }: { cv: CvModel }) {
                   className="w-10 rounded-lg p-2"
                 />
               </DynamicProfileImage>
-              <p className="mr-3 inline-flex items-center text-sm font-semibold text-gray-900 dark:text-white">
-                <Link
-                  className="text-lg font-medium hover:underline"
-                  href={`/profile/${user.val.id}`}
-                >
-                  {user.val.username || user.val.full_name}
-                </Link>
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {Categories.category[cv.category_id]}
-              </p>
+              <div className="flex items-center" style={{ marginLeft: "10px" }}>
+                <p className="mr-3 inline-flex items-center text-sm font-semibold text-gray-900 dark:text-white">
+                  <Link
+                    className="text-lg font-medium hover:underline"
+                    href={`/profile/${user.val.id}`}
+                  >
+                    {user.val.username || user.val.full_name}
+                  </Link>
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {Categories.category[cv.category_id]}
+                </p>
+              </div>
             </div>
           </footer>
           <p className="text-gray-500 dark:text-gray-400">{cv.description}</p>
