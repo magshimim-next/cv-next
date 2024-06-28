@@ -3,6 +3,8 @@
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { ProfileKeys, Tables } from "@/lib/supabase-definitions";
 import logger from "@/server/base/logger";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 /**
  * Handle which user can enter a given route(used instead of the middleware to reduce server requests)
@@ -51,3 +53,18 @@ export const getUserFromId = async (
   logger.error(error, "Error fetching user");
   return null;
 };
+
+export async function signInWithSocialProvider(provider: any) {
+  const origin = headers().get("origin");
+  const { data, error } =
+    await SupabaseHelper.getSupabaseInstance().auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: `${origin}/auth/callback`,
+      },
+    });
+  if (error) logger.error(error, "Error signin");
+  if (data.url) {
+    redirect(data.url); // use the redirect API for your server framework
+  }
+}
