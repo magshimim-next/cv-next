@@ -50,37 +50,41 @@ export default function CVItem({ cv }: CVCardProps) {
   );
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchData = async () => {
       const revalidateImage = async () => {
         await revalidatePreview(cv.document_link);
         const imageUrl =
           (await getURL(getIdFromLink(cv.document_link) || "")) ?? "";
-        setRealURL(imageUrl);
+        if (isMounted) setRealURL(imageUrl);
       };
 
       const getAuthorName = async () => {
         const userUploading = (await getCachedUserName(cv.user_id || "")) || "";
-        setAuthorName(userUploading);
+        if (isMounted) setAuthorName(userUploading);
       };
 
       const getBlurCv = async () => {
         const base64 = await getBlur(getGoogleImageUrl(cv.document_link));
-        setBase64Data(base64);
+        if (isMounted) setBase64Data(base64);
       };
 
-      getAuthorName();
       await getBlurCv();
-      revalidateImage();
+      await getAuthorName();
+      await revalidateImage();
 
-      const interval = setInterval(
-        revalidateImage,
-        Definitions.FETCH_WAIT_TIME * 1000
-      ); // Revalidate every 2 minutes
+      const interval = setInterval(() => {
+        if (isMounted) revalidateImage();
+      }, Definitions.FETCH_WAIT_TIME * 1000); // Revalidate every 2 minutes
 
       return () => clearInterval(interval);
     };
 
     fetchData();
+    return () => {
+      isMounted = false;
+    };
   }, [cv, getBlur, getURL, getCachedUserName]);
 
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
