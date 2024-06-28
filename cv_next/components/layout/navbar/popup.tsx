@@ -37,7 +37,7 @@ const UserDataComponent: React.FC<{
   return (
     <div className="mt-10 flex w-full flex-col items-center">
       {userData ? (
-        <div className="mt-10 flex w-full flex-col items-center">
+        <div className="flex w-full flex-col items-center">
           <div style={{ marginBottom: "10px" }}>
             <DynamicProfileImage
               isPlaceholder={userData.avatar_url ? false : true}
