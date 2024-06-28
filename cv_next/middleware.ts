@@ -55,28 +55,23 @@ export async function middleware(request: NextRequest) {
   );
 
   if (!process.env.JWT_SECRET) {
-    // eslint-disable-next-line no-console
-    console.error(
-      "Error getting JWT, please configure your env file! \n \
-      Falling back to use getUser."
-    );
     const { data: activatedUser, error } = await supabase.auth.getUser();
     if (error || !activatedUser?.user) {
       return NextResponse.rewrite(new URL("/login", request.url));
     }
   } else {
-    const { data: activatedUser, error } = await supabase.auth.getSession();
-    if (error || !activatedUser.session?.user) {
+    const { data: activeSession, error } = await supabase.auth.getSession();
+    if (error || !activeSession.session) {
       return NextResponse.rewrite(new URL("/login", request.url));
     }
 
     const secretKey = new TextEncoder().encode(process.env.JWT_SECRET);
     try {
       const { payload } = await jwtVerify(
-        activatedUser.session.access_token,
+        activeSession.session.access_token,
         secretKey
       );
-      if (payload.sub != activatedUser.session.user.id) {
+      if (payload.sub != activeSession.session.user.id) {
         // TODO: Someone deliberatly changed the token, maybe we should make note of that somehow
         return NextResponse.rewrite(new URL("/login", request.url));
       }
