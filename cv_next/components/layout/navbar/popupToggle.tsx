@@ -2,15 +2,15 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import Popup from "./popup";
-import { useSupabase } from "@/hooks/supabase";
 import { getUserFromId } from "@/app/actions/user/fetchUserInfo";
 import { FaUserCircle } from "react-icons/fa";
+import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 
 export function PopupToggle() {
   const [profileImage, setProfileImage] = useState<string>("");
   const [userData, setUserData] = useState<UserModel | null>(null);
   const [signedIn, setSignIn] = useState(false);
-  const supabase = useSupabase();
+  const supabase = createClientComponent();
   const defaultProfileIcon = (
     <FaUserCircle size={40} style={{ color: "#FFF" }} />
   );
