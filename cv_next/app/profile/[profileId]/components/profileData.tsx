@@ -29,7 +29,7 @@ export default async function ProfileData({ user }: { user: UserModel }) {
         style={{ width: "100%" }}
         className={`fill-available mb-3 rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800`}
       >
-        <div className="flex justify-center">
+        <div style={{ marginBottom: "10px" }} className="flex justify-center">
           <DynamicProfileImage isPlaceholder={user.avatar_url ? false : true}>
             <Image
               alt="profile"
