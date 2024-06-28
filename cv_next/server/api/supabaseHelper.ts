@@ -6,30 +6,16 @@ import { cookies } from "next/headers";
 import logger from "@/server/base/logger";
 
 export default class SupabaseHelper {
-  private static supabase: SupabaseClient;
-
-  /**
-   * Returns the Supabase client instance. If the instance is not already
-   * created, it creates a new instance and returns it.
-   *
-   * @return {SupabaseClient} The Supabase client instance
-   */
-  public static getSupabaseInstance(): SupabaseClient<Database> {
-    if (
-      SupabaseHelper.supabase === null ||
-      SupabaseHelper.supabase === undefined
-    ) {
-      SupabaseHelper.supabase = SupabaseHelper.createServerComponent();
-    }
-    return SupabaseHelper.supabase;
-  }
-
   /**
    * Returns the Supabase server component instance.
-   *
-   * @return {SupabaseClient} The Supabase client instance
+   * This shouldn't be a singleton because the cookies go with each request and must be renewd
+   * From the docs:
+   * On the server, it basically configures a fetch call.
+   * You need to reconfigure the fetch call anew for every request to your server,
+   * because you need the cookies from the request.
+   * @return {SupabaseClient} The Supabase server instance
    */
-  private static createServerComponent(): SupabaseClient {
+  public static getSupabaseInstance(): SupabaseClient<Database> {
     const cookieStore = cookies();
 
     return createServerClient<Database>(
@@ -44,14 +30,14 @@ export default class SupabaseHelper {
             try {
               cookieStore.set({ name, value, ...options });
             } catch (error) {
-              logger.error(error, "SupabaseHelper::createServerComponent");
+              logger.error(error, "SupabaseHelper::getSupabaseInstance");
             }
           },
           remove(name: string, options: CookieOptions) {
             try {
               cookieStore.set({ name, value: "", ...options });
             } catch (error) {
-              logger.error(error, "SupabaseHelper::createServerComponent");
+              logger.error(error, "SupabaseHelper::getSupabaseInstance");
             }
           },
         },
