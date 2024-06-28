@@ -1,13 +1,10 @@
 "use client";
-
 import Image from "next/image";
 import closeIcon from "@/public/images/closeIcon.png";
 import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { useSupabase } from "@/hooks/supabase";
-import profileIcon from "@/public/images/profile.png";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
-import { FaUserCircle } from "react-icons/fa";
 
 const navLinks = [
   {
@@ -37,24 +34,22 @@ const UserDataComponent: React.FC<{
   userData: UserModel | null;
   closeCb: () => void;
 }> = ({ userData, closeCb }) => {
-  const defaultProfileIcon = <FaUserCircle size={70} />;
-
   return (
     <div className="mt-10 flex w-full flex-col items-center">
       {userData ? (
         <div className="mt-10 flex w-full flex-col items-center">
           <div style={{ marginBottom: "10px" }}>
-            {userData.avatar_url ? (
+            <DynamicProfileImage
+              isPlaceholder={userData.avatar_url ? false : true}
+            >
               <Image
                 alt="profile"
-                src={userData.avatar_url}
-                width={30}
-                height={30 * 1.4142}
+                src={userData?.avatar_url || ""}
+                width={10}
+                height={10 * 1.4142}
                 className="w-20 rounded-lg p-2"
-              />
-            ) : (
-              <div>{defaultProfileIcon}</div>
-            )}
+              ></Image>
+            </DynamicProfileImage>
           </div>
 
           <Link
@@ -66,7 +61,9 @@ const UserDataComponent: React.FC<{
           </Link>
         </div>
       ) : (
-        <div style={{ marginBottom: "10px" }}>{defaultProfileIcon}</div>
+        <div style={{ marginBottom: "10px" }}>
+          <DynamicProfileImage isPlaceholder={true} />
+        </div>
       )}
     </div>
   );
@@ -113,7 +110,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
           >
             <Image
               alt="profile"
-              src={userData?.avatar_url || profileIcon}
+              src={userData?.avatar_url || ""}
               width={10}
               height={10 * 1.4142}
               className="w-20 rounded-lg p-2"

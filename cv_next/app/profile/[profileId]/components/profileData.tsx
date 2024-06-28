@@ -2,7 +2,6 @@
 import { getCvsByUserId } from "@/server/api/cvs";
 import logger from "@/server/base/logger";
 import Image from "next/image";
-import profileIcon from "@/public/images/profile.png";
 import CategoryCounter from "./categoryCounter";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import EditableUsername from "./editables/editableUsername";
@@ -34,7 +33,7 @@ export default async function ProfileData({ user }: { user: UserModel }) {
           <DynamicProfileImage isPlaceholder={user.avatar_url ? false : true}>
             <Image
               alt="profile"
-              src={user.avatar_url || profileIcon}
+              src={user.avatar_url || ""}
               width={90}
               height={60 * 1.4142}
               className="rounded-lg p-2"

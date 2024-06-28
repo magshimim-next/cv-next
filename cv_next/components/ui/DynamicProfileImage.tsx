@@ -1,6 +1,6 @@
 "use client";
-import { useTheme } from "next-themes";
 import React from "react";
+import { FaUserCircle } from "react-icons/fa";
 
 interface ThemeImageProps {
   children?: React.ReactNode;
@@ -11,14 +11,10 @@ const DynamicProfileImage: React.FC<ThemeImageProps> = ({
   children,
   isPlaceholder,
 }) => {
-  const { theme } = useTheme();
-  const matchThemePlaceholderImage =
-    theme == "dark" || theme == undefined
-      ? { filter: "invert(0)" }
-      : { filter: "invert(1)" };
+  const defaultProfileIcon = <FaUserCircle size={70} />;
 
   if (isPlaceholder) {
-    return <div style={matchThemePlaceholderImage}>{children}</div>;
+    return <div>{defaultProfileIcon}</div>;
   } else {
     return <div>{children}</div>;
   }
