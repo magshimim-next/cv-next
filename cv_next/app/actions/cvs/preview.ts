@@ -13,12 +13,12 @@ const blobDataMap = new Map<string, Blob>();
  * Revalidate the image a given CV in supabase
  * If the hash of the CV that was saved in the map is similar to the one that just got fetched
  * nothing is done. If something changed, the image is uploaded to supabase again
- * @param {string} cvId - The cv to validate
+ * @param {string} cvLink - The cv link to validate
  */
-export async function revalidatePreview(cvId: string) {
-  const id = getIdFromLink(cvId);
+export async function revalidatePreview(cvLink: string) {
+  const id = getIdFromLink(cvLink);
   const fileName = id + ".png";
-  const response = await fetch(getGoogleImageUrl(cvId), {
+  const response = await fetch(getGoogleImageUrl(cvLink), {
     next: { revalidate: Definitions.FETCH_WAIT_TIME },
   });
   const blob = await response.blob();
