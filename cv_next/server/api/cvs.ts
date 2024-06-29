@@ -167,7 +167,7 @@ export async function getPaginatedCvs(
       }
       if (filters.categoryId) {
         logger.debug(filters.categoryId, "category id");
-        query = query.in(CvKeys.category_id, filters.categoryId);
+        query = query.overlaps(CvKeys.cv_categories, filters.categoryId);
       }
     }
 
@@ -176,7 +176,7 @@ export async function getPaginatedCvs(
     }
 
     const { data: cvs, error } = await query;
-    logger.debug(cvs?.map((cv) => cv.category_id, "cvs"));
+    logger.debug(cvs?.map((cv) => cv.cv_categories, "cvs"));
 
     if (error) {
       logger.error(error, "getPaginatedCvs");
