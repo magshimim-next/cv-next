@@ -11,6 +11,7 @@ import {
   getUserName,
 } from "@/app/actions/cvs/preview";
 import Definitions from "@/lib/definitions";
+import { generateCategoryLink } from "@/lib/utils";
 
 interface CVCardProps {
   cv: CvModel;
@@ -23,9 +24,6 @@ export default function CVItem({ cv }: CVCardProps) {
   const [base64Data, setBase64Data] = useState(
     Definitions.PLAICEHOLDER_IMAGE_DATA
   );
-
-  const generateCategoryLink = (categoryNumber: number) =>
-    `/feed?category=${Categories.category[categoryNumber].toLowerCase()}`;
 
   const getBlur = useMemo(
     () => async (imageURL: string) => {
