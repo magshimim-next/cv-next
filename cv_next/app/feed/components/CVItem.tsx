@@ -3,7 +3,7 @@ import { getBlurredCv } from "@/app/actions/cvs/getBlurCv";
 import Image from "next/image";
 import Link from "next/link";
 import Categories from "@/types/models/categories";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import {
   getImageURL,
@@ -49,25 +49,27 @@ export default function CVItem({ cv }: CVCardProps) {
     []
   );
 
+  const isMountedRef = useRef(false);
+
   useEffect(() => {
-    let isMounted = true;
+    isMountedRef.current = true;
 
     const fetchData = async () => {
       const revalidateImage = async () => {
         await revalidatePreview(cv.document_link);
         const imageUrl =
           (await getURL(getIdFromLink(cv.document_link) || "")) ?? "";
-        if (isMounted) setRealURL(imageUrl);
+        if (isMountedRef.current) setRealURL(imageUrl);
       };
 
       const getAuthorName = async () => {
         const userUploading = (await getCachedUserName(cv.user_id || "")) || "";
-        if (isMounted) setAuthorName(userUploading);
+        if (isMountedRef.current) setAuthorName(userUploading);
       };
 
       const getBlurCv = async () => {
         const base64 = await getBlur(getGoogleImageUrl(cv.document_link));
-        if (isMounted) setBase64Data(base64);
+        if (isMountedRef.current) setBase64Data(base64);
       };
 
       await getBlurCv();
@@ -75,7 +77,7 @@ export default function CVItem({ cv }: CVCardProps) {
       await revalidateImage();
 
       const interval = setInterval(() => {
-        if (isMounted) revalidateImage();
+        if (isMountedRef.current) revalidateImage();
       }, Definitions.FETCH_WAIT_TIME * 1000); // Revalidate every 2 minutes
 
       return () => clearInterval(interval);
@@ -83,27 +85,31 @@ export default function CVItem({ cv }: CVCardProps) {
 
     fetchData();
     return () => {
-      isMounted = false;
+      isMountedRef.current = false;
     };
-  }, [cv, getBlur, getURL, getCachedUserName]);
+  }, [cv.document_link, cv.user_id, getBlur, getCachedUserName, getURL]);
 
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
 
   return (
     <>
       {realURL ? (
-        <Image
-          width={500}
-          height={500 * 1.4142}
-          className="w-full rounded-lg p-2"
-          src={realURL}
-          placeholder="blur"
-          blurDataURL={base64Data}
-          alt="CV Preview"
-          priority
-        />
+        <div>
+          <h1>hey</h1>
+          <Image
+            width={500}
+            height={500 * 1.4142}
+            className="w-full rounded-lg p-2"
+            src={realURL}
+            placeholder="blur"
+            blurDataURL={base64Data}
+            alt="CV Preview"
+            priority
+          />
+        </div>
       ) : (
         <div style={{ width: "380px", height: `400px`, overflow: "hidden" }}>
+          <h1>bye</h1>
           <Image
             width={500}
             height={500}
