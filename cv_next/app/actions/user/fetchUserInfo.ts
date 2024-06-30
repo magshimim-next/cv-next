@@ -70,6 +70,6 @@ export async function signInWithSocialProvider(provider: any) {
     });
   if (error) logger.error(error, "Error signin");
   if (data.url) {
-    redirect(data.url); // use the redirect API for your server framework
+    redirect(data.url);
   }
 }
