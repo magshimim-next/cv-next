@@ -94,22 +94,18 @@ export default function CVItem({ cv }: CVCardProps) {
   return (
     <>
       {realURL ? (
-        <div>
-          <h1>hey</h1>
-          <Image
-            width={500}
-            height={500 * 1.4142}
-            className="w-full rounded-lg p-2"
-            src={realURL}
-            placeholder="blur"
-            blurDataURL={base64Data}
-            alt="CV Preview"
-            priority
-          />
-        </div>
+        <Image
+          width={500}
+          height={500 * 1.4142}
+          className="w-full rounded-lg p-2"
+          src={realURL}
+          placeholder="blur"
+          blurDataURL={base64Data}
+          alt="CV Preview"
+          priority
+        />
       ) : (
         <div style={{ width: "380px", height: `400px`, overflow: "hidden" }}>
-          <h1>bye</h1>
           <Image
             width={500}
             height={500}
