@@ -11,4 +11,9 @@ declare global {
     subheader: string;
     image: string;
   };
+
+  type NewCvModel = Omit<
+    CvModel,
+    "id" | "resolved" | "created_at" | "deleted" | "resolved"
+  >;
 }
