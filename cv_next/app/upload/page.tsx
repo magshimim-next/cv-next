@@ -55,7 +55,7 @@ export default function Page() {
       link: link,
       title: title,
     };
-    console.log(cvData);
+
     await checkUploadCV({ cvData, userId });
   }
   return (
