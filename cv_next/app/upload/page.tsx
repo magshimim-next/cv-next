@@ -10,6 +10,8 @@ import { getAllNumbersFromArr } from "@/lib/utils";
 import { CvPreview } from "@/components/cvPerview";
 import PopupWrapper from "@/components/ui/popupButtom";
 import { Button } from "@/components/ui/button";
+import { checkUploadCV } from "../actions/cvs/uploadCv";
+import { useSupabase } from "@/hooks/supabase";
 
 export interface InputValues {
   title: string;
@@ -39,11 +41,22 @@ export default function Page() {
     useState<InputValues["description"]>("");
   const [link, setLink] = useState<InputValues["link"]>("");
   const [title, setTitle] = useState<InputValues["title"]>("");
+  const supabase = useSupabase();
 
-  function startUpload() {
-    // TODO: validate that all data was received
-
-    console.log(catagoryId, description, link, title);
+  async function startUpload() {
+    const userId: string | undefined = (await supabase.auth.getUser()).data.user
+      ?.id;
+    if (!userId) {
+      return;
+    }
+    const cvData: InputValues = {
+      catagoryId: catagoryId,
+      description: description,
+      link: link,
+      title: title,
+    };
+    console.log(cvData);
+    await checkUploadCV({ cvData, userId });
   }
   return (
     <main>
