@@ -129,6 +129,7 @@ export default function Page() {
                 ></DropdownInput>
               }
             ></InputRow>
+            {/* TODO: Hide button until all was given */}
             <Button onClick={startUpload}>submit</Button>
           </div>
         </div>
