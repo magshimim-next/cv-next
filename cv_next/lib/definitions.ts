@@ -7,8 +7,6 @@ export default class Definitions {
   public static readonly CVS_REVALIDATE_TIME_IN_SECONDS = 0;
   public static readonly AUTH_CALLBACK_REDIRECT = "/auth/callback";
   public static readonly AUTH_DEFAULT_REDIRECT = "/";
-  public static readonly CV_LINK_REGEX =
-    "https?://(?:docs|drive).google.com/(?:document|file)/d/([a-zA-Z0-9_-]+)(?:/(?:edit|view)?usp=[a-zA-Z0-9_-&=]+)?";
 }
 
 export const heroHeader: PageHeader = {
