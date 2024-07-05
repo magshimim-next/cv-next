@@ -29,12 +29,20 @@ export default function CvData({ cv }: { cv: CvModel }) {
                 height={30 * 1.4142}
                 className="w-10 rounded-lg p-2"
               ></Image>
-              <p className="mr-3 inline-flex items-center text-sm font-semibold text-gray-900 dark:text-white">
-                {userName}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {Categories.category[cv.category_id]}
-              </p>
+              <div className="flex items-center">
+                <p className="mr-3 inline-flex items-center text-sm font-semibold text-gray-900 dark:text-white">
+                  {userName}
+                </p>
+                <div className="flex flex-wrap space-x-2">
+                  {cv.cv_categories.map((category, index) => (
+                    <div key={index}>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {Categories.category[category]}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </footer>
           <p className="text-gray-500 dark:text-gray-400">{cv.description}</p>
