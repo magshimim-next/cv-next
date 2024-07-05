@@ -25,7 +25,7 @@ export default function CVItem({ cv }: CVCardProps) {
 
   const getBlur = useMemo(
     () => async (imageURL: string) => {
-      const response = await fetch("/actions/cvs/cvsPreview", {
+      const response = await fetch("/actions/cvs/fetchPreviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pathname: "getBlurredCv", cvLink: imageURL }),
@@ -43,7 +43,7 @@ export default function CVItem({ cv }: CVCardProps) {
 
   const getURL = useMemo(
     () => async (cvId: string) => {
-      const response = await fetch("/actions/cvs/cvsPreview", {
+      const response = await fetch("/actions/cvs/fetchPreviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pathname: "getImageURL", cvId }),
@@ -61,7 +61,7 @@ export default function CVItem({ cv }: CVCardProps) {
 
   const getCachedUserName = useMemo(
     () => async (userId: string) => {
-      const response = await fetch("/actions/cvs/cvsPreview", {
+      const response = await fetch("/actions/cvs/fetchPreviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pathname: "getUserName", userId }),
@@ -78,7 +78,7 @@ export default function CVItem({ cv }: CVCardProps) {
   );
 
   async function revalidatePreview(cvLink: string) {
-    await fetch("/actions/cvs/cvsPreview", {
+    await fetch("/actions/cvs/fetchPreviews", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ pathname: "revalidatePreview", cvLink }),
