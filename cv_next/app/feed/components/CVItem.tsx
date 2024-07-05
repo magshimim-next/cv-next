@@ -85,45 +85,47 @@ export default function CVItem({ cv }: CVCardProps) {
     });
   }
 
-  const isMountedRef = useRef(false);
+  const interval = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    isMountedRef.current = true;
-
     const fetchData = async () => {
       const revalidateImage = async () => {
         await revalidatePreview(cv.document_link);
         const imageUrl =
           (await getURL(getIdFromLink(cv.document_link) || "")) ?? "";
-        if (isMountedRef.current) setRealURL(imageUrl);
+        setRealURL(imageUrl);
       };
 
       const getAuthorName = async () => {
         const userUploading = (await getCachedUserName(cv.user_id || "")) || "";
-        if (isMountedRef.current) setAuthorName(userUploading);
+        setAuthorName(userUploading);
       };
 
       const getBlurCv = async () => {
         const base64 = await getBlur(getGoogleImageUrl(cv.document_link));
-        if (isMountedRef.current) setBase64Data(base64);
+        setBase64Data(base64);
       };
 
       await getBlurCv();
       await getAuthorName();
       await revalidateImage();
 
-      const interval = setInterval(() => {
-        if (isMountedRef.current) revalidateImage();
-      }, Definitions.FETCH_WAIT_TIME * 1000); // Revalidate every 2 minutes
-
-      return () => clearInterval(interval);
+      interval.current = setInterval(() => {
+        revalidateImage();
+      }, Definitions.FETCH_WAIT_TIME * 250); // Revalidate every 2 minutes
     };
 
     fetchData();
-    return () => {
-      isMountedRef.current = false;
-    };
   }, [cv.document_link, cv.user_id, getBlur, getCachedUserName, getURL]);
+
+  useEffect(
+    () => () => {
+      if (interval != null) {
+        clearInterval(interval.current as NodeJS.Timeout);
+      }
+    },
+    []
+  );
 
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
 
