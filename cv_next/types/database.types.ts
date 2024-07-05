@@ -85,6 +85,7 @@ export type Database = {
         Row: {
           category_id: number;
           created_at: string;
+          cv_categories: number[];
           deleted: boolean;
           description: string;
           document_link: string;
@@ -95,6 +96,7 @@ export type Database = {
         Insert: {
           category_id: number;
           created_at?: string;
+          cv_categories: number[];
           deleted?: boolean;
           description: string;
           document_link: string;
@@ -105,6 +107,7 @@ export type Database = {
         Update: {
           category_id?: number;
           created_at?: string;
+          cv_categories?: number[];
           deleted?: boolean;
           description?: string;
           document_link?: string;

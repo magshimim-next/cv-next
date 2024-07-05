@@ -1,6 +1,7 @@
 import { PostgrestError } from "@supabase/supabase-js";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import Categories from "@/types/models/categories";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -99,3 +100,6 @@ export function arraysHaveSameContent(arr1: number[], arr2: number[]) {
   // If all elements are the same, return true
   return true;
 }
+
+export const generateCategoryLink = (categoryNumber: number) =>
+  `/feed?category=${Categories.category[categoryNumber].toLowerCase()}`;
