@@ -109,7 +109,7 @@ export default function CVItem({ cv }: CVCardProps) {
 
       interval.current = setInterval(() => {
         revalidateImage();
-      }, Definitions.FETCH_WAIT_TIME * 250); // Revalidate every 2 minutes
+      }, Definitions.FETCH_WAIT_TIME * 1000); // Revalidate every 2 minutes
     };
 
     fetchData();
