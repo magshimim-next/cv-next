@@ -74,10 +74,10 @@ export function Err<E>(
 }
 
 /**
- * Get a valid google docs/drive link and switch to the /preview version
+ * Get a valid google docs/drive link and switch to the /preview version to handle permissions better
  *
- * @param {E} val - the error value
- * @return {Result<never, E>} the Result object with ok set to false and containing the specified error value
+ * @param {string} link - the original link
+ * @return {string} the link as a preview instead of edit or view
  */
 export function transformToPreviewLink(link: string): string {
   try {
