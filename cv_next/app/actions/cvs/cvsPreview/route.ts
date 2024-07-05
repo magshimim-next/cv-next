@@ -6,8 +6,32 @@ import SupabaseHelper from "@/server/api/supabaseHelper";
 import { compareHashes } from "@/helpers/blobHelper";
 import logger from "@/server/base/logger";
 import { Tables, ProfileKeys, Storage } from "@/lib/supabase-definitions";
+import { getPlaiceholder } from "plaiceholder";
+import { NextRequest, NextResponse } from "next/server";
 
 const blobDataMap = new Map<string, Blob>();
+
+export async function POST(req: NextRequest) {
+  const data = await req.json();
+  if (data.pathname.endsWith("revalidatePreview")) {
+    await revalidatePreviewHandler(data);
+    return NextResponse.json({ status: 200 });
+  }
+
+  if (data.pathname.endsWith("getImageURL")) {
+    return await getImageURLHandler(data);
+  }
+
+  if (data.pathname.endsWith("getUserName")) {
+    return await getUserNameHandler(data);
+  }
+
+  if (data.pathname.endsWith("getBlurredCv")) {
+    return await getBlurredCvHandler(data);
+  }
+
+  return NextResponse.json({ error: "Not Found" }, { status: 404 });
+}
 
 /**
  * Revalidate the image a given CV in supabase
@@ -15,7 +39,8 @@ const blobDataMap = new Map<string, Blob>();
  * nothing is done. If something changed, the image is uploaded to supabase again
  * @param {string} cvLink - The cv link to validate
  */
-export async function revalidatePreview(cvLink: string) {
+export async function revalidatePreviewHandler(data: { cvLink: string }) {
+  const cvLink = data.cvLink;
   const id = getIdFromLink(cvLink);
   const fileName = id + ".png";
   const response = await fetch(getGoogleImageUrl(cvLink), {
@@ -53,11 +78,12 @@ export async function revalidatePreview(cvLink: string) {
  * @param {string} cvId - The cv we want to show
  * @return {Promise<string | null>} a promised string with the imag eurl from supabase or null
  */
-export async function getImageURL(cvId: string): Promise<string | null> {
-  let data = SupabaseHelper.getSupabaseInstance()
+async function getImageURLHandler(data: { cvId: string }) {
+  const cvId = data.cvId;
+  let publicUrl = SupabaseHelper.getSupabaseInstance()
     .storage.from(Storage.cvs)
     .getPublicUrl(cvId + ".png").data.publicUrl;
-  return data;
+  return NextResponse.json({ publicUrl: publicUrl });
 }
 
 /**
@@ -66,7 +92,8 @@ export async function getImageURL(cvId: string): Promise<string | null> {
  * @param {string} userId - The user
  * @return {Promise<boolean>} a promised string with the full name of the user, it's username, or null
  */
-export async function getUserName(userId: string): Promise<string | null> {
+async function getUserNameHandler(data: { userId: string }) {
+  const userId = data.userId;
   const { data: user, error } = await SupabaseHelper.getSupabaseInstance()
     .from(Tables.profiles)
     .select("*")
@@ -75,5 +102,26 @@ export async function getUserName(userId: string): Promise<string | null> {
   if (error) {
     logger.error(error, "Error getting username");
   }
-  return user?.full_name ?? user?.username ?? null;
+  return NextResponse.json({
+    fullName: user?.full_name ?? user?.username ?? null,
+  });
+}
+
+/**
+ * Get a blurred version of a cv
+ *
+ * @param {string} cvId - The cv to get a blurred version of
+ * @return {Promise<string>} a promised string with the base64 of the blur
+ */
+async function getBlurredCvHandler(data: { cvLink: string }) {
+  const cvLink = data.cvLink;
+  const resp = await fetch(cvLink, {
+    next: { revalidate: Definitions.FETCH_WAIT_TIME },
+  });
+  const arrayBuffer = await resp.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const { base64 } = await getPlaiceholder(buffer, {
+    size: Definitions.PLAICEHOLDER_IMAGE_SIZE,
+  });
+  return NextResponse.json({ base64 });
 }

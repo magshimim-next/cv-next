@@ -1,15 +1,10 @@
 "use client";
-import { getBlurredCv } from "@/app/actions/cvs/getBlurCv";
+
 import Image from "next/image";
 import Link from "next/link";
 import Categories from "@/types/models/categories";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
-import {
-  getImageURL,
-  revalidatePreview,
-  getUserName,
-} from "@/app/actions/cvs/preview";
 import Definitions from "@/lib/definitions";
 
 interface CVCardProps {
@@ -30,24 +25,65 @@ export default function CVItem({ cv }: CVCardProps) {
 
   const getBlur = useMemo(
     () => async (imageURL: string) => {
-      return await getBlurredCv(imageURL);
+      const response = await fetch("/actions/cvs/cvsPreview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pathname: "getBlurredCv", cvLink: imageURL }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to get blurred CV");
+      }
+
+      const data = await response.json();
+      return data.base64;
     },
     []
   );
 
   const getURL = useMemo(
     () => async (cvId: string) => {
-      return await getImageURL(cvId);
+      const response = await fetch("/actions/cvs/cvsPreview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pathname: "getImageURL", cvId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to get image URL");
+      }
+
+      const data = await response.json();
+      return data.publicUrl;
     },
     []
   );
 
   const getCachedUserName = useMemo(
     () => async (userId: string) => {
-      return await getUserName(userId);
+      const response = await fetch("/actions/cvs/cvsPreview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pathname: "getUserName", userId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to get user name");
+      }
+
+      const data = await response.json();
+      return data.fullName;
     },
     []
   );
+
+  async function revalidatePreview(cvLink: string) {
+    await fetch("/actions/cvs/cvsPreview", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pathname: "revalidatePreview", cvLink }),
+    });
+  }
 
   const isMountedRef = useRef(false);
 
