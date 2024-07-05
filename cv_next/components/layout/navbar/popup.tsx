@@ -6,6 +6,7 @@ import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { FaUserCircle } from "react-icons/fa";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
+import { revalidatePath } from "next/cache";
 
 const navLinks = [
   {
@@ -84,6 +85,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
     if (route === "Signout") {
       supabase.auth.signOut();
       updateSignIn();
+      revalidatePath("/");
     }
     closeCb();
   };
