@@ -27,7 +27,7 @@ export default function Feed() {
   const [loadMore, setLoadMore] = useState(true);
   const [filters, setFilters] = useState<filterValues>({
     searchValue: "",
-    categoryId: null,
+    categoryIds: null,
   });
 
   /**

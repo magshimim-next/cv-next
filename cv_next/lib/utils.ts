@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import Categories from "@/types/models/categories";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -42,3 +43,6 @@ export function encodeValue(value: string | undefined) {
   const buff = Buffer.from(valueToString, "ascii");
   return buff.toString("base64");
 }
+
+export const generateCategoryLink = (categoryNumber: number) =>
+  `/feed?category=${Categories.category[categoryNumber].toLowerCase()}`;

@@ -6,7 +6,7 @@ import { useMemo } from "react";
 
 export interface filterValues {
   searchValue: string;
-  categoryId: number[] | null;
+  categoryIds: number[] | null;
 }
 
 export const FilterPanel = ({
@@ -20,11 +20,11 @@ export const FilterPanel = ({
   onChange: (filters: filterValues) => void;
 }) => {
   const [searchValue, setSearchValue] = useState(defaultFilters.searchValue);
-  const [categoryId, setCategoryId] = useState(defaultFilters.categoryId);
+  const [categoryId, setCategoryId] = useState(defaultFilters.categoryIds);
 
   useEffect(() => {
     onChange({
-      categoryId: categoryId,
+      categoryIds: categoryId,
       searchValue: searchValue,
     });
   }, [searchValue, categoryId, onChange]);
