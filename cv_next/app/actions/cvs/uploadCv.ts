@@ -2,10 +2,9 @@
 
 import { InputValues } from "@/app/upload/page";
 import { uploadCV, getCvsByUserId } from "@/server/api/cvs";
-import SupabaseHelper from "@/server/api/supabaseHelper";
-import { PostgrestError } from "@supabase/supabase-js";
 import MyLogger from "@/server/base/logger";
 import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
+import { redirect } from "next/navigation";
 
 export const checkUploadCV = async ({
   cvData,
@@ -13,36 +12,36 @@ export const checkUploadCV = async ({
 }: {
   cvData: InputValues;
   userId: string;
-}): Promise<Error | void> => {
-  // const userId = (await SupabaseHelper.getSupabaseInstance().auth.getUser())
-  //   .data?.user?.id;
-  // if (!userId) {
-  //   MyLogger.logInfo("Couldn't get current user's ID");
-  //   return Error("Couldn't get current user's ID");
-  // }
+}): Promise<string | void> => {
+  // TODO: Switch to getting uid from server
   const cvsOfUser = await getCvsByUserId(userId);
   if (!cvsOfUser || cvsOfUser.length >= 5) {
     MyLogger.logInfo("The user has at least 5 CVs already");
-    return Error("The user has at least 5 CVs already");
+    return "The user has at least 5 CVs already";
   }
 
-  if (!validateGoogleViewOnlyUrl(cvData.link)) {
-    MyLogger.logInfo("Regex invalid!", cvData.link);
-    return Error("Regex invalid!");
+  const transformedURL = validateGoogleViewOnlyUrl(cvData.link);
+
+  if (transformedURL == "") {
+    MyLogger.logInfo("Couldn't transform the link", cvData.link);
+    return "Regex invalid!";
   }
 
   const cvToUpload: NewCvModel = {
-    document_link: cvData.link,
+    document_link: transformedURL,
     description: cvData.description,
     category_id: cvData.catagoryId,
     user_id: userId,
     cv_categories: [cvData.catagoryId],
   };
 
-  MyLogger.logInfo("Can upload:", cvToUpload);
+  MyLogger.logDebug("Can upload:", cvToUpload);
 
   const response = await uploadCV(cvToUpload);
   if (response) {
-    MyLogger.logInfo(response.message);
+    MyLogger.logDebug("Uploaded");
+    redirect(`/cv/${response.id}`);
+  } else {
+    return "Error uploading";
   }
 };
