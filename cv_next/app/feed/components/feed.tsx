@@ -2,7 +2,6 @@
 
 import CVItemLink from "@/app/feed/components/CVItemLink";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { fetchCvsForFeed } from "@/app/actions/cvs/fetchCvs";
 import CVItem from "./CVItem";
 import { CvsContext, CvsDispatchContext } from "@/providers/cvs-provider";
 import { ReloadButton } from "@/components/ui/reloadButton";
@@ -60,15 +59,20 @@ export default function Feed() {
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
       const nextPage = page.current + 1;
-      const response = await fetchCvsForFeed({
-        page: nextPage,
-        filters: filters,
+      const requestResponse = await fetch("actions/cvs/fetchCvs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nextPage, filters }),
       });
-      if (response && response.cvs.length > 0) {
-        setCvs((prevCvs) => [...prevCvs, ...response.cvs]);
-        page.current = nextPage;
-      } else {
-        setLoadMore(false);
+      const response = await requestResponse.json();
+
+      if (requestResponse.ok) {
+        if (response && response.cvs.length > 0) {
+          setCvs((prevCvs) => [...prevCvs, ...response.cvs]);
+          page.current = nextPage;
+        } else {
+          setLoadMore(false);
+        }
       }
     }
   }, [loadMore, filters]);
