@@ -4,6 +4,7 @@ import { PrevButton, NextButton, usePrevNextButtons } from "./carouselArrows";
 import useEmblaCarousel from "embla-carousel-react";
 import CVItem from "@/app/feed/components/CVItem";
 import CVItemLink from "@/app/feed/components/CVItemLink";
+import { DotButton, useDotButton } from "./carouselDots";
 
 type PropType = {
   slides: CvModel[];
@@ -13,6 +14,9 @@ type PropType = {
 const EmblaCarousel: React.FC<PropType> = (props) => {
   const { slides, options } = props;
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
+
+  const { selectedIndex, scrollSnaps, onDotButtonClick } =
+    useDotButton(emblaApi);
 
   const {
     prevBtnDisabled,
@@ -87,6 +91,32 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
         >
           <PrevButton onClick={onPrevButtonClick} disabled={prevBtnDisabled} />
           <NextButton onClick={onNextButtonClick} disabled={nextBtnDisabled} />
+        </div>
+        <div
+          className="embla__dots"
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            marginRight: "calc((2.6rem - 1.4rem) / 2 * -1)",
+          }}
+        >
+          {scrollSnaps.map((_, index) => (
+            <DotButton key={index} onClick={() => onDotButtonClick(index)}>
+              <span
+                style={{
+                  boxShadow: `inset 0 0 0 0.2rem ${index === selectedIndex ? "var(--primary)" : "var(--tw-gradient-from, #ccc)"}`,
+                  width: "1.4rem",
+                  height: "1.4rem",
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  content: '""',
+                }}
+              />
+            </DotButton>
+          ))}
         </div>
       </div>
     </section>
