@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getUser } from "@/app/actions/users/getUser";
 import ProfileData from "./components/profileData";
 import ProfileComments from "./components/comments/profileComments";
-import ProfileCvs from "./components/profileCvs/profileCvs";
+import ProfileCvs from "./components/profileCvs";
 import { getCvsByUserId } from "@/server/api/cvs";
 
 export default async function Page({
