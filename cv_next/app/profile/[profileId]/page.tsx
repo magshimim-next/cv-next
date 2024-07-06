@@ -21,16 +21,12 @@ export default async function Page({
   }
 
   const cvs = await getCvsByUserId(result.val.id);
-  if (cvs === null) {
-    //handle better
-    notFound();
-  }
 
   return (
     <div>
       <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[40%_60%] md:gap-x-4">
         <section className="h-[78.75rem] flex-col rounded-lg">
-          <ProfileCvs cvs={cvs} />
+          {cvs?.length ? <ProfileCvs cvs={cvs} /> : <></>}
         </section>
 
         <section className="h-[78.75rem] flex-col self-start">
