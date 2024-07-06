@@ -2,17 +2,15 @@ import React from "react";
 import { EmblaOptionsType } from "embla-carousel";
 import { PrevButton, NextButton, usePrevNextButtons } from "./carouselArrows";
 import useEmblaCarousel from "embla-carousel-react";
-import CVItem from "@/app/feed/components/CVItem";
-import CVItemLink from "@/app/feed/components/CVItemLink";
 import { DotButton, useDotButton } from "./carouselDots";
 
 type PropType = {
-  slides: CvModel[];
   options?: EmblaOptionsType;
+  children: React.ReactNode;
 };
 
 const EmblaCarousel: React.FC<PropType> = (props) => {
-  const { slides, options } = props;
+  const { options, children } = props;
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
 
   const { selectedIndex, scrollSnaps, onDotButtonClick } =
@@ -52,32 +50,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
             height: "100%",
           }}
         >
-          {slides.map((cv) => (
-            <div
-              className="embla__slide"
-              key={cv.id}
-              style={{
-                flex: "0 0 var(--slide-size)",
-                minWidth: 0,
-                maxWidth: 500,
-                paddingLeft: "var(--slide-spacing)",
-                height: "100%", // Ensure slide takes full height
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{
-                  height: 500 * 1.4142,
-                }}
-              >
-                <CVItemLink key={cv.id} cv={cv}>
-                  <CVItem cv={cv} />
-                </CVItemLink>
-              </div>
-            </div>
-          ))}
+          {children}
         </div>
       </div>
 
