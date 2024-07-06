@@ -49,7 +49,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
             backfaceVisibility: "hidden",
             display: "flex",
             touchAction: "pan-y pinch-zoom",
-            marginLeft: "calc(var(--slide-spacing) * -1)",
+            height: "100%",
           }}
         >
           {slides.map((cv) => (
@@ -59,12 +59,23 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
               style={{
                 flex: "0 0 var(--slide-size)",
                 minWidth: 0,
+                maxWidth: 500,
                 paddingLeft: "var(--slide-spacing)",
+                height: "100%", // Ensure slide takes full height
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <CVItemLink key={cv.id} cv={cv}>
-                <CVItem cv={cv} />
-              </CVItemLink>
+              <div
+                style={{
+                  height: 500 * 1.4142,
+                }}
+              >
+                <CVItemLink key={cv.id} cv={cv}>
+                  <CVItem cv={cv} />
+                </CVItemLink>
+              </div>
             </div>
           ))}
         </div>
@@ -99,7 +110,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
             flexWrap: "wrap",
             justifyContent: "flex-end",
             alignItems: "center",
-            marginRight: "calc((2.6rem - 1.4rem) / 2 * -1)",
+            marginLeft: "calc((2.6rem - 1.4rem) / 2 * -1)",
           }}
         >
           {scrollSnaps.map((_, index) => (
