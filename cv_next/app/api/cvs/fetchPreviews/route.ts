@@ -9,6 +9,8 @@ import { Tables, ProfileKeys, Storage } from "@/lib/supabase-definitions";
 import { getPlaiceholder } from "plaiceholder";
 import { NextRequest, NextResponse } from "next/server";
 
+export const FETCH_PREVIEWS_ENDPOINT = "fetchPreviews";
+
 const blobDataMap = new Map<string, Blob>();
 
 export async function POST(req: NextRequest) {
