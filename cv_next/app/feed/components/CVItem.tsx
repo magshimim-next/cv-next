@@ -3,10 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import Categories from "@/types/models/categories";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import Definitions from "@/lib/definitions";
 import { generateCategoryLink } from "@/lib/utils";
+import {
+  useApiFetch,
+  CVS_API_BASE,
+  FETCH_PREVIEWS_ENDPOINT,
+} from "@/hooks/useAPIFetch";
 
 interface CVCardProps {
   cv: CvModel;
@@ -15,6 +20,7 @@ interface CVCardProps {
 export default function CVItem({ cv }: CVCardProps) {
   const [realURL, setRealURL] = useState("");
   const [authorName, setAuthorName] = useState("");
+  const fetchFromApi = useApiFetch();
 
   const [base64Data, setBase64Data] = useState(
     Definitions.PLAICEHOLDER_IMAGE_DATA
@@ -22,65 +28,46 @@ export default function CVItem({ cv }: CVCardProps) {
 
   const getBlur = useMemo(
     () => async (imageURL: string) => {
-      const response = await fetch("/api/cvs/fetchPreviews", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pathname: "getBlurredCv", cvLink: imageURL }),
+      const data = await fetchFromApi(CVS_API_BASE, FETCH_PREVIEWS_ENDPOINT, {
+        pathname: "getBlurredCv",
+        cvLink: imageURL,
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to get blurred CV");
-      }
-
-      const data = await response.json();
       return data.base64;
     },
-    []
+    [fetchFromApi]
   );
 
   const getURL = useMemo(
     () => async (cvId: string) => {
-      const response = await fetch("/api/cvs/fetchPreviews", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pathname: "getImageURL", cvId }),
+      const data = await fetchFromApi(CVS_API_BASE, FETCH_PREVIEWS_ENDPOINT, {
+        pathname: "getImageURL",
+        cvId,
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to get image URL");
-      }
-
-      const data = await response.json();
       return data.publicUrl;
     },
-    []
+    [fetchFromApi]
   );
 
   const getCachedUserName = useMemo(
     () => async (userId: string) => {
-      const response = await fetch("/api/cvs/fetchPreviews", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pathname: "getUserName", userId }),
+      const data = await fetchFromApi(CVS_API_BASE, FETCH_PREVIEWS_ENDPOINT, {
+        pathname: "getUserName",
+        userId,
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to get user name");
-      }
-
-      const data = await response.json();
       return data.fullName;
     },
-    []
+    [fetchFromApi]
   );
 
-  async function revalidatePreview(cvLink: string) {
-    await fetch("/api/cvs/fetchPreviews", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pathname: "revalidatePreview", cvLink }),
-    });
-  }
+  const revalidatePreview = useCallback(
+    async (cvLink: string) => {
+      await fetchFromApi(CVS_API_BASE, FETCH_PREVIEWS_ENDPOINT, {
+        pathname: "revalidatePreview",
+        cvLink,
+      });
+    },
+    [fetchFromApi]
+  );
 
   const interval = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -113,7 +100,14 @@ export default function CVItem({ cv }: CVCardProps) {
     };
 
     fetchData();
-  }, [cv.document_link, cv.user_id, getBlur, getCachedUserName, getURL]);
+  }, [
+    cv.document_link,
+    cv.user_id,
+    getBlur,
+    getCachedUserName,
+    getURL,
+    revalidatePreview,
+  ]);
 
   useEffect(
     () => () => {

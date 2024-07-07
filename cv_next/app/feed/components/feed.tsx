@@ -10,6 +10,11 @@ import { useInView } from "react-intersection-observer";
 import { FilterPanel } from "@/app/feed/components/filterPanel";
 import ReactLoading from "react-loading";
 import { filterValues } from "@/types/models/filters";
+import {
+  useApiFetch,
+  CVS_API_BASE,
+  FETCH_CVS_ENDPOINT,
+} from "@/hooks/useAPIFetch";
 
 export default function Feed() {
   const cvsContextConsumer = useContext(CvsContext);
@@ -30,7 +35,7 @@ export default function Feed() {
     searchValue: "",
     categoryIds: null,
   });
-
+  const fetchFromApi = useApiFetch();
   /**
    * Trigger pagination when this element comes into view.
    *
@@ -60,23 +65,19 @@ export default function Feed() {
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
       const nextPage = page.current + 1;
-      const requestResponse = await fetch("api/cvs/fetchCvs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nextPage, filters }),
+      const response = await fetchFromApi(CVS_API_BASE, FETCH_CVS_ENDPOINT, {
+        nextPage,
+        filters,
       });
-      const response = await requestResponse.json();
 
-      if (requestResponse.ok) {
-        if (response && response.cvs.length > 0) {
-          setCvs((prevCvs) => [...prevCvs, ...response.cvs]);
-          page.current = nextPage;
-        } else {
-          setLoadMore(false);
-        }
+      if (response && response.cvs.length > 0) {
+        setCvs((prevCvs) => [...prevCvs, ...response.cvs]);
+        page.current = nextPage;
+      } else {
+        setLoadMore(false);
       }
     }
-  }, [loadMore, filters]);
+  }, [loadMore, filters, fetchFromApi]);
 
   useEffect(() => {
     //before unmount, save current cvs state to context for smoother navigation
