@@ -1,6 +1,6 @@
 "use server";
 
-import { filterValues } from "@/app/feed/components/filterPanel";
+import { filterValues } from "@/types/models/filters";
 import { getPaginatedCvs } from "@/server/api/cvs";
 
 import { NextRequest, NextResponse } from "next/server";

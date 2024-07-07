@@ -7,8 +7,9 @@ import { CvsContext, CvsDispatchContext } from "@/providers/cvs-provider";
 import { ReloadButton } from "@/components/ui/reloadButton";
 import Definitions from "@/lib/definitions";
 import { useInView } from "react-intersection-observer";
-import { FilterPanel, filterValues } from "@/app/feed/components/filterPanel";
+import { FilterPanel } from "@/app/feed/components/filterPanel";
 import ReactLoading from "react-loading";
+import { filterValues } from "@/types/models/filters";
 
 export default function Feed() {
   const cvsContextConsumer = useContext(CvsContext);
