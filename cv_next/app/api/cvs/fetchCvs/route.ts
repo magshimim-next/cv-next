@@ -4,8 +4,6 @@ import { filterValues } from "@/types/models/filters";
 import { getPaginatedCvs } from "@/server/api/cvs";
 import { NextRequest, NextResponse } from "next/server";
 
-export const FETCH_CVS_ENDPOINT = "fetchCvs";
-
 export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
