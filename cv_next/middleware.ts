@@ -1,13 +1,13 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-
+import { CVS_API_BASE } from "./hooks/useAPIFetch";
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
     request,
   });
 
-  if (request.nextUrl.pathname.startsWith("/actions/cvs/fetch")) {
+  if (request.nextUrl.pathname.startsWith(CVS_API_BASE)) {
     return NextResponse.next();
   }
 
