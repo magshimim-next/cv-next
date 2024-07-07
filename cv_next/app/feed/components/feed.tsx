@@ -60,7 +60,7 @@ export default function Feed() {
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
       const nextPage = page.current + 1;
-      const requestResponse = await fetch("actions/cvs/fetchCvs", {
+      const requestResponse = await fetch("api/cvs/fetchCvs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nextPage, filters }),
