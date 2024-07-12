@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import Popup from "./popup";
 import { useSupabase } from "@/hooks/supabase";
-import { getUserFromId } from "@/app/actions/user/fetchUserInfo";
+import { getUserFromId } from "@/app/actions/users/fetchUserInfo";
 import { FaUserCircle } from "react-icons/fa";
 
 export function PopupToggle() {
