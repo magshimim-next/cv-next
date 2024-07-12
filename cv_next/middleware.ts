@@ -75,4 +75,4 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-export const config = { matcher: [Link_Definitions.CV_PROTECT_PATH] };
+// export const config = { matcher: Link_Definitions.CV_PROTECT_PATH };
