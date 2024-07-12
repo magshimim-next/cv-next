@@ -13,7 +13,6 @@ export default class Definitions {
 }
 
 export class Link_Definitions {
-  public static readonly CV_PROTECT_PATH = "/cv/:cvId*";
   public static readonly AUTH_CALLBACK_REDIRECT = "/auth/callback";
   public static readonly AUTH_DEFAULT_REDIRECT = "/";
 }

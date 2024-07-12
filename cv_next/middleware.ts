@@ -3,7 +3,6 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
-import { Link_Definitions } from "./lib/definitions";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -75,4 +74,4 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-export const config = { matcher: Link_Definitions.CV_PROTECT_PATH };
+export const config = { matcher: "/cv/:cvId*" };
