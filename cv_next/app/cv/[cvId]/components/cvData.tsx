@@ -1,12 +1,12 @@
 "use client";
-import { getUser } from "@/app/actions/users/getUser";
+import { getUserModel } from "@/app/actions/users/getUser";
 import useSWR from "swr";
 import Categories from "@/types/models/categories";
 import Image from "next/image";
 import profileIcon from "@/public/images/profile.png";
 
 export default function CvData({ cv }: { cv: CvModel }) {
-  const { data: user } = useSWR(cv.user_id, getUser);
+  const { data: user } = useSWR(cv.user_id, getUserModel);
   if (user && user.ok) {
     const userName =
       user.val.username && user.val.username.length > 0
