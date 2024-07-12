@@ -4,6 +4,7 @@ import { setResolved } from "@/app/actions/comments/setResolved";
 import { upvoteComment } from "@/app/actions/comments/setLike";
 import { getUserModel } from "@/app/actions/users/getUser";
 import useSWR, { mutate } from "swr";
+import { useState } from "react";
 
 export default function Comment({
   comment,
@@ -14,6 +15,7 @@ export default function Comment({
   userId: string;
   childDepth?: number;
 }) {
+  const [userName, setUserName] = useState("");
   const date = new Date(comment.last_update);
   const childOrParentStyling = childDepth
     ? `p-3 ml-${6 / childDepth} lg:ml-${12 / childDepth} border-t border-gray-400 dark:border-gray-600`
@@ -39,14 +41,14 @@ export default function Comment({
 
   const { data: user } = useSWR(comment.user_id, getUserModel);
   if (!user && !user.ok) {
-    // TODO: Show error
-    return null;
+    setUserName("Error fetching username");
+  } else {
+    setUserName(
+      user.val.username && user.val.username.length > 0
+        ? user.val.username
+        : user.val.full_name
+    );
   }
-
-  const userName =
-    user.val.username && user.val.username.length > 0
-      ? user.val.username
-      : user.val.full_name;
 
   const voteingSection =
     comment.upvotes && comment.upvotes.includes(userId) ? (
