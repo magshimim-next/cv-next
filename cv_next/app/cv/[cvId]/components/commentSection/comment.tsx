@@ -2,9 +2,9 @@
 import { deleteComment } from "@/app/actions/comments/deleteComment";
 import { setResolved } from "@/app/actions/comments/setResolved";
 import { upvoteComment } from "@/app/actions/comments/setLike";
-import { getUserModel } from "@/app/actions/users/getUser";
 import useSWR, { mutate } from "swr";
 import { useState } from "react";
+import { getUserModel } from "@/app/actions/users/getUser";
 
 export default function Comment({
   comment,
@@ -40,14 +40,10 @@ export default function Comment({
   };
 
   const { data: user } = useSWR(comment.user_id, getUserModel);
-  if (!user && !user.ok) {
-    setUserName("Error fetching username");
+  if (user && user.ok) {
+    setUserName(user.val.username || user.val.full_name || "");
   } else {
-    setUserName(
-      user.val.username && user.val.username.length > 0
-        ? user.val.username
-        : user.val.full_name
-    );
+    setUserName("Error fetching username");
   }
 
   const voteingSection =
