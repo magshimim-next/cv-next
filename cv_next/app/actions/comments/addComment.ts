@@ -1,7 +1,7 @@
 "use server";
 
 import { Err } from "@/lib/utils";
-import { addNewCommentToCv } from "@/server/api/comments";
+import { addCommentToCv } from "@/server/api/comments";
 import { logErrorWithTrace } from "@/server/base/logger";
 /**
  * Adds a new comment to the cv.
@@ -12,7 +12,7 @@ import { logErrorWithTrace } from "@/server/base/logger";
 export const addComment = async (
   comment: NewCommentModel
 ): Promise<Result<void, string>> => {
-  const result = await addNewCommentToCv(comment);
+  const result = await addCommentToCv(comment);
   if (result.ok) {
     return result;
   } else {
