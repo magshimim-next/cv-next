@@ -1,7 +1,8 @@
 "use server";
 
 import SupabaseHelper from "@/server/api/supabaseHelper";
-import { ProfileKeys, Tables } from "@/lib/supabase-definitions";
+import { ProfileKeys } from "@/lib/supabase-definitions";
+import { getUser } from "./getUser";
 
 /**
  * Handle which user can enter a given route(used instead of the middleware to reduce server requests)
@@ -19,13 +20,8 @@ export const handleCurrentUser = async (
   if (error || !activatedUser?.user) {
     return "/login";
   } else {
-    const { data: user, error } = await supabase
-      .from(Tables.profiles)
-      .select("*")
-      .eq(ProfileKeys.id, activatedUser.user.id)
-      .single();
-
-    if (user?.user_type == ProfileKeys.user_types.inactive || error) {
+    const user = await getUser(activatedUser.user.id);
+    if (!user.ok || user.val.user_type == ProfileKeys.user_types.inactive) {
       return "/inactive";
     }
   }
