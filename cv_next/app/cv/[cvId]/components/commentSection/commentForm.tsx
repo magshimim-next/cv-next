@@ -1,29 +1,29 @@
-"use client"
-import { addNewComment } from "@/app/actions/comments/addComment"
-import { useSupabase } from "@/hooks/supabase"
-import { useRef } from "react"
-import { RxPaperPlane } from "react-icons/rx"
-import { mutate } from "swr"
+"use client";
+import { addComment } from "@/app/actions/comments/addComment";
+import { useSupabase } from "@/hooks/supabase";
+import { useRef } from "react";
+import { RxPaperPlane } from "react-icons/rx";
+import { mutate } from "swr";
 
 export default function CommentForm({ cv }: { cv: CvModel }) {
-  const formRef = useRef<HTMLFormElement | null>(null)
-  const supabase = useSupabase()
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const supabase = useSupabase();
 
   const formAction = async (formData: FormData) => {
-    const userId = (await supabase.auth.getUser()).data.user?.id
-    if (!userId) throw new Error("User not found") // TODO: handle this
+    const userId = (await supabase.auth.getUser()).data.user?.id;
+    if (!userId) throw new Error("User not found"); // TODO: handle this
     const comment: NewCommentModel = {
       data: formData.get("comment") as string,
       document_id: cv.id,
       parent_comment_Id: null,
       user_id: userId,
-    }
+    };
 
-    await addNewComment(comment).finally(() => {
-      formRef.current?.reset()
-      mutate(cv.id)
-    })
-  }
+    await addComment(comment).finally(() => {
+      formRef.current?.reset();
+      mutate(cv.id);
+    });
+  };
 
   return (
     <form className="mb-6" ref={formRef} action={formAction}>
@@ -53,5 +53,5 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
         </button>
       </div>
     </form>
-  )
+  );
 }
