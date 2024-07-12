@@ -1,5 +1,5 @@
 "use client"
-import { addNewComment } from "@/app/actions/comments/addNewComment"
+import { addNewComment } from "@/app/actions/comments/addComment"
 import { useSupabase } from "@/hooks/supabase"
 import { useRef } from "react"
 import { RxPaperPlane } from "react-icons/rx"
