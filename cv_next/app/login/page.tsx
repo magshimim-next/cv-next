@@ -2,8 +2,11 @@
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "@/components/ui/button";
 import { signInWithSocialProvider } from "../actions/user/fetchUserInfo";
+import { useSearchParams } from "next/navigation";
 
 export default function Page() {
+  const searchparams = useSearchParams();
+  const next = searchparams.get("next") || "/feed";
   return (
     <main>
       <div className="place-items-center px-4 text-sm font-medium">
@@ -11,7 +14,7 @@ export default function Page() {
           <div className="grid gap-y-3">
             <Button
               className="c-bOcPnF"
-              onClick={() => signInWithSocialProvider("google")}
+              onClick={() => signInWithSocialProvider("google", next)}
             >
               <FcGoogle />
               <span style={{ marginLeft: "5px" }}>Sign in with Google</span>

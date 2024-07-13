@@ -59,13 +59,16 @@ export const getUserFromId = async (
   return null;
 };
 
-export async function signInWithSocialProvider(provider: any) {
+export async function signInWithSocialProvider(provider: any, nextURL: string) {
   const { data, error } =
     await SupabaseHelper.getSupabaseInstance().auth.signInWithOAuth({
       provider,
       options: {
         redirectTo:
-          process.env.NEXT_PUBLIC_BASE_URL + Definitions.AUTH_CALLBACK_REDIRECT,
+          process.env.NEXT_PUBLIC_BASE_URL +
+          Definitions.AUTH_CALLBACK_REDIRECT +
+          "?next=" +
+          nextURL,
       },
     });
   if (error) logger.error(error, "Error signin");
