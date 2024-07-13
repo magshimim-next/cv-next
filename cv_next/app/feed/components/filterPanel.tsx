@@ -6,7 +6,7 @@ import { useMemo } from "react";
 
 export interface filterValues {
   searchValue: string;
-  categoryId: number | null;
+  categoryIds: number[] | null;
 }
 
 export const FilterPanel = ({
@@ -20,15 +20,14 @@ export const FilterPanel = ({
   onChange: (filters: filterValues) => void;
 }) => {
   const [searchValue, setSearchValue] = useState(defaultFilters.searchValue);
-  const [categoryId, setCategoryId] = useState(defaultFilters.categoryId);
+  const [categoryId, setCategoryId] = useState(defaultFilters.categoryIds);
 
   useEffect(() => {
     onChange({
-      categoryId: categoryId,
+      categoryIds: categoryId,
       searchValue: searchValue,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchValue, categoryId]);
+  }, [searchValue, categoryId, onChange]);
 
   const mapCategories: number[] = useMemo(() => {
     const keys = Object.keys(Categories.category)
@@ -39,15 +38,15 @@ export const FilterPanel = ({
 
   return (
     <div className="mx-10 my-[10px] flex flex-row items-center justify-between gap-2">
-      <InputBox
-        placeHolder=" input text to search"
+      <SearchBox
+        placeHolder="Input text to search"
         value={searchValue}
         onChange={setSearchValue}
       ></InputBox>
       <DropdownInput
         placeHolder="all"
         valueIds={mapCategories}
-        text="catagory"
+        text="Category"
         valueId={categoryId}
         onChange={setCategoryId}
         getValueById={(id: number) => {

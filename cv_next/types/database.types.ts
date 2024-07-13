@@ -1,4 +1,3 @@
-"server-only"
 export type Json =
   | string
   | number
@@ -7,13 +6,86 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
+      comments: {
+        Row: {
+          data: string
+          deleted: boolean
+          document_id: string
+          id: string
+          last_update: string
+          parent_comment_Id: string | null
+          resolved: boolean
+          upvotes: string[] | null
+          user_id: string
+        }
+        Insert: {
+          data: string
+          deleted?: boolean
+          document_id: string
+          id?: string
+          last_update?: string
+          parent_comment_Id?: string | null
+          resolved?: boolean
+          upvotes?: string[] | null
+          user_id: string
+        }
+        Update: {
+          data?: string
+          deleted?: boolean
+          document_id?: string
+          id?: string
+          last_update?: string
+          parent_comment_Id?: string | null
+          resolved?: boolean
+          upvotes?: string[] | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_comments_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "cvs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_comments_parent_comment_Id_fkey"
+            columns: ["parent_comment_Id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admins"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "whitelisted"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cvs: {
         Row: {
           category_id: number
           created_at: string
+          cv_categories: number[]
           deleted: boolean
           description: string
           document_link: string
@@ -24,6 +96,7 @@ export interface Database {
         Insert: {
           category_id: number
           created_at?: string
+          cv_categories: number[]
           deleted?: boolean
           description: string
           document_link: string
@@ -34,6 +107,7 @@ export interface Database {
         Update: {
           category_id?: number
           created_at?: string
+          cv_categories?: number[]
           deleted?: boolean
           description?: string
           document_link?: string
@@ -59,6 +133,8 @@ export interface Database {
           updated_at: string | null
           user_type: Database["public"]["Enums"]["user_type"]
           username: string | null
+          work_status: Database["public"]["Enums"]["work_status"]
+          work_status_categories: number[] | null
         }
         Insert: {
           avatar_url?: string | null
@@ -67,6 +143,8 @@ export interface Database {
           updated_at?: string | null
           user_type?: Database["public"]["Enums"]["user_type"]
           username?: string | null
+          work_status?: Database["public"]["Enums"]["work_status"]
+          work_status_categories?: number[] | null
         }
         Update: {
           avatar_url?: string | null
@@ -75,6 +153,8 @@ export interface Database {
           updated_at?: string | null
           user_type?: Database["public"]["Enums"]["user_type"]
           username?: string | null
+          work_status?: Database["public"]["Enums"]["work_status"]
+          work_status_categories?: number[] | null
         }
         Relationships: [
           {
@@ -88,13 +168,60 @@ export interface Database {
       }
     }
     Views: {
-      [_ in never]: never
+      admins: {
+        Row: {
+          id: string | null
+        }
+        Insert: {
+          id?: string | null
+        }
+        Update: {
+          id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whitelisted: {
+        Row: {
+          id: string | null
+        }
+        Insert: {
+          id?: string | null
+        }
+        Update: {
+          id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
-      [_ in never]: never
+      get_admins: {
+        Args: Record<PropertyKey, never>
+        Returns: string[]
+      }
+      get_whitelisted: {
+        Args: Record<PropertyKey, never>
+        Returns: string[]
+      }
     }
     Enums: {
       user_type: "inactive" | "active" | "admin"
+      work_status: "open_to_work" | "hiring" | "nothing"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -102,9 +229,11 @@ export interface Database {
   }
 }
 
+type PublicSchema = Database[Extract<keyof Database, "public">]
+
 export type Tables<
   PublicTableNameOrOptions extends
-    | keyof (Database["public"]["Tables"] & Database["public"]["Views"])
+    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
@@ -117,10 +246,10 @@ export type Tables<
     }
     ? R
     : never
-  : PublicTableNameOrOptions extends keyof (Database["public"]["Tables"] &
-        Database["public"]["Views"])
-    ? (Database["public"]["Tables"] &
-        Database["public"]["Views"])[PublicTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
+        PublicSchema["Views"])
+    ? (PublicSchema["Tables"] &
+        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -129,7 +258,7 @@ export type Tables<
 
 export type TablesInsert<
   PublicTableNameOrOptions extends
-    | keyof Database["public"]["Tables"]
+    | keyof PublicSchema["Tables"]
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
@@ -140,8 +269,8 @@ export type TablesInsert<
     }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
-    ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -150,7 +279,7 @@ export type TablesInsert<
 
 export type TablesUpdate<
   PublicTableNameOrOptions extends
-    | keyof Database["public"]["Tables"]
+    | keyof PublicSchema["Tables"]
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
@@ -161,8 +290,8 @@ export type TablesUpdate<
     }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
-    ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -171,13 +300,13 @@ export type TablesUpdate<
 
 export type Enums<
   PublicEnumNameOrOptions extends
-    | keyof Database["public"]["Enums"]
+    | keyof PublicSchema["Enums"]
     | { schema: keyof Database },
   EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
 > = PublicEnumNameOrOptions extends { schema: keyof Database }
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
-    ? Database["public"]["Enums"][PublicEnumNameOrOptions]
+  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
+    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never

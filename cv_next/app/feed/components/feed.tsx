@@ -1,14 +1,15 @@
 "use client";
 
-import CVItem from "@/app/feed/components/CVItem";
+import CVItemLink from "@/app/feed/components/CVItemLink";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { fetchCvsForFeed } from "@/app/actions/cvs/fetchCvs";
-import CVItemRSC from "./CVItemRSC";
+import CVItem from "./CVItem";
 import { CvsContext, CvsDispatchContext } from "@/providers/cvs-provider";
 import { ReloadButton } from "@/components/ui/reloadButton";
 import Definitions from "@/lib/definitions";
 import { useInView } from "react-intersection-observer";
 import { FilterPanel, filterValues } from "@/app/feed/components/filterPanel";
+import ReactLoading from "react-loading";
 
 export default function Feed() {
   const cvsContextConsumer = useContext(CvsContext);
@@ -27,7 +28,7 @@ export default function Feed() {
   const [loadMore, setLoadMore] = useState(true);
   const [filters, setFilters] = useState<filterValues>({
     searchValue: "",
-    categoryId: null,
+    categoryIds: null,
   });
 
   /**
@@ -85,7 +86,7 @@ export default function Feed() {
     };
   }, [cvsDispatchContextConsumer]);
 
-  const forceReload = () => {
+  const forceReload = useCallback(() => {
     cvsDispatchContextConsumer({
       type: `reset`,
       payload: {
@@ -96,12 +97,15 @@ export default function Feed() {
     setCvs([]);
     page.current = Definitions.PAGINATION_INIT_PAGE_NUMBER;
     setLoadMore(true);
-  };
+  }, [cvsDispatchContextConsumer]);
 
-  const onFilterChange = (filters: filterValues) => {
-    setFilters(filters);
+  useEffect(() => {
     forceReload();
-  };
+  }, [filters, forceReload]);
+
+  const onFilterChange = useCallback((filters: filterValues) => {
+    setFilters(filters);
+  }, []);
 
   return (
     <main>
@@ -114,9 +118,9 @@ export default function Feed() {
         <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
           {cvs ? (
             cvs.map((cv) => (
-              <CVItem key={cv.id} cv={cv}>
-                <CVItemRSC cv={cv} />
-              </CVItem>
+              <CVItemLink key={cv.id} cv={cv}>
+                <CVItem cv={cv} />
+              </CVItemLink>
             ))
           ) : (
             <></>
@@ -128,8 +132,14 @@ export default function Feed() {
             <ReloadButton callback={forceReload}>Reload</ReloadButton>
           </div>
         ) : (
-          //TODO: replace with proper spinner
-          <div className="z-10 flex justify-center">Loading...</div>
+          <div className="z-10 flex justify-center">
+            <ReactLoading
+              type={"spinningBubbles"}
+              color={"#000"}
+              height={667}
+              width={375}
+            />
+          </div>
         )}
       </div>
     </main>
