@@ -14,11 +14,11 @@ export default function PopupWrapper({ children, clickable, disableButton }: Pop
 
   return (
     <div>
-      <div className="cursor-pointer rounded-full hover:bg-[#27374e]" onClick={() => {if(!disableButton) setIsPopupOpen(true)}}>
+      <div className="cursor-pointer rounded-full" onClick={() => {if(!disableButton) setIsPopupOpen(true)}}>
         {clickable}
       </div>
       {isPopupOpen && (
-        <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center">
+        <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
             <div
                 className="absolute h-full w-full bg-black opacity-50 backdrop-blur-md z-popup-bg"
                 onClick={() => setIsPopupOpen(false)}

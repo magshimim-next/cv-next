@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button } from "../button";
 
 export const DropdownInput = ({
   placeHolder,
@@ -22,7 +23,6 @@ export const DropdownInput = ({
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const menuBorderStyle = isMenuOpen ? "outline-b-0 rounded-b-none" : "";
   const selectionStyle = isMenuOpen ? "block" : "hidden";
   const newText = text ?  `${text}:` : '' 
   const textValue = isPlaceHolder ? (
@@ -33,27 +33,24 @@ export const DropdownInput = ({
 
   return (
     <>
-      <div
-        className={`outline-gray-40 text-black flex h-2/6 w-2/6 items-center justify-center whitespace-nowrap bg-white outline-2 ${menuBorderStyle} box-border cursor-pointer rounded-md px-10 py-4`}
-        onClick={changeIsMenuOpen}
-      >
-        {textValue}
+      <div className="relative h-2/6 w-2/6">
+        <Button text={textValue} onClick={changeIsMenuOpen} bottomFlat={isMenuOpen}></Button>
         <div
-          className={`absolute top-full block h-fit w-full bg-white ${selectionStyle} border-b-gray-40 max-h-40 divide-y-2 overflow-y-auto border-t-0`}
-        >
+          className={`absolute top-full h-fit w-full bg-white ${selectionStyle} border-b-gray-40 max-h-40 divide-y-2 overflow-y-auto border-t-0`}
+          >
           <div
             className="flex h-10 w-full items-center justify-center bg-white text-gray-400 hover:bg-slate-200"
             onClick={() => onChange(null)}
-          >
+            >
             {"all"}
           </div>
           {valueIds.map((possibleValueId) => {
             return (
               // eslint-disable-next-line react/jsx-key
               <div
-                key={possibleValueId}
-                className="flex h-8 w-full items-center justify-center bg-white text-black hover:bg-slate-200"
-                onClick={() => onChange(possibleValueId)}
+              key={possibleValueId}
+              className="flex h-8 w-full items-center justify-center bg-white text-black hover:bg-slate-200"
+              onClick={() => onChange(possibleValueId)}
               >
                 {`${getValueById(possibleValueId)}`}
               </div>
