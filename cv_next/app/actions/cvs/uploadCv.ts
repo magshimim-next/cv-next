@@ -8,12 +8,20 @@ import { redirect } from "next/navigation";
 
 export const checkUploadCV = async ({
   cvData,
-  userId,
+  userId, // TODO: Switch to getting uid from server
 }: {
   cvData: InputValues;
   userId: string;
 }): Promise<string | void> => {
-  // TODO: Switch to getting uid from server
+  if (
+    !cvData.title?.trim() ||
+    !cvData.link?.trim() ||
+    !cvData.description?.trim() ||
+    cvData.catagoryId === undefined
+  ) {
+    MyLogger.logInfo("Missing variables!");
+    return "Missing variables!";
+  }
   const cvsOfUser = await getCvsByUserId(userId);
   if (!cvsOfUser || cvsOfUser.length >= 5) {
     MyLogger.logInfo("The user has at least 5 CVs already");
