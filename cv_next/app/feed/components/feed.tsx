@@ -10,14 +10,42 @@ import Definitions from "@/lib/definitions";
 import { useInView } from "react-intersection-observer";
 import { FilterPanel, filterValues } from "@/app/feed/components/filterPanel";
 import ReactLoading from "react-loading";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import Categories from "@/types/models/categories";
+
+function toCategory(name: string):number {
+  return Categories.category[name as keyof typeof Categories.category];
+}
+
+function categoryString(num:number){
+  const categoryNames = [
+    'Undefined',
+    'General',
+    'Medical',
+    'Insurance',
+    'Financial',
+    'Legal',
+    'Education',
+    'Fullstack',
+    'Frontend',
+    'Backend',
+    'Devops',
+    'Cybersecurity'
+  ];
+  return categoryNames[num];
+}
 
 export default function Feed() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = new URLSearchParams(searchParams);
+  const optionalCategory = searchParams.getAll("category").map(toCategory);
   const cvsContextConsumer = useContext(CvsContext);
   const cvsDispatchContextConsumer = useContext(CvsDispatchContext);
   const initialCvs = cvsContextConsumer.cvs?.length
     ? cvsContextConsumer.cvs
     : [];
-
   const [cvs, setCvs] = useState<CvModel[]>(initialCvs);
   const cvsRef = useRef<CvModel[] | null>();
   const page = useRef<number>(
@@ -28,9 +56,8 @@ export default function Feed() {
   const [loadMore, setLoadMore] = useState(true);
   const [filters, setFilters] = useState<filterValues>({
     searchValue: "",
-    categoryId: null,
+    categoryId: (optionalCategory) ? optionalCategory: null,
   });
-
   /**
    * Trigger pagination when this element comes into view.
    *
@@ -60,6 +87,14 @@ export default function Feed() {
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
       const nextPage = page.current + 1;
+      if(optionalCategory){
+        if(filters.categoryId){
+          filters.categoryId  = [...new Set(filters.categoryId.concat(optionalCategory))];
+        }
+        else {
+          filters.categoryId = optionalCategory;
+        }
+      }
       const response = await fetchCvsForFeed({
         page: nextPage,
         filters: filters,
@@ -70,7 +105,23 @@ export default function Feed() {
       } else {
         setLoadMore(false);
       }
+      if(filters.categoryId){
+        params.delete("category");
+        console.log("params before", params);
+        filters.categoryId.map((category) => {
+          console.log("????", category);
+          params.append("category", categoryString(category));
+        })
+        console.log("params after", params);
+
+        // for(const category in filters.categoryId.map(categoryString)){
+        //   console.log("????", category);
+        //   params.append("category", category);
+        // }
+        router.replace(`${pathname}?${params}`);
+      }
     }
+    
   }, [loadMore, filters]);
 
   useEffect(() => {

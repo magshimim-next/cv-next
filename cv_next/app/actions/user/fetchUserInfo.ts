@@ -16,14 +16,15 @@ export const handleCurrentUser = async (
   finalRedirect: string
 ): Promise<string> => {
   const supabase = SupabaseHelper.getSupabaseInstance();
-  const { data: activatedUser, error } = await supabase.auth.getUser();
-  if (error || !activatedUser?.user) {
+  const { data: activatedUser, error } = await supabase.auth.getSession();
+  logger.debug(activatedUser);
+  if (error || !activatedUser.session?.user) {
     return "/login";
   } else {
     const { data: user, error } = await supabase
       .from(Tables.profiles)
       .select("*")
-      .eq(ProfileKeys.id, activatedUser.user.id)
+      .eq(ProfileKeys.id, activatedUser.session.user.id)
       .single();
 
     if (user?.user_type == ProfileKeys.user_types.inactive || error) {
