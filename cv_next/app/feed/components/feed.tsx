@@ -9,6 +9,7 @@ import { ReloadButton } from "@/components/ui/reloadButton";
 import Definitions from "@/lib/definitions";
 import { useInView } from "react-intersection-observer";
 import { FilterPanel, filterValues } from "@/app/feed/components/filterPanel";
+<<<<<<< HEAD
 import ReactLoading from "react-loading";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Categories from "@/types/models/categories";
@@ -41,6 +42,16 @@ export default function Feed() {
   const pathname = usePathname();
   const params = new URLSearchParams(searchParams);
   const optionalCategory = searchParams.getAll("category").map(toCategory);
+=======
+import {useSearchParams} from 'next/navigation';
+import Categories from "@/types/models/categories";
+
+
+
+export default function Feed() {
+  //const searchParams = useSearchParams();
+  //const optionalCategory = searchParams.get("category");
+>>>>>>> b8ffc856aa8aa59368ad495f425d91a8c5725409
   const cvsContextConsumer = useContext(CvsContext);
   const cvsDispatchContextConsumer = useContext(CvsDispatchContext);
   const initialCvs = cvsContextConsumer.cvs?.length
@@ -56,7 +67,11 @@ export default function Feed() {
   const [loadMore, setLoadMore] = useState(true);
   const [filters, setFilters] = useState<filterValues>({
     searchValue: "",
+<<<<<<< HEAD
     categoryId: (optionalCategory) ? optionalCategory: null,
+=======
+    categoryId: /*(optionalCategory) ? Categories.category[optionalCategory] :*/ null,
+>>>>>>> b8ffc856aa8aa59368ad495f425d91a8c5725409
   });
   /**
    * Trigger pagination when this element comes into view.

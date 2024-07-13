@@ -1,4 +1,5 @@
-import "server-only";
+"use server";
+//import "server-only";
 
 import logger from "@/server/base/logger";
 import Categories from "@/types/models/categories";
@@ -8,7 +9,8 @@ import SupabaseHelper from "./supabaseHelper";
 import { PostgrestError } from "@supabase/supabase-js";
 import { filterValues } from "@/app/feed/components/filterPanel";
 
-export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS;
+//export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS;
+
 
 /**
  * Retrieves a CV by its ID from the database.
@@ -17,8 +19,9 @@ export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS;
  * @return {Promise<CvModel | null>} The retrieved CV or null if not found
  */
 export async function getCvById(cvId: string): Promise<CvModel | null> {
+  'use server';
   try {
-    const { data: cvs, error } = await SupabaseHelper.getSupabaseInstance()
+    const { data: cvs, error } = await (await SupabaseHelper.getSupabaseInstance())
       .from(Tables.cvs)
       .select("*")
       .eq(CvKeys.id, cvId);
@@ -53,8 +56,9 @@ export async function getCvsByUserId(
   userId: string,
   filterOutDeleted = true
 ): Promise<CvModel[] | null> {
+  'use server';
   try {
-    const supabase = SupabaseHelper.getSupabaseInstance();
+    const supabase = await(SupabaseHelper.getSupabaseInstance());
     let query = supabase
       .from(Tables.cvs)
       .select("*")
@@ -82,8 +86,9 @@ export async function getAllCvsByCategory(
   category: Categories.category,
   filterOutDeleted: boolean = true
 ): Promise<CvModel[] | null> {
+  'use server';
   try {
-    const supabase = SupabaseHelper.getSupabaseInstance();
+    const supabase = await SupabaseHelper.getSupabaseInstance();
     let query = supabase
       .from(Tables.cvs)
       .select("*")
@@ -111,8 +116,9 @@ async function _getAllCvsByCategories(
   categories: Categories.category[],
   filterOutDeleted: boolean = true
 ): Promise<any> {
+  'use server';
   try {
-    const supabase = SupabaseHelper.getSupabaseInstance();
+    const supabase = await SupabaseHelper.getSupabaseInstance();
     let query = supabase
       .from(Tables.cvs)
       .select("*")
@@ -148,13 +154,14 @@ export async function getPaginatedCvs(
   page: number = Definitions.PAGINATION_INIT_PAGE_NUMBER,
   filters?: filterValues
 ): Promise<PaginatedCvsModel | null> {
+  'use server';
   try {
     const from = page * Definitions.CVS_PER_PAGE;
     const to = page
       ? from + Definitions.CVS_PER_PAGE
       : Definitions.CVS_PER_PAGE;
 
-    const supabase = SupabaseHelper.getSupabaseInstance();
+    const supabase = await SupabaseHelper.getSupabaseInstance();
     let query = supabase
       .from(Tables.cvs)
       .select("*")
@@ -197,8 +204,9 @@ export async function getPaginatedCvs(
  * @return {Promise<PostgrestError | null>} the error, if any, or null if the update was successful
  */
 export async function updateCV(cv: CvModel): Promise<PostgrestError | null> {
+  'use server';
   try {
-    const { error } = await SupabaseHelper.getSupabaseInstance()
+    const { error } = await (await SupabaseHelper.getSupabaseInstance())
       .from(Tables.cvs)
       .update(cv)
       .eq(CvKeys.id, cv.id);
