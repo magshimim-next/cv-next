@@ -38,7 +38,7 @@ export const FilterPanel = ({
 
   return (
     <div className="mx-10 my-[10px] flex flex-row items-center justify-between gap-2">
-      <SearchBox
+      <InputBox
         placeHolder="Input text to search"
         value={searchValue}
         onChange={setSearchValue}

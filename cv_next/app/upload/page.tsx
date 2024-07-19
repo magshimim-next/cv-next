@@ -16,7 +16,7 @@ interface InputValues {
   title: string;
   link: string;
   description: string;
-  catagoryId: number | null
+  catagoryId: number[] | null
 }
 
 const Row = ({
@@ -115,7 +115,7 @@ export default function Page() {
               } isValid={!!description && description.length <= 500 }></InputRow>
 
               <InputRow title="Catagory" inputDescription="please select at least one catagory" inputElement={
-                <DropdownInput onChange={(e) => setCatagoryId(e)} placeHolder="please select a catagory" valueIds={getAllNumbersFromArr(Object.keys(Categories.category))} getValueById={(e) => Categories.category[e]} valueId={catagoryId}></DropdownInput>
+                <DropdownInput text="" onChange={(e) => setCatagoryId(e)} placeHolder="please select a catagory" valueIds={getAllNumbersFromArr(Object.keys(Categories.category))} getValueById={(e) => Categories.category[e]} valueId={catagoryId}></DropdownInput>
               } isValid={!!catagoryId}></InputRow>
 
               <Row inputElement={

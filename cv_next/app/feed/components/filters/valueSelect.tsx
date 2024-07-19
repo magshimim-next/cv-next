@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import { Button } from "../button";
 
 export const DropdownInput = ({
   placeHolder,
@@ -14,29 +13,27 @@ export const DropdownInput = ({
   valueId: number[] | null;
   getValueById: (id: number) => string;
   onChange: (newValue: number[] | null) => void;
-  text?: string;
+  text: string;
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const isPlaceHolder = valueId === null;
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [selectTitle, setSelectTitle] = useState("");
+
+  const menuBorderStyle = isMenuOpen ? "outline-b-0 rounded-b-none" : "";
+  const selectionStyle = isMenuOpen ? "block" : "hidden";
+  const textValue = isPlaceHolder ? (
+    <div className="text-gray-400">{`${text}: ${placeHolder}`}</div>
+  ) : valueId.length > 1 ? (
+    <div className="text-black">{`${text}: ${getValueById(valueId[0])} +${valueId.length - 1}`}</div>
+  ) : (
+    <div className="text-black">{`${text}: ${getValueById(valueId[0])}`}</div>
+  );
 
   const changeIsMenuOpen = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-
-  const menuBorderStyle = isMenuOpen ? "outline-b-0 rounded-b-none" : "";
-  const selectionStyle = isMenuOpen ? "block" : "hidden";
-  const newText = text ?  `${text}:` : '' 
-  const textValue = isPlaceHolder ? (
-    <div className="text-gray-400">{`${newText} ${placeHolder}`}</div>
-  ) : valueId.length > 1 ? (
-    <div className="text-black">{`${text}: ${getValueById(valueId[0])} +${valueId.length - 1}`}</div>
-  ) : (
-    <div className="text-black">{`${newText} ${getValueById(valueId[0])}`}</div>
-  );
-
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const [selectTitle, setSelectTitle] = useState("");
 
   const handleCheckboxChange = (categoryId: number) => {
     setSelectedCategories((prevSelectedIds) => {
@@ -80,8 +77,8 @@ export const DropdownInput = ({
       >
         {textValue}
         <div
-          className={`absolute top-full h-fit w-full bg-white ${selectionStyle} border-b-gray-40 max-h-40 divide-y-2 overflow-y-auto border-t-0`}
-          >
+          className={`absolute top-full z-10 block h-fit w-full bg-white ${selectionStyle} border-gray-40 max-h-40 divide-y-2 overflow-y-auto border-2 border-t-0`}
+        >
           <div
             className="flex h-10 w-full items-center justify-center bg-white text-gray-400 hover:bg-slate-200"
             onClick={handleAllSelection}
