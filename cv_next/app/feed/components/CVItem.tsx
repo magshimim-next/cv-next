@@ -10,7 +10,9 @@ import { generateCategoryLink } from "@/lib/utils";
 import {
   useApiFetch,
   CVS_API_BASE,
+  USERS_API_BASE,
   FETCH_PREVIEWS_ENDPOINT,
+  FETCH_USERS_ENDPOINT,
 } from "@/hooks/useAPIFetch";
 
 interface CVCardProps {
@@ -50,7 +52,7 @@ export default function CVItem({ cv }: CVCardProps) {
 
   const getCachedUserName = useMemo(
     () => async (userId: string) => {
-      const data = await fetchFromApi(CVS_API_BASE, FETCH_PREVIEWS_ENDPOINT, {
+      const data = await fetchFromApi(USERS_API_BASE, FETCH_USERS_ENDPOINT, {
         pathname: "getUserName",
         userId,
       });

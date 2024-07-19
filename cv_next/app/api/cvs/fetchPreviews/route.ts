@@ -5,7 +5,7 @@ import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { compareHashes } from "@/helpers/blobHelper";
 import logger from "@/server/base/logger";
-import { Tables, ProfileKeys, Storage } from "@/lib/supabase-definitions";
+import { Tables, Storage } from "@/lib/supabase-definitions";
 import { getPlaiceholder } from "plaiceholder";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -20,10 +20,6 @@ export async function POST(req: NextRequest) {
 
   if (data.pathname.endsWith("getImageURL")) {
     return await getImageURLHandler(data);
-  }
-
-  if (data.pathname.endsWith("getUserName")) {
-    return await getUserNameHandler(data);
   }
 
   if (data.pathname.endsWith("getBlurredCv")) {
@@ -84,27 +80,6 @@ async function getImageURLHandler(data: { cvId: string }) {
     .storage.from(Storage.cvs)
     .getPublicUrl(cvId + ".png").data.publicUrl;
   return NextResponse.json({ publicUrl: publicUrl });
-}
-
-/**
- * Fetch the name of a user
- *
- * @param {string} userId - The user
- * @return {Promise<boolean>} a promised string with the full name of the user, it's username, or null
- */
-async function getUserNameHandler(data: { userId: string }) {
-  const userId = data.userId;
-  const { data: user, error } = await SupabaseHelper.getSupabaseInstance()
-    .from(Tables.profiles)
-    .select("*")
-    .eq(ProfileKeys.id, userId)
-    .single();
-  if (error) {
-    logger.error(error, "Error getting username");
-  }
-  return NextResponse.json({
-    fullName: user?.full_name ?? user?.username ?? null,
-  });
 }
 
 /**
