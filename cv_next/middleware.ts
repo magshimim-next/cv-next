@@ -1,7 +1,7 @@
-"use server";
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+"use server";;
+import { createServerClient, type CookieOptions } from "@supabase/ssr";;
+import { NextResponse } from "next/server";;
+import type { NextRequest } from "next/server";;
 import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
 
 export async function middleware(request: NextRequest) {
@@ -9,6 +9,7 @@ export async function middleware(request: NextRequest) {
     request: {
       headers: request.headers,
     },
+  });
   });
 
   const supabase = createServerClient(
@@ -18,6 +19,7 @@ export async function middleware(request: NextRequest) {
       cookies: {
         get(name: string) {
           return request.cookies.get(name)?.value;
+          return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
           request.cookies.set({
@@ -25,10 +27,12 @@ export async function middleware(request: NextRequest) {
             value,
             ...options,
           });
+          });
           response = NextResponse.next({
             request: {
               headers: request.headers,
             },
+          });
           });
           response.cookies.set({
             name,
@@ -42,15 +46,18 @@ export async function middleware(request: NextRequest) {
             value: "",
             ...options,
           });
+          });
           response = NextResponse.next({
             request: {
               headers: request.headers,
             },
           });
+          });
           response.cookies.set({
             name,
             value: "",
             ...options,
+          });
           });
         },
       },
@@ -74,4 +81,4 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-export const config = { matcher: [] };
+export const config = { matcher: ["/feed", "/upload"] };

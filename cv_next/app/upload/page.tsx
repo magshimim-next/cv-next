@@ -1,7 +1,7 @@
 "use client";
 
-import { Suspense, useState } from "react"
-import { InputBox } from "../feed/components/inputbar"
+import { Suspense, useState } from "react";
+import { InputBox } from "../feed/components/inputbar";
 import { DropdownInput } from "../feed/components/filters/valueSelect";
 import Image from "next/image";
 import openLink from "@/public/images/openLink.png";
@@ -11,9 +11,10 @@ import { getAllNumbersFromArr } from "@/lib/utils";
 import { CvPreview } from "@/components/cvPerview";
 import PopupWrapper from "@/components/ui/popupButtom";
 import { Button } from "../feed/components/button";
+import { checkUploadCV } from "../actions/cvs/uploadCv";
+import { useSupabase } from "@/hooks/supabase";
 
-interface InputValues {
-  title: string;
+export interface InputValues {
   link: string;
   description: string;
   catagoryId: number[] | null
@@ -54,39 +55,72 @@ export const InputRow = ({
 }
 
 export default function Page() {
-  const [catagoryId, setCatagoryId] = useState<InputValues["catagoryId"]>(null)
-  const [description, setDescription] = useState<InputValues["description"]>('')
-  const [link, setLink] = useState<InputValues["link"]>('')
-  const [title, setTitle] = useState<InputValues["title"]>('')
+  const [catagoryId, setCatagoryId] = useState<InputValues["catagoryId"]>(null);
+  const [description, setDescription] =
+    useState<InputValues["description"]>("");
+  const [link, setLink] = useState<InputValues["link"]>("");
+  const supabase = useSupabase();
 
   const checkIfLinkIsValid = () => {
     return !!link.match('https?://(?:docs|drive).google.com/(?:document|file)/d/([a-zA-Z0-9-]+)(?:/(?:edit|view)?usp=[a-zA-Z0-9-&=]+)?')
   }
 
-  const validateInput = () => {
-    if(!catagoryId) return false;
-    if(!description) return false;
-    if(!link) return false;
-    if(!title) return false;
+  const validate = (() => {
+    const checkIfLinkIsValid = () => {
+      return !!link.match('https?://(?:docs|drive).google.com/(?:document|file)/d/([a-zA-Z0-9-]+)(?:/(?:edit|view)?usp=[a-zA-Z0-9-&=]+)?')
+    }
+    const checkIfCatagorisAreValid = () => {
+      return !!catagoryId && catagoryId.length <= 3
+    }
+    const checkIfDescriptionIsValid = () => {
+      return description.length <= 500 
+    }
+    return {
+      link: checkIfLinkIsValid,
+      catagoryIds: checkIfCatagorisAreValid,
+      description: checkIfDescriptionIsValid,
+      cv: () => {
+        if(!checkIfCatagorisAreValid) return false;
+        if(!checkIfDescriptionIsValid) return false;
+        if(!checkIfLinkIsValid()) return false;
 
-    return true
+        return true
+      }
+    }
+  })()
+
+  async function startUpload() {
+    const userId: string | undefined = (await supabase.auth.getUser()).data.user
+      ?.id;
+    if (!userId) {
+      return;
+    }
+    const cvData: InputValues = {
+      catagoryId: catagoryId,
+      description: description,
+      link: link,
+    };
+    if(!validate.cv()) return
+    await checkUploadCV({ cvData, userId });
   }
-
   return (
     <main>
       <Suspense fallback={<div>Loading...</div>}>
-        <div className="w-full flex justify-center items-center">
-          <div className="w-2/4 h-full flex justify-center items-center flex-col gap-8">
-            {/* <div className="absolute bg-black h-full w-full bottom-0"></div> */}
-              <div className="text-7xl">Upload cv</div>
-              {/* <InputRow title="title" inputElement={
-                  <InputBox onChange={(e) => setTitle(e)} placeHolder="please enter a title" value={title}></InputBox>
-              } isValid={!!title}></InputRow>
-               */}
-              <InputRow title="Link" inputDescription="please enter a google docs link of the cv" inputElement={  
-                  <div className="flex flex-row justify-between w-full items-center">
-                      <InputBox onChange={(e) => setLink(e)} placeHolder="Please enter the cv link" value={link}></InputBox>
-                      <PopupWrapper 
+        <div className="flex w-full items-center justify-center">
+          <div className="flex h-full w-2/4 flex-col items-center justify-center gap-8">
+            <div className="text-7xl">upload cv</div>
+            <InputRow
+              title="link"
+              inputDescription="please enter a google docs link of the cv"
+              isValid={validate.link()}
+              inputElement={
+                <div className="flex w-full flex-row items-center justify-between">
+                  <InputBox
+                    onChange={(e) => setLink(e)}
+                    placeHolder="please enter the cv link"
+                    value={link}
+                  ></InputBox>
+                  <PopupWrapper 
                         clickable= {
                           <div className="h-12 w-20 flex flex-row justify-center items-center" title="">
                               <Image className="dark:invert"
@@ -107,30 +141,48 @@ export default function Page() {
                         disableButton={!checkIfLinkIsValid()}
                       >
                       </PopupWrapper>
-                  </div>
-              } isValid={checkIfLinkIsValid()}></InputRow>
-
-              <InputRow title="Description" inputDescription="Please enter a description 1 > 500 chars" inputElement={
-                <InputBox onChange={(e) => {if(description.length <= 500) setDescription(e)}} placeHolder="please enter a description" value={description}></InputBox>
-              } isValid={!!description && description.length <= 500 }></InputRow>
-
-              <InputRow title="Catagory" inputDescription="Please select 1-3 catagories" inputElement={
-                <div className="w-80 rtl">
-                  <DropdownInput onChange={(e) => setCatagoryId(e)} placeHolder="please select a catagory" valueIds={getAllNumbersFromArr(Object.keys(Categories.category))} getValueById={(e) => Categories.category[e]} valueId={catagoryId} isApply={false}></DropdownInput>
                 </div>
-              } isValid={!!catagoryId && catagoryId.length <= 3}></InputRow>
-
-              <Row inputElement={
+              }
+            ></InputRow>
+            <InputRow
+              title="description"
+              inputDescription="Please enter a description 1 > 500 chars"
+              isValid={validate.description()}
+              inputElement={
+                <InputBox
+                  onChange={(e) => {if(validate.description()) setDescription(e)}}
+                  placeHolder="please enter a description"
+                  value={description}
+                ></InputBox>
+              }
+            ></InputRow>
+            <InputRow
+              title="catagory"
+              inputDescription="Please select 1-3 catagories"
+              isValid={validate.catagoryIds()}
+              inputElement={
+                <DropdownInput
+                  onChange={(e) => setCatagoryId(e || null)}
+                  placeHolder="please select a catagory"
+                  valueIds={getAllNumbersFromArr(
+                    Object.keys(Categories.category)
+                  )}
+                  getValueById={(e) => Categories.category[e]}
+                  valueId={catagoryId}
+                ></DropdownInput>
+              }
+            ></InputRow>
+            {/* TODO: Hide button until all was given */}
+            <Row inputElement={
                 <div className="flex justify-center items-center w-full h-full">
                   <div className="w-1/2 mt-20">
-                    <Button text={'send'} onClick={() => {}}></Button>
+                    <Button text="send" onClick={startUpload} isDisabled={!validate.cv()}></Button>
                   </div>
                 </div>
               }></Row>
-
           </div>
         </div>
       </Suspense>
     </main>
-  )
+  );
 }
