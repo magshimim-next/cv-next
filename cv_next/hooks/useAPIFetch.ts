@@ -1,8 +1,10 @@
 import { useCallback } from "react";
 
 export const CVS_API_BASE = "/api/cvs";
+export const USERS_API_BASE = "/api/users";
 export const FETCH_CVS_ENDPOINT = "fetchCvs";
 export const FETCH_PREVIEWS_ENDPOINT = "fetchPreviews";
+export const FETCH_USERS_ENDPOINT = "fetchUserData";
 
 export const getRouteUri = (base: string, endpoint: string): string => {
   return `${base}/${endpoint}`;
