@@ -20,7 +20,7 @@ export async function getCvById(cvId: string): Promise<CvModel | null> {
   try {
     const { data: cvs, error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.cvs)
-      .select("*")
+      .select("*, user_id (id, full_name, username, avatar_url)")
       .eq(CvKeys.id, cvId);
 
     if (error) {

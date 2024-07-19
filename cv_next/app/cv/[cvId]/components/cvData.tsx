@@ -1,21 +1,15 @@
 "use client";
-import { getUserModel } from "@/app/actions/users/getUser";
-import useSWR from "swr";
+
 import Categories from "@/types/models/categories";
 import Image from "next/image";
 import profileIcon from "@/public/images/profile.png";
 
 export default function CvData({ cv }: { cv: CvModel }) {
-  const { data: user } = useSWR(cv.user_id, getUserModel);
-  if ((user && !user.ok) || !user) {
-    return null;
-  }
-
+  const uploader = JSON.parse(JSON.stringify(cv.user_id));
   const userName =
-    user.val.username && user.val.username.length > 0
-      ? user.val.username
-      : user.val.full_name;
-
+    uploader.username && uploader.username.length > 0
+      ? uploader.username
+      : uploader.full_name;
   return (
     <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[65%_35%] md:gap-x-4">
       <article
@@ -27,7 +21,7 @@ export default function CvData({ cv }: { cv: CvModel }) {
             {/* TODO: update so it uses the dynamic profile image from the profile page*/}
             <Image
               alt="profile"
-              src={user.val.avatar_url || profileIcon}
+              src={uploader.avatar_url || profileIcon}
               width={30}
               height={30 * 1.4142}
               className="w-10 rounded-lg p-2"
