@@ -85,10 +85,10 @@ export default function Page() {
                */}
               <InputRow title="Link" inputDescription="please enter a google docs link of the cv" inputElement={  
                   <div className="flex flex-row justify-between w-full items-center">
-                      <InputBox onChange={(e) => setLink(e)} placeHolder="please enter the cv link" value={link}></InputBox>
+                      <InputBox onChange={(e) => setLink(e)} placeHolder="Please enter the cv link" value={link}></InputBox>
                       <PopupWrapper 
                         clickable= {
-                          <div className="h-12 w-20 flex flex-row justify-center items-center">
+                          <div className="h-12 w-20 flex flex-row justify-center items-center" title="">
                               <Image className="dark:invert"
                                   alt='' 
                                   src={openLink}
@@ -110,13 +110,15 @@ export default function Page() {
                   </div>
               } isValid={checkIfLinkIsValid()}></InputRow>
 
-              <InputRow title="Description" inputDescription="please enter a description 1 > 500 chars" inputElement={
-                <InputBox onChange={(e) => setDescription(e)} placeHolder="please enter a description" value={description}></InputBox>
+              <InputRow title="Description" inputDescription="Please enter a description 1 > 500 chars" inputElement={
+                <InputBox onChange={(e) => {if(description.length <= 500) setDescription(e)}} placeHolder="please enter a description" value={description}></InputBox>
               } isValid={!!description && description.length <= 500 }></InputRow>
 
-              <InputRow title="Catagory" inputDescription="please select at least one catagory" inputElement={
-                <DropdownInput text="" onChange={(e) => setCatagoryId(e)} placeHolder="please select a catagory" valueIds={getAllNumbersFromArr(Object.keys(Categories.category))} getValueById={(e) => Categories.category[e]} valueId={catagoryId}></DropdownInput>
-              } isValid={!!catagoryId}></InputRow>
+              <InputRow title="Catagory" inputDescription="Please select 1-3 catagories" inputElement={
+                <div className="w-80 rtl">
+                  <DropdownInput onChange={(e) => setCatagoryId(e)} placeHolder="please select a catagory" valueIds={getAllNumbersFromArr(Object.keys(Categories.category))} getValueById={(e) => Categories.category[e]} valueId={catagoryId} isApply={false}></DropdownInput>
+                </div>
+              } isValid={!!catagoryId && catagoryId.length <= 3}></InputRow>
 
               <Row inputElement={
                 <div className="flex justify-center items-center w-full h-full">

@@ -43,16 +43,18 @@ export const FilterPanel = ({
         value={searchValue}
         onChange={setSearchValue}
       ></InputBox>
-      <DropdownInput
-        placeHolder="all"
-        valueIds={mapCategories}
-        text="Category"
-        valueId={categoryId}
-        onChange={setCategoryId}
-        getValueById={(id: number) => {
-          return Categories.category[id];
-        }}
-      ></DropdownInput>
+      <div className="w-80">
+        <DropdownInput
+          placeHolder="all"
+          valueIds={mapCategories}
+          text="Category"
+          valueId={categoryId}
+          onChange={setCategoryId}
+          getValueById={(id: number) => {
+            return Categories.category[id];
+          }}
+        ></DropdownInput>
+      </div>
     </div>
   );
 };
