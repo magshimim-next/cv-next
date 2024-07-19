@@ -1,25 +1,26 @@
-"use client"
+"use client";
 
-import useSWR from "swr"
-import { fetchComments } from "@/app/actions/comments/fetchComments"
-import Comment from "./comment"
-import { useEffect, useState } from "react"
-import { useSupabase } from "@/hooks/supabase"
+import useSWR from "swr";
+import { fetchComments } from "@/app/actions/comments/fetchComments";
+import Comment from "./comment";
+import { useEffect, useState } from "react";
+import { useSupabase } from "@/hooks/supabase";
+import { redirect } from "next/navigation";
 
 export default function CommentsSection({ cv }: { cv: CvModel }) {
-  const { data: comments } = useSWR(cv.id, fetchComments)
+  const { data: comments } = useSWR(cv.id, fetchComments);
 
-  const supabase = useSupabase()
-  const [userId, setUserId] = useState<string>("")
+  const supabase = useSupabase();
+  const [userId, setUserId] = useState<string>("");
 
   useEffect(() => {
     async function getUser() {
-      const userId = (await supabase.auth.getUser()).data.user?.id
-      if (!userId) throw new Error("User not found") // TODO: handle this
-      setUserId(userId)
+      const userId = (await supabase.auth.getUser()).data.user?.id;
+      if (!userId) redirect("/inactive");
+      setUserId(userId);
     }
-    getUser()
-  }, [supabase.auth])
+    getUser();
+  }, [supabase.auth]);
 
   return (
     <>
@@ -29,5 +30,5 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
           ))
         : null}
     </>
-  )
+  );
 }

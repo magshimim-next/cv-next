@@ -1,6 +1,7 @@
 "use client";
 import { addComment } from "@/app/actions/comments/addComment";
 import { useSupabase } from "@/hooks/supabase";
+import { redirect } from "next/navigation";
 import { useRef } from "react";
 import { RxPaperPlane } from "react-icons/rx";
 import { mutate } from "swr";
@@ -13,7 +14,7 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
 
   const formAction = async (formData: FormData) => {
     const userId = (await supabase.auth.getUser()).data.user?.id;
-    if (!userId) throw new Error("User not found"); // TODO: handle this
+    if (!userId) redirect("/inactive");
     const comment: NewCommentModel = {
       data: formData.get(COMMENT_FIELD_NAME) as string,
       document_id: cv.id,
