@@ -2,8 +2,7 @@
 import { deleteComment } from "@/app/actions/comments/deleteComment";
 import { setResolved } from "@/app/actions/comments/setResolved";
 import { upvoteComment } from "@/app/actions/comments/setLike";
-import useSWR, { mutate } from "swr";
-import { getUserModel } from "@/app/actions/users/getUser";
+import { mutate } from "swr";
 
 export default function Comment({
   comment,
@@ -37,14 +36,11 @@ export default function Comment({
     });
   };
 
-  const { data: user } = useSWR(comment.user_id, getUserModel);
-  if ((user && !user.ok) || !user) {
-    return null;
-  }
+  const commenter = JSON.parse(JSON.stringify(comment.user_id));
   const userName =
-    user.val.username && user.val.username.length > 0
-      ? user.val.username
-      : user.val.full_name;
+    commenter.username && commenter.username.length > 0
+      ? commenter.username
+      : commenter.full_name;
 
   const voteingSection =
     comment.upvotes && comment.upvotes.includes(userId) ? (

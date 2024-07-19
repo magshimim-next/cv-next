@@ -94,6 +94,7 @@ export async function setResolved(
  * @param {boolean} [ascending=false] - Whether to sort the comments in ascending order.
  * @param {boolean} [filterOutDeleted=true] - Whether to filter out deleted comments.
  * @return {Promise<Result<CommentModel[], string>>} A Promise that resolves to a Result object containing the retrieved comments or an error message.
+ * The user_id of the retrieved comments is a json of the user_id, full_name of that user and that's username
  */
 export async function getAllCommentsByCVId(
   cvId: string,
@@ -104,7 +105,7 @@ export async function getAllCommentsByCVId(
     const supabase = SupabaseHelper.getSupabaseInstance();
     let query = supabase
       .from("comments")
-      .select("*")
+      .select("*, user_id (id, full_name, username)")
       .eq("document_id", cvId)
       .order("last_update", { ascending: ascending });
     if (filterOutDeleted) {
@@ -114,6 +115,7 @@ export async function getAllCommentsByCVId(
     if (error) {
       return Err(getAllCommentsByCVId.name, error);
     }
+
     return Ok(comments);
   } catch (err) {
     return Err(getAllCommentsByCVId.name, undefined, err as Error);
