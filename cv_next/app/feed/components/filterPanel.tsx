@@ -53,6 +53,7 @@ export const FilterPanel = ({
           getValueById={(id: number) => {
             return Categories.category[id];
           }}
+          noneText="all"
         ></DropdownInput>
       </div>
     </div>

@@ -5,23 +5,26 @@ import { ReactNode, useState } from "react";
 
 interface PopupProps {
     children: ReactNode;
-    clickable: ReactNode;
+    clickable?: ReactNode;
     disableButton?: boolean;
+    onClose?: () => void;
 }
 
-export default function PopupWrapper({ children, clickable, disableButton }: PopupProps, ) {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+export default function PopupWrapper({ children, clickable, disableButton, onClose }: PopupProps, ) {
+  const [isPopupOpen, setIsPopupOpen] = useState(!!onClose);
 
   return (
     <div>
-      <div className="cursor-pointer rounded-full" onClick={() => {if(!disableButton) setIsPopupOpen(true)}}>
+      { clickable && <div className="cursor-pointer rounded-full" onClick={() => {if(!disableButton) setIsPopupOpen(true)}}>
         {clickable}
-      </div>
+      </div>}
       {isPopupOpen && (
         <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
             <div
                 className="absolute h-full w-full bg-black opacity-50 backdrop-blur-md z-popup-bg"
-                onClick={() => setIsPopupOpen(false)}
+                onClick={() => {
+                  onClose ? onClose() : setIsPopupOpen(false)
+                }}
             ></div>
             <div className="z-popup">
                 {children}

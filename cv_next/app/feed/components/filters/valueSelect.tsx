@@ -7,7 +7,8 @@ export const DropdownInput = ({
   onChange,
   getValueById,
   text,
-  isApply
+  isApplyOptionVisible,
+  noneText
 }: {
   placeHolder: string;
   valueIds: number[];
@@ -15,7 +16,8 @@ export const DropdownInput = ({
   getValueById: (id: number) => string;
   onChange: (newValue: number[] | null) => void;
   text?: string;
-  isApply?: boolean;
+  isApplyOptionVisible?: boolean;
+  noneText: "all" | "none"
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
@@ -87,7 +89,7 @@ export const DropdownInput = ({
             className="flex h-10 w-full items-center justify-center bg-white text-gray-400 hover:bg-slate-200"
             onClick={handleAllSelection}
           >
-            {"all"}
+            {noneText}
           </div>
           {valueIds.map((possibleValueId) => (
             <label
@@ -107,7 +109,7 @@ export const DropdownInput = ({
               {`${getValueById(possibleValueId)}`}
             </label>
           ))}
-          {isApply && <div
+          {isApplyOptionVisible && <div
             className="flex h-10 w-full items-center justify-center bg-white text-black hover:bg-slate-200"
             onClick={() =>
               onChange(selectedCategories.length ? selectedCategories : null)

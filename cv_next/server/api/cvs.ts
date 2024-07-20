@@ -7,6 +7,7 @@ import { Tables, CvKeys } from "@/lib/supabase-definitions";
 import SupabaseHelper from "./supabaseHelper";
 import { PostgrestError } from "@supabase/supabase-js";
 import { filterValues } from "@/app/feed/components/filterPanel";
+import MyLogger from "@/server/base/logger";
 
 export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS;
 
@@ -226,7 +227,7 @@ export async function uploadCV(cv: NewCvModel): Promise<null | CvModel> {
     .insert(cv)
     .select();
   if (error) {
-    MyLogger.logInfo("Error @ cvs::uploadCV", error);
+    logger.error("Error @ cvs::uploadCV", error);
     return null;
   }
   return data[0];

@@ -1,5 +1,5 @@
 "use client";
-import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
+import { transformGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 
 export const CvPreview = ({
   document_link,
@@ -8,7 +8,7 @@ export const CvPreview = ({
 }) => {
   let presentedURL = document_link;
 
-  const transformedURL = validateGoogleViewOnlyUrl(document_link);
+  const transformedURL = transformGoogleViewOnlyUrl(document_link);
   if (transformedURL != "") {
     presentedURL = transformedURL;
   }

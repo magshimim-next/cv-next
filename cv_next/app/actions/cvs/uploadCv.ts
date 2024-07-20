@@ -1,10 +1,15 @@
 "use server";
 
-import { InputValues } from "@/app/upload/page";
 import { uploadCV, getCvsByUserId } from "@/server/api/cvs";
-import MyLogger from "@/server/base/logger";
-import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
+import { transformGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 import { redirect } from "next/navigation";
+import logger from "@/server/base/logger";
+
+export interface InputValues {
+  link: string;
+  description: string;
+  catagoryId: number[] | null
+}
 
 export const checkUploadCV = async ({
   cvData,
@@ -12,44 +17,50 @@ export const checkUploadCV = async ({
 }: {
   cvData: InputValues;
   userId: string;
-}): Promise<string | void> => {
+}): Promise<string | null> => {
   if (
-    !cvData.title?.trim() ||
     !cvData.link?.trim() ||
     !cvData.description?.trim() ||
     cvData.catagoryId === undefined
   ) {
-    MyLogger.logInfo("Missing variables!");
+    logger.error("Missing variables!");
     return "Missing variables!";
   }
-  const cvsOfUser = await getCvsByUserId(userId);
-  if (!cvsOfUser || cvsOfUser.length >= 5) {
-    MyLogger.logInfo("The user has at least 5 CVs already");
+
+  if (!(await canUserUploadACV(userId))) {
+    logger.error("The user has at least 5 CVs already");
     return "The user has at least 5 CVs already";
   }
 
-  const transformedURL = validateGoogleViewOnlyUrl(cvData.link);
+  const transformedURL = transformGoogleViewOnlyUrl(cvData.link);
 
   if (transformedURL == "") {
-    MyLogger.logInfo("Couldn't transform the link", cvData.link);
+    logger.error("Couldn't transform the link", cvData.link);
     return "Regex invalid!";
   }
 
   const cvToUpload: NewCvModel = {
     document_link: transformedURL,
     description: cvData.description,
-    category_id: cvData.catagoryId,
+    category_id: (cvData.catagoryId ?? [0])[0],
     user_id: userId,
-    cv_categories: [cvData.catagoryId],
+    cv_categories: cvData.catagoryId ?? [],
   };
 
-  MyLogger.logDebug("Can upload:", cvToUpload);
+  logger.debug("Can upload:", cvToUpload);
 
   const response = await uploadCV(cvToUpload);
   if (response) {
-    MyLogger.logDebug("Uploaded");
+    logger.debug("Uploaded");
     redirect(`/cv/${response.id}`);
   } else {
     return "Error uploading";
   }
+
+  return null
 };
+
+export const canUserUploadACV = async (userId: string) => {
+  const cvsOfUser = await getCvsByUserId(userId);
+  return !cvsOfUser || cvsOfUser.length < 5
+}
