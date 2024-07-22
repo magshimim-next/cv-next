@@ -5,7 +5,12 @@ import { upvoteComment } from "@/app/actions/comments/setLike"
 import { addNewComment } from "@/app/actions/comments/addNewComment"
 import { getUser } from "@/app/actions/users/getUser"
 import { RxPlus } from "react-icons/rx"
-import { GoCheck } from "react-icons/go"
+import { GoCheckCircle } from "react-icons/go"
+import { GoCheckCircleFill } from "react-icons/go"
+import { FaRegTrashCan } from "react-icons/fa6"
+import { FaComment } from "react-icons/fa"
+import Tooltip from "../../../../../components/layout/tooltip"
+
 import { AiTwotoneLike } from "react-icons/ai"
 import { AiFillLike } from "react-icons/ai"
 
@@ -13,6 +18,7 @@ import { useEffect, useState } from "react"
 import Alert from "../../../../../components/layout/alert"
 
 import useSWR, { mutate } from "swr"
+import { CheckCheckIcon } from "lucide-react"
 
 export default function Comment({
   comment,
@@ -126,63 +132,90 @@ export default function Comment({
           </div>
         </footer>
         <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
-        <div>
-          {comment.user_id === userId ? (
-            <span>
-              <>
-                <button
-                  className="text-red-500"
-                  onClick={() => setShowAlert(true)}
-                >
-                  Delete
-                </button>
-                <span> </span>
-                {comment.resolved === true ? (
-                  // TODO: change appearence of comment based on if its resolved or not
-                  <button
-                    className="text-green-500"
-                    onClick={() => setResolvedCommentAction(false)}
-                  >
-                    UnResolve
-                  </button>
-                ) : (
-                  <button
-                    className="text-gray-500"
-                    onClick={() => setResolvedCommentAction(true)}
-                  >
-                    Resolve
-                  </button>
-                )}
-              </>
-            </span>
-          ) : !comment.parent_comment_Id ? (
-            <button
-              className="text-green-500"
-              onClick={() => setCommentOnCommentStatus(!commentOnCommentStatus)}
-            >
-              Comment
-            </button>
-          ) : null}
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <span>
-            {comment.upvotes && comment.upvotes.includes(userId) ? (
-              <button style={{ marginLeft: "0.5rem" }}>
-                <AiFillLike
-                  onClick={() => setLikedCommentAction(false)}
-                  size="1.4rem"
+            {comment.user_id === userId ? (
+              <span>
+                <>
+                  <button
+                    className="text-red-500"
+                    onClick={() => setShowAlert(true)}
+                  >
+                    <FaRegTrashCan
+                      data-tooltip-target="Trash Icon"
+                      style={{
+                        transform: "translateY(2px)",
+                      }}
+                      fontSize="1.4rem"
+                    />
+                  </button>
+                  <Tooltip id="Trash icon" color="" message="delete"></Tooltip>
+                  <span> </span>
+                </>
+              </span>
+            ) : !comment.parent_comment_Id ? (
+              <button className="text-green-500">
+                <FaComment
+                  size="1.2rem"
+                  style={{
+                    marginRight: "0.4rem",
+                    transform: "translateY(2px)",
+                  }}
+                  onClick={() =>
+                    setCommentOnCommentStatus(!commentOnCommentStatus)
+                  }
+                />
+              </button>
+            ) : null}
+            <span>
+              {comment.upvotes && comment.upvotes.includes(userId) ? (
+                <button>
+                  <AiFillLike
+                    onClick={() => setLikedCommentAction(false)}
+                    size="1.4rem"
+                    style={{
+                      transform: "translateY(2px)",
+                    }}
+                  />
+                </button>
+              ) : (
+                <button>
+                  <AiTwotoneLike
+                    size="1.4rem"
+                    color="grey"
+                    style={{
+                      transform: "translateY(2px)",
+                    }}
+                    onClick={() => setLikedCommentAction(true)}
+                  />
+                </button>
+              )}
+            </span>
+          </span>
+          <span style={{ alignSelf: "end" }}>
+            {comment.resolved === true ? (
+              // TODO: change appearence of comment based on if its resolved or not
+              <button
+                className="text-green-500"
+                onClick={() => setResolvedCommentAction(false)}
+              >
+                <GoCheckCircleFill
                   style={{
                     transform: "translateY(2px)",
                   }}
+                  fontSize="1.4rem"
                 />
               </button>
             ) : (
-              <button style={{ marginLeft: "0.5rem" }}>
-                <AiTwotoneLike
-                  size="1.4rem"
-                  color="grey"
+              <button
+                className="text-green-500"
+                onClick={() => setResolvedCommentAction(true)}
+              >
+                <GoCheckCircle
                   style={{
                     transform: "translateY(2px)",
                   }}
-                  onClick={() => setLikedCommentAction(true)}
+                  fontSize="1.4rem"
                 />
               </button>
             )}

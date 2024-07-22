@@ -10,6 +10,7 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
   const supabase = useSupabase()
 
   const formAction = async (formData: FormData) => {
+    checkValidityOfComment()
     const userId = (await supabase.auth.getUser()).data.user?.id
     if (!userId) throw new Error("User not found") // TODO: handle this
     const comment: NewCommentModel = {

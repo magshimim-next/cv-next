@@ -20,9 +20,9 @@ export default function Alert({
   const alertClassProvider = (color: string) => {
     switch (color) {
       case "red":
-        return "relative rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700"
+        return "p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
       case "green":
-        return "relative rounded border border-green-400 bg-green-100 px-4 py-3 text-green-700"
+        return "p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
     }
   }
   return (
