@@ -1,4 +1,3 @@
-"use client";
 import EmblaCarousel from "@/components/ui/Carousel/carouselStructure";
 import { EmblaOptionsType } from "embla-carousel";
 import CVItem from "@/app/feed/components/CVItem";
