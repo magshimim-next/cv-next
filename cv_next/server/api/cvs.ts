@@ -8,8 +8,6 @@ import logger from "../base/logger";
 import { Tables, CvKeys } from "@/lib/supabase-definitions";
 import { filterValues } from "@/app/feed/components/filterPanel";
 
-export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS;
-
 /**
  * Retrieves a CV by its ID from the database.
  *
