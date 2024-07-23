@@ -4,7 +4,9 @@ WORKDIR /app
 COPY . /app/.
 ENV NEXT_PUBLIC_SUPABASE_URL=''
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=''
+RUN chmod +x startup.sh
+
 
 EXPOSE 3000
 
-CMD npm install; npm install next; npm run dev
+CMD ["./startup.sh"]
