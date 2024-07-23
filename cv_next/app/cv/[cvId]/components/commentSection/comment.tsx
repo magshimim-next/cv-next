@@ -37,10 +37,9 @@ export default function Comment({
   };
 
   const commenter = JSON.parse(JSON.stringify(comment.user_id));
-  const userName =
-    commenter.username && commenter.username.length > 0
-      ? commenter.username
-      : commenter.full_name;
+  const userName = commenter.username?.length
+    ? commenter.username
+    : commenter.full_name;
 
   const voteingSection =
     comment.upvotes && comment.upvotes.includes(userId) ? (
