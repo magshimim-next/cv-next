@@ -42,7 +42,7 @@ export default function Comment({
     : commenter.full_name;
 
   const userVoted = comment.upvotes?.includes(userId);
-  const voteingSection = comment.upvotes && (
+  const votingSection = comment.upvotes && (
     <button
       className="text-gray-500"
       onClick={() => setLikedCommentAction(!userVoted)}
@@ -95,7 +95,7 @@ export default function Comment({
       <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
       {commenterActions}
       <span> </span>
-      {voteingSection}
+      {votingSection}
     </article>
   );
 }
