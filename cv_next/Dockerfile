@@ -7,4 +7,4 @@ ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=''
 
 EXPOSE 3000
 
-CMD ["npm", "install", "&&", "npm", "install", "next", "&&", "npm", "run", "dev"]
+CMD npm install; npm install next; npm run dev
