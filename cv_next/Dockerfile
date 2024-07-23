@@ -14,4 +14,4 @@ RUN chmod +x startup.sh
 
 EXPOSE 3000
 
-CMD ["sh startup.sh"]
+CMD ["sh", "startup.sh"]
