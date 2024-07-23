@@ -1,10 +1,7 @@
 import "server-only";
 
 import SupabaseHelper from "./supabaseHelper";
-import Definitions from "@/lib/definitions";
 import { Ok, Err } from "@/lib/utils";
-
-export const revalidate = Definitions.COMMENTS_REVALIDATE_TIME_IN_SECONDS;
 
 /**
  * Add a new comment to the database.
