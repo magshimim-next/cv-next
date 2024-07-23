@@ -3,7 +3,6 @@
 import { notFound } from "next/navigation";
 import { getUser } from "@/app/actions/users/getUser";
 import ProfileData from "./components/profileData";
-import ProfileComments from "./components/comments/profileComments";
 import ProfileCvs from "./components/profileCvs";
 import { getCvsByUserId } from "@/server/api/cvs";
 
@@ -32,9 +31,6 @@ export default async function Page({
         <section className="h-[78.75rem] flex-col self-start">
           <div>
             <ProfileData user={result.val} />
-          </div>
-          <div className="mt-5 justify-center">
-            <ProfileComments user={result.val} />
           </div>
         </section>
       </div>
