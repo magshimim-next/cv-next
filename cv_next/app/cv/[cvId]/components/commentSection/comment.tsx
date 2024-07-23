@@ -41,22 +41,25 @@ export default function Comment({
     ? commenter.username
     : commenter.full_name;
 
-  const voteingSection =
-    comment.upvotes && comment.upvotes.includes(userId) ? (
-      <button
-        className="text-gray-500"
-        onClick={() => setLikedCommentAction(false)}
-      >
-        UnLike {comment.upvotes?.length || 0}
-      </button>
-    ) : (
-      <button
-        className="text-gray-500"
-        onClick={() => setLikedCommentAction(true)}
-      >
-        Like {comment.upvotes?.length || 0}
-      </button>
-    );
+  const userVoted = comment.upvotes?.includes(userId);
+  const voteingSection = comment.upvotes && (
+    <button
+      className="text-gray-500"
+      onClick={() => setLikedCommentAction(!userVoted)}
+    >
+      {userVoted ? "Unlike" : "Like"} {comment.upvotes?.length || 0}
+    </button>
+  );
+
+  const userResolved = comment.resolved; // Assuming this reflects if the comment is resolved or not
+  const resolvedSection = (
+    <button
+      className={`text-${userResolved ? "green" : "gray"}-500`}
+      onClick={() => setResolvedCommentAction(!userResolved)}
+    >
+      {userResolved ? "UnResolve" : "Resolve"}
+    </button>
+  );
 
   const commenterActions =
     comment.user_id === userId ? (
@@ -65,22 +68,7 @@ export default function Comment({
           Delete
         </button>
         <span> </span>
-        {comment.resolved === true ? (
-          // TODO: change appearence of comment based on if its resolved or not
-          <button
-            className="text-green-500"
-            onClick={() => setResolvedCommentAction(false)}
-          >
-            UnResolve
-          </button>
-        ) : (
-          <button
-            className="text-gray-500"
-            onClick={() => setResolvedCommentAction(true)}
-          >
-            Resolve
-          </button>
-        )}
+        {resolvedSection}
       </>
     ) : null;
 
