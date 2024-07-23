@@ -5,7 +5,7 @@ export const getRouteUri = (base: string, endpoint: string): string => {
   return `${base}/${endpoint}`;
 };
 
-const postFetcher = async (url: string, body: Record<string, any>) => {
+const postHandler = async (url: string, body: Record<string, any>) => {
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -19,17 +19,13 @@ const postFetcher = async (url: string, body: Record<string, any>) => {
   return response.json();
 };
 
-// Hook for POST requests
 export const useApiFetch = () => {
-  // Function to trigger a POST request
   const fetchFromApi = useCallback(
     async (base: string, endpoint: string, body: Record<string, any>) => {
       const apiUrl = getRouteUri(base, endpoint);
 
-      // Call postFetcher directly
       try {
-        const data = await postFetcher(apiUrl, body);
-        // Optionally update the cache
+        const data = await postHandler(apiUrl, body);
         mutate(apiUrl, data, false);
         return data;
       } catch (error) {
