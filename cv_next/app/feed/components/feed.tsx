@@ -32,6 +32,8 @@ export default function Feed() {
     categoryIds: null,
   });
   const fetchFromApi = useApiFetch();
+
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
   /**
    * Trigger pagination when this element comes into view.
    *
@@ -79,6 +81,19 @@ export default function Feed() {
     }
   }, [loadMore, filters, fetchFromApi]);
 
+  const debouncedFetchCvsCallback = useCallback(async () => {
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    return new Promise<void>((resolve) => {
+      debounceTimeout.current = setTimeout(async () => {
+        await fetchCvsCallback();
+        resolve();
+      }, 300); // Adjust delay as needed
+    });
+  }, [fetchCvsCallback]);
+
   useEffect(() => {
     //before unmount, save current cvs state to context for smoother navigation
     //TODO: add time-based revalidation for context
@@ -113,6 +128,10 @@ export default function Feed() {
     setFilters(filters);
   }, []);
 
+  useEffect(() => {
+    debouncedFetchCvsCallback();
+  }, [debouncedFetchCvsCallback]);
+
   return (
     <main>
       <FilterPanel
@@ -131,7 +150,7 @@ export default function Feed() {
           ) : (
             <></>
           )}
-          <TriggerPagination callbackTrigger={fetchCvsCallback} />
+          <TriggerPagination callbackTrigger={debouncedFetchCvsCallback} />
         </div>
         {!loadMore ? (
           <div className="sticky bottom-5 z-10 flex justify-center">
