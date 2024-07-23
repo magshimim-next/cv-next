@@ -2,6 +2,8 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { CVS_API_BASE, USERS_API_BASE } from "./hooks/useAPIFetch";
+import { ProfileKeys, Tables } from "./lib/supabase-definitions";
+
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
     request,
@@ -60,10 +62,21 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: activatedUser, error } = await supabase.auth.getUser();
-  if (error || !activatedUser?.user) {
+  const { data: activatedUser, errorGetUser } = await supabase.auth.getUser();
+  if (errorGetUser || !activatedUser?.user) {
     const nextUrl = new URL("/login", request.url);
     nextUrl.searchParams.set("next", request.nextUrl.pathname);
+    return NextResponse.redirect(nextUrl);
+  }
+
+  const { data: whitelisted, errorWhitelist } = await supabase
+    .from(Tables.whitelisted)
+    .select("*")
+    .eq(ProfileKeys.id, activatedUser.user.id)
+    .single();
+
+  if (whitelisted?.id == null || errorWhitelist) {
+    const nextUrl = new URL("/inactive", request.url);
     return NextResponse.redirect(nextUrl);
   }
 
