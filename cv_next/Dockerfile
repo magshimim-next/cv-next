@@ -4,7 +4,7 @@ WORKDIR /app
 COPY . /app/.
 ENV NEXT_PUBLIC_SUPABASE_URL=''
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=''
-RUN chmod +x startup.sh
+RUN chmod +x /app/startup.sh
 
 
 EXPOSE 3000
