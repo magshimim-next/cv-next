@@ -1,16 +1,9 @@
 "use server";
 
+import { cache } from "react";
 import Categories from "@/types/models/categories";
 
-export default async function CategoryCounter({
-  cvs,
-  title,
-  error,
-}: {
-  cvs: CvModel[];
-  title: string;
-  error: string;
-}) {
+const getTopCategories = async (cvs: CvModel[]) => {
   const categoryCount: { [key: number]: number } = {};
   cvs.forEach((cv) => {
     categoryCount[cv.category_id] = (categoryCount[cv.category_id] || 0) + 1;
@@ -28,6 +21,22 @@ export default async function CategoryCounter({
   const top3CategoryIds = categoryCountArray
     .slice(0, 3)
     .map((item) => item.categoryId);
+
+  return top3CategoryIds;
+};
+
+const cachedTopCategories = cache(getTopCategories);
+
+export default async function CategoryCounter({
+  cvs,
+  title,
+  error,
+}: {
+  cvs: CvModel[];
+  title: string;
+  error: string;
+}) {
+  const top3CategoryIds = await cachedTopCategories(cvs);
 
   const categoryElements = top3CategoryIds.map((categoryId, index) => (
     <span
