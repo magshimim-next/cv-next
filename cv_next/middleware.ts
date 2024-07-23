@@ -1,7 +1,7 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { CVS_API_BASE, USERS_API_BASE } from "./hooks/useAPIFetch";
+import { API_DEFINITIONS } from "./lib/definitions";
 import { ProfileKeys, Tables } from "./lib/supabase-definitions";
 
 export async function middleware(request: NextRequest) {
@@ -10,8 +10,8 @@ export async function middleware(request: NextRequest) {
   });
 
   if (
-    request.nextUrl.pathname.startsWith(CVS_API_BASE) ||
-    request.nextUrl.pathname.startsWith(USERS_API_BASE)
+    request.nextUrl.pathname.startsWith(API_DEFINITIONS.CVS_API_BASE) ||
+    request.nextUrl.pathname.startsWith(API_DEFINITIONS.USERS_API_BASE)
   ) {
     return NextResponse.next();
   }

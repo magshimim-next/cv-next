@@ -5,16 +5,12 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import CVItem from "./CVItem";
 import { CvsContext, CvsDispatchContext } from "@/providers/cvs-provider";
 import { ReloadButton } from "@/components/ui/reloadButton";
-import Definitions from "@/lib/definitions";
+import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
 import { useInView } from "react-intersection-observer";
 import { FilterPanel } from "@/app/feed/components/filterPanel";
 import ReactLoading from "react-loading";
 import { filterValues } from "@/types/models/filters";
-import {
-  useApiFetch,
-  CVS_API_BASE,
-  FETCH_CVS_ENDPOINT,
-} from "@/hooks/useAPIFetch";
+import { useApiFetch } from "@/hooks/useAPIFetch";
 
 export default function Feed() {
   const cvsContextConsumer = useContext(CvsContext);
@@ -65,10 +61,14 @@ export default function Feed() {
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
       const nextPage = page.current + 1;
-      const response = await fetchFromApi(CVS_API_BASE, FETCH_CVS_ENDPOINT, {
-        nextPage,
-        filters,
-      });
+      const response = await fetchFromApi(
+        API_DEFINITIONS.CVS_API_BASE,
+        API_DEFINITIONS.FETCH_CVS_ENDPOINT,
+        {
+          nextPage,
+          filters,
+        }
+      );
 
       if (response && response.cvs.length > 0) {
         setCvs((prevCvs) => [...prevCvs, ...response.cvs]);

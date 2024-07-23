@@ -13,6 +13,14 @@ export default class Definitions {
     "data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPs7p5fDwAFlAI2LB7hbAAAAABJRU5ErkJggg==";
 }
 
+export class API_DEFINITIONS {
+  public static readonly CVS_API_BASE = "/api/cvs";
+  public static readonly USERS_API_BASE = "/api/users";
+  public static readonly FETCH_CVS_ENDPOINT = "fetchCvs";
+  public static readonly FETCH_PREVIEWS_ENDPOINT = "fetchPreviews";
+  public static readonly FETCH_USERS_ENDPOINT = "fetchUserData";
+}
+
 export const heroHeader: PageHeader = {
   header: `Landing pages made easy`,
   subheader: `Easy to setup. Customizable. Quick. Responsive.`,

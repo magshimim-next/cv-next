@@ -7,13 +7,8 @@ import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import Definitions from "@/lib/definitions";
 import { generateCategoryLink } from "@/lib/utils";
-import {
-  useApiFetch,
-  CVS_API_BASE,
-  USERS_API_BASE,
-  FETCH_PREVIEWS_ENDPOINT,
-  FETCH_USERS_ENDPOINT,
-} from "@/hooks/useAPIFetch";
+import { useApiFetch } from "@/hooks/useAPIFetch";
+import { API_DEFINITIONS } from "@/lib/definitions";
 
 interface CVCardProps {
   cv: CvModel;
@@ -30,10 +25,14 @@ export default function CVItem({ cv }: CVCardProps) {
 
   const getBlur = useMemo(
     () => async (imageURL: string) => {
-      const data = await fetchFromApi(CVS_API_BASE, FETCH_PREVIEWS_ENDPOINT, {
-        pathname: "getBlurredCv",
-        cvLink: imageURL,
-      });
+      const data = await fetchFromApi(
+        API_DEFINITIONS.CVS_API_BASE,
+        API_DEFINITIONS.FETCH_PREVIEWS_ENDPOINT,
+        {
+          pathname: "getBlurredCv",
+          cvLink: imageURL,
+        }
+      );
       return data.base64;
     },
     [fetchFromApi]
@@ -41,10 +40,14 @@ export default function CVItem({ cv }: CVCardProps) {
 
   const getURL = useMemo(
     () => async (cvId: string) => {
-      const data = await fetchFromApi(CVS_API_BASE, FETCH_PREVIEWS_ENDPOINT, {
-        pathname: "getImageURL",
-        cvId,
-      });
+      const data = await fetchFromApi(
+        API_DEFINITIONS.CVS_API_BASE,
+        API_DEFINITIONS.FETCH_PREVIEWS_ENDPOINT,
+        {
+          pathname: "getImageURL",
+          cvId,
+        }
+      );
       return data.publicUrl;
     },
     [fetchFromApi]
@@ -52,10 +55,14 @@ export default function CVItem({ cv }: CVCardProps) {
 
   const getCachedUserName = useMemo(
     () => async (userId: string) => {
-      const data = await fetchFromApi(USERS_API_BASE, FETCH_USERS_ENDPOINT, {
-        pathname: "getUserName",
-        userId,
-      });
+      const data = await fetchFromApi(
+        API_DEFINITIONS.USERS_API_BASE,
+        API_DEFINITIONS.FETCH_USERS_ENDPOINT,
+        {
+          pathname: "getUserName",
+          userId,
+        }
+      );
       return data.fullName;
     },
     [fetchFromApi]
@@ -63,10 +70,14 @@ export default function CVItem({ cv }: CVCardProps) {
 
   const revalidatePreview = useCallback(
     async (cvLink: string) => {
-      await fetchFromApi(CVS_API_BASE, FETCH_PREVIEWS_ENDPOINT, {
-        pathname: "revalidatePreview",
-        cvLink,
-      });
+      await fetchFromApi(
+        API_DEFINITIONS.CVS_API_BASE,
+        API_DEFINITIONS.FETCH_PREVIEWS_ENDPOINT,
+        {
+          pathname: "revalidatePreview",
+          cvLink,
+        }
+      );
     },
     [fetchFromApi]
   );
