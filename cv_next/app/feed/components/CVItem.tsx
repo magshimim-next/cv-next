@@ -113,8 +113,8 @@ export default function CVItem({ cv }: CVCardProps) {
 
   useEffect(
     () => () => {
-      if (interval != null) {
-        clearInterval(interval.current as NodeJS.Timeout);
+      if (interval.current != null) {
+        clearInterval(interval.current);
       }
     },
     []
