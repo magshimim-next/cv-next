@@ -2,8 +2,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Check, X } from "lucide-react";
 import Categories from "@/types/models/categories";
-import { arraysHaveSameContent } from "@/lib/utils";
 import { setNewWorkCategories } from "@/app/actions/users/updateUser";
+import isEqual from "lodash.isequal";
 
 export default function EditableWorkCategories({
   user,
@@ -22,10 +22,7 @@ export default function EditableWorkCategories({
   useEffect(() => {
     (async () => {
       if (
-        !arraysHaveSameContent(
-          workCategories,
-          user.work_status_categories || []
-        ) &&
+        !isEqual(workCategories, user.work_status_categories || []) &&
         viewingCurrentUser
       ) {
         const result = await setNewWorkCategories(user.id, workCategories);
@@ -123,7 +120,7 @@ export default function EditableWorkCategories({
           {editableCategories}
         </div>
         <div className="flex justify-center text-base">
-          {!arraysHaveSameContent(
+          {!isEqual(
             tempWorkCategories.concat(
               Array(Math.max(0, 3 - tempWorkCategories.length)).fill(0)
             ),
