@@ -5,9 +5,10 @@ import { fetchComments } from "@/app/actions/comments/fetchComments";
 import Comment from "./comment";
 import { useEffect, useState } from "react";
 import { useSupabase } from "@/hooks/supabase";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function CommentsSection({ cv }: { cv: CvModel }) {
+  const router = useRouter();
   const { data: comments } = useSWR(cv.id, fetchComments);
 
   const supabase = useSupabase();
@@ -16,11 +17,11 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
   useEffect(() => {
     async function getUser() {
       const userId = (await supabase.auth.getUser()).data.user?.id;
-      if (!userId) redirect("/inactive");
-      setUserId(userId);
+      if (!userId) router.push("/inactive");
+      else setUserId(userId);
     }
     getUser();
-  }, [supabase.auth]);
+  }, [router, supabase.auth]);
 
   return (
     <>
