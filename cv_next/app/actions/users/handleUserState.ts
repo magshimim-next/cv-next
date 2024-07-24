@@ -1,8 +1,8 @@
 "use server";
 
 import SupabaseHelper from "@/server/api/supabaseHelper";
-import { ProfileKeys, Tables } from "@/lib/supabase-definitions";
-import logger from "@/server/base/logger";
+import { ProfileKeys } from "@/lib/supabase-definitions";
+import { getUserModel } from "./getUser";
 
 /**
  * Handle which user can enter a given route(used instead of the middleware to reduce server requests)
@@ -20,32 +20,10 @@ export const handleCurrentUser = async (
   if (error || !activatedUser?.user) {
     return "/login";
   } else {
-    const { data: user, error } = await supabase
-      .from(Tables.profiles)
-      .select("*")
-      .eq(ProfileKeys.id, activatedUser.user.id)
-      .single();
-
-    if (user?.user_type == ProfileKeys.user_types.inactive || error) {
+    const user = await getUserModel(activatedUser.user.id);
+    if (!user.ok || user.val.user_type == ProfileKeys.user_types.inactive) {
       return "/inactive";
     }
   }
   return finalRedirect;
-};
-
-export const getUserFromId = async (
-  userId: string
-): Promise<UserModel | null> => {
-  const supabase = SupabaseHelper.getSupabaseInstance();
-  const { data: user, error } = await supabase
-    .from(Tables.profiles)
-    .select("*")
-    .eq(ProfileKeys.id, userId)
-    .single();
-
-  if (!error) {
-    return user;
-  }
-  logger.error(error, "Error fetching user");
-  return null;
 };
