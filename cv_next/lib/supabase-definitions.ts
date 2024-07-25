@@ -66,6 +66,28 @@ export const ProfileKeys: {
   },
 };
 
+export const CommentKeys: {
+  data: "data";
+  parent_comment_id: "parent_comment_id";
+  last_update: "last_update";
+  deleted: "deleted";
+  upvotes: "upvotes";
+  document_id: "document_id";
+  id: "id";
+  resolved: "resolved";
+  user_id: "user_id";
+} = {
+  data: "data",
+  parent_comment_id: "parent_comment_id",
+  last_update: "last_update",
+  deleted: "deleted",
+  upvotes: "upvotes",
+  document_id: "document_id",
+  id: "id",
+  resolved: "resolved",
+  user_id: "user_id",
+};
+
 export const Storage: {
   cvs: "cvs";
 } = {
