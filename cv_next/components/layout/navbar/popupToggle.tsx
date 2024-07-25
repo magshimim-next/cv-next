@@ -5,7 +5,6 @@ import Popup from "./popup";
 import { useSupabase } from "@/hooks/supabase";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { getUserModel } from "@/app/actions/users/getUser";
-import { FaUserCircle } from "react-icons/fa";
 
 export function PopupToggle() {
   const [profileImage, setProfileImage] = useState<string>("");
