@@ -1,10 +1,8 @@
 import "server-only";
 
 import SupabaseHelper from "./supabaseHelper";
-import Definitions from "@/lib/definitions";
 import { Ok, Err } from "@/lib/utils";
-
-export const revalidate = Definitions.COMMENTS_REVALIDATE_TIME_IN_SECONDS;
+import { Tables } from "@/lib/supabase-definitions";
 
 /**
  * Add a new comment to the database.
@@ -17,7 +15,7 @@ export async function addCommentToCv(
 ): Promise<Result<void, string>> {
   try {
     const { data, error } = await SupabaseHelper.getSupabaseInstance()
-      .from("comments")
+      .from(Tables.comments)
       .insert(comment)
       .select();
 
@@ -50,7 +48,7 @@ export async function markCommentAsDeleted(
 ): Promise<Result<void, string>> {
   try {
     const { error } = await SupabaseHelper.getSupabaseInstance()
-      .from("comments")
+      .from(Tables.comments)
       .update({ deleted: true })
       .eq("id", commentId);
     if (error) {
@@ -75,7 +73,7 @@ export async function setResolved(
 ): Promise<Result<void, string>> {
   try {
     const { error } = await SupabaseHelper.getSupabaseInstance()
-      .from("comments")
+      .from(Tables.comments)
       .update({ resolved })
       .eq("id", commentId);
     if (error) {
@@ -104,7 +102,7 @@ export async function getAllCommentsByCVId(
   try {
     const supabase = SupabaseHelper.getSupabaseInstance();
     let query = supabase
-      .from("comments")
+      .from(Tables.comments)
       .select("*, user_id (id, full_name, username)")
       .eq("document_id", cvId)
       .order("last_update", { ascending: ascending });
@@ -124,7 +122,7 @@ export async function getAllCommentsByCVId(
 
 async function getCommentLikes(commentId: string): Promise<string[]> {
   const { data } = await SupabaseHelper.getSupabaseInstance()
-    .from("comments")
+    .from(Tables.comments)
     .select("upvotes")
     .eq("id", commentId)
     .limit(1);
@@ -149,7 +147,7 @@ export async function setLiked(
     }
 
     const { error } = await SupabaseHelper.getSupabaseInstance()
-      .from("comments")
+      .from(Tables.comments)
       .update({ upvotes: likes })
       .eq("id", commentId)
       .select("upvotes");
@@ -179,7 +177,7 @@ export async function getAllCommentsByUserId(
   try {
     const supabase = SupabaseHelper.getSupabaseInstance();
     let query = supabase
-      .from("comments")
+      .from(Tables.comments)
       .select("*")
       .eq("user_id", userId)
       .order("last_update", { ascending: ascending });

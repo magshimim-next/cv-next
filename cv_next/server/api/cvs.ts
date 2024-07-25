@@ -3,8 +3,6 @@ import "server-only";
 import Categories from "@/types/models/categories";
 import Definitions from "../../lib/definitions";
 import SupabaseHelper from "./supabaseHelper";
-
-export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS;
 import { PostgrestError } from "@supabase/supabase-js";
 import logger from "../base/logger";
 import { Tables, CvKeys } from "@/lib/supabase-definitions";
