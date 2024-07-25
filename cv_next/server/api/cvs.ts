@@ -5,7 +5,7 @@ import Definitions from "../../lib/definitions";
 import SupabaseHelper from "./supabaseHelper";
 import { PostgrestError } from "@supabase/supabase-js";
 import logger from "../base/logger";
-import { Tables, CvKeys } from "@/lib/supabase-definitions";
+import { Tables, CvKeys, ProfileKeys } from "@/lib/supabase-definitions";
 import { filterValues } from "@/app/feed/components/filterPanel";
 
 /**
@@ -18,7 +18,9 @@ export async function getCvById(cvId: string): Promise<CvModel | null> {
   try {
     const { data: cvs, error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.cvs)
-      .select("*, user_id (id, full_name, username, avatar_url)")
+      .select(
+        `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.full_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
+      )
       .eq(CvKeys.id, cvId);
 
     if (error) {

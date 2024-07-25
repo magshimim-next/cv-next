@@ -2,7 +2,7 @@ import "server-only";
 
 import SupabaseHelper from "./supabaseHelper";
 import { Ok, Err } from "@/lib/utils";
-import { Tables } from "@/lib/supabase-definitions";
+import { Tables, CommentKeys, ProfileKeys } from "@/lib/supabase-definitions";
 
 /**
  * Add a new comment to the database.
@@ -103,7 +103,9 @@ export async function getAllCommentsByCVId(
     const supabase = SupabaseHelper.getSupabaseInstance();
     let query = supabase
       .from(Tables.comments)
-      .select("*, user_id (id, full_name, username)")
+      .select(
+        `*, ${CommentKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.full_name}, ${ProfileKeys.username})`
+      )
       .eq("document_id", cvId)
       .order("last_update", { ascending: ascending });
     if (filterOutDeleted) {
