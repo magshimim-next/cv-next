@@ -1,4 +1,5 @@
 "use server";
+"use server";
 
 import { getUserById } from "@/server/api/users";
 import { Err } from "@/lib/utils";
@@ -13,7 +14,7 @@ import { ProfileKeys } from "@/lib/supabase-definitions";
  * @param {string} userId - The ID of the user to retrieve
  * @return {Promise<Result<UserModel, string>>} A promise that resolves to a Result containing the user data or an error message
  */
-export const getUser = async (
+export const getUserModel = async (
   userId: string
 ): Promise<Result<UserModel, string>> => {
   const result = await getUserById(userId);
@@ -35,7 +36,7 @@ export const handleCurrentUser = async (
   if (error || !activatedUser?.user) {
     return "/login";
   } else {
-    const result = await getUser(activatedUser.user.id);
+    const result = await getUserModel(activatedUser.user.id);
     if (result === null || !result.ok) {
       notFound();
     } else {

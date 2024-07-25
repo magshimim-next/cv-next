@@ -14,6 +14,11 @@ export default class Definitions {
     "data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPs7p5fDwAFlAI2LB7hbAAAAABJRU5ErkJggg==";
 }
 
+export class Link_Definitions {
+  public static readonly AUTH_CALLBACK_REDIRECT = "/auth/callback";
+  public static readonly AUTH_DEFAULT_REDIRECT = "/";
+}
+
 export const heroHeader: PageHeader = {
   header: `Landing pages made easy`,
   subheader: `Easy to setup. Customizable. Quick. Responsive.`,

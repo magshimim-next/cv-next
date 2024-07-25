@@ -3,8 +3,9 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import Popup from "./popup";
 import { useSupabase } from "@/hooks/supabase";
-import { getUser } from "@/app/actions/users/getUser";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
+import { getUserModel } from "@/app/actions/users/getUser";
+import { FaUserCircle } from "react-icons/fa";
 
 export function PopupToggle() {
   const [profileImage, setProfileImage] = useState<string>("");
@@ -19,7 +20,7 @@ export function PopupToggle() {
         setUserData(null);
         setProfileImage("");
       } else {
-        const currentUserObject = await getUser(connectedUser.user.id);
+        const currentUserObject = await getUserModel(connectedUser.user.id);
         if (currentUserObject.ok) {
           setUserData(currentUserObject.val);
           setProfileImage(currentUserObject.val.avatar_url || "");

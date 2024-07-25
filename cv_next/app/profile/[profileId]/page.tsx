@@ -1,7 +1,7 @@
 "use server";
 
 import { notFound } from "next/navigation";
-import { getUser } from "@/app/actions/users/getUser";
+import { getUserModel } from "@/app/actions/users/getUser";
 import ProfileData from "./components/profileData";
 import ProfileCvs from "./components/profileCvs";
 import { getCvsByUserId } from "@/server/api/cvs";
@@ -13,7 +13,7 @@ export default async function Page({
 }) {
   const { profileId } = params;
 
-  const result = await getUser(profileId);
+  const result = await getUserModel(profileId);
 
   if (result === null || !result.ok) {
     notFound();

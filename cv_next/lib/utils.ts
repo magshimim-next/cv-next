@@ -73,5 +73,22 @@ export function Err<E>(
   return { ok: false, where, postgrestError, err };
 }
 
+/**
+ * Get a valid google docs/drive link and switch to the /preview version to handle permissions better
+ *
+ * @param {string} link - the original link
+ * @return {string} the link as a preview instead of edit or view
+ */
+export function transformToPreviewLink(link: string): string {
+  try {
+    const url = new URL(link);
+    // Regular expression to match '/view', '/edit', etc.
+    url.pathname = url.pathname.replace(/\/(view|edit)/, "/preview");
+    return url.toString();
+  } catch (error) {
+    return "";
+  }
+}
+
 export const generateCategoryLink = (categoryNumber: number) =>
   `/feed?category=${Categories.category[categoryNumber].toLowerCase()}`;
