@@ -2,8 +2,8 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import Popup from "./popup";
-import { getUserFromId } from "@/app/actions/user/fetchUserInfo";
-import { FaUserCircle } from "react-icons/fa";
+import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
+import { getUserModel } from "@/app/actions/users/getUser";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 
 export function PopupToggle() {
@@ -11,9 +11,6 @@ export function PopupToggle() {
   const [userData, setUserData] = useState<UserModel | null>(null);
   const [signedIn, setSignIn] = useState(false);
   const supabase = createClientComponent();
-  const defaultProfileIcon = (
-    <FaUserCircle size={40} style={{ color: "#FFF" }} />
-  );
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -22,10 +19,10 @@ export function PopupToggle() {
         setUserData(null);
         setProfileImage("");
       } else {
-        const currentUserObject = await getUserFromId(connectedUser.user.id);
-        if (currentUserObject) {
-          setUserData(currentUserObject);
-          setProfileImage(currentUserObject.avatar_url || "");
+        const currentUserObject = await getUserModel(connectedUser.user.id);
+        if (currentUserObject.ok) {
+          setUserData(currentUserObject.val);
+          setProfileImage(currentUserObject.val.avatar_url || "");
           setSignIn(true);
         } else {
           setUserData(null);
@@ -40,19 +37,20 @@ export function PopupToggle() {
   return (
     <div>
       <div className="cursor-pointer rounded-full hover:bg-[#27374e]">
-        {profileImage ? (
-          <Image
-            alt="profile"
-            height={40}
-            width={40}
-            src={profileImage}
-            onClick={() => setIsProfilePopupOpen(!isProfilePopupOpen)}
-          ></Image>
-        ) : (
-          <div onClick={() => setIsProfilePopupOpen(!isProfilePopupOpen)}>
-            {defaultProfileIcon}
-          </div>
-        )}
+        <div onClick={() => setIsProfilePopupOpen(!isProfilePopupOpen)}>
+          <DynamicProfileImage
+            isPlaceholder={profileImage ? false : true}
+            placeHolderStyle={{ fontSize: "40px", color: "#FFF" }}
+          >
+            <Image
+              alt="profile"
+              height={40}
+              width={40}
+              src={profileImage}
+              onClick={() => setIsProfilePopupOpen(!isProfilePopupOpen)}
+            />
+          </DynamicProfileImage>
+        </div>
       </div>
       {isProfilePopupOpen && (
         <Popup
