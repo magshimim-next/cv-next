@@ -18,7 +18,6 @@ export default function CvData({ cv }: { cv: CvModel }) {
       >
         <footer className="mb-2 flex items-center justify-between">
           <div className="flex items-center">
-            {/* TODO: update so it uses the dynamic profile image from the profile page*/}
             <DynamicProfileImage
               isPlaceholder={uploader.avatar_url ? false : true}
               placeHolderStyle={{ fontSize: "35px" }}
@@ -31,7 +30,7 @@ export default function CvData({ cv }: { cv: CvModel }) {
                 className="rounded-lg p-2"
               />
             </DynamicProfileImage>
-            <div className="flex items-center">
+            <div className="ml-3 flex items-center">
               <p className="mr-3 inline-flex items-center text-sm font-semibold text-gray-900 dark:text-white">
                 <Link
                   className="text-lg font-medium hover:underline"
