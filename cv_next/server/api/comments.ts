@@ -2,6 +2,7 @@ import "server-only";
 
 import SupabaseHelper from "./supabaseHelper";
 import { Ok, Err } from "@/lib/utils";
+import { Tables, CommentKeys, ProfileKeys } from "@/lib/supabase-definitions";
 
 /**
  * Add a new comment to the database.
@@ -14,7 +15,7 @@ export async function addCommentToCv(
 ): Promise<Result<void, string>> {
   try {
     const { data, error } = await SupabaseHelper.getSupabaseInstance()
-      .from("comments")
+      .from(Tables.comments)
       .insert(comment)
       .select();
 
@@ -47,9 +48,9 @@ export async function markCommentAsDeleted(
 ): Promise<Result<void, string>> {
   try {
     const { error } = await SupabaseHelper.getSupabaseInstance()
-      .from("comments")
+      .from(Tables.comments)
       .update({ deleted: true })
-      .eq("id", commentId);
+      .eq(CommentKeys.id, commentId);
     if (error) {
       return Err(markCommentAsDeleted.name, error);
     }
@@ -72,9 +73,9 @@ export async function setResolved(
 ): Promise<Result<void, string>> {
   try {
     const { error } = await SupabaseHelper.getSupabaseInstance()
-      .from("comments")
+      .from(Tables.comments)
       .update({ resolved })
-      .eq("id", commentId);
+      .eq(CommentKeys.id, commentId);
     if (error) {
       return Err(setResolved.name, error);
     }
@@ -101,12 +102,14 @@ export async function getAllCommentsByCVId(
   try {
     const supabase = SupabaseHelper.getSupabaseInstance();
     let query = supabase
-      .from("comments")
-      .select("*, user_id (id, full_name, username)")
-      .eq("document_id", cvId)
-      .order("last_update", { ascending: ascending });
+      .from(Tables.comments)
+      .select(
+        `*, ${CommentKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.full_name}, ${ProfileKeys.username})`
+      )
+      .eq(CommentKeys.document_id, cvId)
+      .order(CommentKeys.last_update, { ascending: ascending });
     if (filterOutDeleted) {
-      query = query.eq("deleted", false);
+      query = query.eq(CommentKeys.deleted, false);
     }
     const { data: comments, error } = await query;
     if (error) {
@@ -121,9 +124,9 @@ export async function getAllCommentsByCVId(
 
 async function getCommentLikes(commentId: string): Promise<string[]> {
   const { data } = await SupabaseHelper.getSupabaseInstance()
-    .from("comments")
-    .select("upvotes")
-    .eq("id", commentId)
+    .from(Tables.comments)
+    .select(CommentKeys.upvotes)
+    .eq(CommentKeys.id, commentId)
     .limit(1);
   return data && data[0].upvotes ? data[0].upvotes : [];
 }
@@ -146,10 +149,10 @@ export async function setLiked(
     }
 
     const { error } = await SupabaseHelper.getSupabaseInstance()
-      .from("comments")
+      .from(Tables.comments)
       .update({ upvotes: likes })
-      .eq("id", commentId)
-      .select("upvotes");
+      .eq(CommentKeys.id, commentId)
+      .select(CommentKeys.upvotes);
 
     if (error) {
       return Err(setResolved.name, error);
@@ -157,5 +160,38 @@ export async function setLiked(
     return Ok.EMPTY;
   } catch (err) {
     return Err(setResolved.name, undefined, err as Error);
+  }
+}
+
+/**
+ * Retrieves all comments associated with a specific User ID.
+ *
+ * @param {string} userId - The ID of the User for which to retrieve comments.
+ * @param {boolean} [ascending=false] - Whether to sort the comments in ascending order.
+ * @param {boolean} [filterOutDeleted=true] - Whether to filter out deleted comments.
+ * @return {Promise<Result<CommentModel[], string>>} A Promise that resolves to a Result object containing the retrieved comments or an error message.
+ */
+export async function getAllCommentsByUserId(
+  userId: string,
+  ascending: boolean = false,
+  filterOutDeleted = true
+): Promise<Result<CommentModel[], string>> {
+  try {
+    const supabase = SupabaseHelper.getSupabaseInstance();
+    let query = supabase
+      .from(Tables.comments)
+      .select("*")
+      .eq(CommentKeys.user_id, userId)
+      .order(CommentKeys.last_update, { ascending: ascending });
+    if (filterOutDeleted) {
+      query = query.eq(CommentKeys.deleted, false);
+    }
+    const { data: comments, error } = await query;
+    if (error) {
+      return Err(getAllCommentsByUserId.name, error);
+    }
+    return Ok(comments);
+  } catch (err) {
+    return Err(getAllCommentsByUserId.name, undefined, err as Error);
   }
 }

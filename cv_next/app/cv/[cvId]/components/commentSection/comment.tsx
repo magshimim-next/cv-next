@@ -3,6 +3,7 @@ import { deleteComment } from "@/app/actions/comments/deleteComment";
 import { setResolved } from "@/app/actions/comments/setResolved";
 import { upvoteComment } from "@/app/actions/comments/setLike";
 import { mutate } from "swr";
+import Link from "next/link";
 
 export default function Comment({
   comment,
@@ -37,9 +38,6 @@ export default function Comment({
   };
 
   const commenter = JSON.parse(JSON.stringify(comment.user_id));
-  const userName = commenter.username?.length
-    ? commenter.username
-    : commenter.full_name;
 
   const userVoted = comment.upvotes?.includes(userId);
   const votingSection = comment.upvotes && (
@@ -80,7 +78,12 @@ export default function Comment({
       <footer className="mb-2 flex items-center justify-between">
         <div className="flex items-center">
           <p className="mr-3 inline-flex items-center text-sm font-semibold text-gray-900 dark:text-white">
-            {userName}
+            <Link
+              className="text-lg font-medium hover:underline"
+              href={`/profile/${commenter.id}`}
+            >
+              {commenter.username || commenter.full_name}
+            </Link>
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             <time

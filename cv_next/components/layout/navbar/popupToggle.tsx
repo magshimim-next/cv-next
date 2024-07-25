@@ -3,17 +3,14 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import Popup from "./popup";
 import { useSupabase } from "@/hooks/supabase";
+import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { getUserModel } from "@/app/actions/users/getUser";
-import { FaUserCircle } from "react-icons/fa";
 
 export function PopupToggle() {
   const [profileImage, setProfileImage] = useState<string>("");
   const [userData, setUserData] = useState<UserModel | null>(null);
   const [signedIn, setSignIn] = useState(false);
   const supabase = useSupabase();
-  const defaultProfileIcon = (
-    <FaUserCircle size={40} style={{ color: "#FFF" }} />
-  );
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -40,19 +37,20 @@ export function PopupToggle() {
   return (
     <div>
       <div className="cursor-pointer rounded-full hover:bg-[#27374e]">
-        {profileImage ? (
-          <Image
-            alt="profile"
-            height={40}
-            width={40}
-            src={profileImage}
-            onClick={() => setIsProfilePopupOpen(!isProfilePopupOpen)}
-          ></Image>
-        ) : (
-          <div onClick={() => setIsProfilePopupOpen(!isProfilePopupOpen)}>
-            {defaultProfileIcon}
-          </div>
-        )}
+        <div onClick={() => setIsProfilePopupOpen(!isProfilePopupOpen)}>
+          <DynamicProfileImage
+            isPlaceholder={profileImage ? false : true}
+            placeHolderStyle={{ fontSize: "40px", color: "#FFF" }}
+          >
+            <Image
+              alt="profile"
+              height={40}
+              width={40}
+              src={profileImage}
+              onClick={() => setIsProfilePopupOpen(!isProfilePopupOpen)}
+            />
+          </DynamicProfileImage>
+        </div>
       </div>
       {isProfilePopupOpen && (
         <Popup

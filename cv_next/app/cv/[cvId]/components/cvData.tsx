@@ -2,7 +2,8 @@
 
 import Categories from "@/types/models/categories";
 import Image from "next/image";
-import profileIcon from "@/public/images/profile.png";
+import Link from "next/link";
+import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 
 export default function CvData({ cv }: { cv: CvModel }) {
   const uploader = JSON.parse(JSON.stringify(cv.user_id));
@@ -17,17 +18,26 @@ export default function CvData({ cv }: { cv: CvModel }) {
       >
         <footer className="mb-2 flex items-center justify-between">
           <div className="flex items-center">
-            {/* TODO: update so it uses the dynamic profile image from the profile page*/}
-            <Image
-              alt="profile"
-              src={uploader.avatar_url || profileIcon}
-              width={30}
-              height={30 * 1.4142}
-              className="w-10 rounded-lg p-2"
-            ></Image>
-            <div className="flex items-center">
+            <DynamicProfileImage
+              isPlaceholder={uploader.avatar_url ? false : true}
+              placeHolderStyle={{ fontSize: "35px" }}
+            >
+              <Image
+                alt="profile"
+                src={uploader.avatar_url || ""}
+                width={50}
+                height={30 * 1.4142}
+                className="rounded-lg p-2"
+              />
+            </DynamicProfileImage>
+            <div className="ml-3 flex items-center">
               <p className="mr-3 inline-flex items-center text-sm font-semibold text-gray-900 dark:text-white">
-                {userName}
+                <Link
+                  className="text-lg font-medium hover:underline"
+                  href={`/profile/${uploader.id}`}
+                >
+                  {userName}
+                </Link>
               </p>
               <div className="flex flex-wrap space-x-2">
                 {cv.cv_categories.map((category, index) => (
