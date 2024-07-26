@@ -1,7 +1,7 @@
 "use client";
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "@/components/ui/button";
-import { signInWithSocialProvider } from "../actions/user/fetchUserInfo";
+import { signInWithSocialProvider } from "../actions/users/getUser";
 import { useSearchParams } from "next/navigation";
 
 export default function Page() {
