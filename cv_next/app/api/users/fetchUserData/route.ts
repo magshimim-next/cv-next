@@ -1,9 +1,8 @@
 "use server";
 
-import SupabaseHelper from "@/server/api/supabaseHelper";
-import logger from "@/server/base/logger";
-import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
+import logger, { logErrorWithTrace } from "@/server/base/logger";
 import { NextRequest, NextResponse } from "next/server";
+import { getUserById } from "@/server/api/users";
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
@@ -22,15 +21,20 @@ export async function POST(req: NextRequest) {
  */
 async function getUserNameHandler(data: { userId: string }) {
   const userId = data.userId;
-  const { data: user, error } = await SupabaseHelper.getSupabaseInstance()
-    .from(Tables.profiles)
-    .select("*")
-    .eq(ProfileKeys.id, userId)
-    .single();
-  if (error) {
-    logger.error(error, "Error getting username");
+  const result = await getUserById(userId);
+  if (!result.ok) {
+    logger.error(result.err, "Error getting username");
+    logErrorWithTrace(result);
+    return NextResponse.json(
+      {
+        fullName: null,
+      },
+      { status: 500 }
+    );
+  } else {
+    const userName = result.val.full_name ?? result.val.username;
+    return NextResponse.json({
+      fullName: userName ?? null,
+    });
   }
-  return NextResponse.json({
-    fullName: user?.full_name ?? user?.username ?? null,
-  });
 }

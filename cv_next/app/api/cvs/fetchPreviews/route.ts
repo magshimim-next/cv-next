@@ -5,7 +5,7 @@ import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { compareHashes } from "@/helpers/blobHelper";
 import logger from "@/server/base/logger";
-import { Tables, Storage } from "@/lib/supabase-definitions";
+import { Storage } from "@/lib/supabase-definitions";
 import { getPlaiceholder } from "plaiceholder";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -52,7 +52,7 @@ export async function revalidatePreviewHandler(data: { cvLink: string }) {
     blobDataMap.set(id || "", blob);
 
     const { data, error } = await SupabaseHelper.getSupabaseInstance()
-      .storage.from(Tables.cvs)
+      .storage.from(Storage.cvs)
       .upload(fileName, blob, {
         cacheControl: "3600",
         upsert: true, // Replace if exists

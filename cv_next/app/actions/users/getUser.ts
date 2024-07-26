@@ -1,5 +1,4 @@
 "use server";
-"use server";
 
 import { getUserById } from "@/server/api/users";
 import { Err } from "@/lib/utils";
