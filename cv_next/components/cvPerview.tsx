@@ -15,7 +15,7 @@ export const CvPreview = ({
 
   return (
     <div className="w-full">
-      <iframe src={`${presentedURL}&rm=minimal`} width="1000" height="800" />
+      <iframe src={presentedURL + "&rm=minimal"} width="1000" height="800" />
     </div>
   );
 };
