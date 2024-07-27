@@ -75,13 +75,10 @@ export async function middleware(request: NextRequest) {
     .select("*")
     .eq(ProfileKeys.id, activatedUser.user.id)
     .single();
-  console.log(errorWhitelist, whitelisted);
   if (whitelisted?.id == null || errorWhitelist) {
-    console.log("here");
     const nextUrl = new URL("/inactive", request.url);
     return NextResponse.redirect(nextUrl);
   }
-  console.log("here5", response);
   return response;
 }
 
