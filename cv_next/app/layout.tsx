@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import Navbar from "@/components/layout/navbar/navbar";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { CvsProvider } from "@/providers/cvs-provider";
-import SupabaseProvider from "@/providers/supabase-provider";
 import { Viewport } from "next/dist/lib/metadata/types/metadata-interface";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -32,10 +31,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <CvsProvider>
-            <SupabaseProvider>
-              <Navbar />
-              <div className="container mx-auto space-y-8 p-6">{children}</div>
-            </SupabaseProvider>
+            <Navbar />
+            <div className="container mx-auto space-y-8 p-6">{children}</div>
           </CvsProvider>
         </ThemeProvider>
       </body>
