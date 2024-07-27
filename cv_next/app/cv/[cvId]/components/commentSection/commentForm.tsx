@@ -1,6 +1,6 @@
 "use client";
 import { addComment } from "@/app/actions/comments/addComment";
-import { useSupabase } from "@/hooks/supabase";
+import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import { RxPaperPlane } from "react-icons/rx";
@@ -11,17 +11,18 @@ const COMMENT_FIELD_NAME = "comment";
 export default function CommentForm({ cv }: { cv: CvModel }) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement | null>(null);
-  const supabase = useSupabase();
+  const supabase = createClientComponent();
 
   const formAction = async (formData: FormData) => {
-    const userId = (await supabase.auth.getUser()).data.user?.id;
-    if (!userId) router.push("/inactive");
-    else {
+    const userId = await supabase.auth.getUser();
+    if (userId.error) {
+      router.push("/inactive");
+    } else {
       const comment: NewCommentModel = {
         data: formData.get(COMMENT_FIELD_NAME) as string,
         document_id: cv.id,
         parent_comment_Id: null,
-        user_id: userId,
+        user_id: userId.data.user.id,
       };
 
       await addComment(comment).finally(() => {
