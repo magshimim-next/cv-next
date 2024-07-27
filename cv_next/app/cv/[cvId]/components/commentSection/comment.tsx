@@ -40,7 +40,7 @@ export default function Comment({
   const commenter = JSON.parse(JSON.stringify(comment.user_id));
 
   const userVoted = comment.upvotes?.includes(userId);
-  const votingSection = comment.upvotes && (
+  const votingSection = (
     <button
       className="text-gray-500"
       onClick={() => setLikedCommentAction(!userVoted)}
@@ -49,7 +49,7 @@ export default function Comment({
     </button>
   );
 
-  const userResolved = comment.resolved; // Assuming this reflects if the comment is resolved or not
+  const userResolved = comment.resolved;
   const resolvedSection = (
     <button
       className={`text-${userResolved ? "green" : "gray"}-500`}
@@ -60,7 +60,7 @@ export default function Comment({
   );
 
   const commenterActions =
-    comment.user_id === userId ? (
+    commenter.id === userId ? (
       <>
         <button className="text-red-500" onClick={deleteCommentAction}>
           Delete
