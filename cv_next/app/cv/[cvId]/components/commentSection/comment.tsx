@@ -234,12 +234,14 @@ export default function Comment({
     >
       <footer className="mb-2 flex items-center justify-between">
         <div className="flex items-center">
-          <Link
-            className="text-lg font-medium hover:underline"
-            href={`/profile/${commenter.id}`}
-          >
-            {commenter.username || commenter.full_name}
-          </Link>
+          <p className="mr-3 inline-flex items-center text-sm font-semibold text-gray-900 dark:text-white">
+            <Link
+              className="text-lg font-medium hover:underline"
+              href={`/profile/${commenter.id}`}
+            >
+              {commenter.username || commenter.full_name}
+            </Link>
+          </p>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             <time
               dateTime={date.toLocaleString()}
