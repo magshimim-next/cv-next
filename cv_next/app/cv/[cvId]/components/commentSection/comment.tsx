@@ -220,6 +220,13 @@ export default function Comment({
       </>
     ) : null;
 
+  const generalActions = (
+    <>
+      <span>{startNewComment}</span>
+      <span>{votingSection}</span>
+    </>
+  );
+
   return (
     <article
       key={comment.id}
@@ -245,10 +252,9 @@ export default function Comment({
       </footer>
       <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <span>
-          {commenterActions}
-          {startNewComment}
-          <span>{votingSection}</span>
+        <span style={{ display: "flex", width: "100%" }}>
+          <div>{generalActions}</div>
+          <div style={{ marginLeft: "auto" }}>{commenterActions}</div>
         </span>
       </div>
       <Alert
