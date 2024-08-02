@@ -223,7 +223,9 @@ export default function Comment({
   const generalActions = (
     <>
       <span>{startNewComment}</span>
-      <span>{votingSection}</span>
+      <span>
+        {votingSection} {comment.upvotes?.length || null}
+      </span>
     </>
   );
 
