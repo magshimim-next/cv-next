@@ -2,14 +2,15 @@
 
 import CVItemLink from "@/app/feed/components/CVItemLink";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { fetchCvsForFeed } from "@/app/actions/cvs/fetchCvs";
 import CVItem from "./CVItem";
 import { CvsContext, CvsDispatchContext } from "@/providers/cvs-provider";
 import { ReloadButton } from "@/components/ui/reloadButton";
-import Definitions from "@/lib/definitions";
+import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
 import { useInView } from "react-intersection-observer";
-import { FilterPanel, filterValues } from "@/app/feed/components/filterPanel";
+import { FilterPanel } from "@/app/feed/components/filterPanel";
 import ReactLoading from "react-loading";
+import { filterValues } from "@/types/models/filters";
+import { useApiFetch } from "@/hooks/useAPIFetch";
 
 export default function Feed() {
   const cvsContextConsumer = useContext(CvsContext);
@@ -30,7 +31,9 @@ export default function Feed() {
     searchValue: "",
     categoryIds: null,
   });
+  const fetchFromApi = useApiFetch();
 
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
   /**
    * Trigger pagination when this element comes into view.
    *
@@ -60,10 +63,15 @@ export default function Feed() {
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
       const nextPage = page.current + 1;
-      const response = await fetchCvsForFeed({
-        page: nextPage,
-        filters: filters,
-      });
+      const response = await fetchFromApi(
+        API_DEFINITIONS.CVS_API_BASE,
+        API_DEFINITIONS.FETCH_CVS_ENDPOINT,
+        {
+          nextPage,
+          filters,
+        }
+      );
+
       if (response && response.cvs.length > 0) {
         setCvs((prevCvs) => [...prevCvs, ...response.cvs]);
         page.current = nextPage;
@@ -71,7 +79,20 @@ export default function Feed() {
         setLoadMore(false);
       }
     }
-  }, [loadMore, filters]);
+  }, [loadMore, filters, fetchFromApi]);
+
+  const debouncedFetchCvsCallback = useCallback(async () => {
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    return new Promise<void>((resolve) => {
+      debounceTimeout.current = setTimeout(async () => {
+        await fetchCvsCallback();
+        resolve();
+      }, 300); // Adjust delay as needed
+    });
+  }, [fetchCvsCallback]);
 
   useEffect(() => {
     //before unmount, save current cvs state to context for smoother navigation
@@ -107,6 +128,10 @@ export default function Feed() {
     setFilters(filters);
   }, []);
 
+  useEffect(() => {
+    debouncedFetchCvsCallback();
+  }, [debouncedFetchCvsCallback]);
+
   return (
     <main>
       <FilterPanel
@@ -125,7 +150,7 @@ export default function Feed() {
           ) : (
             <></>
           )}
-          <TriggerPagination callbackTrigger={fetchCvsCallback} />
+          <TriggerPagination callbackTrigger={debouncedFetchCvsCallback} />
         </div>
         {!loadMore ? (
           <div className="sticky bottom-5 z-10 flex justify-center">

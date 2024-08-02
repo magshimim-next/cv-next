@@ -1,24 +1,27 @@
 "use client";
-import { Auth } from "@supabase/auth-ui-react";
-import { useSupabase } from "@/hooks/supabase";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { Link_Definitions } from "@/lib/definitions";
-import { useTheme } from "next-themes";
+import { FcGoogle } from "react-icons/fc";
+import { Button } from "@/components/ui/button";
+import { signInWithSocialProvider } from "../actions/users/getUser";
+import { useSearchParams } from "next/navigation";
 
 export default function Page() {
-  const supabase = useSupabase();
-  const { theme } = useTheme();
+  const searchparams = useSearchParams();
+  const next = searchparams.get("next") || "/feed";
   return (
-    <Auth
-      supabaseClient={supabase}
-      appearance={{ theme: ThemeSupa }}
-      theme={theme}
-      providers={["google"]}
-      redirectTo={
-        process.env.NEXT_PUBLIC_BASE_URL +
-        Link_Definitions.AUTH_CALLBACK_REDIRECT
-      }
-      onlyThirdPartyProviders
-    />
+    <main>
+      <div className="place-items-center px-4 text-sm font-medium">
+        <div className="p-4 md:p-5 lg:p-6">
+          <div className="grid gap-y-3">
+            <Button
+              className="c-bOcPnF"
+              onClick={() => signInWithSocialProvider("google", next)}
+            >
+              <FcGoogle />
+              <span style={{ marginLeft: "5px" }}>Sign in with Google</span>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }

@@ -3,11 +3,7 @@ import { SearchBox } from "./filters/searchbar";
 import { DropdownInput } from "./filters/valueSelect";
 import Categories from "@/types/models/categories";
 import { useMemo } from "react";
-
-export interface filterValues {
-  searchValue: string;
-  categoryIds: number[] | null;
-}
+import { filterValues } from "@/types/models/filters";
 
 export const FilterPanel = ({
   defaultFilters,
