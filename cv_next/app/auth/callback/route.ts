@@ -2,7 +2,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { type CookieOptions, createServerClient } from "@supabase/ssr";
-import Definitions from "@/lib/definitions";
+import { Link_Definitions } from "@/lib/definitions";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -13,6 +13,7 @@ export async function GET(request: Request) {
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
+        cookieEncoding: "raw",
         cookies: {
           get(name: string) {
             return cookieStore.get(name)?.value;
@@ -29,7 +30,7 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       return NextResponse.redirect(
-        `${origin}` + Definitions.AUTH_DEFAULT_REDIRECT + "feed"
+        `${origin}` + Link_Definitions.AUTH_DEFAULT_REDIRECT + "feed"
       );
     }
   }

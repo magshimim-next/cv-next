@@ -12,6 +12,7 @@ namespace Categories {
     Backend,
     Devops,
     Cybersecurity,
+    Freelance,
   }
 }
-export default Categories
+export default Categories;

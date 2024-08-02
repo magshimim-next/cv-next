@@ -1,163 +1,197 @@
 import "server-only";
 
-import Helper from "@/server/base/helper";
-import CommentModel from "@/types//models/comment";
-import MyLogger from "@/server/base/logger";
-import { DbOperationResult, ErrorReasons, RateLimitError } from "./utils";
+import SupabaseHelper from "./supabaseHelper";
+import { Ok, Err } from "@/lib/utils";
+import { Tables, CommentKeys, ProfileKeys } from "@/lib/supabase-definitions";
 
-//TODO: implement CommentsApi with supabase
+/**
+ * Add a new comment to the database.
+ *
+ * @param {NewCommentModel} comment - the comment to be added
+ * @return {Promise<Result<void, string>>} A Promise that resolves to a Result object containing no value if successful, or an error message.
+ */
+export async function addCommentToCv(
+  comment: NewCommentModel
+): Promise<Result<void, string>> {
+  try {
+    const { data, error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.comments)
+      .insert(comment)
+      .select();
 
-export default class CommentsApi {
-  /**
-   * Adds a new comment to the db, excludes the model ID (created automatically)
-   * @param comment the comment model to add
-   * @returns true if succeeded.
-   */
-  public static async addNewComment(
-    comment: CommentModel
-  ): Promise<DbOperationResult> {
-    try {
-      let data = Helper.serializeObjectToFirebaseUsage(
-        comment.removeBaseData()
-      );
-      let res = await FirebaseHelper.addData(data, comment.collectionName);
-      return new DbOperationResult(
-        typeof res === "string",
-        res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
-        res
-      );
-    } catch (err) {
-      MyLogger.logInfo("Error @ FirebaseHelper::addNewComment", err);
-      return new DbOperationResult(
-        false,
-        typeof err === typeof RateLimitError
-          ? ErrorReasons.rateLimitPerSecondReached
-          : ErrorReasons.undefinedErr,
-        err
+    if (error && error.message) {
+      return Err(addCommentToCv.name, error);
+    }
+
+    // if no data is returned, the comment was not added
+    if (!data) {
+      return Err(
+        addCommentToCv.name,
+        undefined,
+        new Error("adding comment failed")
       );
     }
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(addCommentToCv.name, undefined, err as Error);
   }
+}
 
-  /**
-   * Updates a specific comment using the given model
-   * @param comment should hold the proper ID in order to update the correct document
-   * @returns true upon success
-   */
-  public static async updateComment(
-    comment: CommentModel
-  ): Promise<DbOperationResult> {
-    try {
-      let data = Helper.serializeObjectToFirebaseUsage(
-        comment.removeBaseData()
-      );
-      let res = await FirebaseHelper.updateData(
-        comment.id,
-        data,
-        comment.collectionName
-      );
-      return new DbOperationResult(
-        res,
-        res ? ErrorReasons.noErr : ErrorReasons.undefinedErr,
-        res
-      );
-    } catch (err) {
-      MyLogger.logInfo("Error @ FirebaseHelper::updateComment", err);
-      return new DbOperationResult(
-        false,
-        typeof err === typeof RateLimitError
-          ? ErrorReasons.rateLimitPerSecondReached
-          : ErrorReasons.undefinedErr,
-        err
-      );
+/**
+ * Marks a comment as deleted.
+ *
+ * @param {string} commentId - The ID of the comment to be marked as deleted.
+ * @return {Promise<Result<void, string>>} A promise that resolves to a Result object indicating the success or failure of the operation.
+ */
+export async function markCommentAsDeleted(
+  commentId: string
+): Promise<Result<void, string>> {
+  try {
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.comments)
+      .update({ deleted: true })
+      .eq(CommentKeys.id, commentId);
+    if (error) {
+      return Err(markCommentAsDeleted.name, error);
     }
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(markCommentAsDeleted.name, undefined, err as Error);
   }
+}
 
-  private static documentSnapshotToComment(
-    documentSnapshot: QueryDocumentSnapshot
-  ): CommentModel {
-    const documentData = documentSnapshot.data() as DocumentData;
-    return new CommentModel(
-      documentSnapshot.id,
-      documentData.userID,
-      documentData.data,
-      documentData.resolved,
-      documentData.deleted,
-      documentData.documentID,
-      documentData.parentCommentID,
-      documentData.upvotes,
-      documentData.downvotes,
-      documentData.lastUpdate
-    );
-  }
-
-  private static async getAllCommentsByQueryFilter(
-    queryFilter: QueryFieldFilterConstraint,
-    filterOutDeleted: boolean = true
-  ): Promise<CommentModel[] | null> {
-    try {
-      let collectionRef = collection(
-        FirebaseHelper.getFirestoreInstance(),
-        CommentModel.CollectionName
-      );
-      const q = query(
-        collectionRef,
-        queryFilter,
-        where("deleted", "==", !filterOutDeleted)
-      );
-      const querySnapshot = await FirebaseHelper.myGetDocs(q);
-      const matchingDocuments: CommentModel[] = [];
-
-      querySnapshot.forEach((documentSnapshot) => {
-        matchingDocuments.push(
-          this.documentSnapshotToComment(documentSnapshot)
-        );
-      });
-      return matchingDocuments;
-    } catch (err) {
-      MyLogger.logInfo("Error @ FirebaseHelper::updateComment", err);
+/**
+ * Marks a comment as resolved or unresolved in the database.
+ *
+ * @param {string} commentId - The ID of the comment to mark as resolved or unresolved.
+ * @param {boolean} resolved - Boolean indicating if the comment is resolved.
+ * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ */
+export async function setResolved(
+  commentId: string,
+  resolved: boolean
+): Promise<Result<void, string>> {
+  try {
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.comments)
+      .update({ resolved })
+      .eq(CommentKeys.id, commentId);
+    if (error) {
+      return Err(setResolved.name, error);
     }
-    return null;
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(setResolved.name, undefined, err as Error);
   }
+}
 
-  /**
-   *
-   * @param userId the userID to filter by
-   * @param filterOutDeleted whether or not we'd like to filter out the deleted comments - true by default
-   * @returns the comments
-   */
-  public static async getAllCommentsByUserId(
-    userId: string,
-    filterOutDeleted: boolean = true
-  ): Promise<CommentModel[] | null> {
-    return this.getAllCommentsByQueryFilter(
-      where("userID", "==", userId),
-      filterOutDeleted
-    );
+/**
+ * Retrieves all comments associated with a specific CV ID.
+ *
+ * @param {string} cvId - The ID of the CV for which to retrieve comments.
+ * @param {boolean} [ascending=false] - Whether to sort the comments in ascending order.
+ * @param {boolean} [filterOutDeleted=true] - Whether to filter out deleted comments.
+ * @return {Promise<Result<CommentModel[], string>>} A Promise that resolves to a Result object containing the retrieved comments or an error message.
+ * The user_id of the retrieved comments is a json of the user_id, full_name of that user and that's username
+ */
+export async function getAllCommentsByCVId(
+  cvId: string,
+  ascending: boolean = false,
+  filterOutDeleted = true
+): Promise<Result<CommentModel[], string>> {
+  try {
+    const supabase = SupabaseHelper.getSupabaseInstance();
+    let query = supabase
+      .from(Tables.comments)
+      .select(
+        `*, ${CommentKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.full_name}, ${ProfileKeys.username})`
+      )
+      .eq(CommentKeys.document_id, cvId)
+      .order(CommentKeys.last_update, { ascending: ascending });
+    if (filterOutDeleted) {
+      query = query.eq(CommentKeys.deleted, false);
+    }
+    const { data: comments, error } = await query;
+    if (error) {
+      return Err(getAllCommentsByCVId.name, error);
+    }
+
+    return Ok(comments);
+  } catch (err) {
+    return Err(getAllCommentsByCVId.name, undefined, err as Error);
   }
+}
 
-  /**
-   *
-   * @param documentID is the ID of the specific CV document.
-   * @returns all the top level comments of the CV
-   */
-  public static async getAllCommentsByDocumentId(
-    documentID: string
-  ): Promise<CommentModel[] | null> {
-    return this.getAllCommentsByQueryFilter(
-      where("documentID", "==", documentID)
-    );
+async function getCommentLikes(commentId: string): Promise<string[]> {
+  const { data } = await SupabaseHelper.getSupabaseInstance()
+    .from(Tables.comments)
+    .select(CommentKeys.upvotes)
+    .eq(CommentKeys.id, commentId)
+    .limit(1);
+  return data && data[0].upvotes ? data[0].upvotes : [];
+}
+
+export async function setLiked(
+  commentId: string,
+  liked: boolean,
+  userId: string
+): Promise<Result<void, string>> {
+  try {
+    let likes = await getCommentLikes(commentId);
+    if (likes.includes(userId)) {
+      if (!liked) {
+        likes = likes.filter((item) => item !== userId);
+      }
+    } else {
+      if (liked) {
+        likes = [...likes, userId];
+      }
+    }
+
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.comments)
+      .update({ upvotes: likes })
+      .eq(CommentKeys.id, commentId)
+      .select(CommentKeys.upvotes);
+
+    if (error) {
+      return Err(setResolved.name, error);
+    }
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(setResolved.name, undefined, err as Error);
   }
+}
 
-  /**
-   *
-   * @param parentCommentID is the ID of the specific Parent Comment.
-   * @returns all the top level comments of the specific parent comment
-   */
-  public static async getAllCommentsByParentCommentID(
-    parentCommentID: string
-  ): Promise<CommentModel[] | null> {
-    return this.getAllCommentsByQueryFilter(
-      where("parentCommentID", "==", parentCommentID)
-    );
+/**
+ * Retrieves all comments associated with a specific User ID.
+ *
+ * @param {string} userId - The ID of the User for which to retrieve comments.
+ * @param {boolean} [ascending=false] - Whether to sort the comments in ascending order.
+ * @param {boolean} [filterOutDeleted=true] - Whether to filter out deleted comments.
+ * @return {Promise<Result<CommentModel[], string>>} A Promise that resolves to a Result object containing the retrieved comments or an error message.
+ */
+export async function getAllCommentsByUserId(
+  userId: string,
+  ascending: boolean = false,
+  filterOutDeleted = true
+): Promise<Result<CommentModel[], string>> {
+  try {
+    const supabase = SupabaseHelper.getSupabaseInstance();
+    let query = supabase
+      .from(Tables.comments)
+      .select("*")
+      .eq(CommentKeys.user_id, userId)
+      .order(CommentKeys.last_update, { ascending: ascending });
+    if (filterOutDeleted) {
+      query = query.eq(CommentKeys.deleted, false);
+    }
+    const { data: comments, error } = await query;
+    if (error) {
+      return Err(getAllCommentsByUserId.name, error);
+    }
+    return Ok(comments);
+  } catch (err) {
+    return Err(getAllCommentsByUserId.name, undefined, err as Error);
   }
 }

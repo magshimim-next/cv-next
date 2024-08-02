@@ -1,14 +1,12 @@
 import "server-only";
 
-import logger from "@/server/base/logger";
 import Categories from "@/types/models/categories";
-import Definitions from "@/lib/definitions";
-import { Tables, CvKeys } from "@/lib/supabase-definitions";
+import Definitions from "../../lib/definitions";
 import SupabaseHelper from "./supabaseHelper";
 import { PostgrestError } from "@supabase/supabase-js";
+import logger from "../base/logger";
+import { Tables, CvKeys, ProfileKeys } from "@/lib/supabase-definitions";
 import { filterValues } from "@/app/feed/components/filterPanel";
-
-export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS;
 
 /**
  * Retrieves a CV by its ID from the database.
@@ -20,7 +18,9 @@ export async function getCvById(cvId: string): Promise<CvModel | null> {
   try {
     const { data: cvs, error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.cvs)
-      .select("*")
+      .select(
+        `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.full_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
+      )
       .eq(CvKeys.id, cvId);
 
     if (error) {
