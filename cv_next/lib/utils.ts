@@ -1,29 +1,29 @@
-import { Json } from "@/types/database.types"
-import { PostgrestError } from "@supabase/supabase-js"
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { PostgrestError } from "@supabase/supabase-js";
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+import Categories from "@/types/models/categories";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function isBrowser() {
-  return typeof window !== "undefined"
+  return typeof window !== "undefined";
 }
 
 export function decodeValue(value: string | undefined) {
   if (!value) {
-    return null
+    return null;
   }
 
-  const valueToString = value.toString()
+  const valueToString = value.toString();
 
   if (isBrowser()) {
-    return atob(valueToString)
+    return atob(valueToString);
   }
 
-  const buff = Buffer.from(valueToString, "base64")
-  return buff.toString("ascii")
+  const buff = Buffer.from(valueToString, "base64");
+  return buff.toString("ascii");
 }
 
 /*
@@ -32,17 +32,17 @@ export function decodeValue(value: string | undefined) {
  */
 export function encodeValue(value: string | undefined) {
   if (!value) {
-    return null
+    return null;
   }
 
-  const valueToString = value.toString()
+  const valueToString = value.toString();
 
   if (isBrowser()) {
-    return btoa(valueToString)
+    return btoa(valueToString);
   }
 
-  const buff = Buffer.from(valueToString, "ascii")
-  return buff.toString("base64")
+  const buff = Buffer.from(valueToString, "ascii");
+  return buff.toString("base64");
 }
 
 /**
@@ -52,11 +52,11 @@ export function encodeValue(value: string | undefined) {
  * @return {Result<T, never>} the Result object containing the specified value
  */
 export function Ok<T>(val: T): Result<T, never> {
-  return { ok: true, val }
+  return { ok: true, val };
 }
 
 export namespace Ok {
-  export const EMPTY = Ok<undefined>(undefined)
+  export const EMPTY = Ok<undefined>(undefined);
 }
 
 /**
@@ -70,5 +70,25 @@ export function Err<E>(
   postgrestError?: PostgrestError,
   err?: Error
 ): Result<never, E> {
-  return { ok: false, where, postgrestError, err }
+  return { ok: false, where, postgrestError, err };
 }
+
+/**
+ * Get a valid google docs/drive link and switch to the /preview version to handle permissions better
+ *
+ * @param {string} link - the original link
+ * @return {string} the link as a preview instead of edit or view
+ */
+export function transformToPreviewLink(link: string): string {
+  try {
+    const url = new URL(link);
+    // Regular expression to match '/view', '/edit', etc.
+    url.pathname = url.pathname.replace(/\/(view|edit)/, "/preview");
+    return url.toString();
+  } catch (error) {
+    return "";
+  }
+}
+
+export const generateCategoryLink = (categoryNumber: number) =>
+  `/feed?category=${Categories.category[categoryNumber].toLowerCase()}`;

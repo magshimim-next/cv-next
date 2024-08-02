@@ -1,25 +1,30 @@
-"use client"
+"use client";
 
-import useSWR from "swr"
-import { fetchComments } from "@/app/actions/comments/fetchComments"
-import Comment from "./comment"
-import { useEffect, useState } from "react"
-import { useSupabase } from "@/hooks/supabaseHooks"
+import useSWR from "swr";
+import { fetchCvComments } from "@/app/actions/comments/fetchComments";
+import Comment from "./comment";
+import { useEffect, useState } from "react";
+import { useSupabase } from "@/hooks/supabase";
+import { useRouter } from "next/navigation";
 
 export default function CommentsSection({ cv }: { cv: CvModel }) {
-  const { data: comments } = useSWR(cv.id, fetchComments)
-  const supabase = useSupabase()
-  const [userId, setUserId] = useState<string>("")
+  const router = useRouter();
+  const { data: comments } = useSWR(cv.id, fetchCvComments);
+  const supabase = useSupabase();
+  const [userId, setUserId] = useState<string>("");
   const [commentsOfComments, setCommentsOfComments] = useState<
     Map<string, any[]>
-  >(new Map<string, any[]>())
+  >(new Map<string, any[]>());
 
   useEffect(() => {
-    const copyOfCommentOfComments: Map<string, any[]> = new Map<string, any[]>()
+    const copyOfCommentOfComments: Map<string, any[]> = new Map<
+      string,
+      any[]
+    >();
     comments?.map((comment) => {
       if (!comment.parent_comment_Id)
-        copyOfCommentOfComments.set(comment.id, [])
-    })
+        copyOfCommentOfComments.set(comment.id, []);
+    });
     comments?.map((comment) => {
       if (comment.parent_comment_Id)
         copyOfCommentOfComments.set(
@@ -27,24 +32,24 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
           copyOfCommentOfComments
             .get(comment.parent_comment_Id)
             ?.concat([comment]) as Array<any>
-        )
-    })
-    setCommentsOfComments(copyOfCommentOfComments)
-  }, [comments])
+        );
+    });
+    setCommentsOfComments(copyOfCommentOfComments);
+  }, [comments]);
 
   useEffect(() => {
     async function getUser() {
-      const userId = (await supabase.auth.getUser()).data.user?.id
-      if (!userId) throw new Error("User not found") // TODO: handle this
-      setUserId(userId)
+      const userId = (await supabase.auth.getUser()).data.user?.id;
+      if (!userId) router.push("/inactive");
+      else setUserId(userId);
     }
-    getUser()
-  }, [supabase.auth])
+    getUser();
+  }, [router, supabase.auth]);
 
   return (
     <>
       {comments
-        ? comments.map((comment) =>
+        ? comments.map((comment: CommentModel) =>
             !comment.parent_comment_Id ? (
               <Comment
                 key={comment.id}
@@ -60,5 +65,5 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
           )
         : null}
     </>
-  )
+  );
 }
