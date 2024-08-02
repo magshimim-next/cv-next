@@ -1,18 +1,7 @@
-"use client"
-import { ImCheckmark } from "react-icons/im"
-import { IconContext } from "react-icons"
-import { ImCross } from "react-icons/im"
-import React from "react"
+"use client";
+import React from "react";
 
-export default function Tooltip({
-  message,
-  id,
-  color,
-}: {
-  message: string
-  id
-  color: string
-}) {
+export default function Tooltip({ message, id }: { message: string; id: any }) {
   return (
     <div
       id={id}
@@ -22,5 +11,5 @@ export default function Tooltip({
       {message}
       <div className="tooltip-arrow" data-popper-arrow></div>
     </div>
-  )
+  );
 }

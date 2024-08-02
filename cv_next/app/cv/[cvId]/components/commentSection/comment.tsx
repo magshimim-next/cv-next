@@ -9,13 +9,13 @@ import { GoCheckCircle } from "react-icons/go";
 import { GoCheckCircleFill } from "react-icons/go";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { FaComment } from "react-icons/fa";
-import Tooltip from "../../../../../components/layout/tooltip";
+import Tooltip from "../../../../../components/ui/tooltip";
 
 import { AiTwotoneLike } from "react-icons/ai";
 import { AiFillLike } from "react-icons/ai";
 
 import { useState } from "react";
-import Alert from "../../../../../components/layout/alert";
+import Alert from "../../../../../components/ui/alert";
 import { useRouter } from "next/navigation";
 
 import Link from "next/link";
@@ -211,7 +211,7 @@ export default function Comment({
                 fontSize="1.4rem"
               />
             </button>
-            <Tooltip id="Trash icon" color="" message="delete"></Tooltip>
+            <Tooltip id="Trash icon" message="delete"></Tooltip>
             <span> </span>
           </>
         </span>
@@ -261,12 +261,14 @@ export default function Comment({
           <div style={{ marginLeft: "auto" }}>{commenterActions}</div>
         </span>
       </div>
-      <Alert
-        display={showAlert ? "flex" : "none"}
-        message="You sure you want to delete this comment?"
-        color="red"
-        onClick={onAlertClick}
-      ></Alert>
+      {showAlert ? (
+        <Alert
+          display={showAlert ? "flex" : "none"}
+          message="You sure you want to delete this comment?"
+          color="red"
+          onClick={onAlertClick}
+        ></Alert>
+      ) : null}
       {newCommentBlock}
       {commentsOfComment?.map((comment) => (
         <Comment

@@ -1,30 +1,28 @@
-"use client"
-import { ImCheckmark } from "react-icons/im"
-import { IconContext } from "react-icons"
-import { ImCross } from "react-icons/im"
-import React from "react"
+"use client";
+import { ImCheckmark } from "react-icons/im";
+import { IconContext } from "react-icons";
+import { ImCross } from "react-icons/im";
+import React from "react";
 
 export default function Alert({
   message,
   color,
   display,
-  //children = null,
   onClick,
 }: {
-  message: string
-  color: string
-  display: string
-  //children: React.ReactNode
-  onClick: (type: boolean) => void
+  message: string;
+  color: string;
+  display: string;
+  onClick: (type: boolean) => void;
 }) {
   const alertClassProvider = (color: string) => {
     switch (color) {
       case "red":
-        return "p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+        return "p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400";
       case "green":
-        return "p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+        return "p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400";
     }
-  }
+  };
   return (
     <div
       className={alertClassProvider(color)}
@@ -40,15 +38,15 @@ export default function Alert({
         {message}
       </span>
       <IconContext.Provider value={{ size: "1.8rem", color: "#34eb86" }}>
-        <div style={{ margin: "0.5rem" }}>
+        <div style={{ margin: "0.5rem", cursor: "pointer" }}>
           <ImCheckmark onClick={() => onClick(true)}></ImCheckmark>
         </div>
       </IconContext.Provider>
       <IconContext.Provider value={{ size: "1.5rem", color: "red" }}>
-        <div style={{ margin: "0.5rem" }}>
+        <div style={{ margin: "0.5rem", cursor: "pointer" }}>
           <ImCross onClick={() => onClick(false)}></ImCross>
         </div>
       </IconContext.Provider>
     </div>
-  )
+  );
 }
