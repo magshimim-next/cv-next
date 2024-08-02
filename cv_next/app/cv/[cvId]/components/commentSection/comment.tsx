@@ -170,8 +170,10 @@ export default function Comment({
   ) : null;
 
   const userResolved = comment.resolved;
+  const commentBackground = userResolved
+    ? "bg-green-200 dark:bg-green-800"
+    : "bg-white dark:bg-theme-800";
   const resolvedSection = userResolved ? (
-    // TODO: change appearence of comment based on if its resolved or not
     <button
       className="text-green-500"
       onClick={() => setResolvedCommentAction(false)}
@@ -232,7 +234,7 @@ export default function Comment({
   return (
     <article
       key={comment.id}
-      className={`bg-white text-base dark:bg-theme-800 ${childOrParentStyling}`}
+      className={`${commentBackground} text-base ${childOrParentStyling}`}
     >
       <footer className="mb-2 flex items-center justify-between">
         <div className="flex items-center">
