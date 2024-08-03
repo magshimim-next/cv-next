@@ -213,3 +213,21 @@ export async function updateCV(cv: CvModel): Promise<PostgrestError | null> {
     return null;
   }
 }
+
+/**
+ * Uploads a CV to the database.
+ *
+ * @param {NewCvModel} cv - the CV to upload
+ * @return {Promise<null | CvModel>} null on error, the uploaded object if upload was successful
+ */
+export async function uploadCV(cv: NewCvModel): Promise<null | CvModel> {
+  const { data, error } = await SupabaseHelper.getSupabaseInstance()
+    .from("cvs")
+    .insert(cv)
+    .select();
+  if (error) {
+    logger.error("Error @ cvs::uploadCV", error);
+    return null;
+  }
+  return data[0];
+}

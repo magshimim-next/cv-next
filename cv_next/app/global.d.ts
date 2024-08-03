@@ -27,11 +27,16 @@ declare global {
     explanation?: string;
     image: string;
   };
-  type UILocation = typeof uiLocation[keyof typeof uiLocation]
+  type UILocation = (typeof uiLocation)[keyof typeof uiLocation];
   type routes = {
-    route: string,
-    path: string,
-    image: string,
-    UILocation: UILocation
-  }
+    route: string;
+    path: string;
+    image: string;
+    UILocation: UILocation;
+  };
+
+  type NewCvModel = Omit<
+    CvModel,
+    "id" | "resolved" | "created_at" | "deleted" | "resolved"
+  >;
 }
