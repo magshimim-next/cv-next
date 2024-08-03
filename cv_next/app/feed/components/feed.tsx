@@ -10,6 +10,7 @@ import Definitions from "@/lib/definitions";
 import { useInView } from "react-intersection-observer";
 import { FilterPanel, filterValues } from "@/app/feed/components/filterPanel";
 import ReactLoading from "react-loading";
+import { ScrollToTop } from "@/components/ui/scrollToTop";
 
 export default function Feed() {
   const cvsContextConsumer = useContext(CvsContext);
@@ -109,6 +110,7 @@ export default function Feed() {
 
   return (
     <main>
+      <ScrollToTop />
       <FilterPanel
         defaultFilters={filters}
         cvs={cvs}
