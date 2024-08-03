@@ -8,6 +8,7 @@ import { Tables, CvKeys } from "@/lib/supabase-definitions";
 import SupabaseHelper from "./supabaseHelper";
 import { PostgrestError } from "@supabase/supabase-js";
 import { filterValues } from "@/app/feed/components/filterPanel";
+import { getUserIdByName } from "./users";
 
 //export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS;
 
@@ -161,15 +162,29 @@ export async function getPaginatedCvs(
       ? from + Definitions.CVS_PER_PAGE
       : Definitions.CVS_PER_PAGE;
 
+    
     const supabase = await SupabaseHelper.getSupabaseInstance();
+    let cvsUsers = null;
     let query = supabase
       .from(Tables.cvs)
       .select("*")
       .range(from, to - 1);
-
     logger.debug(filters, "filters");
     if (filters) {
       if (filters.searchValue) {
+        let userIdResult = await getUserIdByName(filters.searchValue);
+        filters.searchValue = filters.searchValue.replace(" ", "+");
+        if((userIdResult).ok) {
+          const userIdList = userIdResult.val;
+          console.log(userIdList);
+          if(userIdList.length){
+            cvsUsers = await getCvsByUserId(userIdList[0], filterOutDeleted);
+          }
+        }
+        else {
+          logger.error(userIdResult.err, "getPaginatedCvs");
+          return null;
+        }
         query = query.textSearch(CvKeys.description, filters.searchValue);
       }
       if (filters.categoryId) {
@@ -181,15 +196,16 @@ export async function getPaginatedCvs(
     if (filterOutDeleted) {
       query = query.eq(CvKeys.deleted, false);
     }
-
     const { data: cvs, error } = await query;
+    console.log(cvs);
     logger.debug(cvs?.map((cv) => cv.category_id, "cvs"));
 
     if (error) {
       logger.error(error, "getPaginatedCvs");
       return null;
     }
-
+    cvs.concat((cvsUsers) ? cvsUsers : []);
+    console.log(cvs, "meow");
     return { page: page, cvs: cvs as CvModel[] };
   } catch (error) {
     logger.error(error, "getPaginatedCvs");

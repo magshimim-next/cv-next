@@ -36,13 +36,12 @@ function categoryString(num:number){
 }
 
 export default function Feed() {
-  //const searchParams = useSearchParams();
-  //const optionalCategory = searchParams.get("category");
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
   const params = new URLSearchParams(searchParams);
   const optionalCategory = searchParams.getAll("category").map(toCategory);
+  const optionalDescription = searchParams.get("description");
   const cvsContextConsumer = useContext(CvsContext);
   const cvsDispatchContextConsumer = useContext(CvsDispatchContext);
   const initialCvs = cvsContextConsumer.cvs?.length
@@ -57,7 +56,7 @@ export default function Feed() {
   );
   const [loadMore, setLoadMore] = useState(true);
   const [filters, setFilters] = useState<filterValues>({
-    searchValue: "",
+    searchValue: (optionalDescription) ? optionalDescription : "",
     categoryId: (optionalCategory) ? optionalCategory: null,
   });
   /**
@@ -111,15 +110,9 @@ export default function Feed() {
         params.delete("category");
         console.log("params before", params);
         filters.categoryId.map((category) => {
-          console.log("????", category);
           params.append("category", categoryString(category));
         })
-        console.log("params after", params);
-
-        // for(const category in filters.categoryId.map(categoryString)){
-        //   console.log("????", category);
-        //   params.append("category", category);
-        // }
+        
         router.replace(`${pathname}?${params}`);
       }
     }

@@ -37,7 +37,7 @@ export const handleCurrentUser = async (
 export const getUserFromId = async (
   userId: string
 ): Promise<UserModel | null> => {
-  const supabase = SupabaseHelper.getSupabaseInstance();
+  const supabase = await SupabaseHelper.getSupabaseInstance();
   const { data: user, error } = await supabase
     .from(Tables.profiles)
     .select("*")

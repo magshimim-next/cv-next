@@ -20,12 +20,12 @@ export const FilterPanel = ({
   onChange: (filters: filterValues) => void;
 }) => {
   const [searchValue, setSearchValue] = useState(defaultFilters.searchValue);
-  const [categoryId, setCategoryId] = useState(defaultFilters.categoryId);
+  const [categoryId, setCategoryId] = useState(defaultFilters.categoryId)
 
   useEffect(() => {
     onChange({
       categoryId: categoryId,
-      searchValue: searchValue,
+      searchValue: searchValue
     });
   }, [searchValue, categoryId, onChange]);
 
