@@ -128,8 +128,14 @@ export default function Feed() {
           <TriggerPagination callbackTrigger={fetchCvsCallback} />
         </div>
         {!loadMore ? (
-          <div className="sticky bottom-5 z-10 flex justify-center">
-            <ReloadButton callback={forceReload}>Reload</ReloadButton>
+          <div className="text-center">
+            {cvs.length ? (
+              <div className="sticky bottom-5 z-10 flex justify-center">
+                <ReloadButton callback={forceReload}>Reload</ReloadButton>
+              </div>
+            ) : (
+              <p>No CVs found that matched your filters</p>
+            )}
           </div>
         ) : (
           <div className="z-10 flex justify-center">
