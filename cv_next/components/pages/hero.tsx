@@ -1,8 +1,8 @@
-import Link from "next/link"
-import Image from "next/image"
-import { buttonVariants } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { heroHeader } from "@/lib/definitions"
+import Link from "next/link";
+import Image from "next/image";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { heroHeader } from "@/lib/definitions";
 
 export default function HeroHeader() {
   return (
@@ -37,5 +37,5 @@ export default function HeroHeader() {
         <></>
       )}
     </section>
-  )
+  );
 }
