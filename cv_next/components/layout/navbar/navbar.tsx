@@ -56,8 +56,8 @@ export default function Navbar() {
             </svg>
           </button>
         </div>
-        <div className="hidden items-center space-x-4 md:flex">
-          <ul className="flex items-center space-x-6">
+        <div className="mr-10 hidden flex-grow items-center justify-center md:flex">
+          <ul className="flex space-x-6">
             {navLinks.map((link) => (
               <li key={link.route}>
                 <Link
@@ -69,10 +69,10 @@ export default function Navbar() {
               </li>
             ))}
           </ul>
-          <div className="flex space-x-5">
-            <ModeToggle />
-            <PopupToggle />
-          </div>
+        </div>
+        <div className="hidden items-center space-x-5 md:flex">
+          <ModeToggle />
+          <PopupToggle />
         </div>
       </nav>
       {isMenuOpen && (
