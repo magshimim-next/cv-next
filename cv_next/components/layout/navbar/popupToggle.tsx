@@ -14,12 +14,14 @@ export function PopupToggle() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data: connectedUser, error } = await supabase.auth.getUser();
-      if (error || !connectedUser?.user) {
+      const { data: connectedUser, error } = await supabase.auth.getSession();
+      if (error || !connectedUser.session?.user) {
         setUserData(null);
         setProfileImage("");
       } else {
-        const currentUserObject = await getUserModel(connectedUser.user.id);
+        const currentUserObject = await getUserModel(
+          connectedUser.session.user.id
+        );
         if (currentUserObject.ok) {
           setUserData(currentUserObject.val);
           setProfileImage(currentUserObject.val.avatar_url || "");
