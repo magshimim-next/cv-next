@@ -7,7 +7,6 @@ import { Tables, CvKeys } from "@/lib/supabase-definitions";
 import SupabaseHelper from "./supabaseHelper";
 import { PostgrestError } from "@supabase/supabase-js";
 import { filterValues } from "@/app/feed/components/filterPanel";
-import MyLogger from "@/server/base/logger";
 
 export const revalidate = Definitions.CVS_REVALIDATE_TIME_IN_SECONDS;
 

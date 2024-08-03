@@ -11,11 +11,15 @@ export const CvPreview = ({
   const transformedURL = transformGoogleViewOnlyUrl(document_link);
   if (transformedURL != "") {
     presentedURL = transformedURL;
+    return (
+      <div className="w-full">
+        <iframe src={presentedURL + "&rm=minimal"} width="1000" height="800" />
+      </div>
+    );
   }
-
   return (
     <div className="w-full">
-      <iframe src={`${presentedURL}&rm=minimal`} width="1000" height="800" />
+      <p>URL didn&apos;t match regex</p>
     </div>
   );
 };

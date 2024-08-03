@@ -15,74 +15,85 @@ import { checkUploadCV, InputValues } from "../actions/cvs/uploadCv";
 import { useSupabase } from "@/hooks/supabase";
 import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 
-const Row = ({
-  inputElement
-}: {
-  inputElement: JSX.Element;
-}) => {
-  return <div className="w-full flex justify-center items-start flex-col gap-1">
+const Row = ({ inputElement }: { inputElement: JSX.Element }) => {
+  return (
+    <div className="flex w-full flex-col items-start justify-center gap-1">
       {inputElement}
-  </div>
-}
+    </div>
+  );
+};
 
 export const InputRow = ({
-    inputElement,
-    title,
-    isValid,
-    inputDescription
-  }: {
-    inputElement: JSX.Element;
-    title: string;
-    isValid: boolean;
-    inputDescription: string;
-  }) => {
-    return <Row inputElement={
-      <>
-          <div className="text-xl flex flex-row items-center gap-3">
+  inputElement,
+  title,
+  isValid,
+  inputDescription,
+}: {
+  inputElement: JSX.Element;
+  title: string;
+  isValid: boolean;
+  inputDescription: string;
+}) => {
+  return (
+    <Row
+      inputElement={
+        <>
+          <div className="flex flex-row items-center gap-3 text-xl">
             {title}
-            { !isValid && <Image className="dark:invert" alt='' src={warningIcon}width={25}height={25} title={inputDescription}></Image> }
+            {!isValid && (
+              <Image
+                className="dark:invert"
+                alt=""
+                src={warningIcon}
+                width={25}
+                height={25}
+                title={inputDescription}
+              ></Image>
+            )}
           </div>
           {inputElement}
-      </>
-    }></Row>
-    
-    
-}
+        </>
+      }
+    ></Row>
+  );
+};
 
 export default function Page() {
   const [catagoryId, setCatagoryId] = useState<InputValues["catagoryId"]>(null);
-  const [description, setDescription] = useState<InputValues["description"]>("");
+  const [description, setDescription] =
+    useState<InputValues["description"]>("");
   const [link, setLink] = useState<InputValues["link"]>("");
-  const [errorMsg, setErrorMsg] = useState<string | null>()
+  const [errorMsg, setErrorMsg] = useState<string | null>();
   const supabase = useSupabase();
 
   const validate = (() => {
     const checkIfLinkIsValid = () => {
-      return validateGoogleViewOnlyUrl(link)
-    }
+      return validateGoogleViewOnlyUrl(link);
+    };
     const checkIfCatagorisAreValid = () => {
-      return !!catagoryId && catagoryId.length <= 3
-    }
+      return !!catagoryId && catagoryId.length <= 3;
+    };
     const checkIfDescriptionIsValid = () => {
-      return !!description && description.length <= 500 
-    }
+      return !!description && description.length <= 500;
+    };
     return {
       link: checkIfLinkIsValid,
       catagoryIds: checkIfCatagorisAreValid,
       description: checkIfDescriptionIsValid,
       cv: () => {
-        if(!checkIfCatagorisAreValid()) return false;
-        if(!checkIfDescriptionIsValid()) return false;
-        if(!checkIfLinkIsValid()) return false;
+        if (!checkIfCatagorisAreValid()) return false;
+        if (!checkIfDescriptionIsValid()) return false;
+        if (!checkIfLinkIsValid()) return false;
 
-        return true
-      }
-    }
-  })()
+        return true;
+      },
+    };
+  })();
 
   async function startUpload() {
-    if(!validate.cv()) return
-    const userId: string | undefined = (await supabase.auth.getUser()).data.user?.id;
+    if (!validate.cv()) return;
+    const userId: string | undefined = (await supabase.auth.getUser()).data.user
+      ?.id;
     if (!userId) return;
     setErrorMsg(
       await checkUploadCV({
@@ -90,25 +101,21 @@ export default function Page() {
           catagoryId: catagoryId,
           description: description,
           link: link,
-        }, 
-        userId
+        },
+        userId,
       })
-    )
-    ;
+    );
   }
   return (
     <main>
       <Suspense fallback={<div>Loading...</div>}>
-        {
-          errorMsg && <PopupWrapper 
-            children={
-              <div className=" bg-red-700 border-black border-2 rounded-md flex justify-center items-center text-2xl px-10 py-5">
-                  {errorMsg}
-              </div>
-            }
-            onClose={() => setErrorMsg(null)}
-          ></PopupWrapper>
-        }
+        {errorMsg && (
+          <PopupWrapper onClose={() => setErrorMsg(null)}>
+            <div className=" flex items-center justify-center rounded-md border-2 border-black bg-red-700 px-10 py-5 text-2xl">
+              {errorMsg}
+            </div>
+          </PopupWrapper>
+        )}
         <div className="flex w-full items-center justify-center">
           <div className="flex h-full w-2/4 flex-col items-center justify-center gap-8">
             <div className="text-7xl">Upload CV</div>
@@ -123,27 +130,29 @@ export default function Page() {
                     placeHolder="Please enter the CV link"
                     value={link}
                   ></InputBox>
-                  {<PopupWrapper 
-                        clickable= {
-                          <div className="h-12 w-20 flex flex-row justify-center items-center" title="">
-                              <Image className={`dark:invert ${!validate.link() && 'opacity-25'}`}
-                                  alt='' 
-                                  src={openLink}
-                                  width={30}
-                                  height={30}
-                              ></Image>
-                          </div>
-                        }  
-                        children={
-                          <div className="bg-secondary">
-                            {
-                              link && <CvPreview document_link={link}></CvPreview>
-                            }
-                          </div>
-                        }
-                        disableButton={!validate.link()}
-                      >
-                      </PopupWrapper>}
+                  {
+                    <PopupWrapper
+                      clickable={
+                        <div
+                          className="flex h-12 w-20 flex-row items-center justify-center"
+                          title=""
+                        >
+                          <Image
+                            className={`dark:invert ${!validate.link() && "opacity-25"}`}
+                            alt=""
+                            src={openLink}
+                            width={30}
+                            height={30}
+                          ></Image>
+                        </div>
+                      }
+                      disableButton={!validate.link()}
+                    >
+                      <div className="bg-secondary">
+                        {link && <CvPreview document_link={link}></CvPreview>}
+                      </div>
+                    </PopupWrapper>
+                  }
                 </div>
               }
             ></InputRow>
@@ -152,11 +161,11 @@ export default function Page() {
               inputDescription="Please enter a description 1 > 500 chars"
               isValid={validate.description()}
               inputElement={
-                  <InputTextArea
-                    onChange={setDescription}
-                    placeHolder="Please enter a description"
-                    value={description}
-                  ></InputTextArea>
+                <InputTextArea
+                  onChange={setDescription}
+                  placeHolder="Please enter a description"
+                  value={description}
+                ></InputTextArea>
               }
             ></InputRow>
             <InputRow
@@ -178,13 +187,19 @@ export default function Page() {
                 </div>
               }
             ></InputRow>
-            <Row inputElement={
-                <div className="flex justify-center items-center w-full h-full">
-                  <div className="w-1/2 mt-20">
-                    <Button text="Upload" onClick={startUpload} isDisabled={!validate.cv()}></Button>
+            <Row
+              inputElement={
+                <div className="flex h-full w-full items-center justify-center">
+                  <div className="mt-20 w-1/2">
+                    <Button
+                      text="Upload"
+                      onClick={startUpload}
+                      isDisabled={!validate.cv()}
+                    ></Button>
                   </div>
                 </div>
-              }></Row>
+              }
+            ></Row>
           </div>
         </div>
       </Suspense>
