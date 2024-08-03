@@ -9,7 +9,7 @@ import warningIcon from "@/public/images/warning.png";
 import Categories from "@/types/models/categories";
 import { getAllNumbersFromArr } from "@/lib/utils";
 import { CvPreview } from "@/components/cvPerview";
-import PopupWrapper from "@/components/ui/popupButtom";
+import PopupWrapper from "@/components/ui/popupWrapper";
 import { Button } from "../feed/components/button";
 import { checkUploadCV, InputValues } from "../actions/cvs/uploadCv";
 import { useSupabase } from "@/hooks/supabase";
