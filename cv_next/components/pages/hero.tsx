@@ -64,7 +64,7 @@ export default function HeroHeader() {
             .map((link) => (
               <div
                 className="relative flex h-80 w-80 flex-col items-center justify-end rounded-2xl bg-primary-foreground p-10 hover:rounded-3xl"
-                key={"linking"}
+                key={link.route}
               >
                 <Link
                   href={link.path}
