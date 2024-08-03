@@ -7,6 +7,7 @@ import { CvPreview } from "../../../components/ui/cvPreview";
 import CommentsSection from "./components/commentSection/commentsSection";
 import CommentForm from "./components/commentSection/commentForm";
 import CvData from "./components/cvData";
+import { ScrollToTop } from "@/components/ui/scrollToTop";
 
 export default async function Page({ params }: { params: { cvId: string } }) {
   const { cvId } = params;
@@ -22,6 +23,7 @@ export default async function Page({ params }: { params: { cvId: string } }) {
   }
   return (
     <div>
+      <ScrollToTop />
       <CvData cv={cv} />
       <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[65%_35%] md:gap-x-4">
         <section className=" flex-col rounded-lg">

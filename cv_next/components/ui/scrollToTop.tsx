@@ -1,3 +1,4 @@
+"use client"
 import { BiArrowFromBottom } from "react-icons/bi";
 
 export const ScrollToTop = () => {
