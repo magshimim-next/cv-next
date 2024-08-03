@@ -1,7 +1,6 @@
 import { uiLocation } from "@/lib/definitions";
 import { Database as DB } from "@/types/database.types";
 import { PostgrestError } from "@supabase/supabase-js";
-import { ValueOf } from "next/dist/shared/lib/constants";
 
 declare global {
   type Database = DB;
