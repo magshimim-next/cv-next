@@ -62,7 +62,7 @@ export default function Navbar() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <div className="hidden space-x-4 md:flex">
+              <div className="z-50 hidden space-x-4 md:flex">
                 <ModeToggle />
                 <PopupToggle />
               </div>
@@ -102,7 +102,7 @@ export default function Navbar() {
         {isMenuOpen && (
           <div
             ref={menuRef}
-            className="fixed left-0 right-0 top-[72px] bg-slate-500 bg-opacity-75 p-4 backdrop-blur-2xl dark:bg-theme-800 md:hidden"
+            className="fixed left-0 right-0 top-[72px] z-40 bg-slate-500 bg-opacity-75 p-4 opacity-95 backdrop-blur-2xl dark:bg-theme-800 md:hidden"
             tabIndex={-1}
           >
             <ul className="space-y-4">
