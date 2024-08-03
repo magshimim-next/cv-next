@@ -137,7 +137,7 @@ export default function Feed() {
               type={"spinningBubbles"}
               color={"#000"}
               height={667}
-              width={375}
+              width={290}
             />
           </div>
         )}
