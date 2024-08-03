@@ -7,6 +7,8 @@ import settignsIcon from "../../public/images/settigns.png"
 import Image from "next/image"
 import Popup from "./popup"
 import { routes } from "@/lib/definitions"
+import { uiLocation } from "@/lib/definitions";
+import logo from "@/public/images/logo.png";
 
 export default function Navbar() {
   const [isNavbarMenuOpen, setIsNavbarMenuOpen] = useState(false)
@@ -33,7 +35,14 @@ export default function Navbar() {
         <nav className="mx-auto justify-between px-4 md:flex md:items-center md:px-8 lg:max-w-7xl">
           <div>
             <div className="flex items-center justify-between py-3 md:block md:py-5">
-              <Link href="/" onClick={handleClick}>
+              <Link href="/" onClick={handleClick} className="flex flex-row">
+                <Image
+                  className="filter-"
+                  src={logo}
+                  width={60}
+                  height={20}
+                  alt="Header image"
+                />
                 <h1 className="text-2xl font-bold duration-200 lg:hover:scale-[1.10] text-white">
                   CV-NEXT
                 </h1>
@@ -87,7 +96,7 @@ export default function Navbar() {
             >
               <div className={`absolute bg-black ${isNavbarMenuOpen ? "block" : "hidden"} w-full h-full top-0 left-0 -z-10 opacity-60 rounded-md md:w-0`}></div>
               <ul className="flex flex-col items-center space-y-4 text-primary md:flex-row md:space-x-6 md:space-y-0">
-                {routes.filter(link => link.UILocation === 'navbar').map((link) => (
+                {routes.filter(link => link.UILocation === uiLocation.navbar).map((link) => (
                   <li key={link.route}>
                     <Link
                       className="text-lg text-white font-medium hover:underline"

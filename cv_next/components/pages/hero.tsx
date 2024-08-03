@@ -3,6 +3,7 @@ import Image from "next/image"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { heroHeader, routes } from "@/lib/definitions"
+import { uiLocation } from "@/lib/definitions";
 
 const credit = [
   'Ron Peer', 
@@ -14,7 +15,8 @@ const credit = [
   'Adam Liberov', 
   'Denis Granovsky', 
   'Ethan Krimer',
-  'Ilan Yashuk'
+  'Ilan Yashuk',
+  'Assaf Kabesa'
 ]
 
 export default function HeroHeader() {
@@ -43,12 +45,12 @@ export default function HeroHeader() {
             {heroHeader.subheader}
           </h2>
           <h3 className="text-m text-base font-light text-muted-foreground lg:text-lg whitespace-pre">
-            {heroHeader.explenetion ?? ''}
+            {heroHeader.explanation ?? ''}
           </h3>
         </div> 
         <div className="flex flex-row gap-10">
           {
-            routes.filter(link => link.UILocation === 'profile').map((link) => (
+            routes.filter(link => link.UILocation === uiLocation.profile).map((link) => (
               <Link
                 href={link.path}
                 target="_blank"
@@ -61,7 +63,7 @@ export default function HeroHeader() {
         </div>
         <div className="flex flex-row gap-10">
           {
-            routes.filter(link => link.UILocation === 'navbar').map((link) => (
+            routes.filter(link => link.UILocation === uiLocation.navbar).map((link) => (
               <div className="h-80 w-80 bg-primary-foreground rounded-2xl hover:rounded-3xl p-10 flex flex-col items-center justify-end relative">
                 <Link
                   href={link.path}

@@ -1,3 +1,8 @@
+export const uiLocation = {
+  navbar: 'navbar',
+  profile: 'profile'
+} as const
+
 export default class Definitions {
   public static readonly undefinedIndex = -1
   public static readonly CVS_PER_PAGE = 6
@@ -10,10 +15,9 @@ export default class Definitions {
 export const heroHeader: PageHeader = {
   header: `Next`,
   image: `/images/logo.png`,
-  subheader: `improve the magshimim next community's resumes.`,
-  explenetion: `we as a magshimim next community can help each other get jobs by improving our memeber's resumes.
-  this website is a place to uplode resumes, let other review them and make them better.
-  we will not tolerate any abuse, hateful commects, griffing, pentesting and etc... `
+  subheader: `Improve the Magshimim Next Community's resumes.`,
+  explanation: `As a community, we can help each other secure jobs by enhancing our members' resumes. This website is a platform to upload resumes, allow others to review them, and make them better.
+We expect all interactions to be respectful and constructive, with no tolerance for abuse, hateful comments, or any form of inappropriate behavior.`
 }
 
 export const inactiveHeader: PageHeader = {
@@ -28,24 +32,24 @@ export const routes: routes[] = [
     route: "Home",
     path: "/",
     image: '/images/home.png',
-    UILocation: 'navbar'
+    UILocation: uiLocation.navbar
   },
   {
     route: "Feed",
     path: "/feed",
     image: '/images/feed.png',
-    UILocation: 'navbar'
+    UILocation: uiLocation.navbar
   },
   {
     route: "Login",
     path: "/login",
     image: '',
-    UILocation: 'profile'
+    UILocation: uiLocation.profile
   },
   {
     route: "Signout",
     path: "/logout",
     image: '',
-    UILocation: 'profile'
+    UILocation: uiLocation.profile
   },
 ]
