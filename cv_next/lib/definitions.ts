@@ -60,7 +60,7 @@ export const routes: routes[] = [
   },
   {
     route: "Signout",
-    path: "/logout",
+    path: "/",
     image: '',
     UILocation: uiLocation.profile
   },
