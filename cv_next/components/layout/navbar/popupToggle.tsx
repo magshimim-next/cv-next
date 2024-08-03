@@ -6,7 +6,11 @@ import { useSupabase } from "@/hooks/supabase";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { getUserModel } from "@/app/actions/users/getUser";
 
-export function PopupToggle() {
+interface PopupToggleProps {
+  closeHamburger?: () => void;
+}
+
+export function PopupToggle({ closeHamburger }: PopupToggleProps) {
   const [profileImage, setProfileImage] = useState<string>("");
   const [userData, setUserData] = useState<UserModel | null>(null);
   const [signedIn, setSignIn] = useState(false);
@@ -56,7 +60,12 @@ export function PopupToggle() {
       </div>
       {isProfilePopupOpen && (
         <Popup
-          closeCb={() => setIsProfilePopupOpen(false)}
+          closeCb={() => {
+            setIsProfilePopupOpen(false);
+            if (closeHamburger) {
+              closeHamburger();
+            }
+          }}
           userData={userData}
           updateSignIn={() => setSignIn(!signedIn)}
         ></Popup>

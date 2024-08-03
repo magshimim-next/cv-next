@@ -106,7 +106,7 @@ export default function Navbar() {
                 <Link
                   className="text-lg font-medium text-white hover:underline"
                   href={link.path}
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={handleClick}
                 >
                   {link.route}
                 </Link>
@@ -115,7 +115,7 @@ export default function Navbar() {
           </ul>
           <div className="mt-4 flex justify-between">
             <ModeToggle />
-            <PopupToggle />
+            <PopupToggle closeHamburger={handleClick} />
           </div>
         </div>
       )}
