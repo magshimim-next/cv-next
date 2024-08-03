@@ -68,7 +68,7 @@ export const DropdownInput = ({
   return (
     <>
       <div
-        className={`outline-gray-40 relative flex h-2/6 w-1/6 items-center justify-center whitespace-nowrap bg-white outline-2 ${menuBorderStyle} box-border cursor-pointer rounded-md px-10 py-4`}
+        className={`outline-gray-40 relative flex items-center justify-center whitespace-nowrap bg-white outline-2 ${menuBorderStyle} box-border cursor-pointer rounded-md px-10 py-4`}
         onClick={changeIsMenuOpen}
         onBlur={handleBlur}
         ref={dropdownRef}
