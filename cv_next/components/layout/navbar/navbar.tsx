@@ -76,7 +76,7 @@ export default function Navbar() {
         </div>
       </nav>
       {isMenuOpen && (
-        <div className="bg-black bg-opacity-75 p-4 backdrop-blur-2xl md:hidden">
+        <div className="bg-slate-500 bg-opacity-75 p-4 backdrop-blur-2xl dark:bg-black md:hidden">
           <ul className="space-y-4">
             {navLinks.map((link) => (
               <li key={link.route}>
