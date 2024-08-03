@@ -86,7 +86,7 @@ export default function HeroHeader() {
             ))}
         </div>
         <div className="bottom-0 flex h-10 w-full items-center justify-center rounded-md px-2 text-xs text-primary opacity-50 shadow-inner">
-          {`credit to our team: ${credit.slice(0, -1).join(", ")} and ${credit.slice(-1)}`}
+          {`Credit to our team: ${credit.slice(0, -1).join(", ")} and ${credit.slice(-1)}`}
         </div>
       </div>
     </section>
