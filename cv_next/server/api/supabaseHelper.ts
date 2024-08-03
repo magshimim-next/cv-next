@@ -1,33 +1,27 @@
-import "server-only"
+import "server-only";
 
-import { createClient, SupabaseClient } from "@supabase/supabase-js"
-import {
-  createBrowserClient,
-  createServerClient,
-  type CookieOptions,
-} from "@supabase/ssr"
-import { cookies } from "next/headers"
+import { SupabaseClient } from "@supabase/supabase-js";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import logger from "@/server/base/logger";
 
-export default class SupabaseHelper<T> {
-  private static supabase: SupabaseClient
+export default class SupabaseHelper {
+  private static supabase: SupabaseClient;
 
   /**
    * Returns the Supabase client instance. If the instance is not already
    * created, it creates a new instance and returns it.
    *
-   * @return {SupabaseClient<Database>} The Supabase client instance
+   * @return {SupabaseClient} The Supabase client instance
    */
   public static getSupabaseInstance(): SupabaseClient<Database> {
     if (
       SupabaseHelper.supabase === null ||
       SupabaseHelper.supabase === undefined
     ) {
-      SupabaseHelper.supabase = createClient<Database>(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      )
+      SupabaseHelper.supabase = SupabaseHelper.createServerComponent();
     }
-    return SupabaseHelper.supabase
+    return SupabaseHelper.supabase;
   }
 
   /**
@@ -35,37 +29,34 @@ export default class SupabaseHelper<T> {
    *
    * @return {SupabaseClient} The Supabase client instance
    */
-  public static createServerComponent(): SupabaseClient {
-    const cookieStore = cookies()
+  private static createServerComponent(): SupabaseClient {
+    const cookieStore = cookies();
 
-    return createServerClient(
+    return createServerClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
+        cookieEncoding: "raw",
         cookies: {
           get(name: string) {
-            return cookieStore.get(name)?.value
+            return cookieStore.get(name)?.value;
           },
           set(name: string, value: string, options: CookieOptions) {
             try {
-              cookieStore.set({ name, value, ...options })
+              cookieStore.set({ name, value, ...options });
             } catch (error) {
-              // The `set` method was called from a Server Component.
-              // This can be ignored if you have middleware refreshing
-              // user sessions.
+              logger.error(error, "SupabaseHelper::createServerComponent");
             }
           },
           remove(name: string, options: CookieOptions) {
             try {
-              cookieStore.set({ name, value: "", ...options })
+              cookieStore.set({ name, value: "", ...options });
             } catch (error) {
-              // The `delete` method was called from a Server Component.
-              // This can be ignored if you have middleware refreshing
-              // user sessions.
+              logger.error(error, "SupabaseHelper::createServerComponent");
             }
           },
         },
       }
-    )
+    );
   }
 }

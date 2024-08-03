@@ -4,12 +4,24 @@ export const uiLocation = {
 } as const
 
 export default class Definitions {
-  public static readonly undefinedIndex = -1
-  public static readonly CVS_PER_PAGE = 6
-  public static readonly PAGINATION_INIT_PAGE_NUMBER = -1
-  public static readonly MAX_OPERATIONS = 10
-  public static readonly MAX_OPERATIONS_REFILL_PER_SECOND = 2
-  public static readonly CVS_REVALIDATE_TIME_IN_SECONDS = 0
+  public static readonly undefinedIndex = -1;
+  public static readonly CVS_PER_PAGE = 6;
+  public static readonly PAGINATION_INIT_PAGE_NUMBER = -1;
+  public static readonly MAX_OPERATIONS = 10;
+  public static readonly MAX_OPERATIONS_REFILL_PER_SECOND = 2;
+  public static readonly CVS_REVALIDATE_TIME_IN_SECONDS = 0;
+  public static readonly FETCH_WAIT_TIME = 120;
+  public static readonly COMMENTS_REVALIDATE_TIME_IN_SECONDS = 0;
+  public static readonly AUTH_CALLBACK_REDIRECT = "/auth/callback";
+  public static readonly AUTH_DEFAULT_REDIRECT = "/";
+  public static readonly PLAICEHOLDER_IMAGE_SIZE = 15;
+  public static readonly PLAICEHOLDER_IMAGE_DATA =
+    "data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPs7p5fDwAFlAI2LB7hbAAAAABJRU5ErkJggg==";
+}
+
+export class Link_Definitions {
+  public static readonly AUTH_CALLBACK_REDIRECT = "/auth/callback";
+  public static readonly AUTH_DEFAULT_REDIRECT = "/";
 }
 
 export const heroHeader: PageHeader = {

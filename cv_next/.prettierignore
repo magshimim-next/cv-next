@@ -1,0 +1,10 @@
+# next.js
+.next/
+out/
+
+# npm
+package-lock.json
+package.json
+
+# supabase generated
+types/database.types.ts
