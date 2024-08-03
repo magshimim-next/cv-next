@@ -19,6 +19,11 @@ const navLinks = [
     req_login: true,
   },
   {
+    route: "Upload",
+    path: "/upload",
+    req_login: true,
+  },
+  {
     route: "Signout",
     path: "/",
     req_login: true,
