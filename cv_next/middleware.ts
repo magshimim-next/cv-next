@@ -56,7 +56,6 @@ export async function middleware(request: NextRequest) {
       },
     }
   );
-
   const { data: activatedUser, error } = await supabase.auth.getUser();
   if (error || !activatedUser?.user) {
     return NextResponse.rewrite(new URL("/login", request.url));
@@ -74,4 +73,6 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-export const config = { matcher: ["/feed", "/upload"] };
+export const config = {
+  matcher: ["/cv/:cvId*", "/profile/:profileId*"],
+};

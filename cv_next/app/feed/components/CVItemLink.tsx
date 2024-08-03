@@ -14,7 +14,7 @@ export default function CVItemLink({ cv, children }: CVCardProps) {
   return (
     <div
       id={cv.id}
-      className={`relative w-full max-w-sm cursor-pointer rounded-xl bg-white object-cover shadow-2xl`}
+      className={`relative h-full w-full max-w-full cursor-pointer rounded-xl bg-white object-cover shadow-2xl`}
       onClick={() => router.push(`/cv/${encodedId}`)}
     >
       {children}

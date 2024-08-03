@@ -1,11 +1,10 @@
 "use client";
-
 import Image from "next/image";
 import closeIcon from "@/public/images/closeIcon.png";
 import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { useSupabase } from "@/hooks/supabase";
-import { FaUserCircle } from "react-icons/fa";
+import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 
 const navLinks = [
   {
@@ -35,36 +34,36 @@ const UserDataComponent: React.FC<{
   userData: UserModel | null;
   closeCb: () => void;
 }> = ({ userData, closeCb }) => {
-  const defaultProfileIcon = <FaUserCircle size={70} />;
-
   return (
     <div className="mt-10 flex w-full flex-col items-center">
       {userData ? (
-        <div className="mt-10 flex w-full flex-col items-center">
+        <div className="flex w-full flex-col items-center">
           <div style={{ marginBottom: "10px" }}>
-            {userData.avatar_url ? (
+            <DynamicProfileImage
+              isPlaceholder={userData.avatar_url ? false : true}
+            >
               <Image
                 alt="profile"
-                src={userData.avatar_url}
+                src={userData?.avatar_url || ""}
                 width={30}
                 height={30 * 1.4142}
                 className="w-20 rounded-lg p-2"
-              />
-            ) : (
-              <div>{defaultProfileIcon}</div>
-            )}
+              ></Image>
+            </DynamicProfileImage>
           </div>
 
           <Link
             className="text-lg font-medium hover:underline"
-            href="/profile" // TODO: redirect to actual user's profile
+            href={`/profile/${userData?.id}`}
             onClick={closeCb}
           >
             {userData.username || userData.full_name}
           </Link>
         </div>
       ) : (
-        <div style={{ marginBottom: "10px" }}>{defaultProfileIcon}</div>
+        <div style={{ marginBottom: "10px" }}>
+          <DynamicProfileImage isPlaceholder={true} />
+        </div>
       )}
     </div>
   );
@@ -105,7 +104,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
         >
           <Image alt="closeIcon" src={closeIcon}></Image>
         </div>
-        <ul className="mt-10 flex w-full flex-col items-center">
+        <ul className="mt-20 flex w-full flex-col items-center">
           {userData ? (
             <div className="mt-10 flex w-full flex-col items-center">
               <UserDataComponent userData={userData} closeCb={closeCb} />
