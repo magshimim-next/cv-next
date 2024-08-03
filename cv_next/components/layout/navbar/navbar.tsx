@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { ModeToggle } from "@/components/layout/navbar/modeToggle";
 import { PopupToggle } from "./popupToggle";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const navLinks = [
   {
@@ -17,6 +17,23 @@ const navLinks = [
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const handleClick = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleBlur = (e: React.FocusEvent) => {
+    if (
+      menuRef.current &&
+      !menuRef.current.contains(e.relatedTarget as Node) &&
+      buttonRef.current &&
+      !buttonRef.current.contains(e.relatedTarget as Node)
+    ) {
+      setIsMenuOpen(false);
+    }
+  };
 
   return (
     <header className="fixed top-0 z-50 w-full select-none bg-black bg-opacity-75 backdrop-blur-2xl">
@@ -28,8 +45,10 @@ export default function Navbar() {
         </Link>
         <div className="flex items-center space-x-4 md:hidden">
           <button
+            ref={buttonRef}
             className="text-white focus:outline-none"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onClick={handleClick}
+            onBlur={handleBlur}
           >
             <svg
               className="h-6 w-6"
@@ -56,7 +75,7 @@ export default function Navbar() {
             </svg>
           </button>
         </div>
-        <div className="mr-10 hidden flex-grow items-center justify-center md:flex">
+        <div className="hidden flex-grow items-center justify-center md:flex">
           <ul className="flex space-x-6">
             {navLinks.map((link) => (
               <li key={link.route}>
@@ -76,13 +95,18 @@ export default function Navbar() {
         </div>
       </nav>
       {isMenuOpen && (
-        <div className="bg-slate-500 bg-opacity-75 p-4 backdrop-blur-2xl dark:bg-black md:hidden">
+        <div
+          ref={menuRef}
+          className="bg-slate-500 bg-opacity-75 p-4 backdrop-blur-2xl dark:bg-black md:hidden"
+          tabIndex={-1}
+        >
           <ul className="space-y-4">
             {navLinks.map((link) => (
               <li key={link.route}>
                 <Link
                   className="text-lg font-medium text-white hover:underline"
                   href={link.path}
+                  onClick={() => setIsMenuOpen(false)}
                 >
                   {link.route}
                 </Link>
