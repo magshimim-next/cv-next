@@ -5,6 +5,7 @@ import { getUserModel } from "@/app/actions/users/getUser";
 import ProfileData from "./components/profileData";
 import ProfileCvs from "./components/profileCvs";
 import { getCvsByUserId } from "@/server/api/cvs";
+import { ScrollToTop } from "@/components/ui/scrollToTop";
 
 export default async function Page({
   params,
@@ -23,6 +24,9 @@ export default async function Page({
 
   return (
     <div>
+      <div className="md:hidden">
+      <ScrollToTop />
+      </div>
       <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[60%_40%] md:gap-x-4">
         <section className=" flex-col self-start">
           <div>
