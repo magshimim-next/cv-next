@@ -65,7 +65,7 @@ export default function HeroHeader() {
         <div className="flex flex-row gap-10">
           {
             routes.filter(link => link.UILocation === uiLocation.navbar).map((link) => (
-              <div className="h-80 w-80 bg-primary-foreground rounded-2xl hover:rounded-3xl p-10 flex flex-col items-center justify-end relative">
+              <div className="h-80 w-80 bg-primary-foreground rounded-2xl hover:rounded-3xl p-10 flex flex-col items-center justify-end relative" key={'linking'}>
                 <Link
                   href={link.path}
                   target="_blank"
