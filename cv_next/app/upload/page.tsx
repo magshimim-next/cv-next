@@ -12,7 +12,6 @@ import { CvPreview } from "@/components/cvPerview";
 import PopupWrapper from "@/components/ui/popupWrapper";
 import { Button } from "../feed/components/button";
 import { checkUploadCV, InputValues } from "../actions/cvs/uploadCv";
-import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 
 const Row = ({ inputElement }: { inputElement: JSX.Element }) => {
@@ -64,7 +63,6 @@ export default function Page() {
     useState<InputValues["description"]>("");
   const [link, setLink] = useState<InputValues["link"]>("");
   const [errorMsg, setErrorMsg] = useState<string | null>();
-  const supabase = createClientComponent();
 
   const validate = (() => {
     const checkIfLinkIsValid = () => {
@@ -92,9 +90,6 @@ export default function Page() {
 
   async function startUpload() {
     if (!validate.cv()) return;
-    const userId: string | undefined = (await supabase.auth.getUser()).data.user
-      ?.id;
-    if (!userId) return;
     setErrorMsg(
       await checkUploadCV({
         cvData: {
@@ -102,7 +97,6 @@ export default function Page() {
           description: description,
           link: link,
         },
-        userId,
       })
     );
   }
