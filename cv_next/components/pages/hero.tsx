@@ -51,7 +51,6 @@ export default function HeroHeader() {
             .map((link) => (
               <Link
                 href={link.path}
-                target="_blank"
                 className={`w-[10rem] ${cn(buttonVariants({ size: "xs" }))}`}
                 key={link.path}
               >
@@ -69,7 +68,6 @@ export default function HeroHeader() {
               >
                 <Link
                   href={link.path}
-                  target="_blank"
                   className={`w-[10rem] ${cn(buttonVariants({ size: "sm" }))}`}
                   key={link.path}
                 >
