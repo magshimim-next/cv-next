@@ -202,7 +202,7 @@ export default function Comment({
   const addNewCommentClickEvent = async () => {
     const userId = (await supabase.auth.getUser()).data.user?.id;
     if (!userId) {
-      router.push("/inactive");
+      router.push("/login"); // TODO: redirect to login with this route as the next path
       return;
     }
 
