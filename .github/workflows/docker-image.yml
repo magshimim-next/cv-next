@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Generating env file
-        run: echo ${{ secrets.ENV_CONTENT }} > ./cv_next/.env.local
+        run: echo "${{ secrets.ENV_CONTENT }}" > ./cv_next/.env.local && cat ./cv_next/.env.local
       - name: Build the Docker image
         run: docker build ./cv_next --file ./cv_next/Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ secrets.DOCKERHUB_TAG }}
 
