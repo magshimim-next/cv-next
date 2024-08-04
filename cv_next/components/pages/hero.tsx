@@ -3,7 +3,7 @@ import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { heroHeader, routes } from "@/lib/definitions";
-import { uiLocation } from "@/lib/definitions";
+import { UI_Location } from "@/lib/definitions";
 
 const credit = [
   "Ron Peer",
@@ -47,7 +47,7 @@ export default function HeroHeader() {
         </div>
         <div className="flex flex-row gap-10">
           {routes
-            .filter((link) => link.UILocation === uiLocation.profile)
+            .filter((link) => link.UILocation === UI_Location.profile)
             .map((link) => (
               <Link
                 href={link.path}
@@ -60,7 +60,7 @@ export default function HeroHeader() {
         </div>
         <div className="flex flex-row gap-10">
           {routes
-            .filter((link) => link.UILocation === uiLocation.navbar)
+            .filter((link) => link.UILocation === UI_Location.navbar)
             .map((link) => (
               <div
                 className="relative flex h-80 w-80 flex-col items-center justify-end rounded-2xl bg-primary-foreground p-10 hover:rounded-3xl"

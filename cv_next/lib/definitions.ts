@@ -1,4 +1,4 @@
-export const uiLocation = {
+export const UI_Location = {
   navbar: "navbar",
   profile: "profile",
 } as const;
@@ -43,24 +43,24 @@ export const routes: routes[] = [
     route: "Home",
     path: "/",
     image: "/images/home.png",
-    UILocation: uiLocation.navbar,
+    UILocation: UI_Location.navbar,
   },
   {
     route: "Feed",
     path: "/feed",
     image: "/images/feed.png",
-    UILocation: uiLocation.navbar,
+    UILocation: UI_Location.navbar,
   },
   {
     route: "Login",
     path: "/login",
     image: "",
-    UILocation: uiLocation.profile,
+    UILocation: UI_Location.profile,
   },
   {
     route: "Signout",
     path: "/signout",
     image: "",
-    UILocation: uiLocation.profile,
+    UILocation: UI_Location.profile,
   },
 ];
