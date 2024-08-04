@@ -1,11 +1,6 @@
 FROM node:22-alpine
 WORKDIR /app
 
-ENV NEXT_PUBLIC_SUPABASE_URL=''
-ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=''
-ENV NEXT_PUBLIC_BASE_URL=''
-
-
 COPY package.json .
 RUN npm install
 RUN npm install next

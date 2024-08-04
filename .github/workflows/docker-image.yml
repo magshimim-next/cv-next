@@ -9,9 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Generating env file
-        run: echo "${{ secrets.ENV_CONTENT }}" > ./cv_next/.env.local && cat ./cv_next/.env.local
+      # - name: Generating env file
+      #   run: echo "${{ secrets.ENV_CONTENT }}" > ./cv_next/.env.local && cat ./cv_next/.env.local
       - name: Build the Docker image
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
         run: docker build ./cv_next --file ./cv_next/Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ secrets.DOCKERHUB_TAG }}
 
       - name: Login to Docker Hub
