@@ -22,7 +22,7 @@ const Row = ({ inputElement }: { inputElement: JSX.Element }) => {
   );
 };
 
-export const InputRow = ({
+const InputRow = ({
   inputElement,
   title,
   isValid,
