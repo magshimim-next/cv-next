@@ -170,13 +170,7 @@ const StartNewComment = ({
   ) : null;
 };
 
-export default function Comment({
-  comment,
-  userId,
-  childDepth = 0,
-  commentsOfComment = [],
-  setCommentsOfComments,
-}: {
+interface CommentProps {
   comment: CommentModel;
   userId: string;
   childDepth?: number;
@@ -184,7 +178,15 @@ export default function Comment({
   setCommentsOfComments: (
     update: (prev: Map<string, any[]>) => Map<string, any[]>
   ) => void;
-}) {
+}
+
+export default function Comment({
+  comment,
+  userId,
+  childDepth = 0,
+  commentsOfComment = [],
+  setCommentsOfComments,
+}: CommentProps) {
   const supabase = useSupabase();
   const [commentOnCommentStatus, setCommentOnCommentStatus] =
     useState<boolean>(false);
