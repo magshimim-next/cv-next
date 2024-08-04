@@ -15,9 +15,7 @@ import { AiTwotoneLike } from "react-icons/ai";
 import { AiFillLike } from "react-icons/ai";
 import { useState } from "react";
 import Alert from "../../../../../components/ui/alert";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useSupabase } from "@/hooks/supabase";
 
 const NewCommentBlock = ({
   commentOnCommentStatus,
@@ -187,11 +185,9 @@ export default function Comment({
   commentsOfComment = [],
   setCommentsOfComments,
 }: CommentProps) {
-  const supabase = useSupabase();
   const [commentOnCommentStatus, setCommentOnCommentStatus] =
     useState<boolean>(false);
   const [commentOnComment, setCommentOnComment] = useState<string>("");
-  const router = useRouter();
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const onAlertClick = async (type: boolean) => {
     if (type) await deleteCommentAction();
@@ -200,12 +196,6 @@ export default function Comment({
   const { mutate } = useSWRConfig();
 
   const addNewCommentClickEvent = async () => {
-    const userId = (await supabase.auth.getUser()).data.user?.id;
-    if (!userId) {
-      router.push("/login"); // TODO: redirect to login with this route as the next path
-      return;
-    }
-
     const commentToAdd: NewCommentModel = {
       data: commentOnComment,
       document_id: comment.document_id,
