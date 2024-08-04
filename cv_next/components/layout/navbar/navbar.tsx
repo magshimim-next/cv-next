@@ -37,10 +37,10 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="relative top-0 h-[72px] w-full select-none">
-        <div className="fixed top-0 -z-50 h-[36px] w-full translate-y-2/4 bg-white" />
-        <div className="fixed top-0 z-40 h-[72px] w-full bg-black bg-opacity-75 backdrop-blur-2xl" />
-        <div className="fixed top-0 z-50 h-[72px] w-full">
+      <header className="relative top-0 h-[4.5rem] w-full select-none">
+        <div className="fixed top-0 -z-50 h-[2.25rem] w-full translate-y-2/4 bg-white" />
+        <div className="fixed top-0 z-40 h-[4.5rem] w-full bg-black bg-opacity-75 backdrop-blur-2xl" />
+        <div className="fixed top-0 z-50 h-[4.5rem] w-full">
           <nav className="mx-auto flex items-center justify-between px-4 py-3 md:px-8 lg:max-w-7xl">
             <Link href="/">
               <h1 className="text-2xl font-bold text-white duration-200 lg:hover:scale-[1.10]">
