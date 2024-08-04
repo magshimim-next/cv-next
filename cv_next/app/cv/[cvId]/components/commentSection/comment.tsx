@@ -38,6 +38,7 @@ export default function Comment({
     update: (prev: Map<string, any[]>) => Map<string, any[]>
   ) => void;
 }) {
+  const supabase = useSupabase();
   const [commentOnCommentStatus, setCommentOnCommentStatus] =
     useState<boolean>(false);
   const [commentOnComment, setCommentOnComment] = useState<string>("");
@@ -47,7 +48,6 @@ export default function Comment({
     if (type) await deleteCommentAction();
     setShowAlert(false);
   };
-  const supabase = useSupabase();
 
   const addNewCommentClickEvent = async () => {
     const userId = (await supabase.auth.getUser()).data.user?.id;
