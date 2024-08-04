@@ -73,7 +73,7 @@ export default function HeroHeader() {
                 </Link>
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-20">
                   <Image
-                    className="object-cover"
+                    className="pointer-events-none absolute dark:invert"
                     src={link.image ?? ""}
                     width={250}
                     height={250}
