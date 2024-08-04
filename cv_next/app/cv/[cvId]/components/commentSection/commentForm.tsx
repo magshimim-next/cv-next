@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import { RxPaperPlane } from "react-icons/rx";
 import { mutate } from "swr";
+import { usePathname } from "next/navigation";
 
 const COMMENT_FIELD_NAME = "comment";
 
 export default function CommentForm({ cv }: { cv: CvModel }) {
+  const pathname = usePathname();
   const router = useRouter();
   const formRef = useRef<HTMLFormElement | null>(null);
   const supabase = createClientComponent();
@@ -16,7 +18,7 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
   const formAction = async (formData: FormData) => {
     const userId = await supabase.auth.getUser();
     if (userId.error) {
-      router.push("/login");
+      router.push(`/login?next=${pathname}`);
     } else {
       const comment: NewCommentModel = {
         data: formData.get(COMMENT_FIELD_NAME) as string,
