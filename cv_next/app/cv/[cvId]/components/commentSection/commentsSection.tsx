@@ -3,7 +3,7 @@
 import useSWR from "swr";
 import { fetchCvComments } from "@/app/actions/comments/fetchComments";
 import Comment from "./comment";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSupabase } from "@/hooks/supabase";
 import { useRouter } from "next/navigation";
 
@@ -16,16 +16,18 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
     Map<string, any[]>
   >(new Map<string, any[]>());
 
-  useEffect(() => {
+  const memoizedCommentsOfComments = useMemo(() => {
     const copyOfCommentOfComments: Map<string, any[]> = new Map<
       string,
       any[]
     >();
-    comments?.map((comment) => {
+
+    comments?.forEach((comment) => {
       if (!comment.parent_comment_Id)
         copyOfCommentOfComments.set(comment.id, []);
     });
-    comments?.map((comment) => {
+
+    comments?.forEach((comment) => {
       if (comment.parent_comment_Id)
         copyOfCommentOfComments.set(
           comment.parent_comment_Id,
@@ -34,8 +36,13 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
             ?.concat([comment]) as Array<any>
         );
     });
-    setCommentsOfComments(copyOfCommentOfComments);
+
+    return copyOfCommentOfComments;
   }, [comments]);
+
+  useEffect(() => {
+    setCommentsOfComments(memoizedCommentsOfComments);
+  }, [memoizedCommentsOfComments, setCommentsOfComments]);
 
   useEffect(() => {
     async function getUser() {
