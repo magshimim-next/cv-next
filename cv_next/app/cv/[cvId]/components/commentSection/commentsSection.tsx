@@ -55,7 +55,6 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
                 key={comment.id}
                 comment={comment}
                 userId={userId}
-                cv={cv}
                 commentsOfComment={
                   commentsOfComments.get(comment.id) as Array<any>
                 }
