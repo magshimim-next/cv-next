@@ -102,7 +102,7 @@ export default function Navbar() {
         {isMenuOpen && (
           <div
             ref={menuRef}
-            className="fixed left-0 right-0 top-[72px] z-40 bg-slate-500 bg-opacity-75 p-4 opacity-95 backdrop-blur-2xl dark:bg-theme-800 md:hidden"
+            className="fixed left-0 right-0 top-[4.5rem] z-40 bg-slate-500 bg-opacity-75 p-4 opacity-95 backdrop-blur-2xl dark:bg-theme-800 md:hidden"
             tabIndex={-1}
           >
             <ul className="space-y-4">
