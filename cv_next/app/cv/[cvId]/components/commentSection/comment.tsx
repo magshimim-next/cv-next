@@ -4,7 +4,7 @@ import { deleteComment } from "@/app/actions/comments/deleteComment";
 import { setResolved } from "@/app/actions/comments/setResolved";
 import { upvoteComment } from "@/app/actions/comments/setLike";
 import { addComment } from "@/app/actions/comments/addComment";
-import { mutate } from "swr";
+import { useSWRConfig } from "swr";
 import { RxPlus } from "react-icons/rx";
 import { GoCheckCircle } from "react-icons/go";
 import { GoCheckCircleFill } from "react-icons/go";
@@ -174,7 +174,7 @@ interface CommentProps {
   comment: CommentModel;
   userId: string;
   childDepth?: number;
-  commentsOfComment: any[];
+  commentsOfComment: CommentModel[];
   setCommentsOfComments: (
     update: (prev: Map<string, any[]>) => Map<string, any[]>
   ) => void;
@@ -197,31 +197,62 @@ export default function Comment({
     if (type) await deleteCommentAction();
     setShowAlert(false);
   };
+  const { mutate } = useSWRConfig();
 
   const addNewCommentClickEvent = async () => {
     const userId = (await supabase.auth.getUser()).data.user?.id;
-    if (!userId) router.push("/inactive");
-    else {
-      const commentToAdd: NewCommentModel = {
-        data: commentOnComment,
-        document_id: comment.document_id,
-        parent_comment_Id: comment.id,
-        user_id: userId,
-      };
+    if (!userId) {
+      router.push("/inactive");
+      return;
+    }
 
-      await addComment(commentToAdd).finally(() => {
-        setCommentsOfComments((prev: Map<string, any[]>) => {
-          const newCommentsOfComments = new Map<string, any[]>(prev);
-          newCommentsOfComments.set(
-            comment.id,
-            newCommentsOfComments
-              .get(comment.id)
-              ?.concat([commentToAdd]) as Array<any>
-          );
-          return newCommentsOfComments;
-        });
-        setCommentOnCommentStatus(false);
+    const commentToAdd: NewCommentModel = {
+      data: commentOnComment,
+      document_id: comment.document_id,
+      parent_comment_Id: comment.id,
+      user_id: userId,
+    };
+
+    const optimisticData = (
+      prevData: CommentModel[] | undefined
+    ): CommentModel[] => {
+      const newCommentsOfComments = new Map<string, CommentModel[]>(
+        prevData?.reduce((acc, cur) => {
+          const key = cur.parent_comment_Id || "root"; // Use 'root' for top-level comments
+          if (!acc.has(key)) {
+            acc.set(key, []);
+          }
+          acc.get(key)!.push(cur);
+          return acc;
+        }, new Map<string, CommentModel[]>()) || []
+      );
+
+      const parentId = comment.id;
+      if (!newCommentsOfComments.has(parentId)) {
+        newCommentsOfComments.set(parentId, []);
+      }
+      newCommentsOfComments
+        .get(parentId)!
+        .push(commentToAdd as unknown as CommentModel);
+
+      return Array.from(newCommentsOfComments.values()).flat();
+    };
+
+    try {
+      mutate(comment.document_id, optimisticData, {
+        optimisticData: optimisticData(commentsOfComment),
+        rollbackOnError: (error) => {
+          // Type-checking for error
+          if (error instanceof Error) {
+            return error.name !== "AbortError";
+          }
+          // Rollback if error is not an instance of Error
+          return true;
+        },
       });
+      await addComment(commentToAdd);
+      mutate(comment.document_id);
+    } catch (error) {
       mutate(comment.document_id);
     }
   };
