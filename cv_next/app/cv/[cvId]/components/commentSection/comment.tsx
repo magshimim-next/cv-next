@@ -1,4 +1,5 @@
 "use client";
+
 import { deleteComment } from "@/app/actions/comments/deleteComment";
 import { setResolved } from "@/app/actions/comments/setResolved";
 import { upvoteComment } from "@/app/actions/comments/setLike";
@@ -10,16 +11,164 @@ import { GoCheckCircleFill } from "react-icons/go";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { FaComment } from "react-icons/fa";
 import Tooltip from "../../../../../components/ui/tooltip";
-
 import { AiTwotoneLike } from "react-icons/ai";
 import { AiFillLike } from "react-icons/ai";
-
 import { useState } from "react";
 import Alert from "../../../../../components/ui/alert";
 import { useRouter } from "next/navigation";
-
 import Link from "next/link";
 import { useSupabase } from "@/hooks/supabase";
+
+const NewCommentBlock = ({
+  commentOnCommentStatus,
+  setCommentOnComment,
+  addNewCommentClickEvent,
+}: any) => {
+  return commentOnCommentStatus ? (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      <input
+        type="text"
+        onChange={(e) => setCommentOnComment(e.target.value)}
+        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        required
+      />
+      <RxPlus
+        style={{ fontSize: "5vh" }}
+        onClick={async () => {
+          await addNewCommentClickEvent();
+        }}
+      />
+    </div>
+  ) : null;
+};
+
+const VotingSection = ({ userVoted, setLikedCommentAction }: any) => {
+  return userVoted ? (
+    <button>
+      <AiFillLike
+        onClick={() => setLikedCommentAction(false)}
+        size="1.4rem"
+        style={{
+          transform: "translateY(2px)",
+        }}
+      />
+    </button>
+  ) : (
+    <button>
+      <AiTwotoneLike
+        size="1.4rem"
+        color="grey"
+        style={{
+          transform: "translateY(2px)",
+        }}
+        onClick={() => setLikedCommentAction(true)}
+      />
+    </button>
+  );
+};
+
+const ResolvedSection = ({ userResolved, setResolvedCommentAction }: any) => {
+  return userResolved ? (
+    <button
+      className="text-green-500"
+      onClick={() => setResolvedCommentAction(false)}
+    >
+      <GoCheckCircleFill
+        style={{
+          transform: "translateY(2px)",
+        }}
+        fontSize="1.4rem"
+      />
+    </button>
+  ) : (
+    <button
+      className="text-green-500"
+      onClick={() => setResolvedCommentAction(true)}
+    >
+      <GoCheckCircle
+        style={{
+          transform: "translateY(2px)",
+        }}
+        fontSize="1.4rem"
+      />
+    </button>
+  );
+};
+
+const CommenterActions = ({
+  commenter,
+  userId,
+  setShowAlert,
+  resolvedSection,
+}: any) => {
+  return commenter.id === userId ? (
+    <>
+      <span>
+        <>
+          <button className="text-red-500" onClick={() => setShowAlert(true)}>
+            <FaRegTrashCan
+              data-tooltip-target="Trash Icon"
+              style={{
+                transform: "translateY(2px)",
+              }}
+              fontSize="1.4rem"
+            />
+          </button>
+          <Tooltip id="Trash icon" message="delete"></Tooltip>
+          <span> </span>
+        </>
+      </span>
+      <span> </span>
+      {resolvedSection}
+    </>
+  ) : null;
+};
+
+const GeneralActions = ({ startNewComment, votingSection, comment }: any) => {
+  return (
+    <>
+      <span>{startNewComment}</span>
+      <span>
+        {votingSection} {comment.upvotes?.length || null}
+      </span>
+    </>
+  );
+};
+
+const AlertComponent = ({ showAlert, onAlertClick }: any) => {
+  return showAlert ? (
+    <Alert
+      display={showAlert ? "flex" : "none"}
+      message="You sure you want to delete this comment?"
+      color="red"
+      onClick={onAlertClick}
+    ></Alert>
+  ) : null;
+};
+
+const StartNewComment = ({
+  commentOnCommentStatus,
+  setCommentOnCommentStatus,
+}: any) => {
+  return !commentOnCommentStatus ? (
+    <button className="text-green-500">
+      <FaComment
+        size="1.2rem"
+        style={{
+          marginRight: "0.4rem",
+          transform: "translateY(2px)",
+        }}
+        onClick={() => setCommentOnCommentStatus(!commentOnCommentStatus)}
+      />
+    </button>
+  ) : null;
+};
 
 export default function Comment({
   comment,
@@ -108,126 +257,11 @@ export default function Comment({
   const commenter = JSON.parse(JSON.stringify(comment.user_id));
 
   const userVoted = comment.upvotes?.includes(userId);
-  const votingSection = userVoted ? (
-    <button>
-      <AiFillLike
-        onClick={() => setLikedCommentAction(false)}
-        size="1.4rem"
-        style={{
-          transform: "translateY(2px)",
-        }}
-      />
-    </button>
-  ) : (
-    <button>
-      <AiTwotoneLike
-        size="1.4rem"
-        color="grey"
-        style={{
-          transform: "translateY(2px)",
-        }}
-        onClick={() => setLikedCommentAction(true)}
-      />
-    </button>
-  );
-
-  const startNewComment = !comment.parent_comment_Id ? (
-    <button className="text-green-500">
-      <FaComment
-        size="1.2rem"
-        style={{
-          marginRight: "0.4rem",
-          transform: "translateY(2px)",
-        }}
-        onClick={() => setCommentOnCommentStatus(!commentOnCommentStatus)}
-      />
-    </button>
-  ) : null;
-
-  const newCommentBlock = commentOnCommentStatus ? (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <input
-        type="text"
-        onChange={(e) => setCommentOnComment(e.target.value)}
-        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-        required
-      />
-      <RxPlus
-        style={{ fontSize: "5vh" }}
-        onClick={async () => {
-          await addNewCommentClickEvent();
-        }}
-      />
-    </div>
-  ) : null;
-
   const userResolved = comment.resolved;
+
   const commentBackground = userResolved
     ? "bg-green-200 dark:bg-green-800"
     : "bg-white dark:bg-theme-800";
-  const resolvedSection = userResolved ? (
-    <button
-      className="text-green-500"
-      onClick={() => setResolvedCommentAction(false)}
-    >
-      <GoCheckCircleFill
-        style={{
-          transform: "translateY(2px)",
-        }}
-        fontSize="1.4rem"
-      />
-    </button>
-  ) : (
-    <button
-      className="text-green-500"
-      onClick={() => setResolvedCommentAction(true)}
-    >
-      <GoCheckCircle
-        style={{
-          transform: "translateY(2px)",
-        }}
-        fontSize="1.4rem"
-      />
-    </button>
-  );
-
-  const commenterActions =
-    commenter.id === userId ? (
-      <>
-        <span>
-          <>
-            <button className="text-red-500" onClick={() => setShowAlert(true)}>
-              <FaRegTrashCan
-                data-tooltip-target="Trash Icon"
-                style={{
-                  transform: "translateY(2px)",
-                }}
-                fontSize="1.4rem"
-              />
-            </button>
-            <Tooltip id="Trash icon" message="delete"></Tooltip>
-            <span> </span>
-          </>
-        </span>
-        <span> </span>
-        {resolvedSection}
-      </>
-    ) : null;
-
-  const generalActions = (
-    <>
-      <span>{startNewComment}</span>
-      <span>
-        {votingSection} {comment.upvotes?.length || null}
-      </span>
-    </>
-  );
 
   return (
     <article
@@ -257,19 +291,44 @@ export default function Comment({
       <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <span style={{ display: "flex", width: "100%" }}>
-          <div>{generalActions}</div>
-          <div style={{ marginLeft: "auto" }}>{commenterActions}</div>
+          <div>
+            <GeneralActions
+              startNewComment={
+                <StartNewComment
+                  commentOnCommentStatus={commentOnCommentStatus}
+                  setCommentOnCommentStatus={setCommentOnCommentStatus}
+                />
+              }
+              votingSection={
+                <VotingSection
+                  userVoted={userVoted}
+                  setLikedCommentAction={setLikedCommentAction}
+                />
+              }
+              comment={comment}
+            />
+          </div>
+          <div style={{ marginLeft: "auto" }}>
+            <CommenterActions
+              commenter={commenter}
+              userId={userId}
+              setShowAlert={setShowAlert}
+              resolvedSection={
+                <ResolvedSection
+                  userResolved={userResolved}
+                  setResolvedCommentAction={setResolvedCommentAction}
+                />
+              }
+            />
+          </div>
         </span>
       </div>
-      {showAlert ? (
-        <Alert
-          display={showAlert ? "flex" : "none"}
-          message="You sure you want to delete this comment?"
-          color="red"
-          onClick={onAlertClick}
-        ></Alert>
-      ) : null}
-      {newCommentBlock}
+      <AlertComponent showAlert={showAlert} onAlertClick={onAlertClick} />
+      <NewCommentBlock
+        commentOnCommentStatus={commentOnCommentStatus}
+        setCommentOnComment={setCommentOnComment}
+        addNewCommentClickEvent={addNewCommentClickEvent}
+      />
       {commentsOfComment?.map((comment) => (
         <Comment
           key={comment.id}
