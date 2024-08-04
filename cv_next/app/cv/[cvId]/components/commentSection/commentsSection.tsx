@@ -18,7 +18,7 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
     async function getUser() {
       const userId = await supabase.auth.getUser();
       if (userId.error) {
-        router.push("/inactive");
+        router.push("/login");
       } else setUserId(userId.data.user.id);
     }
     getUser();

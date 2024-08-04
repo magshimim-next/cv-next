@@ -16,7 +16,7 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
   const formAction = async (formData: FormData) => {
     const userId = await supabase.auth.getUser();
     if (userId.error) {
-      router.push("/inactive");
+      router.push("/login");
     } else {
       const comment: NewCommentModel = {
         data: formData.get(COMMENT_FIELD_NAME) as string,
