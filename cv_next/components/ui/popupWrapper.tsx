@@ -20,14 +20,15 @@ export default function PopupWrapper({
   return (
     <div>
       {clickable && (
-        <div
+        <button
           className="cursor-pointer rounded-full"
+          disabled={disableButton}
           onClick={() => {
-            if (!disableButton) setIsPopupOpen(true);
+            setIsPopupOpen(true);
           }}
         >
           {clickable}
-        </div>
+        </button>
       )}
       {isPopupOpen && (
         <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
