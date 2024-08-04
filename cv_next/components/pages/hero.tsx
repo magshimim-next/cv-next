@@ -73,10 +73,10 @@ export default function HeroHeader() {
                 </Link>
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-20">
                   <Image
-                    className="pointer-events-none absolute dark:invert"
+                    className="pointer-events-none absolute mb-6 dark:invert"
                     src={link.image ?? ""}
-                    width={250}
-                    height={250}
+                    width={175}
+                    height={175}
                     alt={link.route}
                   />
                 </div>
