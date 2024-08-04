@@ -20,62 +20,60 @@ const credit = [
 
 export default function HeroHeader() {
   return (
-    <section className="container flex flex-col gap-4 pb-12 pt-4 text-center lg:items-center lg:gap-8 lg:py-20">
+    <section className="container mx-auto flex flex-col text-center lg:items-center lg:gap-8 ">
       <div className="flex flex-1 flex-col items-center gap-4 text-center lg:gap-8">
         <div className="flex flex-col items-center justify-center space-y-4">
-          <h1 className="flex w-full flex-row items-center justify-center text-7xl font-bold lg:text-7xl">
-            {heroHeader.image !== "" ? (
-              <div className="flex justify-center">
+          <h1 className="flex items-center justify-center text-4xl font-bold lg:text-7xl">
+            {heroHeader.image && (
+              <div className="mr-4 flex-shrink-0">
                 <Image
                   src={heroHeader.image}
-                  width={200}
-                  height={150}
+                  width={150}
+                  height={90}
                   alt="Header image"
+                  className="object-cover"
                 />
               </div>
-            ) : (
-              <></>
             )}
             {heroHeader.header}
           </h1>
-          <h2 className="text-lg font-light text-muted-foreground lg:text-3xl">
+          <h2 className="text-xl font-light text-muted-foreground lg:text-3xl">
             {heroHeader.subheader}
           </h2>
-          <h3 className="text-m whitespace-pre text-base font-light text-muted-foreground lg:text-lg">
+          <h3 className="text-base font-light text-muted-foreground lg:text-lg">
             {heroHeader.explanation ?? ""}
           </h3>
         </div>
-        <div className="flex flex-row gap-10">
+        <div className="flex flex-wrap justify-center gap-6 lg:gap-10">
           {routes
             .filter((link) => link.UILocation === UI_Location.profile)
             .map((link) => (
               <Link
                 href={link.path}
-                className={`w-[10rem] ${cn(buttonVariants({ size: "xs" }))}`}
+                className={`w-40 ${cn(buttonVariants({ size: "xs" }))}`}
                 key={link.path}
               >
                 {link.route}
               </Link>
             ))}
         </div>
-        <div className="flex flex-row gap-10">
+        <div className="flex flex-wrap justify-center gap-6 lg:gap-10">
           {routes
             .filter((link) => link.UILocation === UI_Location.navbar)
             .map((link) => (
               <div
-                className="relative flex h-80 w-80 flex-col items-center justify-end rounded-2xl bg-primary-foreground p-10 hover:rounded-3xl"
+                className="relative flex h-60 w-60 flex-col items-center justify-end rounded-2xl bg-primary-foreground p-6 hover:rounded-3xl"
                 key={link.route}
               >
                 <Link
                   href={link.path}
-                  className={`w-[10rem] ${cn(buttonVariants({ size: "sm" }))}`}
-                  key={link.path}
+                  className={`w-full ${cn(buttonVariants({ size: "sm" }))}`}
                 >
                   {link.route}
                 </Link>
-                <div className="pointer-events-none absolute top-0 flex h-full w-full items-center justify-center opacity-20">
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-20">
                   <Image
-                    className="pointer-events-none absolute dark:invert"
+                    className="object-cover"
                     src={link.image ?? ""}
                     width={250}
                     height={250}
@@ -85,7 +83,7 @@ export default function HeroHeader() {
               </div>
             ))}
         </div>
-        <div className="bottom-0 flex h-10 w-full items-center justify-center rounded-md px-2 text-xs text-primary opacity-50 shadow-inner">
+        <div className="flex h-12 w-full items-center justify-center rounded-md px-4 text-xs text-primary opacity-50 shadow-inner">
           {`Credit to our team: ${credit.slice(0, -1).join(", ")} and ${credit.slice(-1)}`}
         </div>
       </div>
