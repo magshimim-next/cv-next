@@ -144,8 +144,8 @@ export default function Feed() {
             <ReactLoading
               type={"spinningBubbles"}
               color={"#000"}
-              height={667}
-              width={290}
+              height={"40%"}
+              width={"40%"}
             />
           </div>
         )}
