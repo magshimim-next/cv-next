@@ -25,14 +25,12 @@ export default function Comment({
   comment,
   userId,
   childDepth = 0,
-  cv,
   commentsOfComment = [],
   setCommentsOfComments,
 }: {
   comment: CommentModel;
   userId: string;
   childDepth?: number;
-  cv: CvModel;
   commentsOfComment: any[];
   setCommentsOfComments: (
     update: (prev: Map<string, any[]>) => Map<string, any[]>
@@ -55,7 +53,7 @@ export default function Comment({
     else {
       const commentToAdd: NewCommentModel = {
         data: commentOnComment,
-        document_id: cv.id,
+        document_id: comment.document_id,
         parent_comment_Id: comment.id,
         user_id: userId,
       };
@@ -277,7 +275,6 @@ export default function Comment({
           key={comment.id}
           comment={comment}
           userId={userId}
-          cv={cv}
           childDepth={1}
           commentsOfComment={[]}
           setCommentsOfComments={setCommentsOfComments}
