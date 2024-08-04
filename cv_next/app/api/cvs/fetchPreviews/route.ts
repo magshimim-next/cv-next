@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
  * nothing is done. If something changed, the image is uploaded to supabase again
  * @param {string} cvLink - The cv link to validate
  */
-export async function revalidatePreviewHandler(data: { cvLink: string }) {
+async function revalidatePreviewHandler(data: { cvLink: string }) {
   const cvLink = data.cvLink;
   const id = getIdFromLink(cvLink);
   const fileName = id + ".png";
