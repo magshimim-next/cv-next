@@ -28,8 +28,8 @@ export default function HeroHeader() {
               <div className="mr-4 flex-shrink-0">
                 <Image
                   src={heroHeader.image}
-                  width={150}
-                  height={90}
+                  width={125}
+                  height={75}
                   alt="Header image"
                   className="object-cover"
                 />
