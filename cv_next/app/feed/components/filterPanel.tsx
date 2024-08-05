@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { SearchBox } from "./filters/searchbar";
+import { InputBox } from "./inputbar";
 import { DropdownInput } from "./filters/valueSelect";
 import Categories from "@/types/models/categories";
 import { useMemo } from "react";
@@ -38,21 +38,24 @@ export const FilterPanel = ({
 
   return (
     <div className=" my-[10px] flex flex-col items-center justify-between gap-2 md:flex-row">
-      <SearchBox
+      <InputBox
         placeHolder="Input text to search"
         value={searchValue}
         onChange={setSearchValue}
-      ></SearchBox>
-      <DropdownInput
-        placeHolder="all"
-        valueIds={mapCategories}
-        text="Category"
-        valueId={categoryId}
-        onChange={setCategoryId}
-        getValueById={(id: number) => {
-          return Categories.category[id];
-        }}
-      ></DropdownInput>
+      ></InputBox>
+      <div className="w-80">
+        <DropdownInput
+          placeHolder="all"
+          valueIds={mapCategories}
+          text="Categories"
+          valueId={categoryId}
+          onChange={setCategoryId}
+          getValueById={(id: number) => {
+            return Categories.category[id];
+          }}
+          noneText="all"
+        ></DropdownInput>
+      </div>
     </div>
   );
 };

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ModeToggle } from "@/components/layout/navbar/modeToggle";
 import { PopupToggle } from "./popupToggle";
 import { useState, useRef } from "react";
+import logo from "@/public/images/logo.png";
+import Image from "next/image";
 
 const navLinks = [
   {
@@ -12,6 +14,10 @@ const navLinks = [
   {
     route: "Feed",
     path: "/feed",
+  },
+  {
+    route: "Upload",
+    path: "/upload",
   },
 ];
 
@@ -43,8 +49,9 @@ export default function Navbar() {
         <div className="fixed top-0 z-50 h-[4.5rem] w-full">
           <nav className="mx-auto flex items-center justify-between px-4 py-3 md:px-8 lg:max-w-7xl">
             <Link href="/">
-              <h1 className="text-2xl font-bold text-white duration-200 lg:hover:scale-[1.10]">
-                CV-NEXT
+              <h1 className="flex flex-row text-2xl font-bold text-white duration-200 lg:hover:scale-[1.10]">
+                <Image src={logo} width={60} height={40} alt="Header image" />
+                NEXT
               </h1>
             </Link>
 

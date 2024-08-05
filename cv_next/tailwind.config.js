@@ -8,6 +8,20 @@ module.exports = {
     "./src/**/*.{ts,tsx}",
   ],
   theme: {
+    zIndex: {
+      '0': 0,
+      '10': 10,
+      '20': 20,
+      '30': 30,
+      '40': 40,
+      '50': 50,
+      '25': 25,
+      '50': 50,
+      '75': 75,
+      'popup-bg': 100,
+      'popup': 101,
+      'auto': 'auto',
+    },
     container: {
       center: true,
       padding: "2rem",
