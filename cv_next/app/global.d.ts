@@ -1,3 +1,4 @@
+import { UI_Location } from "@/lib/definitions";
 import { Database as DB } from "@/types/database.types";
 import { PostgrestError } from "@supabase/supabase-js";
 
@@ -23,6 +24,14 @@ declare global {
   type PageHeader = {
     header: string;
     subheader: string;
+    explanation?: string;
     image: string;
+  };
+  type UILocation = (typeof UI_Location)[keyof typeof UI_Location];
+  type routes = {
+    route: string;
+    path: string;
+    image: string;
+    UILocation: UILocation;
   };
 }
