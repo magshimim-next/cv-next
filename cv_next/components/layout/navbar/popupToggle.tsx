@@ -6,7 +6,11 @@ import { useSupabase } from "@/hooks/supabase";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { getUserModel } from "@/app/actions/users/getUser";
 
-export function PopupToggle() {
+interface PopupToggleProps {
+  closeHamburger?: () => void;
+}
+
+export function PopupToggle({ closeHamburger }: PopupToggleProps) {
   const [profileImage, setProfileImage] = useState<string>("");
   const [userData, setUserData] = useState<UserModel | null>(null);
   const [signedIn, setSignIn] = useState(false);
@@ -14,12 +18,14 @@ export function PopupToggle() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data: connectedUser, error } = await supabase.auth.getUser();
-      if (error || !connectedUser?.user) {
+      const { data: connectedUser, error } = await supabase.auth.getSession();
+      if (error || !connectedUser.session?.user) {
         setUserData(null);
         setProfileImage("");
       } else {
-        const currentUserObject = await getUserModel(connectedUser.user.id);
+        const currentUserObject = await getUserModel(
+          connectedUser.session.user.id
+        );
         if (currentUserObject.ok) {
           setUserData(currentUserObject.val);
           setProfileImage(currentUserObject.val.avatar_url || "");
@@ -54,7 +60,12 @@ export function PopupToggle() {
       </div>
       {isProfilePopupOpen && (
         <Popup
-          closeCb={() => setIsProfilePopupOpen(false)}
+          closeCb={() => {
+            setIsProfilePopupOpen(false);
+            if (closeHamburger) {
+              closeHamburger();
+            }
+          }}
           userData={userData}
           updateSignIn={() => setSignIn(!signedIn)}
         ></Popup>

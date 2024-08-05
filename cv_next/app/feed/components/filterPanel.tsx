@@ -37,7 +37,7 @@ export const FilterPanel = ({
   }, []);
 
   return (
-    <div className="mx-10 my-[10px] flex flex-row items-center justify-between gap-2">
+    <div className=" my-[10px] flex flex-col items-center justify-between gap-2 md:flex-row">
       <InputBox
         placeHolder="Input text to search"
         value={searchValue}
@@ -47,7 +47,7 @@ export const FilterPanel = ({
         <DropdownInput
           placeHolder="all"
           valueIds={mapCategories}
-          text="Category"
+          text="Categories"
           valueId={categoryId}
           onChange={setCategoryId}
           getValueById={(id: number) => {

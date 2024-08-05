@@ -11,7 +11,7 @@ export const InputBox = ({
   const searchColor = isPlaceHolder ? "text-gray-400" : "text-black";
   return (
     <input
-      className={`border-gray-40 h-3/6 w-full border-2 bg-white px-10 py-4 ${searchColor} rounded-md`}
+      className={`border-gray-40 h-3/6 w-full border-2 bg-white px-10 py-4 text-center md:text-left ${searchColor} rounded-md`}
       onChange={(event) => {
         onChange(event.target.value);
       }}
@@ -36,7 +36,7 @@ export const InputTextArea = ({
     <textarea
       name="textArea"
       rows={2}
-      className={`border-gray-40 h-3/6 w-full border-2 bg-white px-10 py-4 ${searchColor} rounded-md max-h-40`}
+      className={`border-gray-40 h-3/6 w-full border-2 bg-white px-10 py-4 text-center md:text-left ${searchColor} max-h-40 rounded-md`}
       onChange={(event) => {
         onChange(event.target.value);
       }}
@@ -45,4 +45,3 @@ export const InputTextArea = ({
     />
   );
 };
-

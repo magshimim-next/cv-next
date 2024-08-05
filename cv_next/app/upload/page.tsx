@@ -15,14 +15,6 @@ import { checkUploadCV, InputValues } from "../actions/cvs/uploadCv";
 import { useSupabase } from "@/hooks/supabase";
 import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 
-const Row = ({ inputElement }: { inputElement: JSX.Element }) => {
-  return (
-    <div className="flex w-full flex-col items-start justify-center gap-1">
-      {inputElement}
-    </div>
-  );
-};
-
 export const InputRow = ({
   inputElement,
   title,
@@ -35,26 +27,22 @@ export const InputRow = ({
   inputDescription: string;
 }) => {
   return (
-    <Row
-      inputElement={
-        <>
-          <div className="flex flex-row items-center gap-3 text-xl">
-            {title}
-            {!isValid && (
-              <Image
-                className="dark:invert"
-                alt=""
-                src={warningIcon}
-                width={25}
-                height={25}
-                title={inputDescription}
-              ></Image>
-            )}
-          </div>
-          {inputElement}
-        </>
-      }
-    ></Row>
+    <div className="space-y-2">
+      <div className="flex flex-row items-center gap-2 text-lg sm:text-xl">
+        {title}
+        {!isValid && (
+          <Image
+            className="dark:invert"
+            alt=""
+            src={warningIcon}
+            width={20}
+            height={20}
+            title={inputDescription}
+          />
+        )}
+      </div>
+      {inputElement}
+    </div>
   );
 };
 
@@ -107,55 +95,52 @@ export default function Page() {
     );
   }
   return (
-    <main>
+    <main className="p-4">
       <Suspense fallback={<div>Loading...</div>}>
         {errorMsg && (
           <PopupWrapper onClose={() => setErrorMsg(null)}>
-            <div className=" flex items-center justify-center rounded-md border-2 border-black bg-red-700 px-10 py-5 text-2xl">
+            <div className="flex items-center justify-center rounded-md border-2 border-black bg-red-700 px-4 py-2 text-xl text-white">
               {errorMsg}
             </div>
           </PopupWrapper>
         )}
-        <div className="flex w-full items-center justify-center">
-          <div className="flex h-full w-2/4 flex-col items-center justify-center gap-8">
-            <div className="text-7xl">Upload CV</div>
+        <div className="flex w-full flex-col items-center justify-center">
+          <h1 className="mb-6 text-4xl font-bold sm:text-5xl md:text-6xl">
+            Upload CV
+          </h1>
+          <div className="w-full max-w-md space-y-6">
             <InputRow
               title="Link"
-              inputDescription="Please enter a google docs link of the cv"
+              inputDescription="Please enter a Google Docs link of the CV"
               isValid={validate.link()}
               inputElement={
                 <div className="flex w-full flex-row items-center justify-between">
                   <InputBox
                     onChange={(e) => setLink(e)}
-                    placeHolder="Please enter the CV link"
+                    placeHolder="Enter CV link"
                     value={link}
-                  ></InputBox>
-                  {
-                    <PopupWrapper
-                      clickable={
-                        <div
-                          className="flex h-12 w-20 flex-row items-center justify-center"
-                          title=""
-                        >
-                          <Image
-                            className={`dark:invert ${!validate.link() && "opacity-25"}`}
-                            alt=""
-                            src={openLink}
-                            width={30}
-                            height={30}
-                          ></Image>
-                        </div>
-                      }
-                      disableButton={!validate.link()}
-                    >
-                      <div className="bg-secondary">
-                        {link && <CvPreview document_link={link}></CvPreview>}
+                  />
+                  <PopupWrapper
+                    clickable={
+                      <div className="ml-2 flex h-12 w-12 flex-row items-center justify-center">
+                        <Image
+                          className={`dark:invert ${!validate.link() && "opacity-25"}`}
+                          alt=""
+                          src={openLink}
+                          width={24}
+                          height={24}
+                        />
                       </div>
-                    </PopupWrapper>
-                  }
+                    }
+                    disableButton={!validate.link()}
+                  >
+                    <div className="bg-secondary">
+                      {link && <CvPreview document_link={link} />}
+                    </div>
+                  </PopupWrapper>
                 </div>
               }
-            ></InputRow>
+            />
             <InputRow
               title="Description"
               inputDescription="Please enter a description 1 > 500 chars"
@@ -163,43 +148,35 @@ export default function Page() {
               inputElement={
                 <InputTextArea
                   onChange={setDescription}
-                  placeHolder="Please enter a description"
+                  placeHolder="Enter description"
                   value={description}
-                ></InputTextArea>
+                />
               }
-            ></InputRow>
+            />
             <InputRow
-              title="Catagory"
-              inputDescription="Please select 1-3 catagories"
+              title="Category"
+              inputDescription="Please select 1-3 categories"
               isValid={validate.catagoryIds()}
               inputElement={
-                <div className="w-80">
-                  <DropdownInput
-                    onChange={(e) => setCatagoryId(e || null)}
-                    placeHolder="Please select a catagory"
-                    valueIds={getAllNumbersFromArr(
-                      Object.keys(Categories.category)
-                    )}
-                    getValueById={(e) => Categories.category[e]}
-                    valueId={catagoryId}
-                    noneText="none"
-                  ></DropdownInput>
-                </div>
+                <DropdownInput
+                  onChange={(e) => setCatagoryId(e || null)}
+                  placeHolder="Select category"
+                  valueIds={getAllNumbersFromArr(
+                    Object.keys(Categories.category)
+                  )}
+                  getValueById={(e) => Categories.category[e]}
+                  valueId={catagoryId}
+                  noneText="none"
+                />
               }
-            ></InputRow>
-            <Row
-              inputElement={
-                <div className="flex h-full w-full items-center justify-center">
-                  <div className="mt-20 w-1/2">
-                    <Button
-                      text="Upload"
-                      onClick={startUpload}
-                      isDisabled={!validate.cv()}
-                    ></Button>
-                  </div>
-                </div>
-              }
-            ></Row>
+            />
+            <div className="flex max-w-md justify-center">
+              <Button
+                text="Upload"
+                onClick={startUpload}
+                isDisabled={!validate.cv()}
+              />
+            </div>
           </div>
         </div>
       </Suspense>
