@@ -27,6 +27,11 @@ declare global {
     explanation?: string;
     image: string;
   };
+
+  type NewCvModel = Omit<
+    CvModel,
+    "id" | "resolved" | "created_at" | "deleted" | "resolved"
+  >;
   type UILocation = (typeof UI_Location)[keyof typeof UI_Location];
   type routes = {
     route: string;

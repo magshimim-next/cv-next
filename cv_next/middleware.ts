@@ -74,5 +74,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/cv/:cvId*", "/profile/:profileId*"],
+  matcher: ["/feed", "/cv/:cvId*", "/profile/:profileId*", "/upload"],
 };

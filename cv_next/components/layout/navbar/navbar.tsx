@@ -15,6 +15,10 @@ const navLinks = [
     route: "Feed",
     path: "/feed",
   },
+  {
+    route: "Upload",
+    path: "/upload",
+  },
 ];
 
 export default function Navbar() {
