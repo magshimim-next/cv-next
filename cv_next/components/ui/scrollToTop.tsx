@@ -14,7 +14,6 @@ export const ScrollToTop = () => {
 
   const toggleVisibility = () => {
     if (window.scrollY > 300) {
-      // You can adjust the value (300) to your preference
       setIsVisible(true);
     } else {
       setIsVisible(false);
