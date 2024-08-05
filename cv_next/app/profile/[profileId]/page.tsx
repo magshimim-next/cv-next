@@ -5,6 +5,7 @@ import { getUserModel } from "@/app/actions/users/getUser";
 import ProfileData from "./components/profileData";
 import ProfileCvs from "./components/profileCvs";
 import { getCvsByUserId } from "@/server/api/cvs";
+import { ScrollToTop } from "@/components/ui/scrollToTop";
 
 export default async function Page({
   params,
@@ -23,15 +24,17 @@ export default async function Page({
 
   return (
     <div>
-      <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[40%_60%] md:gap-x-4">
-        <section className="h-[78.75rem] flex-col rounded-lg">
-          {cvs?.length ? <ProfileCvs cvs={cvs} /> : <></>}
-        </section>
-
-        <section className="h-[78.75rem] flex-col self-start">
+      <div className="md:hidden">
+      <ScrollToTop />
+      </div>
+      <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[60%_40%] md:gap-x-4">
+        <section className=" flex-col self-start">
           <div>
             <ProfileData user={result.val} />
           </div>
+        </section>
+        <section className="flex-col rounded-lg">
+          {cvs?.length ? <ProfileCvs cvs={cvs} /> : <></>}
         </section>
       </div>
     </div>
