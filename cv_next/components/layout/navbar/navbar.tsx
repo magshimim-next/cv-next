@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { ModeToggle } from "@/components/layout/navbar/modeToggle";
 import { PopupToggle } from "./popupToggle";
+import logo from "@/public/images/logo.png";
+import Image from "next/image";
 
 const navLinks = [
   {
@@ -31,8 +33,9 @@ export default function Navbar() {
           <nav className="mx-auto justify-between px-4 md:flex md:items-center md:px-8 lg:max-w-7xl">
             <div className="flex items-center justify-between py-3 md:block md:py-5">
               <Link href="/">
-                <h1 className="text-2xl font-bold text-white duration-200 lg:hover:scale-[1.10]">
-                  CV-NEXT
+                <h1 className="flex flex-row text-2xl font-bold text-white duration-200 lg:hover:scale-[1.10]">
+                  <Image src={logo} width={60} height={40} alt="Header image" />
+                  NEXT
                 </h1>
               </Link>
             </div>
