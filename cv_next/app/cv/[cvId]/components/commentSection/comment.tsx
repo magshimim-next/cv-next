@@ -16,6 +16,7 @@ import { AiFillLike } from "react-icons/ai";
 import { useCallback, useState } from "react";
 import Alert from "../../../../../components/ui/alert";
 import Link from "next/link";
+import { HiXMark } from "react-icons/hi2";
 
 interface NewCommentBlockProps {
   commentOnCommentStatus: boolean;
@@ -223,7 +224,18 @@ const StartNewComment = ({
         onClick={() => setCommentOnCommentStatus(!commentOnCommentStatus)}
       />
     </button>
-  ) : null;
+  ) : (
+    <button className="text-red-500">
+      <HiXMark
+        size="1.2rem"
+        style={{
+          marginRight: "0.4rem",
+          transform: "translateY(2px)",
+        }}
+        onClick={() => setCommentOnCommentStatus(!commentOnCommentStatus)}
+      />
+    </button>
+  );
 };
 
 interface CommentProps {
