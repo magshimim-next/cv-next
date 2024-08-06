@@ -13,7 +13,7 @@ import { FaComment } from "react-icons/fa";
 import Tooltip from "../../../../../components/ui/tooltip";
 import { AiTwotoneLike } from "react-icons/ai";
 import { AiFillLike } from "react-icons/ai";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Alert from "../../../../../components/ui/alert";
 import Link from "next/link";
 
@@ -250,7 +250,7 @@ export default function Comment({
   };
   const { mutate } = useSWRConfig();
 
-  const addNewCommentClickEvent = async () => {
+  const addNewCommentClickEvent = useCallback(async () => {
     const commentToAdd: NewCommentModel = {
       data: commentOnComment,
       document_id: comment.document_id,
@@ -300,7 +300,14 @@ export default function Comment({
     } catch (error) {
       mutate(comment.document_id);
     }
-  };
+  }, [
+    commentOnComment,
+    comment.document_id,
+    comment.id,
+    userId,
+    commentsOfComment,
+    mutate,
+  ]);
 
   const date = new Date(
     comment.last_update ? comment.last_update : new Date().getTime()
