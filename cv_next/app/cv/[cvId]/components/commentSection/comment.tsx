@@ -273,6 +273,10 @@ export default function Comment({
       user_id: userId,
     };
 
+    if (comment.parent_comment_Id) {
+      commentToAdd.parent_comment_Id = comment.parent_comment_Id;
+    }
+
     const optimisticData = (
       prevData: CommentModel[] | undefined
     ): CommentModel[] => {
