@@ -143,6 +143,13 @@ async function _getAllCvsByCategories(
  * @param {number} page - The page number for pagination.
  * @return {Promise<CvModel[] | null>} A Promise that resolves with an array of CvModel or null.
  */
+/**
+ * Retrieves a paginated list of CVs based on the provided page number.
+ *
+ * @param {boolean} filterOutDeleted - Indicates whether deleted CVs should be filtered out.
+ * @param {number} page - The page number for pagination.
+ * @return {Promise<CvModel[] | null>} A Promise that resolves with an array of CvModel or null.
+ */
 export async function getPaginatedCvs(
   filterOutDeleted: boolean = true,
   page: number = Definitions.PAGINATION_INIT_PAGE_NUMBER,
@@ -155,35 +162,70 @@ export async function getPaginatedCvs(
       : Definitions.CVS_PER_PAGE;
 
     const supabase = SupabaseHelper.getSupabaseInstance();
-    let query = supabase
-      .from(Tables.cvs)
-      .select("*")
-      .range(from, to - 1);
+    let query = supabase.from("cvs").select("*");
+    let queryUserId = supabase.from("profiles").select("id");
+    let ids: string[] | null = null;
 
     logger.debug(filters, "filters");
-    if (filters) {
-      if (filters.searchValue) {
-        query = query.textSearch(CvKeys.description, filters.searchValue);
-      }
-      if (filters.categoryIds) {
-        logger.debug(filters.categoryIds, "category ids");
-        query = query.overlaps(CvKeys.cv_categories, filters.categoryIds);
-      }
+
+    // Filter by searchValue
+    if (filters?.searchValue) {
+      const searchValue = `%${filters.searchValue}%`;
+      query = query.ilike("description", searchValue);
+      queryUserId = queryUserId.or(
+        `full_name.ilike.${searchValue},username.ilike.${searchValue}`
+      );
     }
 
+    // Filter by categoryIds
+    if (filters?.categoryIds) {
+      logger.debug(filters.categoryIds, "category ids");
+      query = query.overlaps(CvKeys.cv_categories, filters.categoryIds);
+    }
+
+    // Exclude deleted items
     if (filterOutDeleted) {
-      query = query.eq(CvKeys.deleted, false);
+      query = query.eq("deleted", false);
     }
 
-    const { data: cvs, error } = await query;
-    logger.debug(cvs?.map((cv) => cv.cv_categories, "cvs"));
+    // Fetch profiles based on search value
+    if (filters?.searchValue) {
+      const { data: userProfiles, error: userProfilesError } =
+        await queryUserId;
+      if (userProfilesError) {
+        logger.error(
+          userProfilesError,
+          "getPaginatedCvs - profiles query error"
+        );
+        return null;
+      }
+      ids = userProfiles?.map((profile) => profile.id) || [];
+    }
 
-    if (error) {
-      logger.error(error, "getPaginatedCvs");
+    // Fetch cvs
+    const { data: cvs, error: cvsError } = await query;
+    if (cvsError) {
+      logger.error(cvsError, "getPaginatedCvs - cvs query error");
       return null;
     }
 
-    return { page: page, cvs: cvs as CvModel[] };
+    // Filter cvs by user profiles if search value was provided
+    if (ids && ids.length > 0) {
+      const cvsByUserIds = cvs.filter((cv) =>
+        ids.includes(cv.user_id as string)
+      );
+      const combinedCvs = [
+        ...cvsByUserIds,
+        ...cvs.filter((cv) => !ids.includes(cv.user_id as string)),
+      ];
+      const uniqueCvs = Array.from(
+        new Map(combinedCvs.map((cv) => [cv.id, cv])).values()
+      );
+      return { page, cvs: uniqueCvs.slice(from, to) as CvModel[] };
+    }
+
+    // Return paginated cvs
+    return { page, cvs: cvs.slice(from, to) as CvModel[] };
   } catch (error) {
     logger.error(error, "getPaginatedCvs");
     return null;
