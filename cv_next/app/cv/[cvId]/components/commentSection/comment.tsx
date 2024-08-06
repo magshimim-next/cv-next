@@ -21,12 +21,14 @@ interface NewCommentBlockProps {
   commentOnCommentStatus: boolean;
   setCommentOnComment: (value: string) => void;
   addNewCommentClickEvent: () => Promise<void>;
+  setCommentOnCommentStatus: (status: boolean) => void;
 }
 
 const NewCommentBlock = ({
   commentOnCommentStatus,
   setCommentOnComment,
   addNewCommentClickEvent,
+  setCommentOnCommentStatus,
 }: NewCommentBlockProps) => {
   return commentOnCommentStatus ? (
     <div
@@ -46,6 +48,7 @@ const NewCommentBlock = ({
         style={{ fontSize: "5vh", cursor: "pointer" }}
         onClick={async () => {
           await addNewCommentClickEvent();
+          setCommentOnCommentStatus(!commentOnCommentStatus);
         }}
       />
     </div>
@@ -406,6 +409,7 @@ export default function Comment({
         commentOnCommentStatus={commentOnCommentStatus}
         setCommentOnComment={setCommentOnComment}
         addNewCommentClickEvent={addNewCommentClickEvent}
+        setCommentOnCommentStatus={setCommentOnCommentStatus}
       />
       {commentsOfComment?.map((comment) => (
         <Comment
