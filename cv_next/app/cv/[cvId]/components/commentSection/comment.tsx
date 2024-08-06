@@ -17,11 +17,17 @@ import { useState } from "react";
 import Alert from "../../../../../components/ui/alert";
 import Link from "next/link";
 
+interface NewCommentBlockProps {
+  commentOnCommentStatus: boolean;
+  setCommentOnComment: (value: string) => void;
+  addNewCommentClickEvent: () => Promise<void>;
+}
+
 const NewCommentBlock = ({
   commentOnCommentStatus,
   setCommentOnComment,
   addNewCommentClickEvent,
-}: any) => {
+}: NewCommentBlockProps) => {
   return commentOnCommentStatus ? (
     <div
       style={{
@@ -46,7 +52,15 @@ const NewCommentBlock = ({
   ) : null;
 };
 
-const VotingSection = ({ userVoted, setLikedCommentAction }: any) => {
+interface VotingSectionProps {
+  userVoted: boolean;
+  setLikedCommentAction: (liked: boolean) => Promise<void>;
+}
+
+const VotingSection = ({
+  userVoted,
+  setLikedCommentAction,
+}: VotingSectionProps) => {
   return userVoted ? (
     <button>
       <AiFillLike
@@ -71,7 +85,15 @@ const VotingSection = ({ userVoted, setLikedCommentAction }: any) => {
   );
 };
 
-const ResolvedSection = ({ userResolved, setResolvedCommentAction }: any) => {
+interface ResolvedSectionProps {
+  userResolved: boolean;
+  setResolvedCommentAction: (resolved: boolean) => Promise<void>;
+}
+
+const ResolvedSection = ({
+  userResolved,
+  setResolvedCommentAction,
+}: ResolvedSectionProps) => {
   return userResolved ? (
     <button
       className="text-green-500"
@@ -99,12 +121,25 @@ const ResolvedSection = ({ userResolved, setResolvedCommentAction }: any) => {
   );
 };
 
+interface CommenterModel {
+  id: string;
+  username?: string;
+  full_name?: string;
+}
+
+interface CommenterActionsProps {
+  commenter: CommenterModel;
+  userId: string;
+  setShowAlert: (value: boolean) => void;
+  resolvedSection: JSX.Element;
+}
+
 const CommenterActions = ({
   commenter,
   userId,
   setShowAlert,
   resolvedSection,
-}: any) => {
+}: CommenterActionsProps) => {
   return commenter.id === userId ? (
     <>
       <span>
@@ -128,7 +163,17 @@ const CommenterActions = ({
   ) : null;
 };
 
-const GeneralActions = ({ startNewComment, votingSection, comment }: any) => {
+interface GeneralActionsProps {
+  startNewComment: JSX.Element;
+  votingSection: JSX.Element;
+  comment: CommentModel;
+}
+
+const GeneralActions = ({
+  startNewComment,
+  votingSection,
+  comment,
+}: GeneralActionsProps) => {
   return (
     <>
       <span>{startNewComment}</span>
@@ -139,7 +184,12 @@ const GeneralActions = ({ startNewComment, votingSection, comment }: any) => {
   );
 };
 
-const AlertComponent = ({ showAlert, onAlertClick }: any) => {
+interface AlertComponentProps {
+  showAlert: boolean;
+  onAlertClick: (type: boolean) => Promise<void>;
+}
+
+const AlertComponent = ({ showAlert, onAlertClick }: AlertComponentProps) => {
   return showAlert ? (
     <Alert
       display={showAlert ? "flex" : "none"}
@@ -150,10 +200,15 @@ const AlertComponent = ({ showAlert, onAlertClick }: any) => {
   ) : null;
 };
 
+interface StartNewCommentProps {
+  commentOnCommentStatus: boolean;
+  setCommentOnCommentStatus: (status: boolean) => void;
+}
+
 const StartNewComment = ({
   commentOnCommentStatus,
   setCommentOnCommentStatus,
-}: any) => {
+}: StartNewCommentProps) => {
   return !commentOnCommentStatus ? (
     <button className="text-green-500">
       <FaComment
@@ -279,7 +334,7 @@ export default function Comment({
 
   const commenter = JSON.parse(JSON.stringify(comment.user_id));
 
-  const userVoted = comment.upvotes?.includes(userId);
+  const userVoted = comment.upvotes?.includes(userId) || false;
   const userResolved = comment.resolved;
 
   const commentBackground = userResolved
