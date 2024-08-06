@@ -143,13 +143,6 @@ async function _getAllCvsByCategories(
  * @param {number} page - The page number for pagination.
  * @return {Promise<CvModel[] | null>} A Promise that resolves with an array of CvModel or null.
  */
-/**
- * Retrieves a paginated list of CVs based on the provided page number.
- *
- * @param {boolean} filterOutDeleted - Indicates whether deleted CVs should be filtered out.
- * @param {number} page - The page number for pagination.
- * @return {Promise<CvModel[] | null>} A Promise that resolves with an array of CvModel or null.
- */
 export async function getPaginatedCvs(
   filterOutDeleted: boolean = true,
   page: number = Definitions.PAGINATION_INIT_PAGE_NUMBER,
