@@ -43,7 +43,7 @@ const NewCommentBlock = ({
         required
       />
       <RxPlus
-        style={{ fontSize: "5vh" }}
+        style={{ fontSize: "5vh", cursor: "pointer" }}
         onClick={async () => {
           await addNewCommentClickEvent();
         }}
