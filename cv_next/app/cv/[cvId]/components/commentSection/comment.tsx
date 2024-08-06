@@ -300,14 +300,7 @@ export default function Comment({
     } catch (error) {
       mutate(comment.document_id);
     }
-  }, [
-    commentOnComment,
-    comment.document_id,
-    comment.id,
-    userId,
-    commentsOfComment,
-    mutate,
-  ]);
+  }, [commentOnComment, comment, userId, commentsOfComment, mutate]);
 
   const date = new Date(
     comment.last_update ? comment.last_update : new Date().getTime()
