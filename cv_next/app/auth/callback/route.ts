@@ -5,7 +5,7 @@ import SupabaseHelper from "@/server/api/supabaseHelper";
 import logger from "@/server/base/logger";
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams, origin: _origin } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next");
 
@@ -24,5 +24,5 @@ export async function GET(request: Request) {
   }
 
   // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/`); //TODO: move to regular error page
+  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/`); //TODO: move to regular error page
 }
