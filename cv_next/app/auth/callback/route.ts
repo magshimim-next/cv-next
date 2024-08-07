@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import Definitions from "@/lib/definitions";
 import SupabaseHelper from "@/server/api/supabaseHelper";
+import logger from "@/server/base/logger";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -15,6 +16,8 @@ export async function GET(request: Request) {
       return NextResponse.redirect(
         `${origin}` + Definitions.AUTH_DEFAULT_REDIRECT + next
       );
+    } else {
+      logger.error(error, "Error at auth route");
     }
   }
 
