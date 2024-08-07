@@ -8,13 +8,15 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next");
-  logger.trace(request, `origin is ${origin}`);
+
   if (code) {
     const supabase = SupabaseHelper.getSupabaseInstance();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       return NextResponse.redirect(
-        `${origin}` + Definitions.AUTH_DEFAULT_REDIRECT + next
+        process.env.NEXT_PUBLIC_BASE_URL +
+          Definitions.AUTH_DEFAULT_REDIRECT +
+          next
       );
     } else {
       logger.error(error, "Error at auth route");
