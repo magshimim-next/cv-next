@@ -18,6 +18,7 @@ export default function Page() {
         API_DEFINITIONS.REVALIDATE_USERS_ENDPOINT,
         {}
       );
+      router.push("/");
     };
 
     signOutAndRedirect();
