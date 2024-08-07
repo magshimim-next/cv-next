@@ -4,8 +4,9 @@ import { useRef, useEffect } from "react";
 import Link from "next/link";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
-import { revalidatePath } from "next/cache";
 import { IoCloseSharp } from "react-icons/io5";
+import { useApiFetch } from "@/hooks/useAPIFetch";
+import { API_DEFINITIONS } from "@/lib/definitions";
 
 const navLinks = [
   {
@@ -78,6 +79,7 @@ const UserDataComponent: React.FC<{
 export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const supabase = createClientComponent();
+  const fetchFromApi = useApiFetch();
 
   useEffect(() => {
     if (dialogRef.current) {
@@ -85,11 +87,15 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
     }
   }, []);
 
-  const handleSelection = (route: string) => {
+  const handleSelection = async (route: string) => {
     if (route === "Signout") {
-      supabase.auth.signOut();
+      await supabase.auth.signOut();
+      await fetchFromApi(
+        API_DEFINITIONS.USERS_API_BASE,
+        API_DEFINITIONS.REVALIDATE_USERS_ENDPOINT,
+        {}
+      );
       updateSignIn();
-      revalidatePath("/");
     }
     closeCb();
   };
