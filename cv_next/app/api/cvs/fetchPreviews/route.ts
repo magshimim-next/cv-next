@@ -58,7 +58,7 @@ async function revalidatePreviewHandler(data: { cvLink: string }) {
         upsert: true, // Replace if exists
       });
 
-    if (error && error?.message.includes("violates row-level security")) {
+    if (error && !error?.message.includes("violates row-level security")) {
       logger.error(error, "Upload error:");
     } else if (error) {
       logger.debug(error, "RLS error on upload"); // debug because it's redundant to log RLS
