@@ -155,7 +155,10 @@ export async function getPaginatedCvs(
       : Definitions.CVS_PER_PAGE;
 
     const supabase = SupabaseHelper.getSupabaseInstance();
-    let query = supabase.from("cvs").select("*");
+    let query = supabase
+      .from("cvs")
+      .select("*")
+      .order(CvKeys.created_at, { ascending: false });
     let profileQuery = supabase.from("profiles").select("id");
 
     logger.debug(filters, "filters");
