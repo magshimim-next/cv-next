@@ -17,6 +17,7 @@ import { useCallback, useState } from "react";
 import Alert from "../../../../../components/ui/alert";
 import Link from "next/link";
 import { HiXMark } from "react-icons/hi2";
+import { useRouter } from "next/navigation";
 
 interface NewCommentBlockProps {
   commentOnCommentStatus: boolean;
@@ -255,6 +256,7 @@ export default function Comment({
   commentsOfComment = [],
   setCommentsOfComments,
 }: CommentProps) {
+  const router = useRouter();
   const [commentOnCommentStatus, setCommentOnCommentStatus] =
     useState<boolean>(false);
   const [commentOnComment, setCommentOnComment] = useState<string>("");
@@ -303,23 +305,27 @@ export default function Comment({
     };
 
     try {
-      mutate(comment.document_id, optimisticData, {
-        optimisticData: optimisticData(commentsOfComment),
-        rollbackOnError: (error) => {
-          // Type-checking for error
-          if (error instanceof Error) {
-            return error.name !== "AbortError";
-          }
-          // Rollback if error is not an instance of Error
-          return true;
+      await mutate(
+        comment.document_id,
+        async () => {
+          await addComment(commentToAdd);
+          return optimisticData(commentsOfComment);
         },
-      });
-      await addComment(commentToAdd);
-      mutate(comment.document_id);
+        {
+          optimisticData: optimisticData(commentsOfComment),
+          rollbackOnError: (error) => {
+            if (error instanceof Error) {
+              return error.name !== "AbortError";
+            }
+            return true;
+          },
+          revalidate: true,
+        }
+      );
     } catch (error) {
-      mutate(comment.document_id);
+      router.push("/inactive");
     }
-  }, [commentOnComment, comment, userId, commentsOfComment, mutate]);
+  }, [commentOnComment, comment, userId, mutate, commentsOfComment, router]);
 
   const date = new Date(
     comment.last_update ? comment.last_update : new Date().getTime()
