@@ -76,7 +76,8 @@ export default function CVItem({ cv }: CVCardProps) {
         {
           pathname: "revalidatePreview",
           cvLink,
-        }
+        },
+        7000
       );
     },
     [fetchFromApi]
