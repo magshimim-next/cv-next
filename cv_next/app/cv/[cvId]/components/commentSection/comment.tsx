@@ -305,7 +305,7 @@ export default function Comment({
     };
 
     try {
-      await mutate(
+      mutate(
         comment.document_id,
         async () => {
           await addComment(commentToAdd);
