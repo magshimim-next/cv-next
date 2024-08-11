@@ -1,3 +1,5 @@
+"use client";
+
 import { useSupabase } from "./supabase";
 import useSWR from "swr";
 
