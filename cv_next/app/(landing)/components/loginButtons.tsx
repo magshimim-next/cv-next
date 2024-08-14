@@ -9,13 +9,13 @@ import Link from "next/link";
 
 export const LoginButtons = () => {
 
-    const { loading, loginState } = useUser();
+    const { loading, loginState } = useUser();    
 
     if (loading) return <></>; //TODO: perhaps render loading state
 
     const profileRoutes = routes.filter((link) => link.UILocation === UI_Location.profile);
 
-    const loginValue = loginState ? 
+    const loginValue = !loginState ? 
         profileRoutes.filter(route => route.path.includes("login"))[0] :
         profileRoutes.filter(route => route.path.includes("signout"))[0];
         //TODO: probably need definition change
