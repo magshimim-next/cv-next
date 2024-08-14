@@ -49,7 +49,7 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
     async function getUser() {
       const userId = await supabase.auth.getUser();
       if (userId.error) {
-        router.push("/inactive");
+        router.push("/inactive"); // TODO: redirect to login with next
       } else setUserId(userId.data.user.id);
     }
     getUser();
