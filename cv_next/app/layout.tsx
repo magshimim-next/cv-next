@@ -32,9 +32,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <CvsProvider>
-            <SupabaseProvider>
-              <Navbar />
-              <div className="container mx-auto space-y-8 p-6">{children}</div>
+            <SupabaseProvider session={null}>
+              <div className="">
+                <Navbar />
+                <div className="container mx-auto space-y-8 p-6">
+                  {children}
+                </div>
+              </div>
             </SupabaseProvider>
           </CvsProvider>
         </ThemeProvider>

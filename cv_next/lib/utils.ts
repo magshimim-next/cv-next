@@ -92,3 +92,7 @@ export function transformToPreviewLink(link: string): string {
 
 export const generateCategoryLink = (categoryNumber: number) =>
   `/feed?category=${Categories.category[categoryNumber].toLowerCase()}`;
+
+export function getAllNumbersFromArr(arr: string[]) {
+    return arr.filter(value => !isNaN(parseInt(value))).map(value => parseInt(value))
+}
