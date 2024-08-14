@@ -323,7 +323,7 @@ export default function Comment({
         }
       );
     } catch (error) {
-      router.push("/inactive");
+      router.push("/inactive"); //TODO: redirect to login with next param
     }
   }, [commentOnComment, comment, userId, mutate, commentsOfComment, router]);
 

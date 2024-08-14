@@ -47,7 +47,8 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
   useEffect(() => {
     async function getUser() {
       const userId = (await supabase.auth.getUser()).data.user?.id;
-      if (!userId) router.push("/inactive");
+      if (!userId)
+        router.push("/inactive"); //TODO: redirect to login with next param
       else setUserId(userId);
     }
     getUser();
