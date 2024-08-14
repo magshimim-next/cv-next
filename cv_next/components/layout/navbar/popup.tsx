@@ -2,9 +2,10 @@
 import Image from "next/image";
 import { useRef, useEffect } from "react";
 import Link from "next/link";
-import { useSupabase } from "@/hooks/supabase";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { IoCloseSharp } from "react-icons/io5";
+import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
+import { revalidatePath } from "next/cache";
 
 const navLinks = [
   {
@@ -76,7 +77,7 @@ const UserDataComponent: React.FC<{
 
 export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const supabase = useSupabase();
+  const supabase = createClientComponent();
 
   useEffect(() => {
     if (dialogRef.current) {
@@ -88,6 +89,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
     if (route === "Signout") {
       supabase.auth.signOut();
       updateSignIn();
+      revalidatePath("/");
     }
     closeCb();
   };

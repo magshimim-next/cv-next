@@ -1,17 +1,14 @@
 "use client";
-import { getBlurredCv } from "@/app/actions/cvs/getBlurCv";
+
 import Image from "next/image";
 import Link from "next/link";
 import Categories from "@/types/models/categories";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
-import {
-  getImageURL,
-  revalidatePreview,
-  getUserName,
-} from "@/app/actions/cvs/preview";
 import Definitions from "@/lib/definitions";
 import { generateCategoryLink } from "@/lib/utils";
+import { useApiFetch } from "@/hooks/useAPIFetch";
+import { API_DEFINITIONS } from "@/lib/definitions";
 
 interface CVCardProps {
   cv: CvModel;
@@ -20,6 +17,7 @@ interface CVCardProps {
 export default function CVItem({ cv }: CVCardProps) {
   const [realURL, setRealURL] = useState("");
   const [authorName, setAuthorName] = useState("");
+  const fetchFromApi = useApiFetch();
 
   const [base64Data, setBase64Data] = useState(
     Definitions.PLAICEHOLDER_IMAGE_DATA
@@ -27,24 +25,65 @@ export default function CVItem({ cv }: CVCardProps) {
 
   const getBlur = useMemo(
     () => async (imageURL: string) => {
-      return await getBlurredCv(imageURL);
+      const data = await fetchFromApi(
+        API_DEFINITIONS.CVS_API_BASE,
+        API_DEFINITIONS.FETCH_PREVIEWS_ENDPOINT,
+        {
+          pathname: "getBlurredCv",
+          cvLink: imageURL,
+        }
+      );
+      return data.base64;
     },
-    []
+    [fetchFromApi]
   );
 
   const getURL = useMemo(
     () => async (cvId: string) => {
-      return await getImageURL(cvId);
+      const data = await fetchFromApi(
+        API_DEFINITIONS.CVS_API_BASE,
+        API_DEFINITIONS.FETCH_PREVIEWS_ENDPOINT,
+        {
+          pathname: "getImageURL",
+          cvId,
+        }
+      );
+      return data.publicUrl;
     },
-    []
+    [fetchFromApi]
   );
 
   const getCachedUserName = useMemo(
     () => async (userId: string) => {
-      return await getUserName(userId);
+      const data = await fetchFromApi(
+        API_DEFINITIONS.USERS_API_BASE,
+        API_DEFINITIONS.FETCH_USERS_ENDPOINT,
+        {
+          pathname: "getUserName",
+          userId,
+        }
+      );
+      return data.fullName;
     },
-    []
+    [fetchFromApi]
   );
+
+  const revalidatePreview = useCallback(
+    async (cvLink: string) => {
+      await fetchFromApi(
+        API_DEFINITIONS.CVS_API_BASE,
+        API_DEFINITIONS.FETCH_PREVIEWS_ENDPOINT,
+        {
+          pathname: "revalidatePreview",
+          cvLink,
+        },
+        7000
+      );
+    },
+    [fetchFromApi]
+  );
+
+  const interval = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,20 +104,33 @@ export default function CVItem({ cv }: CVCardProps) {
         setBase64Data(base64);
       };
 
-      getAuthorName();
       await getBlurCv();
-      revalidateImage();
+      await getAuthorName();
+      await revalidateImage();
 
-      const interval = setInterval(
-        revalidateImage,
-        Definitions.FETCH_WAIT_TIME * 1000
-      ); // Revalidate every 2 minutes
-
-      return () => clearInterval(interval);
+      interval.current = setInterval(() => {
+        revalidateImage();
+      }, Definitions.FETCH_WAIT_TIME * 1000); // Revalidate every 2 minutes
     };
 
     fetchData();
-  }, [cv, getBlur, getURL, getCachedUserName]);
+  }, [
+    cv.document_link,
+    cv.user_id,
+    getBlur,
+    getCachedUserName,
+    getURL,
+    revalidatePreview,
+  ]);
+
+  useEffect(
+    () => () => {
+      if (interval.current != null) {
+        clearInterval(interval.current);
+      }
+    },
+    []
+  );
 
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
 

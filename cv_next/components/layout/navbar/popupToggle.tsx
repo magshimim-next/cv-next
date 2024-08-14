@@ -2,9 +2,9 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import Popup from "./popup";
-import { useSupabase } from "@/hooks/supabase";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { getUserModel } from "@/app/actions/users/getUser";
+import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 
 interface PopupToggleProps {
   closeHamburger?: () => void;
@@ -14,7 +14,7 @@ export function PopupToggle({ closeHamburger }: PopupToggleProps) {
   const [profileImage, setProfileImage] = useState<string>("");
   const [userData, setUserData] = useState<UserModel | null>(null);
   const [signedIn, setSignIn] = useState(false);
-  const supabase = useSupabase();
+  const supabase = createClientComponent();
 
   useEffect(() => {
     const fetchUser = async () => {
