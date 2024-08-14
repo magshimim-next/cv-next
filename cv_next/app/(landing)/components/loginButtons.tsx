@@ -5,11 +5,16 @@ import { useUser } from "@/hooks/useUser";
 import { UI_Location, routes } from "@/lib/definitions";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useEffect } from "react";
 
 
 export const LoginButtons = () => {
 
-    const { loading, loginState } = useUser();    
+    const { loading, loginState, mutateUser } = useUser();
+
+    useEffect(() => {        
+        mutateUser();
+    }, [mutateUser]);
 
     if (loading) return <></>; //TODO: perhaps render loading state
 
