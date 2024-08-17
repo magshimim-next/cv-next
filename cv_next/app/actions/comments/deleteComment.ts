@@ -2,7 +2,7 @@
 
 import { Err } from "@/lib/utils";
 import { getCommentById, markCommentAsDeleted } from "@/server/api/comments";
-import { getCurrentId } from "@/server/api/users";
+import { getCurrentId, userIsAdmin } from "@/server/api/users";
 import logger, { logErrorWithTrace } from "@/server/base/logger";
 
 /**
@@ -28,8 +28,11 @@ export const deleteComment = async (
       "An error has occurred while deleting the comment. Please try again later."
     );
   }
-
-  if (currentIdResult.val != commentResult.val.user_id) {
+  const resultAdminCheck = await userIsAdmin();
+  if (
+    currentIdResult.val != commentResult.val.user_id &&
+    !resultAdminCheck.ok
+  ) {
     logger.error(
       `${currentIdResult.val} tried deleting someone elses comment!`
     );
