@@ -1,4 +1,4 @@
-import { PostgrestError } from "@supabase/supabase-js";
+import { AuthError, PostgrestError } from "@supabase/supabase-js";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import Categories from "@/types/models/categories";
@@ -68,9 +68,10 @@ export namespace Ok {
 export function Err<E>(
   where: E,
   postgrestError?: PostgrestError,
+  authError?: AuthError,
   err?: Error
 ): Result<never, E> {
-  return { ok: false, where, postgrestError, err };
+  return { ok: false, where, postgrestError, authError, err };
 }
 
 /**
@@ -94,5 +95,7 @@ export const generateCategoryLink = (categoryNumber: number) =>
   `/feed?category=${Categories.category[categoryNumber].toLowerCase()}`;
 
 export function getAllNumbersFromArr(arr: string[]) {
-    return arr.filter(value => !isNaN(parseInt(value))).map(value => parseInt(value))
+  return arr
+    .filter((value) => !isNaN(parseInt(value)))
+    .map((value) => parseInt(value));
 }
