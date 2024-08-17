@@ -4,10 +4,6 @@ import { handleCurrentUser } from "../actions/user/fetchUserInfo";
 import { redirect } from "next/navigation";
 
 export default async function Page() {
-  //const redirectOutput = await handleCurrentUser("/feed");
-  //if (redirectOutput != "/feed") {
-  //  redirect(redirectOutput);
-  //}
   return (
     <main>
       <Suspense fallback={<div>Loading...</div>}>

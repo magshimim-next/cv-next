@@ -108,7 +108,6 @@ export default function Feed() {
       }
       if(filters.categoryId){
         params.delete("category");
-        console.log("params before", params);
         filters.categoryId.map((category) => {
           params.append("category", categoryString(category));
         })

@@ -1,5 +1,5 @@
 "use server";
-//import "server-only";
+import "server-only";
 
 import logger from "@/server/base/logger";
 import Categories from "@/types/models/categories";
@@ -20,7 +20,6 @@ import { getUserIdByName } from "./users";
  * @return {Promise<CvModel | null>} The retrieved CV or null if not found
  */
 export async function getCvById(cvId: string): Promise<CvModel | null> {
-  'use server';
   try {
     const { data: cvs, error } = await (await SupabaseHelper.getSupabaseInstance())
       .from(Tables.cvs)
@@ -57,7 +56,6 @@ export async function getCvsByUserId(
   userId: string,
   filterOutDeleted = true
 ): Promise<CvModel[] | null> {
-  'use server';
   try {
     const supabase = await(SupabaseHelper.getSupabaseInstance());
     let query = supabase
@@ -176,7 +174,7 @@ export async function getPaginatedCvs(
         filters.searchValue = filters.searchValue.replace(" ", "+");
         if((userIdResult).ok) {
           const userIdList = userIdResult.val;
-          console.log(userIdList);
+          logger.debug(userIdList);
           if(userIdList.length){
             cvsUsers = await getCvsByUserId(userIdList[0], filterOutDeleted);
           }
@@ -205,7 +203,6 @@ export async function getPaginatedCvs(
       return null;
     }
     cvs.concat((cvsUsers) ? cvsUsers : []);
-    console.log(cvs, "meow");
     return { page: page, cvs: cvs as CvModel[] };
   } catch (error) {
     logger.error(error, "getPaginatedCvs");

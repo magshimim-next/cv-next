@@ -1,4 +1,4 @@
-//import "server-only";
+import "server-only";
 
 import { SupabaseClient } from "@supabase/supabase-js";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
