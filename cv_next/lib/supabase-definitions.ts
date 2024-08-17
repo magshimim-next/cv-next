@@ -2,10 +2,12 @@ export const Tables: {
   cvs: "cvs";
   comments: "comments";
   profiles: "profiles";
+  whitelisted: "whitelisted";
 } = {
   cvs: "cvs",
   comments: "comments",
   profiles: "profiles",
+  whitelisted: "whitelisted",
 };
 
 export const CvKeys: {
