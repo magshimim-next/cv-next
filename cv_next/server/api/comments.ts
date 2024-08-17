@@ -28,12 +28,13 @@ export async function addCommentToCv(
       return Err(
         addCommentToCv.name,
         undefined,
+        undefined,
         new Error("adding comment failed")
       );
     }
     return Ok.EMPTY;
   } catch (err) {
-    return Err(addCommentToCv.name, undefined, err as Error);
+    return Err(addCommentToCv.name, undefined, undefined, err as Error);
   }
 }
 
@@ -56,7 +57,7 @@ export async function markCommentAsDeleted(
     }
     return Ok.EMPTY;
   } catch (err) {
-    return Err(markCommentAsDeleted.name, undefined, err as Error);
+    return Err(markCommentAsDeleted.name, undefined, undefined, err as Error);
   }
 }
 
@@ -81,7 +82,7 @@ export async function setResolved(
     }
     return Ok.EMPTY;
   } catch (err) {
-    return Err(setResolved.name, undefined, err as Error);
+    return Err(setResolved.name, undefined, undefined, err as Error);
   }
 }
 
@@ -118,7 +119,7 @@ export async function getAllCommentsByCVId(
 
     return Ok(comments);
   } catch (err) {
-    return Err(getAllCommentsByCVId.name, undefined, err as Error);
+    return Err(getAllCommentsByCVId.name, undefined, undefined, err as Error);
   }
 }
 
@@ -159,7 +160,7 @@ export async function setLiked(
     }
     return Ok.EMPTY;
   } catch (err) {
-    return Err(setResolved.name, undefined, err as Error);
+    return Err(setResolved.name, undefined, undefined, err as Error);
   }
 }
 
@@ -192,6 +193,6 @@ export async function getAllCommentsByUserId(
     }
     return Ok(comments);
   } catch (err) {
-    return Err(getAllCommentsByUserId.name, undefined, err as Error);
+    return Err(getAllCommentsByUserId.name, undefined, undefined, err as Error);
   }
 }
