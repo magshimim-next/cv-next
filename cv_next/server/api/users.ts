@@ -114,6 +114,32 @@ export async function setWorkCategories(
 }
 
 /**
+ * Get current user ID
+ *
+ * @return {Promise<Result<string, string>>} A promise that resolves with the id or rejects with an error message.
+ */
+export async function getCurrentId(): Promise<Result<string, string>> {
+  try {
+    const { data: user, error: connectedError } =
+      await SupabaseHelper.getSupabaseInstance().auth.getUser();
+    if (connectedError && !user) {
+      return Err(getCurrentId.name, undefined, connectedError);
+    }
+    if (!user.user) {
+      return Err(
+        getCurrentId.name,
+        undefined,
+        undefined,
+        Error("User object is empty")
+      );
+    }
+    return Ok(user.user.id);
+  } catch (err) {
+    return Err(userIsAdmin.name, undefined, undefined, err as Error);
+  }
+}
+
+/**
  * Check if the current user is an admin
  *
  * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
