@@ -196,3 +196,27 @@ export async function getAllCommentsByUserId(
     return Err(getAllCommentsByUserId.name, undefined, undefined, err as Error);
   }
 }
+
+/**
+ * Retrieves comment using specific comment id
+ *
+ * @param {string} commentId - The comment of the specific ID
+ * @return {Promise<Result<CommentModel, string>>} A Promise that resolves to a Result object containing the retrieved comment or an error message.
+ */
+export async function getCommentById(
+  commentId: string
+): Promise<Result<CommentModel, string>> {
+  try {
+    const { data: comment, error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.comments)
+      .select("*")
+      .eq(CommentKeys.id, commentId)
+      .single();
+    if (error) {
+      return Err(getCommentById.name, error);
+    }
+    return Ok(comment);
+  } catch (err) {
+    return Err(getCommentById.name, undefined, undefined, err as Error);
+  }
+}
