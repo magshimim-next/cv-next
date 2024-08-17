@@ -1,8 +1,9 @@
 "use server";
 
 import { Err } from "@/lib/utils";
-import { markCommentAsDeleted } from "@/server/api/comments";
-import { logErrorWithTrace } from "@/server/base/logger";
+import { getCommentById, markCommentAsDeleted } from "@/server/api/comments";
+import { getCurrentId } from "@/server/api/users";
+import logger, { logErrorWithTrace } from "@/server/base/logger";
 
 /**
  * Deletes a comment by its ID.
@@ -13,6 +14,29 @@ import { logErrorWithTrace } from "@/server/base/logger";
 export const deleteComment = async (
   commentId: string
 ): Promise<Result<void, string>> => {
+  const currentIdResult = await getCurrentId();
+  if (!currentIdResult.ok) {
+    logErrorWithTrace(currentIdResult);
+    return Err(
+      "An error has occurred while deleting the comment. Please try again later."
+    );
+  }
+  const commentResult = await getCommentById(commentId);
+  if (!commentResult.ok) {
+    logErrorWithTrace(commentResult);
+    return Err(
+      "An error has occurred while deleting the comment. Please try again later."
+    );
+  }
+
+  if (currentIdResult.val != commentResult.val.user_id) {
+    logger.error(
+      `${currentIdResult.val} tried deleting someone elses comment!`
+    );
+    return Err(
+      "An error has occurred while deleting the comment. Please try again later."
+    );
+  }
   const result = await markCommentAsDeleted(commentId);
   if (result.ok) {
     return result;
