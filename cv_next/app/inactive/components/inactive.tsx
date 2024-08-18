@@ -18,7 +18,6 @@ export default function Inactive() {
         </div>
         <Link
           href="/"
-          target="_blank"
           className={`w-[10rem] ${cn(buttonVariants({ size: "lg" }))}`}
         >
           Go back
