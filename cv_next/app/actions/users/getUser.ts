@@ -2,11 +2,10 @@
 
 import { getUserById } from "@/server/api/users";
 import { Err } from "@/lib/utils";
-import { logErrorWithTrace } from "@/server/base/logger";
+import logger, { logErrorWithTrace } from "@/server/base/logger";
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { notFound } from "next/navigation";
 import { ProfileKeys } from "@/lib/supabase-definitions";
-import { User } from "@supabase/supabase-js";
 
 /**
  * Retrieves user data by user ID.
@@ -14,7 +13,9 @@ import { User } from "@supabase/supabase-js";
  * @param {string} userId - The ID of the user to retrieve
  * @return {Promise<Result<UserModel, string>>} A promise that resolves to a Result containing the user data or an error message
  */
-export const getUserModel = async (
+//TODO: delete this and replace any user-related fetches with getUser(),
+// currently this relies on user id received from the browser which is unsafe.
+export const  getUserModel = async (
   userId: string
 ): Promise<Result<UserModel, string>> => {
   const result = await getUserById(userId);
@@ -28,38 +29,28 @@ export const getUserModel = async (
   }
 };
 
-//expose auth.getUser to client
-type UserSessionResponse =
-  | {
-      data: {
-        user: User
-      }
-      error: null
-    }
-  | {
-      data: {
-        user: undefined
-      }
-      error: {
-        message: string,
-        status: number | undefined
-      }
-    };
-export const getUserSession = async ():Promise<UserSessionResponse> => {
+export const getUser = async (): Promise<Result<UserModel, string>> => {
   const supabase = SupabaseHelper.getSupabaseInstance();
   const userSession = await supabase.auth.getUser();
-  if (!userSession.error) {
-    return userSession;
+  if (!userSession || userSession.error) {
+    //403 = session not found, 400 = session missing
+    if (userSession.error.status !== 403 && userSession.error.status !== 400) {
+      logger.error(userSession.error);
+      return Err(
+        "An error has occurred while fetching the user data. Please try again later."
+      );
+    } else {
+      return Err("User is not signed in. Code: " + userSession.error.status);
+    }
+  }
+  const result = await getUserById(userSession.data.user.id);
+  if (result.ok) {
+    return result;
   } else {
-    return {
-      data: {
-        user: undefined
-      },
-      error: {
-        message: userSession.error.message,
-        status: userSession.error.status
-      }
-    };
+    logErrorWithTrace(result);
+    return Err(
+      "An error has occurred while fetching the user data. Please try again later."
+    );
   }
 };
 

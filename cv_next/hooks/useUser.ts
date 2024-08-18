@@ -1,22 +1,15 @@
 "use client";
 
-import { getUserModel, getUserSession } from "@/app/actions/users/getUser";
+import { getUser } from "@/app/actions/users/getUser";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 const getUserClient = async () => {
-    const session = await getUserSession();
-    const userSession = session?.data?.user;
-    let userData;
-    if (userSession) {
-        const dataFetch = await getUserModel(userSession.id);
-        if (dataFetch.ok) {
-            userData = dataFetch.val;
-        }
-    }
-    return {
-        session,
-        userData
+    const userDataResponse = await getUser();
+    if (userDataResponse.ok) {
+        return userDataResponse.val;
+    } else {        
+        throw {message: userDataResponse.where};
     }
 }
 
@@ -29,15 +22,27 @@ export const useUser = () => {
 
     const { data, mutate, error } = useSWR('user', getUserClient, {
         revalidateOnMount: false,
-        revalidateOnFocus: false
+        revalidateOnFocus: false,
+        onErrorRetry: (error: {message: string}, key, config, revalidate, { retryCount }) => {
+            if (error.message.includes("403") || error.message.includes("400")) {
+                //don't retry if user is signed out
+                return;
+            }
+            // Only retry up to 10 times.
+            if (retryCount >= 10) return;
+         
+            // Retry after 5 seconds.
+            setTimeout(() => revalidate({ retryCount }), 5000)
+        }
     });
 
-    const activeUser = data?.session?.data?.user;
+
+    const activeUser = data?.id;
     const loading = !data && !error;
     const loginState = activeUser && !error;
     //const loggedOut = error && error.status === 403; : might be useful instead of loginState
 
-    useEffect(() => {
+    useEffect(() => {     
         if (mounted && !data && !error) {
           mutate();
         }
@@ -46,8 +51,7 @@ export const useUser = () => {
     return {
         loading,
         loginState,
-        userSession: activeUser || undefined,
-        userData: data?.userData || undefined,
+        userData: data,
         mutateUser: mutate
     };
 }
