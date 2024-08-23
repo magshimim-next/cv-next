@@ -12,10 +12,9 @@ import openLink from "@/public/images/openLink.png";
 import warningIcon from "@/public/images/warning.png";
 import Categories from "@/types/models/categories";
 import { InputValues, checkUploadCV } from "@/app/actions/cvs/uploadCv";
-
-import { Button } from "../feed/components/button";
-import { DropdownInput } from "../feed/components/filters/valueSelect";
-import { InputBox, InputTextArea } from "../feed/components/inputbar";
+import { Button } from "@/app/feed/components/button";
+import { DropdownInput } from "@/app/feed/components/filters/valueSelect";
+import { InputBox, InputTextArea } from "@/app/feed/components/inputbar";
 
 const InputRow = ({
   inputElement,
