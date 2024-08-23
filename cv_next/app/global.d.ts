@@ -7,14 +7,17 @@ declare global {
   type CvModel = DB["public"]["Tables"]["cvs"]["Row"];
   type PaginatedCvsModel = { page: number; cvs: CvModel[] };
   type CommentModel = DB["public"]["Tables"]["comments"]["Row"];
+  type ErrorDetails = {
+    postgrestError?: PostgrestError;
+    authError?: AuthError;
+    err?: Error;
+  };
   type Result<T, E> =
     | { ok: true; val: T }
     | {
         ok: false;
         where: E;
-        postgrestError?: PostgrestError;
-        authError?: AuthError;
-        err?: Error;
+        errors: ErrorDetails;
       };
   type NewCommentModel = Omit<
     CommentModel,
