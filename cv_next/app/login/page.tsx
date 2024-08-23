@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 
 export default function Page() {
   const searchparams = useSearchParams();
-  const next = searchparams.get("next") || "/feed";
+  const next = searchparams.get("next") || "feed";
   return (
     <main>
       <div className="place-items-center px-4 text-sm font-medium">
