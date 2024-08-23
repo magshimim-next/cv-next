@@ -1,6 +1,16 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:react-hooks/recommended"],
-  "plugins": ["unused-imports"],
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:react-hooks/recommended",
+    "plugin:import/typescript",
+    "plugin:import/recommended"
+  ],
+  "plugins": [
+    "unused-imports",
+    "import",
+    "eslint-plugin-import-helpers",
+    "no-relative-import-paths"
+  ],
   "rules": {
     "@next/next/no-html-link-for-pages": "off",
     "no-unused-vars": "off",
@@ -14,6 +24,45 @@
         "argsIgnorePattern": "^_"
       }
     ],
-    "no-console": "warn"
+    "no-console": "warn",
+    "import/no-unresolved": "error",
+    "import/no-absolute-path": "warn",
+    "import/order": [
+      "warn",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index"
+        ],
+        "pathGroups": [
+          {
+            "pattern": "@/**",
+            "group": "internal",
+            "position": "before"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "newlines-between": "always"
+      }
+    ],
+    "no-relative-import-paths/no-relative-import-paths": [
+      "warn",
+      { "allowSameFolder": true, "rootDir": "cv_next/", "prefix": "@" }
+    ]
+  },
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "cv_next"
+      }
+    }
   }
 }
