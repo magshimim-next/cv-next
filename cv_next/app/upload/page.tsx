@@ -11,8 +11,8 @@ import { getAllNumbersFromArr } from "@/lib/utils";
 import openLink from "@/public/images/openLink.png";
 import warningIcon from "@/public/images/warning.png";
 import Categories from "@/types/models/categories";
+import { InputValues, checkUploadCV } from "@/app/actions/cvs/uploadCv";
 
-import { InputValues, checkUploadCV } from "../actions/cvs/uploadCv";
 import { Button } from "../feed/components/button";
 import { DropdownInput } from "../feed/components/filters/valueSelect";
 import { InputBox, InputTextArea } from "../feed/components/inputbar";
