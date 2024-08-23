@@ -17,7 +17,7 @@ import { useCallback, useState } from "react";
 import Alert from "../../../../../components/ui/alert";
 import Link from "next/link";
 import { HiXMark } from "react-icons/hi2";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface NewCommentBlockProps {
   commentOnCommentStatus: boolean;
@@ -261,11 +261,13 @@ export default function Comment({
     useState<boolean>(false);
   const [commentOnComment, setCommentOnComment] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
+  const pathname = usePathname();
+  const { mutate } = useSWRConfig();
+
   const onAlertClick = async (type: boolean) => {
     if (type) await deleteCommentAction();
     setShowAlert(false);
   };
-  const { mutate } = useSWRConfig();
 
   const addNewCommentClickEvent = useCallback(async () => {
     const commentToAdd: NewCommentModel = {
@@ -323,9 +325,17 @@ export default function Comment({
         }
       );
     } catch (error) {
-      router.push("/inactive"); //TODO: redirect to login with next param
+      router.push(`/login?next=${pathname}`);
     }
-  }, [commentOnComment, comment, userId, mutate, commentsOfComment, router]);
+  }, [
+    commentOnComment,
+    comment,
+    userId,
+    mutate,
+    commentsOfComment,
+    router,
+    pathname,
+  ]);
 
   const date = new Date(
     comment.last_update ? comment.last_update : new Date().getTime()
