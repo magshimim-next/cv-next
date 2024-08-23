@@ -13,11 +13,7 @@ export default function Page() {
   useEffect(() => {
     const signOutAndRedirect = async () => {
       await supabase.auth.signOut();
-      await fetchFromApi(
-        API_DEFINITIONS.USERS_API_BASE,
-        API_DEFINITIONS.REVALIDATE_USERS_ENDPOINT,
-        {}
-      );
+      await fetchFromApi(API_DEFINITIONS.REVALIDATE_ENDPOINT, "", {});
       router.push("/");
     };
 

@@ -90,11 +90,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
   const handleSelection = async (route: string) => {
     if (route === "Signout") {
       await supabase.auth.signOut();
-      await fetchFromApi(
-        API_DEFINITIONS.USERS_API_BASE,
-        API_DEFINITIONS.REVALIDATE_USERS_ENDPOINT,
-        {}
-      );
+      await fetchFromApi(API_DEFINITIONS.REVALIDATE_ENDPOINT, "", {});
       updateSignIn();
     }
     closeCb();
