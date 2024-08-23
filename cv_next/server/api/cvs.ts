@@ -6,7 +6,7 @@ import SupabaseHelper from "./supabaseHelper";
 import { PostgrestError } from "@supabase/supabase-js";
 import logger from "../base/logger";
 import { Tables, CvKeys, ProfileKeys } from "@/lib/supabase-definitions";
-import { filterValues } from "@/app/feed/components/filterPanel";
+import { filterValues } from "@/types/models/filters";
 
 /**
  * Retrieves a CV by its ID from the database.

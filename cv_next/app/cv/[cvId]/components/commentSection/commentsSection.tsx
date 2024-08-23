@@ -4,13 +4,16 @@ import useSWR from "swr";
 import { fetchCvComments } from "@/app/actions/comments/fetchComments";
 import Comment from "./comment";
 import { useEffect, useMemo, useState } from "react";
-import { useSupabase } from "@/hooks/supabase";
+import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function CommentsSection({ cv }: { cv: CvModel }) {
+  const pathname = usePathname();
   const router = useRouter();
   const { data: comments } = useSWR(cv.id, fetchCvComments);
-  const supabase = useSupabase();
+
+  const supabase = createClientComponent();
   const [userId, setUserId] = useState<string>("");
   const [commentsOfComments, setCommentsOfComments] = useState<
     Map<string, any[]>
@@ -46,13 +49,13 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
 
   useEffect(() => {
     async function getUser() {
-      const userId = (await supabase.auth.getUser()).data.user?.id;
-      if (!userId)
-        router.push("/inactive"); //TODO: redirect to login with next param
-      else setUserId(userId);
+      const userId = await supabase.auth.getUser();
+      if (userId.error) {
+        router.push(`/login?next=${pathname}`);
+      } else setUserId(userId.data.user.id);
     }
     getUser();
-  }, [router, supabase.auth]);
+  }, [pathname, router, supabase.auth]);
 
   return (
     <>
