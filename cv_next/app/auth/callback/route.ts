@@ -19,7 +19,7 @@ export async function GET(request: Request) {
         );
       } else {
         return NextResponse.json(
-          { error: "Failed to exchange code for session with Supabase." },
+          { error: "Failed to redirect to requested page." },
           { status: 500 }
         );
       }
