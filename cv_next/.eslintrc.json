@@ -46,13 +46,14 @@
           }
         ],
         "pathGroupsExcludedImportTypes": ["builtin"],
-        "newlines-between": "always"
+        "newlines-between": "ignore"
       }
     ],
     "no-relative-import-paths/no-relative-import-paths": [
       "warn",
       { "allowSameFolder": true, "rootDir": "cv_next/", "prefix": "@" }
-    ]
+    ],
+    "no-inline-comments": "warn"
   },
   "settings": {
     "import/parsers": {
