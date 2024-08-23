@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
-import closeIcon from "@/public/images/closeIcon.png";
 import { useRef, useEffect } from "react";
 import Link from "next/link";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { revalidatePath } from "next/cache";
+import { IoCloseSharp } from "react-icons/io5";
 
 const navLinks = [
   {
@@ -16,6 +16,11 @@ const navLinks = [
   {
     route: "Feed",
     path: "/feed",
+    req_login: true,
+  },
+  {
+    route: "Upload",
+    path: "/upload",
     req_login: true,
   },
   {
@@ -104,7 +109,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
           className="absolute left-5 top-5 h-7 w-7 cursor-pointer"
           onClick={closeCb}
         >
-          <Image alt="closeIcon" src={closeIcon}></Image>
+          <IoCloseSharp size={30} />
         </div>
         <ul className="mt-20 flex w-full flex-col items-center">
           {userData ? (

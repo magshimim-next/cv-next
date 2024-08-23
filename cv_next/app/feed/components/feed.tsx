@@ -11,6 +11,7 @@ import { FilterPanel } from "@/app/feed/components/filterPanel";
 import ReactLoading from "react-loading";
 import { filterValues } from "@/types/models/filters";
 import { useApiFetch } from "@/hooks/useAPIFetch";
+import { ScrollToTop } from "@/components/ui/scrollToTop";
 
 export default function Feed() {
   const cvsContextConsumer = useContext(CvsContext);
@@ -134,6 +135,7 @@ export default function Feed() {
 
   return (
     <main>
+      <ScrollToTop />
       <FilterPanel
         defaultFilters={filters}
         cvs={cvs}
@@ -153,16 +155,22 @@ export default function Feed() {
           <TriggerPagination callbackTrigger={debouncedFetchCvsCallback} />
         </div>
         {!loadMore ? (
-          <div className="sticky bottom-5 z-10 flex justify-center">
-            <ReloadButton callback={forceReload}>Reload</ReloadButton>
+          <div className="text-center">
+            {cvs.length ? (
+              <div className="sticky bottom-5 z-10 flex justify-center">
+                <ReloadButton callback={forceReload}>Reload</ReloadButton>
+              </div>
+            ) : (
+              <p>No CVs found that matched your filters</p>
+            )}
           </div>
         ) : (
           <div className="z-10 flex justify-center">
             <ReactLoading
               type={"spinningBubbles"}
               color={"#000"}
-              height={667}
-              width={375}
+              height={"40%"}
+              width={"40%"}
             />
           </div>
         )}

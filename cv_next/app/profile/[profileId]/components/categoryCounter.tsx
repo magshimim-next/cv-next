@@ -52,7 +52,7 @@ export default async function CategoryCounter({
     <div>
       {cvs.length ? (
         <div>
-          <div className="mb-2 flex justify-center text-base">{title}</div>
+          <div className="mb-2 flex justify-center text-center">{title}</div>
           <div className="flex justify-center text-base">
             {categoryElements}
           </div>

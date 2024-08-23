@@ -15,7 +15,7 @@ import { logErrorWithTrace } from "@/server/base/logger";
 export const fetchCvComments = async (
   cvId: string
 ): Promise<CommentModel[] | null> => {
-  const result = await getAllCommentsByCVId(cvId);
+  const result = await getAllCommentsByCVId(cvId, true);
   if (result.ok) {
     return result.val;
   } else {
