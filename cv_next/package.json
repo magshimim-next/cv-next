@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "cd .. && husky cv_next/.husky"
   },
   "dependencies": {
     "@plaiceholder/next": "^3.0.0",
@@ -56,6 +57,8 @@
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-unused-imports": "^3.2.0",
+    "husky": "^9.1.5",
+    "lint-staged": "^15.2.9",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.4.1",
     "typescript": "^5.4.5",
