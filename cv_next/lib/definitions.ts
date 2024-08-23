@@ -30,6 +30,12 @@ export class API_DEFINITIONS {
 export class Link_Definitions {
   public static readonly AUTH_CALLBACK_REDIRECT = "/auth/callback";
   public static readonly AUTH_DEFAULT_REDIRECT = "/";
+  public static readonly ALLOWED_REDIRECTS = [
+    "feed",
+    "upload",
+    "cv",
+    "profile",
+  ];
 }
 
 export const heroHeader: PageHeader = {
