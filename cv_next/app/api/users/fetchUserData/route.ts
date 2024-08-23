@@ -23,7 +23,7 @@ async function getUserNameHandler(data: { userId: string }) {
   const userId = data.userId;
   const result = await getUserById(userId);
   if (!result.ok) {
-    logger.error(result.err, "Error getting username");
+    logger.error(result.errors, "Error getting username");
     logErrorWithTrace(result);
     return NextResponse.json(
       {
