@@ -10,6 +10,17 @@
     "format": "prettier --write .",
     "prepare": "cd .. && husky cv_next/.husky"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint",
+      "prettier --write"
+    ]
+  },
   "dependencies": {
     "@plaiceholder/next": "^3.0.0",
     "@radix-ui/react-label": "^2.0.2",
