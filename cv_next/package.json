@@ -10,7 +10,6 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@eslint/github-action": "^0.1.0",
     "@plaiceholder/next": "^3.0.0",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
@@ -25,6 +24,7 @@
     "embla-carousel-react": "^8.1.6",
     "eslint-config-next": "^14.1.0",
     "eslint-plugin-react-hooks": "^4.6.2",
+    "lodash": "^4.17.21",
     "lodash.isequal": "^4.5.0",
     "lucide-react": "^0.263.1",
     "next": "^14.2.4",
