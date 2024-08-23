@@ -1,5 +1,8 @@
 "use client";
 
+import Image from "next/image";
+import { Suspense, useState } from "react";
+
 import { CvPreview } from "@/components/cvPerview";
 import PopupWrapper from "@/components/ui/popupWrapper";
 import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
@@ -8,8 +11,6 @@ import { getAllNumbersFromArr } from "@/lib/utils";
 import openLink from "@/public/images/openLink.png";
 import warningIcon from "@/public/images/warning.png";
 import Categories from "@/types/models/categories";
-import Image from "next/image";
-import { Suspense, useState } from "react";
 
 import { InputValues, checkUploadCV } from "../actions/cvs/uploadCv";
 import { Button } from "../feed/components/button";
