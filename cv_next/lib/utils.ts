@@ -2,6 +2,7 @@ import { PostgrestError } from "@supabase/supabase-js";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import Categories from "@/types/models/categories";
+import { Link_Definitions } from "./definitions";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -94,5 +95,21 @@ export const generateCategoryLink = (categoryNumber: number) =>
   `/feed?category=${Categories.category[categoryNumber].toLowerCase()}`;
 
 export function getAllNumbersFromArr(arr: string[]) {
-    return arr.filter(value => !isNaN(parseInt(value))).map(value => parseInt(value))
+  return arr
+    .filter((value) => !isNaN(parseInt(value)))
+    .map((value) => parseInt(value));
+}
+
+/**
+ * The function will check if the redirectPath provided is within our website
+ * @param redirectPath The path the user wants to redirect to
+ * @returns true if can redirect to it, false otherwise
+ */
+export function checkRedirect(redirectPath: string): boolean {
+  return (
+    redirectPath === "" ||
+    Link_Definitions.ALLOWED_REDIRECTS.some((prefix) =>
+      redirectPath.startsWith(prefix)
+    )
+  );
 }
