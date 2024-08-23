@@ -18,10 +18,8 @@ export async function GET(request: Request) {
           `${origin}${Definitions.AUTH_DEFAULT_REDIRECT}${next}`
         );
       } else {
-        return NextResponse.json(
-          { error: "Failed to redirect to requested page." },
-          { status: 500 }
-        );
+        const notFoundUrl = new URL("/not-found", origin);
+        return NextResponse.redirect(notFoundUrl);
       }
     }
   }
