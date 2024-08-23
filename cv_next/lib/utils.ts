@@ -109,7 +109,7 @@ export function checkRedirect(redirectPath: string): boolean {
   return (
     redirectPath === "" ||
     Link_Definitions.ALLOWED_REDIRECTS.some((prefix) =>
-      redirectPath.startsWith(prefix)
+      redirectPath.startsWith("/" + prefix)
     )
   );
 }
