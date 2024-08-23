@@ -1,1 +1,2 @@
+cd cv_next
 npx lint-staged
