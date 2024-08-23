@@ -15,7 +15,7 @@ import { checkUploadCV, InputValues } from "../actions/cvs/uploadCv";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 
-export const InputRow = ({
+const InputRow = ({
   inputElement,
   title,
   isValid,
