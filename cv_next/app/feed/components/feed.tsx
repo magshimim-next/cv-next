@@ -61,7 +61,7 @@ export default function Feed() {
   const [loadMore, setLoadMore] = useState(true);
   const [filters, setFilters] = useState<filterValues>({
     searchValue: (optionalDescription) ? optionalDescription : "",
-    categoryId: (optionalCategory) ? optionalCategory: null,
+    categoryIds: (optionalCategory) ? optionalCategory: null,
   });
   const fetchFromApi = useApiFetch();
 
@@ -96,11 +96,11 @@ export default function Feed() {
     if (loadMore) {
       const nextPage = page.current + 1;
       if(optionalCategory){
-        if(filters.categoryId){
-          filters.categoryId  = [...new Set(filters.categoryId.concat(optionalCategory))];
+        if(filters.categoryIds){
+          filters.categoryIds  = [...new Set(filters.categoryIds.concat(optionalCategory))];
         }
         else {
-          filters.categoryId = optionalCategory;
+          filters.categoryIds = optionalCategory;
         }
       }
       const response = await fetchFromApi(
@@ -118,9 +118,9 @@ export default function Feed() {
       } else {
         setLoadMore(false);
       }
-      if(filters.categoryId){
+      if(filters.categoryIds){
         params.delete("category");
-        filters.categoryId.map((category) => {
+        filters.categoryIds.map((category) => {
           params.append("category", categoryString(category));
         })
         

@@ -7,6 +7,7 @@ import { PostgrestError } from "@supabase/supabase-js";
 import logger from "../base/logger";
 import { Tables, CvKeys, ProfileKeys } from "@/lib/supabase-definitions";
 import { filterValues } from "@/types/models/filters";
+import { getUserIdByName } from "./users";
 
 /**
  * Retrieves a CV by its ID from the database.
@@ -180,9 +181,9 @@ export async function getPaginatedCvs(
         }
         query = query.textSearch(CvKeys.description, filters.searchValue);
       }
-      if (filters.categoryId) {
-        logger.debug(filters.categoryId, "category id");
-        query = query.in(CvKeys.category_id, filters.categoryId);
+      if (filters.categoryIds) {
+        logger.debug(filters.categoryIds, "category id");
+        query = query.in(CvKeys.category_id, filters.categoryIds);
       }
     }
 
