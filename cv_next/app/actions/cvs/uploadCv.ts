@@ -4,20 +4,26 @@ import { uploadCV, getCvsByUserId } from "@/server/api/cvs";
 import { transformGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 import { redirect } from "next/navigation";
 import logger from "@/server/base/logger";
-
+import SupabaseHelper from "@/server/api/supabaseHelper";
+import { encodeValue } from "@/lib/utils";
 export interface InputValues {
   link: string;
   description: string;
-  catagoryId: number[] | null
+  catagoryId: number[] | null;
 }
 
 export const checkUploadCV = async ({
   cvData,
-  userId, // TODO: Switch to getting uid from server
 }: {
   cvData: InputValues;
-  userId: string;
 }): Promise<string | null> => {
+  const supabase = SupabaseHelper.getSupabaseInstance();
+  const connectedUser = await supabase.auth.getUser();
+  if (connectedUser.error || !connectedUser.data.user) {
+    logger.error("Error getting user");
+    return "Error getting user.";
+  }
+  const userId = connectedUser.data.user.id;
   if (
     !cvData.link?.trim() ||
     !cvData.description?.trim() ||
@@ -52,15 +58,13 @@ export const checkUploadCV = async ({
   const response = await uploadCV(cvToUpload);
   if (response) {
     logger.debug("Uploaded");
-    redirect(`/cv/${response.id}`);
+    redirect(`/cv/${encodeValue(response.id)}`);
   } else {
     return "Error uploading";
   }
-
-  return null
 };
 
 export const canUserUploadACV = async (userId: string) => {
   const cvsOfUser = await getCvsByUserId(userId);
-  return !cvsOfUser || cvsOfUser.length < 5
-}
+  return !cvsOfUser || cvsOfUser.length < 5;
+};

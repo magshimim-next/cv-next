@@ -2,8 +2,8 @@
 import Image from "next/image";
 import { useRef, useEffect } from "react";
 import Link from "next/link";
-import { useSupabase } from "@/hooks/supabase";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
+import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { IoCloseSharp } from "react-icons/io5";
 import { useUser } from "@/hooks/useUser";
 
@@ -75,8 +75,8 @@ const UserDataComponent: React.FC<{
 
 export default function Popup({ closeCb }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const supabase = useSupabase();
   const { userData, mutateUser } = useUser();
+  const supabase = createClientComponent();
 
   useEffect(() => {
     if (dialogRef.current) {

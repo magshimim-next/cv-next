@@ -1,76 +1,63 @@
-"use server";
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
+import { API_DEFINITIONS } from "./lib/definitions";
+import { ProfileKeys, Tables } from "./lib/supabase-definitions";
 
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
+  let supabaseResponse = NextResponse.next({
+    request,
   });
+
+  if (
+    request.nextUrl.pathname.startsWith(API_DEFINITIONS.CVS_API_BASE) ||
+    request.nextUrl.pathname.startsWith(API_DEFINITIONS.USERS_API_BASE)
+  ) {
+    return NextResponse.next();
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value;
+        getAll() {
+          return request.cookies.getAll();
         },
-        set(name: string, value: string, options: CookieOptions) {
-          request.cookies.set({
-            name,
-            value,
-            ...options,
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options: _options }) =>
+            request.cookies.set(name, value)
+          );
+          supabaseResponse = NextResponse.next({
+            request,
           });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          });
-        },
-        remove(name: string, options: CookieOptions) {
-          request.cookies.set({
-            name,
-            value: "",
-            ...options,
-          });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
-          response.cookies.set({
-            name,
-            value: "",
-            ...options,
-          });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          );
         },
       },
     }
   );
-  const { data: activatedUser, error } = await supabase.auth.getUser();
-  if (error || !activatedUser?.user) {
-    return NextResponse.rewrite(new URL("/login", request.url));
-  } else {
-    const { data: user, error } = await supabase
-      .from(Tables.profiles)
-      .select("*")
-      .eq(ProfileKeys.id, activatedUser.user.id)
-      .single();
 
-    if (user?.user_type == ProfileKeys.user_types.inactive || error) {
-      return NextResponse.rewrite(new URL("/inactive", request.url));
-    }
+  const { data: activatedUser, error: errorGetUser } =
+    await supabase.auth.getUser();
+  if (errorGetUser || !activatedUser?.user) {
+    const nextUrl = new URL("/login", request.url);
+    nextUrl.searchParams.set("next", request.nextUrl.pathname);
+    return NextResponse.redirect(nextUrl);
   }
-  return response;
+
+  const { data: whitelisted, error: errorWhitelist } = await supabase
+    .from(Tables.whitelisted)
+    .select("*")
+    .eq(ProfileKeys.id, activatedUser.user.id)
+    .single();
+  if (whitelisted?.id == null || errorWhitelist) {
+    const nextUrl = new URL("/inactive", request.url);
+    return NextResponse.redirect(nextUrl);
+  }
+
+  return supabaseResponse;
 }
 
 export const config = {
