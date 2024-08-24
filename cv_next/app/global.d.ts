@@ -33,7 +33,7 @@ declare global {
     "id" | "resolved" | "created_at" | "deleted" | "resolved"
   >;
   type UILocation = (typeof UI_Location)[keyof typeof UI_Location];
-  type routes = {
+  type route = {
     route: string;
     path: string;
     image: string;

@@ -4,8 +4,8 @@ import { useRef, useEffect } from "react";
 import Link from "next/link";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
-import { revalidatePath } from "next/cache";
 import { IoCloseSharp } from "react-icons/io5";
+import { useUser } from "@/hooks/useUser";
 
 const navLinks = [
   {
@@ -32,14 +32,12 @@ const navLinks = [
 
 interface PopupProps {
   closeCb: () => void;
-  userData: UserModel | null;
-  updateSignIn: () => void;
 }
 
 const UserDataComponent: React.FC<{
-  userData: UserModel | null;
   closeCb: () => void;
-}> = ({ userData, closeCb }) => {
+}> = ({ closeCb }) => {
+  const { userData } = useUser();
   return (
     <div className="mt-10 flex w-full flex-col items-center">
       {userData ? (
@@ -75,8 +73,9 @@ const UserDataComponent: React.FC<{
   );
 };
 
-export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
+export default function Popup({ closeCb }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const { userData, mutateUser } = useUser();
   const supabase = createClientComponent();
 
   useEffect(() => {
@@ -88,8 +87,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
   const handleSelection = (route: string) => {
     if (route === "Signout") {
       supabase.auth.signOut();
-      updateSignIn();
-      revalidatePath("/");
+      mutateUser();
     }
     closeCb();
   };
@@ -114,7 +112,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
         <ul className="mt-20 flex w-full flex-col items-center">
           {userData ? (
             <div className="mt-10 flex w-full flex-col items-center">
-              <UserDataComponent userData={userData} closeCb={closeCb} />
+              <UserDataComponent closeCb={closeCb} />
               {navLinks.map(
                 (link) =>
                   link.req_login && (
@@ -134,7 +132,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
             </div>
           ) : (
             <div className="mt-10 flex w-full flex-col items-center">
-              <UserDataComponent userData={userData} closeCb={closeCb} />
+              <UserDataComponent closeCb={closeCb} />
               {navLinks.map(
                 (link) =>
                   !link.req_login && (
