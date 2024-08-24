@@ -148,41 +148,56 @@ export async function getPaginatedCvs(
   page: number = Definitions.PAGINATION_INIT_PAGE_NUMBER,
   filters?: filterValues
 ): Promise<PaginatedCvsModel | null> {
+  'use server';
   try {
     const from = page * Definitions.CVS_PER_PAGE;
     const to = page
       ? from + Definitions.CVS_PER_PAGE
       : Definitions.CVS_PER_PAGE;
 
-    const supabase = SupabaseHelper.getSupabaseInstance();
+    
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    let cvsUsers = null;
     let query = supabase
       .from(Tables.cvs)
       .select("*")
       .range(from, to - 1);
-
     logger.debug(filters, "filters");
     if (filters) {
       if (filters.searchValue) {
+        let userIdResult = await getUserIdByName(filters.searchValue);
+        filters.searchValue = filters.searchValue.replace(" ", "+");
+        if((userIdResult).ok) {
+          const userIdList = userIdResult.val;
+          logger.debug(userIdList);
+          if(userIdList.length){
+            cvsUsers = await getCvsByUserId(userIdList[0], filterOutDeleted);
+          }
+        }
+        else {
+          logger.error(userIdResult.err, "getPaginatedCvs");
+          return null;
+        }
         query = query.textSearch(CvKeys.description, filters.searchValue);
       }
-      if (filters.categoryIds) {
-        logger.debug(filters.categoryIds, "category ids");
-        query = query.overlaps(CvKeys.cv_categories, filters.categoryIds);
+      if (filters.categoryId) {
+        logger.debug(filters.categoryId, "category id");
+        query = query.in(CvKeys.category_id, filters.categoryId);
       }
     }
 
     if (filterOutDeleted) {
       query = query.eq(CvKeys.deleted, false);
     }
-
     const { data: cvs, error } = await query;
-    logger.debug(cvs?.map((cv) => cv.cv_categories, "cvs"));
+    console.log(cvs);
+    logger.debug(cvs?.map((cv) => cv.category_id, "cvs"));
 
     if (error) {
       logger.error(error, "getPaginatedCvs");
       return null;
     }
-
+    cvs.concat((cvsUsers) ? cvsUsers : []);
     return { page: page, cvs: cvs as CvModel[] };
   } catch (error) {
     logger.error(error, "getPaginatedCvs");
