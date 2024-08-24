@@ -12,8 +12,39 @@ import ReactLoading from "react-loading";
 import { filterValues } from "@/types/models/filters";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import Categories from "@/types/models/categories";
+
+function toCategory(name: string):number {
+  return Categories.category[name as keyof typeof Categories.category];
+}
+
+function categoryString(num:number){
+  const categoryNames = [
+    'Undefined',
+    'General',
+    'Medical',
+    'Insurance',
+    'Financial',
+    'Legal',
+    'Education',
+    'Fullstack',
+    'Frontend',
+    'Backend',
+    'Devops',
+    'Cybersecurity'
+  ];
+  return categoryNames[num];
+}
+
 
 export default function Feed() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = new URLSearchParams(searchParams);
+  const optionalCategory = searchParams.getAll("category").map(toCategory);
+  const optionalDescription = searchParams.get("description");
   const cvsContextConsumer = useContext(CvsContext);
   const cvsDispatchContextConsumer = useContext(CvsDispatchContext);
   const initialCvs = cvsContextConsumer.cvs?.length
@@ -29,8 +60,8 @@ export default function Feed() {
   );
   const [loadMore, setLoadMore] = useState(true);
   const [filters, setFilters] = useState<filterValues>({
-    searchValue: "",
-    categoryIds: null,
+    searchValue: (optionalDescription) ? optionalDescription : "",
+    categoryId: (optionalCategory) ? optionalCategory: null,
   });
   const fetchFromApi = useApiFetch();
 
@@ -64,6 +95,14 @@ export default function Feed() {
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
       const nextPage = page.current + 1;
+      if(optionalCategory){
+        if(filters.categoryId){
+          filters.categoryId  = [...new Set(filters.categoryId.concat(optionalCategory))];
+        }
+        else {
+          filters.categoryId = optionalCategory;
+        }
+      }
       const response = await fetchFromApi(
         API_DEFINITIONS.CVS_API_BASE,
         API_DEFINITIONS.FETCH_CVS_ENDPOINT,
@@ -78,6 +117,14 @@ export default function Feed() {
         page.current = nextPage;
       } else {
         setLoadMore(false);
+      }
+      if(filters.categoryId){
+        params.delete("category");
+        filters.categoryId.map((category) => {
+          params.append("category", categoryString(category));
+        })
+        
+        router.replace(`${pathname}?${params}`);
       }
     }
   }, [loadMore, filters, fetchFromApi]);
