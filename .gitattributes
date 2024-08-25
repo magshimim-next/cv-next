@@ -1,0 +1,5 @@
+*         text=auto
+*.webp    -text
+*.jpg     -text
+*.png     -text
+*.pdf     -text
