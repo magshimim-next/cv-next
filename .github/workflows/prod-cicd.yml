@@ -2,7 +2,7 @@ name: Docker Image CICD
 
 on:
   push:
-    branches: ["feature/devopsBranch"]
+    branches: ["main"]
 
 jobs:
   build:
