@@ -84,7 +84,7 @@ export default function Popup({ closeCb }: PopupProps) {
     }
   }, []);
 
-  const handleSelection = (route: string) => {
+  const handleSelection = async (route: string) => {
     if (route === "Signout") {
       supabase.auth.signOut();
       mutateUser();

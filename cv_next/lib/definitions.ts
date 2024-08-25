@@ -25,6 +25,7 @@ export class API_DEFINITIONS {
   public static readonly FETCH_CVS_ENDPOINT = "fetchCvs";
   public static readonly FETCH_PREVIEWS_ENDPOINT = "fetchPreviews";
   public static readonly FETCH_USERS_ENDPOINT = "fetchUserData";
+  public static readonly REVALIDATE_USERS_ENDPOINT = "revalidateSignout";
 }
 
 export class Link_Definitions {
