@@ -6,8 +6,10 @@ import Comment from "./comment";
 import { useEffect, useMemo, useState } from "react";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function CommentsSection({ cv }: { cv: CvModel }) {
+  const pathname = usePathname();
   const router = useRouter();
   const { data: comments } = useSWR(cv.id, fetchCvComments);
 
@@ -49,11 +51,11 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
     async function getUser() {
       const userId = await supabase.auth.getUser();
       if (userId.error) {
-        router.push("/inactive"); // TODO: redirect to login with next
+        router.push(`/login?next=${pathname}`);
       } else setUserId(userId.data.user.id);
     }
     getUser();
-  }, [router, supabase.auth]);
+  }, [pathname, router, supabase.auth]);
 
   return (
     <>
