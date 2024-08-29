@@ -15,10 +15,7 @@ const navLinks = [
     route: "Feed",
     path: "/feed",
   },
-  {
-    route: "Upload",
-    path: "/upload",
-  },
+
 ];
 
 export default function Navbar() {
@@ -73,6 +70,10 @@ export default function Navbar() {
                 <ModeToggle />
                 <PopupToggle />
               </div>
+
+              <Link  style={{ lineHeight: "1.5" }} className="py-2 text-lg font-medium text-white hover:underline" href="/upload">
+              Upload
+              </Link>
               <button
                 ref={buttonRef}
                 className="text-white focus:outline-none md:hidden"
