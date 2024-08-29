@@ -1,10 +1,11 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { uploadCV, getCvsByUserId } from "@/server/api/cvs";
 import { transformGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
-import { redirect } from "next/navigation";
 import logger from "@/server/base/logger";
 import SupabaseHelper from "@/server/api/supabaseHelper";
+import { encodeValue } from "@/lib/utils";
 export interface InputValues {
   link: string;
   description: string;
@@ -16,6 +17,7 @@ export const checkUploadCV = async ({
 }: {
   cvData: InputValues;
 }): Promise<string | null> => {
+  // TODO: change to the getUser of #99 after merge
   const supabase = SupabaseHelper.getSupabaseInstance();
   const connectedUser = await supabase.auth.getUser();
   if (connectedUser.error || !connectedUser.data.user) {
@@ -57,12 +59,10 @@ export const checkUploadCV = async ({
   const response = await uploadCV(cvToUpload);
   if (response) {
     logger.debug("Uploaded");
-    redirect(`/cv/${response.id}`);
+    redirect(`/cv/${encodeValue(response.id)}`);
   } else {
     return "Error uploading";
   }
-
-  return null;
 };
 
 export const canUserUploadACV = async (userId: string) => {

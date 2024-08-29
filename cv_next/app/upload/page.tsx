@@ -5,9 +5,6 @@ import { Suspense, useState } from "react";
 
 import { CvPreview } from "@/components/cvPerview";
 import PopupWrapper from "@/components/ui/popupWrapper";
-import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
-import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
-import { getAllNumbersFromArr } from "@/lib/utils";
 import openLink from "@/public/images/openLink.png";
 import warningIcon from "@/public/images/warning.png";
 import Categories from "@/types/models/categories";
@@ -15,6 +12,8 @@ import { InputValues, checkUploadCV } from "@/app/actions/cvs/uploadCv";
 import { Button } from "@/app/feed/components/button";
 import { DropdownInput } from "@/app/feed/components/filters/valueSelect";
 import { InputBox, InputTextArea } from "@/app/feed/components/inputbar";
+import { getAllNumbersFromArr } from "@/lib/utils";
+import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 
 const InputRow = ({
   inputElement,
@@ -53,7 +52,6 @@ export default function Page() {
     useState<InputValues["description"]>("");
   const [link, setLink] = useState<InputValues["link"]>("");
   const [errorMsg, setErrorMsg] = useState<string | null>();
-  const supabase = createClientComponent();
 
   const validate = (() => {
     const checkIfLinkIsValid = () => {
@@ -81,9 +79,6 @@ export default function Page() {
 
   async function startUpload() {
     if (!validate.cv()) return;
-    const userId: string | undefined = (await supabase.auth.getUser()).data.user
-      ?.id;
-    if (!userId) return;
     setErrorMsg(
       await checkUploadCV({
         cvData: {

@@ -1,7 +1,7 @@
 "use server";
 
-import logger, { logErrorWithTrace } from "@/server/base/logger";
 import { NextRequest, NextResponse } from "next/server";
+import logger, { logErrorWithTrace } from "@/server/base/logger";
 import { getUserById } from "@/server/api/users";
 
 export async function POST(req: NextRequest) {
@@ -23,7 +23,7 @@ async function getUserNameHandler(data: { userId: string }) {
   const userId = data.userId;
   const result = await getUserById(userId);
   if (!result.ok) {
-    logger.error(result.err, "Error getting username");
+    logger.error(result.errors, "Error getting username");
     logErrorWithTrace(result);
     return NextResponse.json(
       {
@@ -32,7 +32,7 @@ async function getUserNameHandler(data: { userId: string }) {
       { status: 500 }
     );
   } else {
-    const userName = result.val.full_name ?? result.val.username;
+    const userName = result.val.username ?? result.val.full_name;
     return NextResponse.json({
       fullName: userName ?? null,
     });

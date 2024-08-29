@@ -1,13 +1,13 @@
 "use server";
 
+import { getPlaiceholder } from "plaiceholder";
+import { NextRequest, NextResponse } from "next/server";
 import Definitions from "@/lib/definitions";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { compareHashes } from "@/helpers/blobHelper";
 import logger from "@/server/base/logger";
 import { Storage } from "@/lib/supabase-definitions";
-import { getPlaiceholder } from "plaiceholder";
-import { NextRequest, NextResponse } from "next/server";
 
 const blobDataMap = new Map<string, Blob>();
 
@@ -58,8 +58,10 @@ async function revalidatePreviewHandler(data: { cvLink: string }) {
         upsert: true, // Replace if exists
       });
 
-    if (error) {
+    if (error && !error?.message.includes("violates row-level security")) {
       logger.error(error, "Upload error:");
+    } else if (error) {
+      logger.debug(error, "RLS error on upload"); // debug because it's redundant to log RLS
     } else {
       logger.debug(data, "File uploaded successfully:");
     }
