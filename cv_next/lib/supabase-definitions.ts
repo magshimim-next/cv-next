@@ -3,11 +3,13 @@ export const Tables: {
   comments: "comments";
   profiles: "profiles";
   whitelisted: "whitelisted";
+  admins: "admins";
 } = {
   cvs: "cvs",
   comments: "comments",
   profiles: "profiles",
   whitelisted: "whitelisted",
+  admins: "admins",
 };
 
 export const CvKeys: {

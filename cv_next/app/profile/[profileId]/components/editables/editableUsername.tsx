@@ -32,7 +32,11 @@ export default function EditableUsername({ user }: { user: UserModel }) {
       if (value != (user.username || user.full_name) && viewingCurrentUser) {
         const result = await setNewUsername(user.id, value);
         if (!result.ok) {
-          if (result.postgrestError?.message.includes("duplicate key value")) {
+          if (
+            result.errors.postgrestError?.message.includes(
+              "duplicate key value"
+            )
+          ) {
             setError("Name unavailable!");
           } else {
             setError("Error updating the username!");

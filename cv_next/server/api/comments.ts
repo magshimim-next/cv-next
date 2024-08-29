@@ -20,20 +20,20 @@ export async function addCommentToCv(
       .select();
 
     if (error && error.message) {
-      return Err(addCommentToCv.name, error);
+      return Err(addCommentToCv.name, { postgrestError: error });
     }
 
     // if no data is returned, the comment was not added
     if (!data) {
-      return Err(
-        addCommentToCv.name,
-        undefined,
-        new Error("adding comment failed")
-      );
+      return Err(addCommentToCv.name, {
+        err: new Error("adding comment failed"),
+      });
     }
     return Ok.EMPTY;
   } catch (err) {
-    return Err(addCommentToCv.name, undefined, err as Error);
+    return Err(addCommentToCv.name, {
+      err: err as Error,
+    });
   }
 }
 
@@ -52,11 +52,13 @@ export async function markCommentAsDeleted(
       .update({ deleted: true })
       .eq(CommentKeys.id, commentId);
     if (error) {
-      return Err(markCommentAsDeleted.name, error);
+      return Err(markCommentAsDeleted.name, { postgrestError: error });
     }
     return Ok.EMPTY;
   } catch (err) {
-    return Err(markCommentAsDeleted.name, undefined, err as Error);
+    return Err(markCommentAsDeleted.name, {
+      err: err as Error,
+    });
   }
 }
 
@@ -77,11 +79,13 @@ export async function setResolved(
       .update({ resolved })
       .eq(CommentKeys.id, commentId);
     if (error) {
-      return Err(setResolved.name, error);
+      return Err(setResolved.name, { postgrestError: error });
     }
     return Ok.EMPTY;
   } catch (err) {
-    return Err(setResolved.name, undefined, err as Error);
+    return Err(setResolved.name, {
+      err: err as Error,
+    });
   }
 }
 
@@ -113,12 +117,14 @@ export async function getAllCommentsByCVId(
     }
     const { data: comments, error } = await query;
     if (error) {
-      return Err(getAllCommentsByCVId.name, error);
+      return Err(getAllCommentsByCVId.name, { postgrestError: error });
     }
 
     return Ok(comments);
   } catch (err) {
-    return Err(getAllCommentsByCVId.name, undefined, err as Error);
+    return Err(getAllCommentsByCVId.name, {
+      err: err as Error,
+    });
   }
 }
 
@@ -155,11 +161,13 @@ export async function setLiked(
       .select(CommentKeys.upvotes);
 
     if (error) {
-      return Err(setResolved.name, error);
+      return Err(setResolved.name, { postgrestError: error });
     }
     return Ok.EMPTY;
   } catch (err) {
-    return Err(setResolved.name, undefined, err as Error);
+    return Err(setResolved.name, {
+      err: err as Error,
+    });
   }
 }
 
@@ -188,10 +196,38 @@ export async function getAllCommentsByUserId(
     }
     const { data: comments, error } = await query;
     if (error) {
-      return Err(getAllCommentsByUserId.name, error);
+      return Err(getAllCommentsByUserId.name, { postgrestError: error });
     }
     return Ok(comments);
   } catch (err) {
-    return Err(getAllCommentsByUserId.name, undefined, err as Error);
+    return Err(getAllCommentsByUserId.name, {
+      err: err as Error,
+    });
+  }
+}
+
+/**
+ * Retrieves comment using specific comment id
+ *
+ * @param {string} commentId - The comment of the specific ID
+ * @return {Promise<Result<CommentModel, string>>} A Promise that resolves to a Result object containing the retrieved comment or an error message.
+ */
+export async function getCommentById(
+  commentId: string
+): Promise<Result<CommentModel, string>> {
+  try {
+    const { data: comment, error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.comments)
+      .select("*")
+      .eq(CommentKeys.id, commentId)
+      .single();
+    if (error) {
+      return Err(getCommentById.name, { postgrestError: error });
+    }
+    return Ok(comment);
+  } catch (err) {
+    return Err(getCommentById.name, {
+      err: err as Error,
+    });
   }
 }
