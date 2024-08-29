@@ -5,6 +5,7 @@ import { transformGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 import { redirect } from "next/navigation";
 import logger from "@/server/base/logger";
 import SupabaseHelper from "@/server/api/supabaseHelper";
+import { encodeValue } from "@/lib/utils";
 export interface InputValues {
   link: string;
   description: string;
@@ -58,12 +59,10 @@ export const checkUploadCV = async ({
   const response = await uploadCV(cvToUpload);
   if (response) {
     logger.debug("Uploaded");
-    redirect(`/cv/${response.id}`);
+    redirect(`/cv/${encodeValue(response.id)}`);
   } else {
     return "Error uploading";
   }
-
-  return null;
 };
 
 export const canUserUploadACV = async (userId: string) => {

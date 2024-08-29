@@ -24,7 +24,7 @@ export const setNewUsername = async (
     return result;
   } else {
     logErrorWithTrace(result);
-    return Err("Couldn't update the name", result.postgrestError);
+    return Err("Couldn't update the name", result.errors);
   }
 };
 
@@ -44,7 +44,7 @@ export const setNewWorkStatus = async (
     return result;
   } else {
     logErrorWithTrace(result);
-    return Err("Couldn't update the status", result.postgrestError);
+    return Err("Couldn't update the status", result.errors);
   }
 };
 
@@ -64,6 +64,6 @@ export const setNewWorkCategories = async (
     return result;
   } else {
     logErrorWithTrace(result);
-    return Err("Couldn't update the categories", result.postgrestError);
+    return Err("Couldn't update the categories", result.errors);
   }
 };

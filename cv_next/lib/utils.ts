@@ -1,4 +1,3 @@
-import { PostgrestError } from "@supabase/supabase-js";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import Categories from "@/types/models/categories";
@@ -66,12 +65,8 @@ export namespace Ok {
  * @param {E} val - the error value
  * @return {Result<never, E>} the Result object with ok set to false and containing the specified error value
  */
-export function Err<E>(
-  where: E,
-  postgrestError?: PostgrestError,
-  err?: Error
-): Result<never, E> {
-  return { ok: false, where, postgrestError, err };
+export function Err<E>(where: E, errors: ErrorDetails = {}): Result<never, E> {
+  return { ok: false, where, errors };
 }
 
 /**
