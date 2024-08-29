@@ -17,6 +17,7 @@ export const checkUploadCV = async ({
 }: {
   cvData: InputValues;
 }): Promise<string | null> => {
+  // TODO: change to the getUser of #99 after merge
   const supabase = SupabaseHelper.getSupabaseInstance();
   const connectedUser = await supabase.auth.getUser();
   if (connectedUser.error || !connectedUser.data.user) {
