@@ -14,7 +14,9 @@ export async function getUserById(
       .eq(ProfileKeys.id, userId);
 
     if (error) {
-      return Err("Error @ " + getUserById.name + "\n", error);
+      return Err("Error @ " + getUserById.name + "\n", {
+        postgrestError: error,
+      });
     }
 
     if (!user || user.length !== 1) {
@@ -47,11 +49,13 @@ export async function setUserName(
       .update({ username: newUserName })
       .eq(ProfileKeys.id, userId);
     if (error) {
-      return Err(setUserName.name, error);
+      return Err(setUserName.name, { postgrestError: error });
     }
     return Ok.EMPTY;
   } catch (err) {
-    return Err(setUserName.name, undefined, err as Error);
+    return Err(setUserName.name, {
+      err: err as Error,
+    });
   }
 }
 
@@ -78,11 +82,13 @@ export async function setWorkStatus(
       })
       .eq(ProfileKeys.id, userId);
     if (error) {
-      return Err(setWorkStatus.name, error);
+      return Err(setWorkStatus.name, { postgrestError: error });
     }
     return Ok.EMPTY;
   } catch (err) {
-    return Err(setWorkStatus.name, undefined, err as Error);
+    return Err(setWorkStatus.name, {
+      err: err as Error,
+    });
   }
 }
 
@@ -105,10 +111,69 @@ export async function setWorkCategories(
       })
       .eq(ProfileKeys.id, userId);
     if (error) {
-      return Err(setWorkCategories.name, error);
+      return Err(setWorkCategories.name, { postgrestError: error });
     }
     return Ok.EMPTY;
   } catch (err) {
-    return Err(setWorkCategories.name, undefined, err as Error);
+    return Err(setWorkCategories.name, {
+      err: err as Error,
+    });
+  }
+}
+
+/**
+ * Get current user ID
+ *
+ * @return {Promise<Result<string, string>>} A promise that resolves with the id or rejects with an error message.
+ */
+export async function getCurrentId(): Promise<Result<string, string>> {
+  try {
+    const { data: user, error: connectedError } =
+      await SupabaseHelper.getSupabaseInstance().auth.getUser();
+    if (connectedError && !user) {
+      return Err(getCurrentId.name, { authError: connectedError });
+    }
+    if (!user.user) {
+      return Err(getCurrentId.name, { err: Error("User object is empty") });
+    }
+    return Ok(user.user.id);
+  } catch (err) {
+    return Err(userIsAdmin.name, {
+      err: err as Error,
+    });
+  }
+}
+
+/**
+ * Check if the current user is an admin
+ *
+ * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ */
+export async function userIsAdmin(): Promise<Result<void, string>> {
+  try {
+    const { data: user, error: connectedError } =
+      await SupabaseHelper.getSupabaseInstance().auth.getUser();
+    if (connectedError && !user) {
+      return Err(userIsAdmin.name, { authError: connectedError });
+    }
+    if (!user.user) {
+      return Err(userIsAdmin.name, { err: Error("User object is empty") });
+    }
+    const { data: admin, error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.admins)
+      .select("*")
+      .eq(ProfileKeys.id, user.user.id)
+      .single();
+    if (error) {
+      return Err(userIsAdmin.name, { postgrestError: error });
+    }
+    if (admin.id == null) {
+      return Err(userIsAdmin.name, { err: Error("No ID found") });
+    }
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(userIsAdmin.name, {
+      err: err as Error,
+    });
   }
 }

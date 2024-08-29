@@ -16,14 +16,24 @@ export function logErrorWithTrace(result: Result<any, string>) {
   if (!result.ok) {
     logger.error({
       where: result.where,
-      postgrestError: result.postgrestError ?? undefined,
-      err: result.err ?? undefined,
+      postgrestError: result.errors.postgrestError ?? undefined,
+      authError: result.errors.authError ?? undefined,
+      err: result.errors.err ?? undefined,
     });
 
     // print whole stack trace/error info to console
-    if (result.postgrestError || result.err) {
+    if (
+      result.errors.postgrestError ||
+      result.errors.err ||
+      result.errors.authError
+    ) {
       // eslint-disable-next-line no-console
-      logger.error(result.postgrestError ?? result.err);
+      logger.error({
+        where: result.where,
+        postgrestError: result.errors.postgrestError ?? undefined,
+        authError: result.errors.authError ?? undefined,
+        err: result.errors.err ?? undefined,
+      });
     }
   }
 }
