@@ -25,6 +25,7 @@ export class API_DEFINITIONS {
   public static readonly FETCH_CVS_ENDPOINT = "fetchCvs";
   public static readonly FETCH_PREVIEWS_ENDPOINT = "fetchPreviews";
   public static readonly FETCH_USERS_ENDPOINT = "fetchUserData";
+  public static readonly REVALIDATE_USERS_ENDPOINT = "revalidateSignout";
 }
 
 export class Link_Definitions {
@@ -46,7 +47,7 @@ export const inactiveHeader: PageHeader = {
   image: `/access-denied.webp`,
 };
 
-export const routes: routes[] = [
+export const routes: route[] = [
   {
     route: "Home",
     path: "/",
@@ -71,4 +72,17 @@ export const routes: routes[] = [
     image: "",
     UILocation: UI_Location.profile,
   },
+];
+
+export const Credits = [
+  "Ron Peer",
+  "Arad Donenfeld",
+  "Avner Mindelis",
+  "Nevo Sznajder",
+  "Yechiam Weiss",
+  "Adam Liberov",
+  "Denis Granovsky",
+  "Ethan Krimer",
+  "Ilan Yashuk",
+  "Assaf Kabesa",
 ];

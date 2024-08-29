@@ -3,7 +3,7 @@ import pino from "pino";
 import pretty from "pino-pretty";
 
 const stream = pretty({ colorize: true });
-const logger = pino({ level: "trace" }, stream);
+const logger = pino({ level: "warn" }, stream);
 
 export default logger;
 
