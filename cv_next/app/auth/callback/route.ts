@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     if (!error) {
       if (checkRedirect(next)) {
         return NextResponse.redirect(
-          `${origin}${Definitions.AUTH_DEFAULT_REDIRECT}${next}`
+          `${process.env.NEXT_PUBLIC_BASE_URL}${Definitions.AUTH_DEFAULT_REDIRECT}${next}`
         );
       } else {
         const notFoundUrl = new URL("/not-found", origin);
