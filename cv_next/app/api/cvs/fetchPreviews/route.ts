@@ -55,13 +55,14 @@ async function revalidatePreviewHandler(data: { cvLink: string }) {
       .storage.from(Storage.cvs)
       .upload(fileName, blob, {
         cacheControl: "3600",
-        upsert: true, // Replace if exists
+        upsert: true,
       });
 
     if (error && !error?.message.includes("violates row-level security")) {
       logger.error(error, "Upload error:");
     } else if (error) {
-      logger.debug(error, "RLS error on upload"); // debug because it's redundant to log RLS
+      // debug because it's redundant to log RLS
+      logger.debug(error, "RLS error on upload");
     } else {
       logger.debug(data, "File uploaded successfully:");
     }

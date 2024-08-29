@@ -14,7 +14,8 @@ export const LoginButtons = () => {
     mutateUser();
   }, [mutateUser]);
 
-  if (loading) return <></>; //TODO: perhaps render loading state
+  //TODO: perhaps render loading state
+  if (loading) return <></>;
 
   const profileRoutes = routes.filter(
     (link) => link.UILocation === UI_Location.profile

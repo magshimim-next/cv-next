@@ -1,5 +1,5 @@
-import EmblaCarousel from "@/components/ui/Carousel/carouselStructure";
 import { EmblaOptionsType } from "embla-carousel";
+import EmblaCarousel from "@/components/ui/Carousel/carouselStructure";
 import CVItem from "@/app/feed/components/CVItem";
 import CVItemLink from "@/app/feed/components/CVItemLink";
 
@@ -17,7 +17,7 @@ export default function ProfileCvs({ cvs }: { cvs: CvModel[] }) {
             minWidth: 0,
             maxWidth: 500,
             paddingLeft: "var(--slide-spacing)",
-            height: "100%", // Ensure slide takes full height
+            height: "100%",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
