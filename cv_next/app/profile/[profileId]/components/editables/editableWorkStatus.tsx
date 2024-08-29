@@ -1,11 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Check, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { setNewWorkStatus } from "@/app/actions/users/updateUser";
 import { ProfileKeys } from "@/lib/supabase-definitions";
 import EditableWorkCategories from "./editableWorkCategories";
-import { useRouter } from "next/navigation";
 
 export default function EditableWorkStatus({ user }: { user: UserModel }) {
   const router = useRouter();

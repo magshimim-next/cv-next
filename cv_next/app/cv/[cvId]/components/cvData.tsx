@@ -1,8 +1,8 @@
 "use client";
 
-import Categories from "@/types/models/categories";
 import Image from "next/image";
 import Link from "next/link";
+import Categories from "@/types/models/categories";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 
 export default function CvData({ cv }: { cv: CvModel }) {

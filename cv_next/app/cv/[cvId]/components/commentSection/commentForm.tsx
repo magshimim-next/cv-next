@@ -1,11 +1,11 @@
 "use client";
-import { addComment } from "@/app/actions/comments/addComment";
-import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useRef } from "react";
 import { RxPaperPlane } from "react-icons/rx";
 import { mutate } from "swr";
-import { usePathname } from "next/navigation";
+
+import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
+import { addComment } from "@/app/actions/comments/addComment";
 
 const COMMENT_FIELD_NAME = "comment";
 

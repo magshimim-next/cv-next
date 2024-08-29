@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import Categories from "@/types/models/categories";
+import { filterValues } from "@/types/models/filters";
 import { InputBox } from "./inputbar";
 import { DropdownInput } from "./filters/valueSelect";
-import Categories from "@/types/models/categories";
-import { useMemo } from "react";
-import { filterValues } from "@/types/models/filters";
 
 export const FilterPanel = ({
   defaultFilters,
