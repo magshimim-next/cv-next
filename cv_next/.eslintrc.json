@@ -50,6 +50,7 @@
       }
     ],
     "import/no-named-as-default": 0,
+    "import/named": 0,
     "no-relative-import-paths/no-relative-import-paths": [
       "warn",
       { "allowSameFolder": true, "rootDir": "cv_next/", "prefix": "@" }
