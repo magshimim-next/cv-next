@@ -19,7 +19,7 @@ export async function GET(request: Request) {
           `${process.env.NEXT_PUBLIC_BASE_URL}${Definitions.AUTH_DEFAULT_REDIRECT}${next}`
         );
       } else {
-        const notFoundUrl = new URL("/not-found", origin);
+        const notFoundUrl = new URL("/not-found", process.env.NEXT_PUBLIC_BASE_URL);
         return NextResponse.redirect(notFoundUrl);
       }
     } else {
