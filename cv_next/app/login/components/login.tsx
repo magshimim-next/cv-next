@@ -1,7 +1,7 @@
 import { FcGoogle } from "react-icons/fc";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { signInWithSocialProvider } from "../../actions/users/getUser";
-import { useSearchParams } from "next/navigation";
 
 export default function Login() {
   const searchparams = useSearchParams();

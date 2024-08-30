@@ -1,7 +1,7 @@
 "use client";
-import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 
 export default function Page() {
   const router = useRouter();
