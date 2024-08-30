@@ -54,16 +54,14 @@ const RoutesRender = () => {
       {routes
         .filter((link) => link.UILocation === UI_Location.navbar)
         .map((link) => (
-          <div
-            className="relative flex h-60 w-60 flex-col items-center justify-end rounded-2xl bg-primary-foreground p-6 hover:rounded-3xl"
+          <Link
+            href={link.path}
             key={link.route}
+            className="relative flex h-60 w-60 flex-col items-center justify-end rounded-2xl bg-primary-foreground p-6"
           >
-            <Link
-              href={link.path}
-              className={`w-full ${cn(buttonVariants({ size: "sm" }))}`}
-            >
+            <div className={`w-full ${cn(buttonVariants({ size: "sm" }))}`}>
               {link.route}
-            </Link>
+            </div>
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-20">
               <Image
                 className="pointer-events-none absolute mb-6 dark:invert"
@@ -73,7 +71,7 @@ const RoutesRender = () => {
                 alt={link.route}
               />
             </div>
-          </div>
+          </Link>
         ))}
     </>
   );
