@@ -1,9 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { PencilIcon, Check, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { setNewUsername } from "@/app/actions/users/updateUser";
-import { useRouter } from "next/navigation";
 
 export default function EditableUsername({ user }: { user: UserModel }) {
   const router = useRouter();
@@ -32,7 +32,11 @@ export default function EditableUsername({ user }: { user: UserModel }) {
       if (value != (user.username || user.full_name) && viewingCurrentUser) {
         const result = await setNewUsername(user.id, value);
         if (!result.ok) {
-          if (result.postgrestError?.message.includes("duplicate key value")) {
+          if (
+            result.errors.postgrestError?.message.includes(
+              "duplicate key value"
+            )
+          ) {
             setError("Name unavailable!");
           } else {
             setError("Error updating the username!");

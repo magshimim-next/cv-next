@@ -2,9 +2,9 @@
 import Image from "next/image";
 import { useRef, useEffect } from "react";
 import Link from "next/link";
+import { IoCloseSharp } from "react-icons/io5";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
-import { IoCloseSharp } from "react-icons/io5";
 import { useUser } from "@/hooks/useUser";
 
 const navLinks = [

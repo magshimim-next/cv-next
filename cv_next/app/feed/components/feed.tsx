@@ -1,17 +1,17 @@
 "use client";
 
-import CVItemLink from "@/app/feed/components/CVItemLink";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import CVItem from "./CVItem";
+import { useInView } from "react-intersection-observer";
+import ReactLoading from "react-loading";
 import { CvsContext, CvsDispatchContext } from "@/providers/cvs-provider";
 import { ReloadButton } from "@/components/ui/reloadButton";
 import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
-import { useInView } from "react-intersection-observer";
 import { FilterPanel } from "@/app/feed/components/filterPanel";
-import ReactLoading from "react-loading";
+import CVItemLink from "@/app/feed/components/CVItemLink";
 import { filterValues } from "@/types/models/filters";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
+import CVItem from "./CVItem";
 
 export default function Feed() {
   const cvsContextConsumer = useContext(CvsContext);
@@ -91,7 +91,7 @@ export default function Feed() {
       debounceTimeout.current = setTimeout(async () => {
         await fetchCvsCallback();
         resolve();
-      }, 300); // Adjust delay as needed
+      }, 300);
     });
   }, [fetchCvsCallback]);
 
