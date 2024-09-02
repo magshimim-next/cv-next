@@ -41,7 +41,7 @@ export default async function Page({
       ) : (
         <div className="grid grid-cols-1 gap-y-4 md:gap-x-4">
           <section className=" flex-col self-start">
-            <div style={{ width: "70%", margin: "auto" }}>
+            <div style={{ width: "60%", margin: "auto" }}>
               <ProfileData user={result.val} />
             </div>
           </section>
