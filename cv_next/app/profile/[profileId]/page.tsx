@@ -2,10 +2,10 @@
 
 import { notFound } from "next/navigation";
 import { getUserModel } from "@/app/actions/users/getUser";
-import ProfileData from "./components/profileData";
-import ProfileCvs from "./components/profileCvs";
 import { getCvsByUserId } from "@/server/api/cvs";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
+import ProfileData from "./components/profileData";
+import ProfileCvs from "./components/profileCvs";
 
 export default async function Page({
   params,
