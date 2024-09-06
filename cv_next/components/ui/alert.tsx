@@ -1,7 +1,7 @@
 "use client";
-import { ImCheckmark } from "react-icons/im";
+import { ImCheckmark, ImCross } from "react-icons/im";
 import { IconContext } from "react-icons";
-import { ImCross } from "react-icons/im";
+
 import React from "react";
 
 export default function Alert({

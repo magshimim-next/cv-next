@@ -3,11 +3,11 @@
 import { notFound } from "next/navigation";
 import { getCvById } from "@/server/api/cvs";
 import { decodeValue } from "@/lib/utils";
+import { ScrollToTop } from "@/components/ui/scrollToTop";
 import { CvPreview } from "../../../components/ui/cvPreview";
 import CommentsSection from "./components/commentSection/commentsSection";
 import CommentForm from "./components/commentSection/commentForm";
 import CvData from "./components/cvData";
-import { ScrollToTop } from "@/components/ui/scrollToTop";
 
 export default async function Page({ params }: { params: { cvId: string } }) {
   const { cvId } = params;

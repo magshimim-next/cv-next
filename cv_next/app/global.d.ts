@@ -1,6 +1,6 @@
+import { PostgrestError, AuthError } from "@supabase/supabase-js";
 import { UI_Location } from "@/lib/definitions";
 import { Database as DB } from "@/types/database.types";
-import { PostgrestError, AuthError } from "@supabase/supabase-js";
 
 declare global {
   type Database = DB;

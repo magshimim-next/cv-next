@@ -1,8 +1,8 @@
 import "server-only";
 
-import SupabaseHelper from "./supabaseHelper";
 import { Ok, Err } from "@/lib/utils";
 import { Tables, CommentKeys, ProfileKeys } from "@/lib/supabase-definitions";
+import SupabaseHelper from "./supabaseHelper";
 
 /**
  * Add a new comment to the database.

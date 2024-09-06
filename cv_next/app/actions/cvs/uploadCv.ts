@@ -1,8 +1,8 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { uploadCV, getCvsByUserId } from "@/server/api/cvs";
 import { transformGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
-import { redirect } from "next/navigation";
 import logger from "@/server/base/logger";
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { encodeValue } from "@/lib/utils";

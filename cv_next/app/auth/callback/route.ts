@@ -17,7 +17,10 @@ export async function GET(request: Request) {
           `${process.env.NEXT_PUBLIC_BASE_URL}${Definitions.AUTH_DEFAULT_REDIRECT}${next}`
         );
       } else {
-        const notFoundUrl = new URL("/not-found", origin);
+        const notFoundUrl = new URL(
+          "/not-found",
+          process.env.NEXT_PUBLIC_BASE_URL
+        );
         return NextResponse.redirect(notFoundUrl);
       }
     } else {
@@ -25,5 +28,6 @@ export async function GET(request: Request) {
     }
   }
   // return the user to an error page with instructions
-  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/`); //TODO: move to regular error page
+  //TODO: move to regular error page
+  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/`);
 }

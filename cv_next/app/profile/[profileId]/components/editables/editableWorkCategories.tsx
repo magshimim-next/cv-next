@@ -1,9 +1,9 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
 import { Check, X } from "lucide-react";
+import isEqual from "lodash.isequal";
 import Categories from "@/types/models/categories";
 import { setNewWorkCategories } from "@/app/actions/users/updateUser";
-import isEqual from "lodash.isequal";
 
 export default function EditableWorkCategories({
   user,

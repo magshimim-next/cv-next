@@ -1,7 +1,7 @@
 "use server";
 
-import logger, { logErrorWithTrace } from "@/server/base/logger";
 import { NextRequest, NextResponse } from "next/server";
+import logger, { logErrorWithTrace } from "@/server/base/logger";
 import { getUserById } from "@/server/api/users";
 
 export async function POST(req: NextRequest) {

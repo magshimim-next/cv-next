@@ -1,9 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { PencilIcon, Check, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { setNewUsername } from "@/app/actions/users/updateUser";
-import { useRouter } from "next/navigation";
 
 export default function EditableUsername({ user }: { user: UserModel }) {
   const router = useRouter();
