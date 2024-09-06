@@ -26,8 +26,10 @@ then fill in an .env.local config file with the credentials to supabase(supabase
 npm run dev
 ```
 
-## Roadmap
+## Documentation
 
 A simple web app that will show cv documents hosted on Google Docs with an option to discuss changes.
 
 Please read the [design document](/docs/DESIGN.md) for more information.
+
+More design documents can be found in the [docs folder](./docs/)
