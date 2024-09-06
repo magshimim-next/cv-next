@@ -21,5 +21,6 @@ RUN npm install && \
 
 EXPOSE 3000
 
+RUN env > meow.txt
 RUN npm run build
 CMD ["npm", "run", "start"]
