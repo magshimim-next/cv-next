@@ -15,7 +15,7 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL_DEV }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY_DEV }}
           NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL_DEV }}
-        run: docker build ./cv_next --file ./cv_next/Dockerfile --build-arg NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL_DEV }} --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY_DEV }} --build-arg NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL_DEV }} --tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ secrets.DOCKERHUB_TAG_DEV }}
+        run: docker build ./cv_next --file ./cv_next/DockerfileDev --build-arg NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL_DEV }} --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY_DEV }} --build-arg NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL_DEV }} --tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPONAME }}:${{ secrets.DOCKERHUB_TAG_DEV }}
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -29,3 +29,5 @@ jobs:
 
       - name: CD PIPE - rebuilding the app - bro what
         run: 'curl -s -o /dev/null -H "Content-Type: application/json" -H "Authorization: Bearer ${{ secrets.DIGITALOCEAN_TOKEN }}" "https://api.digitalocean.com/v2/apps/${{ secrets.DIGITALOCEAN_DP_ID_DEV }}/deployments" -XPOST -d ''{"force_build": true}'''
+
+ 
