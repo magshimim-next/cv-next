@@ -33,3 +33,10 @@ A simple web app that will show cv documents hosted on Google Docs with an optio
 Please read the [design document](/docs/DESIGN.md) for more information.
 
 More design documents can be found in the [docs folder](./docs/)
+
+## Feedback and Contributions
+
+> [!NOTE]
+> For the near future, we have decided to only allow and accept contributions from Magshimim Next members to contribute to the project.
+
+Please read more [here](./CONTRIBUTING.md)
