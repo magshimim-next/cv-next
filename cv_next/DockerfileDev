@@ -13,7 +13,6 @@ COPY package.json .
 RUN npm install
 RUN npm install next
 COPY . .
-COPY nextdev.config.mjs next.config.mjs
 
 RUN npm install && \
     npm cache clean --force && \
