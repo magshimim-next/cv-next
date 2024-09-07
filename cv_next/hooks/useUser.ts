@@ -51,6 +51,9 @@ export const useUser = () => {
     if (mounted && !data && !error) {
       mutate();
     }
+    if (mounted && data && error) {
+        mutate(undefined, false);
+    }
   }, [mounted, data, error, mutate]);
 
   return {
