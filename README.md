@@ -17,7 +17,7 @@ cd cv_next
 npm install
 ```
 
-then fill in an .env.local config file with the credentials to supabase(supabase url and anon key), and add the base URL(usually localhost for local development) as seen in the [example env file](./cv_next/.env.local.example).
+then fill in an .env.local config file with the credentials to supabase(supabase url and anon key) that you can get from us in the community chat, and add the base URL(usually localhost for local development) as seen in the [example env file](./cv_next/.env.local.example).
 
 ### Local Usage
 
