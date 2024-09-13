@@ -77,12 +77,27 @@ export default function Feed() {
       if (optionalCategory) {
         if (filters.categoryIds) {
           filters.categoryIds = [
-            ...new Set(filters.categoryIds.concat(optionalCategory)),
+            ...new Set(
+              filters.categoryIds
+                .concat(optionalCategory)
+                .filter(function (element) {
+                  return element !== undefined;
+                })
+            ),
           ];
         } else {
           filters.categoryIds = optionalCategory;
         }
+      } else {
+        filters.categoryIds = null;
       }
+
+      filters.categoryIds?.filter(function (element) {
+        return element !== undefined;
+      });
+      if (filters.categoryIds?.length && filters.categoryIds[0] === undefined)
+        filters.categoryIds = [];
+
       const response = await fetchFromApi(
         API_DEFINITIONS.CVS_API_BASE,
         API_DEFINITIONS.FETCH_CVS_ENDPOINT,
@@ -101,7 +116,8 @@ export default function Feed() {
       if (filters.categoryIds) {
         params.delete("category");
         filters.categoryIds.map((category) => {
-          params.append("category", categoryString(category));
+          if (category !== undefined)
+            params.append("category", categoryString(category));
         });
 
         router.replace(`${pathname}?${params}`);
