@@ -108,7 +108,13 @@ export default function Feed() {
       );
 
       if (response && response.cvs.length > 0) {
-        setCvs((prevCvs) => [...prevCvs, ...response.cvs]);
+        setCvs((prevCvs) => {
+          const newCvs = response.cvs.filter(
+            (newCv: CvModel) =>
+              !prevCvs.some((prevCv) => prevCv.id === newCv.id)
+          );
+          return [...prevCvs, ...newCvs];
+        });
         page.current = nextPage;
       } else {
         setLoadMore(false);
