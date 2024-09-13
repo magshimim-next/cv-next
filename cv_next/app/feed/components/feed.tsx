@@ -13,35 +13,15 @@ import { filterValues } from "@/types/models/filters";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import Categories from "@/types/models/categories";
-
-function toCategory(name: string): number {
-  return Categories.category[name as keyof typeof Categories.category];
-}
-
-function categoryString(num: number) {
-  const categoryNames = [
-    "Undefined",
-    "General",
-    "Medical",
-    "Insurance",
-    "Financial",
-    "Legal",
-    "Education",
-    "Fullstack",
-    "Frontend",
-    "Backend",
-    "Devops",
-    "Cybersecurity",
-  ];
-  return categoryNames[num];
-}
+import { categoryString, toCategoryNumber } from "@/lib/utils";
 
 export default function Feed() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const optionalCategory = searchParams.getAll("category").map(toCategory);
+  const optionalCategory = searchParams
+    .getAll("category")
+    .map(toCategoryNumber);
   const optionalDescription = searchParams.get("description");
   const cvsContextConsumer = useContext(CvsContext);
   const cvsDispatchContextConsumer = useContext(CvsDispatchContext);

@@ -94,5 +94,14 @@ export const generateCategoryLink = (categoryNumber: number) =>
   `/feed?category=${Categories.category[categoryNumber].toLowerCase()}`;
 
 export function getAllNumbersFromArr(arr: string[]) {
-    return arr.filter(value => !isNaN(parseInt(value))).map(value => parseInt(value))
+  return arr
+    .filter((value) => !isNaN(parseInt(value)))
+    .map((value) => parseInt(value));
+}
+
+export const categoryString = (categoryNumber: number) =>
+  `${Categories.category[categoryNumber].toLowerCase()}`;
+
+export function toCategoryNumber(name: string): number {
+  return Categories.category[name as keyof typeof Categories.category];
 }
