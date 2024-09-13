@@ -46,6 +46,26 @@ Once a user has clicked on a CV, he will be sent to a page dedicated to the CV w
 
 - Liking comments and commenting under other comments is also available.
 
+### User Data and Interactions
+
+Users can define several fields to better explain themselves.
+
+#### Username
+
+Each user can set a different username that would be previews instead of the name given from Gmail.
+
+#### Work Status
+
+Each user can set a work status that would be presented to all other users that check his profile.
+
+- The status can be empty, open to work, or hiring.
+
+#### Work Status Categories
+
+To better explain the status itself, a user can choose up to 3 categories that the work status relates to.
+
+- For example, if a user is set to open to work, he can define the categories to match the fields he wants to work on.
+
 ## Technologies
 
 **Hosting:** Digital Ocean
