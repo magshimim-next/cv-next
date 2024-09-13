@@ -172,7 +172,7 @@ export async function getPaginatedCvs(
     }
 
     // Filter by categoryIds
-    if (filters?.categoryIds) {
+    if (filters?.categoryIds?.length) {
       logger.debug(filters.categoryIds, "category ids");
       query = query.overlaps(CvKeys.cv_categories, filters.categoryIds);
     }
