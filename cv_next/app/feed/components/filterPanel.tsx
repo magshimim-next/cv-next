@@ -16,14 +16,14 @@ export const FilterPanel = ({
   onChange: (filters: filterValues) => void;
 }) => {
   const [searchValue, setSearchValue] = useState(defaultFilters.searchValue);
-  const [categoryId, setCategoryId] = useState(defaultFilters.categoryIds);
+  const [categoryIds, setCategoryId] = useState(defaultFilters.categoryIds);
 
   useEffect(() => {
     onChange({
-      categoryIds: categoryId,
+      categoryIds: categoryIds,
       searchValue: searchValue,
     });
-  }, [searchValue, categoryId, onChange]);
+  }, [searchValue, categoryIds, onChange]);
 
   const mapCategories: number[] = useMemo(() => {
     const keys = Object.keys(Categories.category)
@@ -44,12 +44,13 @@ export const FilterPanel = ({
           placeHolder="all"
           valueIds={mapCategories}
           text="Categories"
-          valueId={categoryId}
+          valueId={categoryIds}
           onChange={setCategoryId}
           getValueById={(id: number) => {
             return Categories.category[id];
           }}
           noneText="all"
+          selected={defaultFilters.categoryIds}
         ></DropdownInput>
       </div>
     </div>
