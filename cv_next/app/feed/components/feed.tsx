@@ -15,34 +15,32 @@ import { ScrollToTop } from "@/components/ui/scrollToTop";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Categories from "@/types/models/categories";
 
-function toCategory(name: string):number {
+function toCategory(name: string): number {
   return Categories.category[name as keyof typeof Categories.category];
 }
 
-function categoryString(num:number){
+function categoryString(num: number) {
   const categoryNames = [
-    'Undefined',
-    'General',
-    'Medical',
-    'Insurance',
-    'Financial',
-    'Legal',
-    'Education',
-    'Fullstack',
-    'Frontend',
-    'Backend',
-    'Devops',
-    'Cybersecurity'
+    "Undefined",
+    "General",
+    "Medical",
+    "Insurance",
+    "Financial",
+    "Legal",
+    "Education",
+    "Fullstack",
+    "Frontend",
+    "Backend",
+    "Devops",
+    "Cybersecurity",
   ];
   return categoryNames[num];
 }
-
 
 export default function Feed() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const params = new URLSearchParams(searchParams);
   const optionalCategory = searchParams.getAll("category").map(toCategory);
   const optionalDescription = searchParams.get("description");
   const cvsContextConsumer = useContext(CvsContext);
@@ -60,8 +58,8 @@ export default function Feed() {
   );
   const [loadMore, setLoadMore] = useState(true);
   const [filters, setFilters] = useState<filterValues>({
-    searchValue: (optionalDescription) ? optionalDescription : "",
-    categoryIds: (optionalCategory) ? optionalCategory: null,
+    searchValue: optionalDescription ? optionalDescription : "",
+    categoryIds: optionalCategory ? optionalCategory : null,
   });
   const fetchFromApi = useApiFetch();
 
@@ -93,13 +91,15 @@ export default function Feed() {
   }, [cvs]);
 
   const fetchCvsCallback = useCallback(async () => {
+    const params = new URLSearchParams(searchParams);
     if (loadMore) {
       const nextPage = page.current + 1;
-      if(optionalCategory){
-        if(filters.categoryIds){
-          filters.categoryIds  = [...new Set(filters.categoryIds.concat(optionalCategory))];
-        }
-        else {
+      if (optionalCategory) {
+        if (filters.categoryIds) {
+          filters.categoryIds = [
+            ...new Set(filters.categoryIds.concat(optionalCategory)),
+          ];
+        } else {
           filters.categoryIds = optionalCategory;
         }
       }
@@ -118,16 +118,24 @@ export default function Feed() {
       } else {
         setLoadMore(false);
       }
-      if(filters.categoryIds){
+      if (filters.categoryIds) {
         params.delete("category");
         filters.categoryIds.map((category) => {
           params.append("category", categoryString(category));
-        })
-        
+        });
+
         router.replace(`${pathname}?${params}`);
       }
     }
-  }, [loadMore, filters, fetchFromApi]);
+  }, [
+    searchParams,
+    loadMore,
+    optionalCategory,
+    fetchFromApi,
+    filters,
+    router,
+    pathname,
+  ]);
 
   const debouncedFetchCvsCallback = useCallback(async () => {
     if (debounceTimeout.current) {
