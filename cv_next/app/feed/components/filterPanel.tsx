@@ -4,6 +4,9 @@ import { DropdownInput } from "./filters/valueSelect";
 import Categories from "@/types/models/categories";
 import { useMemo } from "react";
 import { filterValues } from "@/types/models/filters";
+import { categoryString } from "@/lib/utils";
+import { useSearchParams, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export const FilterPanel = ({
   defaultFilters,
@@ -18,12 +21,25 @@ export const FilterPanel = ({
   const [searchValue, setSearchValue] = useState(defaultFilters.searchValue);
   const [categoryIds, setCategoryId] = useState(defaultFilters.categoryIds);
 
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
   useEffect(() => {
+    const params = new URLSearchParams(searchParams);
+    if (categoryIds) {
+      params.delete("category");
+      categoryIds.map((category) => {
+        if (category !== undefined)
+          params.append("category", categoryString(category));
+      });
+      router.replace(`${pathname}?${params}`);
+    }
     onChange({
       categoryIds: categoryIds,
       searchValue: searchValue,
     });
-  }, [searchValue, categoryIds, onChange]);
+  }, [searchValue, categoryIds, onChange, searchParams, router, pathname]);
 
   const mapCategories: number[] = useMemo(() => {
     const keys = Object.keys(Categories.category)

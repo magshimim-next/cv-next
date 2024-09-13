@@ -12,13 +12,11 @@ import ReactLoading from "react-loading";
 import { filterValues } from "@/types/models/filters";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { categoryString, toCategoryNumber } from "@/lib/utils";
+import { useSearchParams } from "next/navigation";
+import { toCategoryNumber } from "@/lib/utils";
 
 export default function Feed() {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
   const optionalCategory = searchParams
     .getAll("category")
     .map(toCategoryNumber);
@@ -71,7 +69,6 @@ export default function Feed() {
   }, [cvs]);
 
   const fetchCvsCallback = useCallback(async () => {
-    const params = new URLSearchParams(searchParams);
     if (loadMore) {
       const nextPage = page.current + 1;
       if (optionalCategory) {
@@ -119,25 +116,8 @@ export default function Feed() {
       } else {
         setLoadMore(false);
       }
-      if (filters.categoryIds) {
-        params.delete("category");
-        filters.categoryIds.map((category) => {
-          if (category !== undefined)
-            params.append("category", categoryString(category));
-        });
-
-        router.replace(`${pathname}?${params}`);
-      }
     }
-  }, [
-    searchParams,
-    loadMore,
-    optionalCategory,
-    fetchFromApi,
-    filters,
-    router,
-    pathname,
-  ]);
+  }, [loadMore, optionalCategory, fetchFromApi, filters]);
 
   const debouncedFetchCvsCallback = useCallback(async () => {
     if (debounceTimeout.current) {
