@@ -36,8 +36,18 @@ export const FilterPanel = ({
       router.replace(`${pathname}?${params}`);
     } else {
       params.delete("category");
-      router.replace(`${pathname}`);
+      router.replace(`${pathname}?${params}`);
     }
+
+    if (searchValue) {
+      params.delete("description");
+      params.append("description", searchValue);
+      router.replace(`${pathname}?${params}`);
+    } else {
+      params.delete("description");
+      router.replace(`${pathname}?${params}`);
+    }
+
     onChange({
       categoryIds: categoryIds,
       searchValue: searchValue,
