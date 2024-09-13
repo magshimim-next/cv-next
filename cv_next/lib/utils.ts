@@ -103,5 +103,6 @@ export const categoryString = (categoryNumber: number) =>
   `${Categories.category[categoryNumber].toLowerCase()}`;
 
 export function toCategoryNumber(name: string): number {
-  return Categories.category[name as keyof typeof Categories.category];
+  let fixedName = name[0].charAt(0).toUpperCase() + name.slice(1);
+  return Categories.category[fixedName as keyof typeof Categories.category];
 }
