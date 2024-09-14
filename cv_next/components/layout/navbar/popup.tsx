@@ -13,11 +13,6 @@ const navLinks = [
     path: "/login",
     req_login: false,
   },
-  // {
-  //   route: "Feed",
-  //   path: "/feed",
-  //   req_login: true,
-  // },
   {
     route: "Upload",
     path: "/upload",
