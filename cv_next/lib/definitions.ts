@@ -80,6 +80,13 @@ export const routes: route[] = [
   },
 ];
 
+export const Contributers = [
+  {
+    name: "Adam Abramov", 
+    description: "thaks so munch thanks you thanks you tahks you tanks yu"
+  },
+]
+
 export const Credits = [
   "Ron Peer",
   "Arad Donenfeld",
