@@ -25,7 +25,7 @@ const navLinks = [
   },
   {
     route: "Signout",
-    path: "/",
+    path: "/signout",
     req_login: true,
   },
 ];
