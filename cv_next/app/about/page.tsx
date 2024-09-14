@@ -6,7 +6,7 @@ import { Credits, heroHeader, routes, UI_Location } from "@/lib/definitions";
 
 import { LoginButtons } from "./components/loginButtons";
 
-export default function Home() {
+export default function Page() {
   return (
     <main>
       <section className="container mx-auto flex flex-col text-center lg:items-center lg:gap-8 ">
