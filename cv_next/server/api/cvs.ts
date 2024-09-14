@@ -156,10 +156,10 @@ export async function getPaginatedCvs(
 
     const supabase = SupabaseHelper.getSupabaseInstance();
     let query = supabase
-      .from("cvs")
+      .from(Tables.cvs)
       .select("*")
       .order(CvKeys.created_at, { ascending: false });
-    let profileQuery = supabase.from("profiles").select("id");
+    let profileQuery = supabase.from(Tables.profiles).select(ProfileKeys.id);
 
     logger.debug(filters, "filters");
 
@@ -167,7 +167,7 @@ export async function getPaginatedCvs(
     if (filters?.searchValue) {
       const searchValue = `%${filters.searchValue}%`;
       profileQuery = profileQuery.or(
-        `full_name.ilike.${searchValue},username.ilike.${searchValue}`
+        `${ProfileKeys.full_name}.ilike.${searchValue},${ProfileKeys.username}.ilike.${searchValue}`
       );
     }
 
@@ -192,7 +192,7 @@ export async function getPaginatedCvs(
     if (filters?.searchValue) {
       const searchValue = `%${filters.searchValue}%`;
       query = query.or(
-        `description.ilike.${searchValue},user_id.in.(${profileIds?.join(",")})`
+        `${CvKeys.description}.ilike.${searchValue},${CvKeys.user_id}.in.(${profileIds?.join(",")})`
       );
     }
 
