@@ -163,45 +163,14 @@ export async function getPaginatedCvs(
 
     logger.debug(filters, "filters");
 
-    // Filter by searchValue
-    if (filters?.searchValue) {
-      const searchValue = `%${filters.searchValue}%`;
-      profileQuery = profileQuery.or(
-        `${ProfileKeys.full_name}.ilike.${searchValue},${ProfileKeys.username}.ilike.${searchValue}`
-      );
-    }
+    profileQuery = applyProfileSearchFilter(profileQuery, filters);
+    query = applyCategoryFilter(query, filters);
+    query = await applyProfileSearchToCvs(query, profileQuery, filters);
 
-    // Filter by categoryIds
-    if (filters?.categoryIds?.length) {
-      logger.debug(filters.categoryIds, "category ids");
-      query = query.overlaps(CvKeys.cv_categories, filters.categoryIds);
-    }
-
-    // Execute profile query to get user IDs if a search value is provided
-    let profileIds: string[] | null = null;
-    if (filters?.searchValue) {
-      const { data: profiles, error: profileError } = await profileQuery;
-      if (profileError) {
-        logger.error(profileError, "getPaginatedCvs - profileQuery");
-        return null;
-      }
-      profileIds = profiles?.map((profile) => profile.id) || null;
-    }
-
-    // Apply text search to CVs
-    if (filters?.searchValue) {
-      const searchValue = `%${filters.searchValue}%`;
-      query = query.or(
-        `${CvKeys.description}.ilike.${searchValue},${CvKeys.user_id}.in.(${profileIds?.join(",")})`
-      );
-    }
-
-    // Filter out deleted CVs
     if (filterOutDeleted) {
       query = query.eq("deleted", false);
     }
 
-    // Fetch the CVs
     const { data: cvs, error } = await query;
     logger.debug(
       cvs?.map((cv) => cv.cv_categories),
@@ -213,17 +182,54 @@ export async function getPaginatedCvs(
       return null;
     }
 
-    // Deduplicate CVs
     const uniqueCvs = [...new Map(cvs.map((cv) => [cv.id, cv])).values()].slice(
       from,
       to
     );
-
     return { page, cvs: uniqueCvs as CvModel[] };
   } catch (error) {
     logger.error(error, "getPaginatedCvs");
     return null;
   }
+}
+
+function applyProfileSearchFilter(profileQuery: any, filters?: filterValues) {
+  if (filters?.searchValue) {
+    const searchValue = `%${filters.searchValue}%`;
+    profileQuery = profileQuery.or(
+      `${ProfileKeys.full_name}.ilike.${searchValue},${ProfileKeys.username}.ilike.${searchValue}`
+    );
+  }
+  return profileQuery;
+}
+
+function applyCategoryFilter(query: any, filters?: filterValues) {
+  if (filters?.categoryIds?.length) {
+    logger.debug(filters.categoryIds, "category ids");
+    query = query.overlaps(CvKeys.cv_categories, filters.categoryIds);
+  }
+  return query;
+}
+
+async function applyProfileSearchToCvs(
+  query: any,
+  profileQuery: any,
+  filters?: filterValues
+) {
+  if (filters?.searchValue) {
+    const { data: profiles, error: profileError } = await profileQuery;
+    if (profileError) {
+      logger.error(profileError, "getPaginatedCvs - profileQuery");
+      return query;
+    }
+
+    const profileIds = profiles?.map((profile: UserModel) => profile.id) || [];
+    const searchValue = `%${filters.searchValue}%`;
+    query = query.or(
+      `${CvKeys.description}.ilike.${searchValue},${CvKeys.user_id}.in.(${profileIds.join(",")})`
+    );
+  }
+  return query;
 }
 
 /**
