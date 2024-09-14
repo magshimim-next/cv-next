@@ -3,7 +3,6 @@ import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Credits, heroHeader, routes, UI_Location } from "@/lib/definitions";
-
 import { LoginButtons } from "./components/loginButtons";
 
 export default function Home() {
