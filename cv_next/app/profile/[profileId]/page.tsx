@@ -27,16 +27,26 @@ export default async function Page({
       <div className="md:hidden">
         <ScrollToTop />
       </div>
-      <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[60%_40%] md:gap-x-4">
-        <section className=" flex-col self-start">
-          <div>
-            <ProfileData user={result.val} />
-          </div>
-        </section>
-        <section className="flex-col rounded-lg">
-          {cvs?.length ? <ProfileCvs cvs={cvs} /> : <></>}
-        </section>
-      </div>
+      {cvs?.length ? (
+        <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[60%_40%] md:gap-x-4">
+          <section className=" flex-col self-start">
+            <div>
+              <ProfileData user={result.val} />
+            </div>
+          </section>
+          <section className="flex-col rounded-lg">
+            <ProfileCvs cvs={cvs} />
+          </section>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-y-4 md:gap-x-4">
+          <section className=" flex-col self-start">
+            <div style={{ width: "60%", margin: "auto" }}>
+              <ProfileData user={result.val} />
+            </div>
+          </section>
+        </div>
+      )}
     </div>
   );
 }
