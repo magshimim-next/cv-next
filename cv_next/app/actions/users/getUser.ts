@@ -15,7 +15,7 @@ import Definitions from "@/lib/definitions";
  */
 //TODO: delete this and replace any user-related fetches with getUser(),
 // currently this relies on user id received from the browser which is unsafe.
-export const  getUserModel = async (
+export const getUserModel = async (
   userId: string
 ): Promise<Result<UserModel, string>> => {
   const result = await getUserById(userId);
@@ -66,6 +66,8 @@ export async function signInWithSocialProvider(provider: any, nextURL: string) {
           nextURL,
       },
     });
+  console.log(data);
+  console.log(error);
   if (error) logger.error(error, "Error signin");
   if (data.url) {
     redirect(data.url);
