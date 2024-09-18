@@ -10,13 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Adds Cert
-        env:
-          NODE_CERT: ${{ secrets.NODE_CERT }}
-        run: echo $NODE_CERT > certs.crt
-
       - name: Build the Docker image
         env:
+          NODE_CERT: ${{ secrets.NODE_CERT }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL_PREPROD }}
