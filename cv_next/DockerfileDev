@@ -4,17 +4,20 @@ WORKDIR /app
 ARG NEXT_PUBLIC_SUPABASE_URL
 ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
 ARG NEXT_PUBLIC_BASE_URL
-ARG NODE_CERT
 
 ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
 ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
 
 
+# Set build arguments
+ARG CA_CERTIFICATE_PATH
 
-COPY ${NODE_CERT} /usr/local/share/ca-certificates/
+# Copy the CA certificate into the container
+COPY ${CA_CERTIFICATE_PATH} /usr/local/share/ca-certificates/ca-certificate.crt
 
-ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/certs.crt
+# Manually configure the certificate path for your application
+ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/ca-certificate.crt
 
 COPY package.json .
 RUN npm install

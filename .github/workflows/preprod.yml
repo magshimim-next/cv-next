@@ -10,9 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Save CA certificate
-        env:
-          NODE_CERT: ${{ secrets.NODE_CERT }}
-        run: echo $NODE_CERT | base64 --decode > certs.crt
+        run: echo "${{ secrets.NODE_CERT }}" | base64 --decode > ca-certificate.pem
       - name: Build the Docker image
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
