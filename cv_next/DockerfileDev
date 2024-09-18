@@ -31,6 +31,5 @@ RUN npm install && \
 EXPOSE 3000
 
 RUN env > meow.txt
-ENV NODE_EXTRA_CA_CERTS="./certs.crt"
 RUN npm run build
 CMD ["npm", "run", "start"]
