@@ -14,10 +14,10 @@ ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
 ARG CA_CERTIFICATE_PATH
 
 # Copy the CA certificate into the container
-COPY ${CA_CERTIFICATE_PATH} /usr/local/share/ca-certificates/ca-certificate.pem
+COPY ${CA_CERTIFICATE_PATH} /usr/local/share/ca-certificates/ca-certificate.crt
 
 # Manually configure the certificate path for your application
-ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/ca-certificate.pem
+ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/ca-certificate.crt
 
 COPY package.json .
 RUN npm install
