@@ -68,32 +68,36 @@ export default function Feed() {
     cvsRef.current = cvs;
   }, [cvs]);
 
+  const updateCategoryIds = (
+    filters: filterValues,
+    optionalCategory: number[]
+  ) => {
+    if (optionalCategory) {
+      if (filters.categoryIds) {
+        filters.categoryIds = [
+          ...new Set(
+            filters.categoryIds
+              .concat(optionalCategory)
+              .filter((element) => element !== undefined)
+          ),
+        ];
+      } else {
+        filters.categoryIds = optionalCategory;
+      }
+    } else {
+      filters.categoryIds = null;
+    }
+
+    filters.categoryIds?.filter((element) => element !== undefined);
+    if (filters.categoryIds?.length && filters.categoryIds[0] === undefined) {
+      filters.categoryIds = [];
+    }
+  };
+
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
       const nextPage = page.current + 1;
-      if (optionalCategory) {
-        if (filters.categoryIds) {
-          filters.categoryIds = [
-            ...new Set(
-              filters.categoryIds
-                .concat(optionalCategory)
-                .filter(function (element) {
-                  return element !== undefined;
-                })
-            ),
-          ];
-        } else {
-          filters.categoryIds = optionalCategory;
-        }
-      } else {
-        filters.categoryIds = null;
-      }
-
-      filters.categoryIds?.filter(function (element) {
-        return element !== undefined;
-      });
-      if (filters.categoryIds?.length && filters.categoryIds[0] === undefined)
-        filters.categoryIds = [];
+      updateCategoryIds(filters, optionalCategory);
 
       const response = await fetchFromApi(
         API_DEFINITIONS.CVS_API_BASE,
