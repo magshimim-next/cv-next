@@ -158,7 +158,8 @@ export async function getPaginatedCvs(
     let query = supabase
       .from(Tables.cvs)
       .select("*")
-      .order(CvKeys.created_at, { ascending: false });
+      .order(CvKeys.created_at, { ascending: false })
+      .eq(CvKeys.deleted, !filterOutDeleted);
     let profileQuery = supabase.from(Tables.profiles).select(ProfileKeys.id);
 
     logger.debug(filters, "filters");
@@ -166,10 +167,6 @@ export async function getPaginatedCvs(
     profileQuery = applyProfileSearchFilter(profileQuery, filters);
     query = applyCategoryFilter(query, filters);
     query = await applyProfileSearchToCvs(query, profileQuery, filters);
-
-    if (filterOutDeleted) {
-      query = query.eq(CvKeys.deleted, false);
-    }
 
     const { data: cvs, error } = await query;
     logger.debug(
