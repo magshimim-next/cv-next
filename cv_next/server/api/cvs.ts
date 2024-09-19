@@ -168,7 +168,7 @@ export async function getPaginatedCvs(
     query = await applyProfileSearchToCvs(query, profileQuery, filters);
 
     if (filterOutDeleted) {
-      query = query.eq("deleted", false);
+      query = query.eq(CvKeys.deleted, false);
     }
 
     const { data: cvs, error } = await query;
