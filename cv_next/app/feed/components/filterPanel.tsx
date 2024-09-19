@@ -27,26 +27,27 @@ export const FilterPanel = ({
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
-    if (categoryIds) {
-      params.delete("category");
-      categoryIds.map((category) => {
-        if (category !== undefined)
-          params.append("category", categoryString(category));
-      });
-      router.replace(`${pathname}?${params}`);
-    } else {
-      params.delete("category");
-      router.replace(`${pathname}?${params}`);
-    }
 
     if (searchValue) {
-      params.delete("description");
-      params.append("description", searchValue);
-      router.replace(`${pathname}?${params}`);
+      // Use 'set' for 'description'
+      params.set("description", searchValue);
     } else {
       params.delete("description");
-      router.replace(`${pathname}?${params}`);
     }
+    router.replace(`${pathname}?${params}`);
+
+    if (categoryIds) {
+      // Clear existing 'category' params and set new ones individually
+      params.delete("category");
+      categoryIds.forEach((category) => {
+        if (category !== undefined) {
+          params.append("category", categoryString(category));
+        }
+      });
+    } else {
+      params.delete("category");
+    }
+    router.replace(`${pathname}?${params}`);
 
     onChange({
       categoryIds: categoryIds,
