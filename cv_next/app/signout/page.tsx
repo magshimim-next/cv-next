@@ -14,7 +14,7 @@ export default function Page() {
     const signOutAndRedirect = async () => {
       await supabase.auth.signOut();
       await mutateUser();
-      router.push("/about");
+      router.push("/");
     };
     signOutAndRedirect();
   }, [mutateUser, router, supabase.auth]);
