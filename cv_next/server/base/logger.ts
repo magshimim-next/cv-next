@@ -5,7 +5,7 @@ const logger = pino({
   level: "trace",
   timestamp: pino.stdTimeFunctions.isoTime,
   formatters: {
-    bindings(bindings) {
+    bindings(_bindings) {
       return {};
     },
   },
