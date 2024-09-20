@@ -36,7 +36,6 @@ export async function POST(req: NextRequest) {
  * @param {string} cvLink - The cv link to validate
  */
 async function revalidatePreviewHandler(data: { cvLink: string }) {
-  logger.error("het");
   const cvLink = data.cvLink;
   const id = getIdFromLink(cvLink);
   const fileName = id + ".png";
