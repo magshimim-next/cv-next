@@ -9,7 +9,7 @@ import { encodeValue } from "@/lib/utils";
 export interface InputValues {
   link: string;
   description: string;
-  catagoryId: number[] | null;
+  cvCategories: number[] | null;
 }
 
 export const checkUploadCV = async ({
@@ -28,7 +28,8 @@ export const checkUploadCV = async ({
   if (
     !cvData.link?.trim() ||
     !cvData.description?.trim() ||
-    cvData.catagoryId === undefined
+    cvData.cvCategories == undefined ||
+    cvData.cvCategories.length < 0 //added a check, why undefined?
   ) {
     logger.error("Missing variables!");
     return "Missing variables!";
@@ -49,9 +50,9 @@ export const checkUploadCV = async ({
   const cvToUpload: NewCvModel = {
     document_link: transformedURL,
     description: cvData.description,
-    category_id: (cvData.catagoryId ?? [0])[0],
+    //(cvData.catagoryId ?? [0])[0],
     user_id: userId,
-    cv_categories: cvData.catagoryId ?? [],
+    cv_categories: cvData.cvCategories ?? [],
   };
 
   logger.debug("Can upload:", cvToUpload);

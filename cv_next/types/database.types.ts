@@ -83,7 +83,7 @@ export type Database = {
       };
       cvs: {
         Row: {
-          category_id: number;
+          //category_id: number;
           created_at: string;
           cv_categories: number[];
           deleted: boolean;
@@ -94,7 +94,7 @@ export type Database = {
           user_id: string | null;
         };
         Insert: {
-          category_id: number;
+          //category_id: number;
           created_at?: string;
           cv_categories: number[];
           deleted?: boolean;
@@ -105,7 +105,7 @@ export type Database = {
           user_id?: string | null;
         };
         Update: {
-          category_id?: number;
+          //category_id?: number;
           created_at?: string;
           cv_categories?: number[];
           deleted?: boolean;
