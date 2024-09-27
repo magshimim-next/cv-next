@@ -24,7 +24,9 @@ First, if you have any question, contact us from the community group and we'll g
 
 ### Feedback and Suggestions
 
-TODO: decide how we want to accept feedback and more suggestions
+To submit bug reports, issues, or suggestions, add issues to this project or submit via a link in the community.
+
+Please make sure that your submission includes the correct labels, and a detailed description with relevant screenshots.
 
 ### How to start
 
