@@ -1,23 +1,16 @@
-"use client";
-import { Suspense, useEffect } from "react";
-import Feed from "@/app/feed/components/feed";
-import { useUser } from "@/hooks/useUser";
+import { redirect } from "next/navigation";
 import { AboutLayout } from "@/app/about/components/aboutLayout";
+import { getUser } from "@/app/actions/users/getUser";
 
-export default function Page() {
-  const { loading, loginState, mutateUser } = useUser();
-
-  useEffect(() => {
-    mutateUser();
-  }, [mutateUser]);
-
-  if (loading || !loginState) return <AboutLayout />;
+export default async function Page() {
+  const userDataResponse = await getUser();
+  if (userDataResponse.ok) {
+    redirect(`/feed`);
+  }
 
   return (
     <main>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Feed />
-      </Suspense>
+      <AboutLayout />
     </main>
   );
 }
