@@ -1,11 +1,13 @@
 {
   "extends": [
+    "next",
     "next/core-web-vitals",
     "plugin:react-hooks/recommended",
     "plugin:import/typescript",
     "plugin:import/recommended"
   ],
   "plugins": [
+    "prettier",
     "unused-imports",
     "import",
     "eslint-plugin-import-helpers",

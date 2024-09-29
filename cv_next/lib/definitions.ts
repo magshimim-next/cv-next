@@ -92,4 +92,5 @@ export const Credits = [
   "Ilan Yashuk",
   "Assaf Kabesa",
   "Alon Green",
+  "Yarden perets",
 ];
