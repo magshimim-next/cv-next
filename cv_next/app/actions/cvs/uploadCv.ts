@@ -25,11 +25,12 @@ export const checkUploadCV = async ({
     return "Error getting user.";
   }
   const userId = connectedUser.data.user.id;
+  //added a check, why undefined?
   if (
     !cvData.link?.trim() ||
     !cvData.description?.trim() ||
     cvData.cvCategories == undefined ||
-    cvData.cvCategories.length < 0 //added a check, why undefined?
+    cvData.cvCategories.length < 0
   ) {
     logger.error("Missing variables!");
     return "Missing variables!";
@@ -50,7 +51,6 @@ export const checkUploadCV = async ({
   const cvToUpload: NewCvModel = {
     document_link: transformedURL,
     description: cvData.description,
-    //(cvData.catagoryId ?? [0])[0],
     user_id: userId,
     cv_categories: cvData.cvCategories ?? [],
   };
