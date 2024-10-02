@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,7 @@ export default function Home() {
     searchparams.get("error") || ""
   );
   const errorDescription = searchparams.get("error_description") || "";
+  const router = useRouter();
 
   return (
     <main className="p-4">
@@ -24,7 +25,12 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center space-y-4">
             <h1 className="flex items-center justify-center text-4xl font-bold lg:text-7xl">
               {errorMsg && (
-                <PopupWrapper onClose={() => setErrorMsg(null)}>
+                <PopupWrapper
+                  onClose={() => {
+                    setErrorMsg(null);
+                    router.push("/signout");
+                  }}
+                >
                   <div className="flex flex-col items-center justify-center rounded-md border-2 border-black bg-red-700 px-4 py-2 text-white">
                     <div className="text-xl font-bold">{errorMsg}</div>
                     {errorDescription && (
