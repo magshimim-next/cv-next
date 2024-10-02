@@ -1,18 +1,40 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Credits, heroHeader, routes, UI_Location } from "@/lib/definitions";
 
+import PopupWrapper from "@/components/ui/popupWrapper";
 import { LoginButtons } from "./components/loginButtons";
 
 export default function Home() {
+  const searchparams = useSearchParams();
+  const [errorMsg, setErrorMsg] = useState<string | null>(
+    searchparams.get("error") || ""
+  );
+  const errorDescription = searchparams.get("error_description") || "";
+
   return (
-    <main>
+    <main className="p-4">
       <section className="container mx-auto flex flex-col text-center lg:items-center lg:gap-8 ">
         <div className="flex flex-1 flex-col items-center gap-4 text-center lg:gap-8">
           <div className="flex flex-col items-center justify-center space-y-4">
             <h1 className="flex items-center justify-center text-4xl font-bold lg:text-7xl">
+              {errorMsg && (
+                <PopupWrapper onClose={() => setErrorMsg(null)}>
+                  <div className="flex flex-col items-center justify-center rounded-md border-2 border-black bg-red-700 px-4 py-2 text-white">
+                    <div className="text-xl font-bold">{errorMsg}</div>
+                    {errorDescription && (
+                      <div className="mt-2 text-lg text-white/90">
+                        {errorDescription}
+                      </div>
+                    )}
+                  </div>
+                </PopupWrapper>
+              )}
               {heroHeader.image && (
                 <div className="mr-4 flex-shrink-0">
                   <Image
