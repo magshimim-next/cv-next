@@ -10,7 +10,7 @@ import { PopupToggle } from "./popupToggle";
 const navLinks = [
   {
     route: "Home",
-    path: "/",
+    path: "/about",
   },
   {
     route: "Feed",

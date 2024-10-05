@@ -103,6 +103,7 @@ export function getAllNumbersFromArr(arr: string[]) {
 export function checkRedirect(redirectPath: string): boolean {
   return (
     redirectPath === "" ||
+    redirectPath === "/" ||
     Link_Definitions.ALLOWED_REDIRECTS.some((prefix) =>
       redirectPath.startsWith("/" + prefix)
     )
