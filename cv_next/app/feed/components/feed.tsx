@@ -1,13 +1,13 @@
 "use client";
 
 import CVItemLink from "@/app/feed/components/CVItemLink";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import CVItem from "./CVItem";
 import { CvsContext, CvsDispatchContext } from "@/providers/cvs-provider";
 import { ReloadButton } from "@/components/ui/reloadButton";
 import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
 import { useInView } from "react-intersection-observer";
-import { FilterPanel } from "@/app/feed/components/filterPanel";
+import { CATEGORY_PARAM, DESCRIPTION_PARAM, FilterPanel } from "@/app/feed/components/filterPanel";
 import ReactLoading from "react-loading";
 import { filterValues } from "@/types/models/filters";
 import { useApiFetch } from "@/hooks/useAPIFetch";
@@ -17,10 +17,13 @@ import { toCategoryNumber } from "@/lib/utils";
 
 export default function Feed() {
   const searchParams = useSearchParams();
-  const optionalCategory = searchParams
-    .getAll("category")
-    .map(toCategoryNumber);
-  const optionalDescription = searchParams.get("description");
+  //object so needs to be memoized; should check if this is the best way,
+  // as searchParams probably also gets changed with no relation to the categories ->
+  const categories = useMemo(() => searchParams
+    .getAll(CATEGORY_PARAM)
+    .map(toCategoryNumber),
+    [ searchParams ]);
+  const description = searchParams.get(DESCRIPTION_PARAM);
   const cvsContextConsumer = useContext(CvsContext);
   const cvsDispatchContextConsumer = useContext(CvsDispatchContext);
   const initialCvs = cvsContextConsumer.cvs?.length
@@ -35,11 +38,14 @@ export default function Feed() {
       : Definitions.PAGINATION_INIT_PAGE_NUMBER
   );
   const [loadMore, setLoadMore] = useState(true);
-  const [filters, setFilters] = useState<filterValues>({
-    searchValue: optionalDescription ? optionalDescription : "",
-    categoryIds: optionalCategory ? optionalCategory : null,
-  });
   const fetchFromApi = useApiFetch();
+  //aggregate the filters
+  const filters: filterValues = useMemo(() => {
+    return {
+      searchValue: description ?? "",
+      categoryIds: categories
+    };
+  }, [ description, categories ]);  
 
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
   /**
@@ -68,37 +74,11 @@ export default function Feed() {
     cvsRef.current = cvs;
   }, [cvs]);
 
-  const updateCategoryIds = (
-    filters: filterValues,
-    optionalCategory: number[]
-  ) => {
-    if (optionalCategory) {
-      if (filters.categoryIds) {
-        filters.categoryIds = [
-          ...new Set(
-            filters.categoryIds
-              .concat(optionalCategory)
-              .filter((element) => element !== undefined)
-          ),
-        ];
-      } else {
-        filters.categoryIds = optionalCategory;
-      }
-    } else {
-      filters.categoryIds = null;
-    }
-
-    filters.categoryIds?.filter((element) => element !== undefined);
-    if (filters.categoryIds?.length && filters.categoryIds[0] === undefined) {
-      filters.categoryIds = [];
-    }
-  };
 
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
       const nextPage = page.current + 1;
-      updateCategoryIds(filters, optionalCategory);
-
+    
       const response = await fetchFromApi(
         API_DEFINITIONS.CVS_API_BASE,
         API_DEFINITIONS.FETCH_CVS_ENDPOINT,
@@ -121,7 +101,7 @@ export default function Feed() {
         setLoadMore(false);
       }
     }
-  }, [loadMore, optionalCategory, fetchFromApi, filters]);
+  }, [loadMore, fetchFromApi, filters]);
 
   const debouncedFetchCvsCallback = useCallback(async () => {
     if (debounceTimeout.current) {
@@ -166,10 +146,6 @@ export default function Feed() {
     forceReload();
   }, [filters, forceReload]);
 
-  const onFilterChange = useCallback((filters: filterValues) => {
-    setFilters(filters);
-  }, []);
-
   useEffect(() => {
     debouncedFetchCvsCallback();
   }, [debouncedFetchCvsCallback]);
@@ -180,7 +156,6 @@ export default function Feed() {
       <FilterPanel
         defaultFilters={filters}
         cvs={cvs}
-        onChange={onFilterChange}
       ></FilterPanel>
       <div className="container mx-auto space-y-8 p-6">
         <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">

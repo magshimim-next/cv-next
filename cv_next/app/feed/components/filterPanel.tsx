@@ -8,15 +8,16 @@ import { categoryString } from "@/lib/utils";
 import { useSearchParams, usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 
+export const CATEGORY_PARAM = "category";
+export const DESCRIPTION_PARAM = "description";
+
 export const FilterPanel = ({
   defaultFilters,
-  onChange,
   // eslint-disable-next-line unused-imports/no-unused-vars
   cvs,
 }: {
   defaultFilters: filterValues;
   cvs: CvModel[];
-  onChange: (filters: filterValues) => void;
 }) => {
   const [searchValue, setSearchValue] = useState(defaultFilters.searchValue);
   const [categoryIds, setCategoryId] = useState(defaultFilters.categoryIds);
@@ -28,32 +29,36 @@ export const FilterPanel = ({
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
 
+    //NOTE: if the current structure isn't tightly-linked to anything,
+    // switching to 'category=[abc,def]' would be much easier both code-wise
+    // and performance-wise.
+    if (categoryIds) {
+      const uriCategories = searchParams.getAll(CATEGORY_PARAM).sort();
+      const stateCategories = categoryIds?.map(id => categoryString(id)).sort();
+      //only handle change if categories actually changed
+      if (JSON.stringify(uriCategories) != JSON.stringify(stateCategories)) {
+        // Clear existing 'category' params and set new ones individually
+        params.delete(CATEGORY_PARAM);
+        categoryIds.map((category) => {
+          if (category !== undefined) {
+            params.append(CATEGORY_PARAM, categoryString(category));
+          }
+        });
+      }
+    } else {
+      params.delete(CATEGORY_PARAM);
+    }
+
+    //NOTE: introducing debounce mechanism here would be *extremely* beneficial,
+    // please think about it.
     if (searchValue) {
       // Use 'set' for 'description'
-      params.set("description", searchValue);
+      params.set(DESCRIPTION_PARAM, searchValue);
     } else {
-      params.delete("description");
+      params.delete(DESCRIPTION_PARAM);
     }
     router.replace(`${pathname}?${params}`);
-
-    if (categoryIds) {
-      // Clear existing 'category' params and set new ones individually
-      params.delete("category");
-      categoryIds.forEach((category) => {
-        if (category !== undefined) {
-          params.append("category", categoryString(category));
-        }
-      });
-    } else {
-      params.delete("category");
-    }
-    router.replace(`${pathname}?${params}`);
-
-    onChange({
-      categoryIds: categoryIds,
-      searchValue: searchValue,
-    });
-  }, [searchValue, categoryIds, onChange, searchParams, router, pathname]);
+  }, [searchValue, searchParams, router, pathname, categoryIds]);
 
   const mapCategories: number[] = useMemo(() => {
     const keys = Object.keys(Categories.category)
