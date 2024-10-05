@@ -25,7 +25,6 @@ export const checkUploadCV = async ({
     return "Error getting user.";
   }
   const userId = connectedUser.data.user.id;
-  //added a check, why undefined?
   if (
     !cvData.link?.trim() ||
     !cvData.description?.trim() ||
