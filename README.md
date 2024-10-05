@@ -17,7 +17,7 @@ cd cv_next
 npm install
 ```
 
-then fill in an .env.local config file with the credentials to supabase(supabase url and anon key) that you can get from us in the community chat, and add the base URL(usually localhost for local development) as seen in the [example env file](./cv_next/.env.local.example).
+then fill in an .env.local config file with the credentials to Supabase(Supabase URL and anon key) that you can get from us in the community chat, and add the base URL(usually localhost for local development) as seen in the [example env file](./cv_next/.env.local.example).
 
 ### Local Usage
 
@@ -27,15 +27,15 @@ npm run dev
 
 ## Documentation
 
-A simple web app that will show cv documents hosted on Google Docs with an option to discuss changes.
+A simple web app that will show CV documents hosted on Google Docs and Drive with an option to discuss changes.
 
 Please read the [design document](/docs/DESIGN.md) for more information.
 
-More design documents can be found in the [docs folder](./docs/)
+More design documents can be found in the [docs folder](./docs/).
 
 ## Feedback and Contributions
 
 > [!NOTE]
 > For the near future, we have decided to only allow and accept contributions from Magshimim Next members to contribute to the project.
 
-Please read more [here](./CONTRIBUTING.md)
+Please read more [here](./CONTRIBUTING.md).
