@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { PencilIcon, Check, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { setNewUsername } from "@/app/actions/users/updateUser";
 
@@ -16,16 +16,18 @@ export default function EditableUsername({ user }: { user: UserModel }) {
   const [errorUpdating, setError] = useState("");
   const supabase = createClientComponent();
 
+  const pathname = usePathname();
+
   useEffect(() => {
     async function getUser() {
       const userId = (await supabase.auth.getUser()).data.user?.id;
-      if (!userId) router.push("/inactive");
+      if (!userId) router.push(`/login?next=${pathname}`);
       if (userId === user.id) {
         setViewingCurrentUser(true);
       }
     }
     getUser();
-  }, [supabase.auth, user.id, router]);
+  }, [supabase.auth, user.id, router, pathname]);
 
   useEffect(() => {
     (async () => {

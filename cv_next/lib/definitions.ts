@@ -47,12 +47,6 @@ export const heroHeader: PageHeader = {
 We expect all interactions to be respectful and constructive, with no tolerance for abuse, hateful comments, or any form of inappropriate behavior.`,
 };
 
-export const inactiveHeader: PageHeader = {
-  header: `Access Denied`,
-  subheader: `This page requieres that you get approved by the moderators`,
-  image: `/access-denied.webp`,
-};
-
 export const routes: route[] = [
   {
     route: "Home",
