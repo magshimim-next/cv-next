@@ -1,6 +1,6 @@
 # CV NEXT - Design Page
 
-If you can't see the markdown well, a PDF version is found [here](./Project_Outlines.pdf)
+If you can't see the markdown well, a PDF version is found [here](./Project_Outlines.pdf).
 
 ## App designation
 
