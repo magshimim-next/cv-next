@@ -83,7 +83,6 @@ export type Database = {
       };
       cvs: {
         Row: {
-          category_id: number;
           created_at: string;
           cv_categories: number[];
           deleted: boolean;
@@ -94,7 +93,6 @@ export type Database = {
           user_id: string | null;
         };
         Insert: {
-          category_id: number;
           created_at?: string;
           cv_categories: number[];
           deleted?: boolean;
@@ -105,7 +103,6 @@ export type Database = {
           user_id?: string | null;
         };
         Update: {
-          category_id?: number;
           created_at?: string;
           cv_categories?: number[];
           deleted?: boolean;
@@ -131,7 +128,6 @@ export type Database = {
           full_name: string | null;
           id: string;
           updated_at: string | null;
-          user_type: Database["public"]["Enums"]["user_type"];
           username: string | null;
           work_status: Database["public"]["Enums"]["work_status"];
           work_status_categories: number[] | null;
@@ -141,7 +137,6 @@ export type Database = {
           full_name?: string | null;
           id: string;
           updated_at?: string | null;
-          user_type?: Database["public"]["Enums"]["user_type"];
           username?: string | null;
           work_status?: Database["public"]["Enums"]["work_status"];
           work_status_categories?: number[] | null;
@@ -151,7 +146,6 @@ export type Database = {
           full_name?: string | null;
           id?: string;
           updated_at?: string | null;
-          user_type?: Database["public"]["Enums"]["user_type"];
           username?: string | null;
           work_status?: Database["public"]["Enums"]["work_status"];
           work_status_categories?: number[] | null;

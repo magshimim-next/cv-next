@@ -47,7 +47,8 @@ const InputRow = ({
 };
 
 export default function Page() {
-  const [catagoryId, setCatagoryId] = useState<InputValues["catagoryId"]>(null);
+  const [catagoryId, setCatagoryId] =
+    useState<InputValues["cvCategories"]>(null);
   const [description, setDescription] =
     useState<InputValues["description"]>("");
   const [link, setLink] = useState<InputValues["link"]>("");
@@ -82,7 +83,7 @@ export default function Page() {
     setErrorMsg(
       await checkUploadCV({
         cvData: {
-          catagoryId: catagoryId,
+          cvCategories: catagoryId,
           description: description,
           link: link,
         },
