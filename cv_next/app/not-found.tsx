@@ -4,7 +4,7 @@ import notFound404Light from "../public/images/404Light.png";
 
 export default function NotFound() {
   return (
-    <div className="absolute left-0 flex h-3/4 w-full items-center justify-center space-y-8 p-6">
+    <div className="left-0 flex h-3/4 w-full items-center justify-center space-y-8 p-6">
       <div className="flex flex-row items-center justify-center">
         <Image
           alt="closeIcon"
