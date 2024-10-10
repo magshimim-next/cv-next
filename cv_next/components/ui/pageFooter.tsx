@@ -7,7 +7,7 @@ import linkedin from '@/public/icons/linkedin.svg';
 const Footer: React.FC = () => {
     return (
         
-        <footer className='p-4 w-full font-light text-muted-foreground text-primary absolute inset-x-0 bottom-0'>
+        <footer className='p-4 w-full font-light text-muted-foreground text-primary inset-x-0 bottom-0'>
             <div className='container columns-4 flex justify-center'>
                 <hr className ="w-11/12 h-1 mx-auto my-4 border-0 rounded md:my-10 dark:bg-slate-500"/>
                 <a href="https://www.instagram.com" target="_blank" className='max-w-24 max-h-24 mx-3 pl-4 py-5 dark:fill-slate-100'>
