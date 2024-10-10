@@ -24,9 +24,11 @@ const Footer: React.FC = () => {
             <div className='flex justify-center mb-2'>
                 <p>&copy; {new Date().getFullYear()} Magshimim Next. All rights reserved.</p>
             </div>
-          <div className="flex h-12 w-full items-center justify-center rounded-md px-4 text-xs opacity-50 shadow-md hover:shadow-xl mb-2">
-            {`Credit to our team: ${Credits.slice(0, -1).join(", ")} and ${Credits.slice(-1)}`}
-          </div>
+            <div className='flex justify-center mb-2'>
+                <div className="flex h-10 items-center justify-center rounded-md px-5 text-xs opacity-50 shadow-md hover:shadow-xl mb-2 max-w-fit">
+                    {`Credit to our team: ${Credits.slice(0, -1).join(", ")} and ${Credits.slice(-1)}`}
+                </div>
+            </div>
         </footer>
     );
 };
