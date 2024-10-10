@@ -4,7 +4,6 @@ import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { IoCloseSharp } from "react-icons/io5";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
-import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { useUser } from "@/hooks/useUser";
 
 const navLinks = [
@@ -14,18 +13,13 @@ const navLinks = [
     req_login: false,
   },
   {
-    route: "Feed",
-    path: "/feed",
-    req_login: true,
-  },
-  {
     route: "Upload",
     path: "/upload",
     req_login: true,
   },
   {
     route: "Signout",
-    path: "/",
+    path: "/signout",
     req_login: true,
   },
 ];
@@ -75,22 +69,13 @@ const UserDataComponent: React.FC<{
 
 export default function Popup({ closeCb }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const { userData, mutateUser } = useUser();
-  const supabase = createClientComponent();
+  const { userData, mutateUser: _mutateUser } = useUser();
 
   useEffect(() => {
     if (dialogRef.current) {
       dialogRef.current.show();
     }
   }, []);
-
-  const handleSelection = async (route: string) => {
-    if (route === "Signout") {
-      supabase.auth.signOut();
-      mutateUser();
-    }
-    closeCb();
-  };
 
   return (
     <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center">
@@ -120,9 +105,7 @@ export default function Popup({ closeCb }: PopupProps) {
                       <Link
                         className="text-lg font-medium hover:underline"
                         href={link.path}
-                        onClick={() => {
-                          handleSelection(link.route);
-                        }}
+                        onClick={closeCb}
                       >
                         {link.route}
                       </Link>
@@ -140,9 +123,7 @@ export default function Popup({ closeCb }: PopupProps) {
                       <Link
                         className="text-lg font-medium hover:underline"
                         href={link.path}
-                        onClick={() => {
-                          handleSelection(link.route);
-                        }}
+                        onClick={closeCb}
                       >
                         {link.route}
                       </Link>

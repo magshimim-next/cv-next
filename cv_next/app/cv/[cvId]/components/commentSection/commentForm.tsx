@@ -16,6 +16,10 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
   const supabase = createClientComponent();
 
   const formAction = async (formData: FormData) => {
+    // Reset the form after submission and check if the comment is empty
+    formRef.current?.reset();
+    if ((formData.get(COMMENT_FIELD_NAME) as String).length <= 0) return;
+
     const userId = await supabase.auth.getUser();
     if (userId.error) {
       router.push(`/login?next=${pathname}`);
@@ -28,7 +32,6 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
       };
 
       await addComment(comment).finally(() => {
-        formRef.current?.reset();
         mutate(cv.id);
       });
     }
