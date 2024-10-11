@@ -10,6 +10,25 @@ import { Credits, heroHeader, routes, UI_Location } from "@/lib/definitions";
 import PopupWrapper from "@/components/ui/popupWrapper";
 import { LoginButtons } from "./components/loginButtons";
 
+type ErrorMessages = {
+  [key: string]: {
+    title: string;
+    description: string;
+  };
+};
+
+const ERROR_MESSAGES: ErrorMessages = {
+  InactiveUser: {
+    title: "Inactive User",
+    description: "That page requires that you get approved by the moderators.",
+  },
+  DefaultError: {
+    title: "An error occurred",
+    description:
+      "Please try again later and contact support if the problem persists.",
+  },
+};
+
 export default function Home() {
   const searchparams = useSearchParams();
   const [errorMsg, setErrorMsg] = useState<string | null>();
@@ -19,15 +38,11 @@ export default function Home() {
   useEffect(() => {
     const error = searchparams.get("error");
     if (error == "InactiveUser") {
-      setErrorMsg("Inactive User");
-      setErrorDescription(
-        "That page requires that you get approved by the moderators."
-      );
+      setErrorMsg(ERROR_MESSAGES.InactiveUser.title);
+      setErrorDescription(ERROR_MESSAGES.InactiveUser.description);
     } else if (error != null) {
-      setErrorMsg("An error occured");
-      setErrorDescription(
-        "Please try again later and contact support if the problem persists."
-      );
+      setErrorMsg(ERROR_MESSAGES.DefaultError.title);
+      setErrorDescription(ERROR_MESSAGES.DefaultError.description);
     }
   }, [searchparams]);
 
