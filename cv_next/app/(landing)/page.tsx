@@ -1,4 +1,3 @@
-
 import { redirect } from "next/navigation";
 import { AboutLayout } from "@/app/about/components/aboutLayout";
 import { getUser } from "@/app/actions/users/getUser";

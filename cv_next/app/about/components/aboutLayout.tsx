@@ -38,9 +38,6 @@ export const AboutLayout = () => {
           <div className="flex flex-wrap justify-center gap-6 lg:gap-10">
             <RoutesRender />
           </div>
-          <div className="flex h-12 w-full items-center justify-center rounded-md px-4 text-xs text-primary opacity-50 shadow-inner">
-            {`Credit to our team: ${Credits.slice(0, -1).join(", ")} and ${Credits.slice(-1)}`}
-          </div>
         </div>
       </section>
     </main>
