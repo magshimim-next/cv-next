@@ -17,12 +17,13 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    if (searchparams.get("error") == "Inactive User") {
+    const error = searchparams.get("error");
+    if (error == "InactiveUser") {
       setErrorMsg("Inactive User");
       setErrorDescription(
         "That page requires that you get approved by the moderators."
       );
-    } else if (searchparams.get("error") != null) {
+    } else if (error != null) {
       setErrorMsg("An error occured");
       setErrorDescription(
         "Please try again later and contact support if the problem persists."

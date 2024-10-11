@@ -53,7 +53,7 @@ export async function middleware(request: NextRequest) {
     .eq(ProfileKeys.id, activatedUser.user.id)
     .single();
   if (whitelisted?.id == null || errorWhitelist) {
-    const nextUrl = new URL("/?error=Inactive+User", request.url);
+    const nextUrl = new URL("/?error=InactiveUser", request.url);
     return NextResponse.redirect(nextUrl);
   }
 
