@@ -23,7 +23,7 @@ const ERROR_MESSAGES: ErrorMessages = {
     description: "That page requires that you get approved by the moderators.",
   },
   DefaultError: {
-    title: "An error occurred",
+    title: "An Error Occurred",
     description:
       "Please try again later and contact support if the problem persists.",
   },
