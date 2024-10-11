@@ -97,7 +97,7 @@ type ErrorMessages = {
   };
 };
 
-export const ERROR_MESSAGES: ErrorMessages = {
+export const Visible_Error_Messages: ErrorMessages = {
   InactiveUser: {
     keyword: "InactiveUser",
     title: "Inactive User",

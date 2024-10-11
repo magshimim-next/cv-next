@@ -7,7 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   Credits,
-  ERROR_MESSAGES,
+  Visible_Error_Messages,
   heroHeader,
   routes,
   UI_Location,
@@ -24,12 +24,12 @@ export default function Home() {
 
   useEffect(() => {
     const error = searchparams.get("error");
-    if (error == ERROR_MESSAGES.InactiveUser.keyword) {
-      setErrorMsg(ERROR_MESSAGES.InactiveUser.title);
-      setErrorDescription(ERROR_MESSAGES.InactiveUser.description);
+    if (error == Visible_Error_Messages.InactiveUser.keyword) {
+      setErrorMsg(Visible_Error_Messages.InactiveUser.title);
+      setErrorDescription(Visible_Error_Messages.InactiveUser.description);
     } else if (error != null) {
-      setErrorMsg(ERROR_MESSAGES.DefaultError.title);
-      setErrorDescription(ERROR_MESSAGES.DefaultError.description);
+      setErrorMsg(Visible_Error_Messages.DefaultError.title);
+      setErrorDescription(Visible_Error_Messages.DefaultError.description);
     }
   }, [searchparams]);
 

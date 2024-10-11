@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { API_DEFINITIONS, ERROR_MESSAGES } from "./lib/definitions";
+import { API_DEFINITIONS, Visible_Error_Messages } from "./lib/definitions";
 import { ProfileKeys, Tables } from "./lib/supabase-definitions";
 
 export async function middleware(request: NextRequest) {
@@ -54,7 +54,7 @@ export async function middleware(request: NextRequest) {
     .single();
   if (whitelisted?.id == null || errorWhitelist) {
     const nextUrl = new URL(
-      `/?error=${ERROR_MESSAGES.InactiveUser.keyword}`,
+      `/?error=${Visible_Error_Messages.InactiveUser.keyword}`,
       request.url
     );
     return NextResponse.redirect(nextUrl);
