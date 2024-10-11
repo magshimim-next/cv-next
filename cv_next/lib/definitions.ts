@@ -88,3 +88,25 @@ export const Credits = [
   "Alon Green",
   "Yarden perets",
 ];
+
+type ErrorMessages = {
+  [key: string]: {
+    keyword: string;
+    title: string;
+    description: string;
+  };
+};
+
+export const ERROR_MESSAGES: ErrorMessages = {
+  InactiveUser: {
+    keyword: "InactiveUser",
+    title: "Inactive User",
+    description: "That page requires that you get approved by the moderators.",
+  },
+  DefaultError: {
+    keyword: "default",
+    title: "An Error Occurred",
+    description:
+      "Please try again later and contact support if the problem persists.",
+  },
+};

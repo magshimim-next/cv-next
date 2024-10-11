@@ -5,29 +5,16 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Credits, heroHeader, routes, UI_Location } from "@/lib/definitions";
+import {
+  Credits,
+  ERROR_MESSAGES,
+  heroHeader,
+  routes,
+  UI_Location,
+} from "@/lib/definitions";
 
 import PopupWrapper from "@/components/ui/popupWrapper";
 import { LoginButtons } from "./components/loginButtons";
-
-type ErrorMessages = {
-  [key: string]: {
-    title: string;
-    description: string;
-  };
-};
-
-const ERROR_MESSAGES: ErrorMessages = {
-  InactiveUser: {
-    title: "Inactive User",
-    description: "That page requires that you get approved by the moderators.",
-  },
-  DefaultError: {
-    title: "An Error Occurred",
-    description:
-      "Please try again later and contact support if the problem persists.",
-  },
-};
 
 export default function Home() {
   const searchparams = useSearchParams();
@@ -37,7 +24,7 @@ export default function Home() {
 
   useEffect(() => {
     const error = searchparams.get("error");
-    if (error == "InactiveUser") {
+    if (error == ERROR_MESSAGES.InactiveUser.keyword) {
       setErrorMsg(ERROR_MESSAGES.InactiveUser.title);
       setErrorDescription(ERROR_MESSAGES.InactiveUser.description);
     } else if (error != null) {
