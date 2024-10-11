@@ -1,5 +1,5 @@
 const GOOGLE_URL = "https://lh5.googleusercontent.com/d/";
-const errorUrl = "/error.webp";
+const errorUrl = "/images/error.webp";
 
 /**
  * Extracts the ID from a Google Drive share link.
