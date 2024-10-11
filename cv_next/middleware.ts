@@ -53,10 +53,7 @@ export async function middleware(request: NextRequest) {
     .eq(ProfileKeys.id, activatedUser.user.id)
     .single();
   if (whitelisted?.id == null || errorWhitelist) {
-    const nextUrl = new URL(
-      "/?error=Inactive+User&error_description=That+page+requires+that+you+get+approved+by+the+moderators.",
-      request.url
-    );
+    const nextUrl = new URL("/?error=Inactive+User", request.url);
     return NextResponse.redirect(nextUrl);
   }
 

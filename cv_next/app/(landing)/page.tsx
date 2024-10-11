@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Credits, heroHeader, routes, UI_Location } from "@/lib/definitions";
@@ -12,11 +12,23 @@ import { LoginButtons } from "./components/loginButtons";
 
 export default function Home() {
   const searchparams = useSearchParams();
-  const [errorMsg, setErrorMsg] = useState<string | null>(
-    searchparams.get("error") || ""
-  );
-  const errorDescription = searchparams.get("error_description") || "";
+  const [errorMsg, setErrorMsg] = useState<string | null>();
+  const [errorDescription, setErrorDescription] = useState<string | null>();
   const router = useRouter();
+
+  useEffect(() => {
+    if (searchparams.get("error") == "Inactive User") {
+      setErrorMsg("Inactive User");
+      setErrorDescription(
+        "That page requires that you get approved by the moderators."
+      );
+    } else if (searchparams.get("error") != null) {
+      setErrorMsg("An error occured");
+      setErrorDescription(
+        "Please try again later and contact support if the problem persists."
+      );
+    }
+  }, [searchparams]);
 
   return (
     <main className="p-4">
