@@ -1,5 +1,6 @@
 import "server-only";
 
+import crypto from "crypto";
 import { Ok, Err } from "@/lib/utils";
 import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
 import SupabaseHelper from "./supabaseHelper";
@@ -26,10 +27,77 @@ export async function getUserById(
       );
     }
 
+    //Generate username if it doesn't exist
+    //TODO: add notice to change user-name after first login
+    //TODO: change all user APIs to use username instead of id
+    if (user[0].username === null || user[0].username === "") {
+      const usernameResult = await generateUsername(user[0] as UserModel);
+      if (usernameResult.ok && usernameResult.val) {
+        const result = await setUserName(user[0].id, usernameResult.val);
+        if (!result.ok) {
+          return Err("Error @ " + getUserById.name + "\n", result.errors);
+        } else {
+          //only update the user object if the username was successfully set
+          user[0].username = usernameResult.val;
+        }
+      }
+    }
+
     return Ok(user[0] as UserModel);
   } catch (error) {
     return Err("Error @ " + getUserById.name + "\n" + error);
   }
+}
+
+async function generateUsername(user: UserModel):
+  Promise<Result<string | undefined, string>> {
+  if (!user.full_name) {
+    //username generation is based on user's name, fallback to user id..
+    return Err("Error @ " + generateUsername.name + "\n", {
+      err: Error("User's full name is empty")
+    });
+  }
+
+  const { data: usernames, error } = await SupabaseHelper.getSupabaseInstance()
+    .from(Tables.profiles)
+    .select(`${ProfileKeys.username}`);
+  
+  if (error) {
+    return Err("Error @ " + generateUsername.name + "\n", {
+      postgrestError: error,
+    });
+  }
+  
+  let username: string | undefined;
+  let slugishedName = slugifyName(user.full_name);
+  let isUnique = false;
+  let attempt = 0;
+
+  while (!isUnique) {
+    username = generateUsernameAttempt(slugishedName);
+    isUnique = !usernames?.find((user) => user.username === username);
+    attempt++;
+    if (attempt > 10) {
+      return Err("Error @ " + generateUsername.name + "\n", {
+        err: Error("Reached maximum username generation attempts"),
+      });
+    }
+  }
+  return Ok(username);
+}
+
+function generateUsernameAttempt(name: string): string {
+  const timestamp = Math.floor(Date.now() / 1000).toString();
+  const inputString = `${name}.${timestamp}`;
+  const hash = crypto.createHash('sha256').update(inputString).digest('hex');
+  const shortHash = hash.slice(0, 8);
+  
+  return `${name}.${shortHash}`;
+}
+
+function slugifyName(fullName: string): string {
+  return fullName.split(" ").join("")
+    .replace(/\s+/g, '.').replace(/[^a-zA-Z0-9.]/g, '');
 }
 
 /**
