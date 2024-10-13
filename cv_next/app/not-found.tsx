@@ -1,7 +1,8 @@
 import Image from "next/image";
 import notFound404 from "../public/images/404.png";
 import notFound404Light from "../public/images/404Light.png";
-import chair from "../public/images/chair.png";
+import blackChair from "../public/images/chair.png";
+import whiteChair from "../public/images/whiteChair.png";
 
 export default function NotFound() {
   return (
@@ -29,9 +30,14 @@ export default function NotFound() {
           </div>
         </div>
         <Image
-          alt="chair"
-          src={chair}
-          className="w-1/2"
+          alt="blackChair"
+          src={blackChair}
+          className="w-1/2 dark:hidden"
+        ></Image>
+        <Image
+          alt="whiteChair"
+          src={whiteChair}
+          className="w-1/2 hidden dark:block"
         ></Image>
       </div>
     </div>
