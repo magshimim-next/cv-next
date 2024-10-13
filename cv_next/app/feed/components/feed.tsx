@@ -17,13 +17,9 @@ import { toCategoryNumber } from "@/lib/utils";
 
 export default function Feed() {
   const searchParams = useSearchParams();
-  //object so needs to be memoized; should check if this is the best way,
-  // as searchParams probably also gets changed with no relation to the categories ->
-  const categories = useMemo(() => searchParams
-    .getAll(CATEGORY_PARAM)
-    .map(toCategoryNumber),
-    [ searchParams ]);
+  const uriCategories = searchParams.get(CATEGORY_PARAM);
   const description = searchParams.get(DESCRIPTION_PARAM);
+
   const cvsContextConsumer = useContext(CvsContext);
   const cvsDispatchContextConsumer = useContext(CvsDispatchContext);
   const initialCvs = cvsContextConsumer.cvs?.length
@@ -43,9 +39,9 @@ export default function Feed() {
   const filters: filterValues = useMemo(() => {
     return {
       searchValue: description ?? "",
-      categoryIds: categories
+      categoryIds: uriCategories?.split(",").map(toCategoryNumber) ?? []
     };
-  }, [ description, categories ]);  
+  }, [ description, uriCategories ]);  
 
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
   /**

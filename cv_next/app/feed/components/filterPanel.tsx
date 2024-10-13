@@ -29,21 +29,12 @@ export const FilterPanel = ({
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
 
-    //NOTE: if the current structure isn't tightly-linked to anything,
-    // switching to 'category=[abc,def]' would be much easier both code-wise
-    // and performance-wise.
     if (categoryIds) {
-      const uriCategories = searchParams.getAll(CATEGORY_PARAM).sort();
-      const stateCategories = categoryIds?.map(id => categoryString(id)).sort();
+      const uriCategories = searchParams.get(CATEGORY_PARAM)?.split(",") ?? [];
+      const stateCategories = categoryIds?.map(id => categoryString(id));
       //only handle change if categories actually changed
       if (JSON.stringify(uriCategories) != JSON.stringify(stateCategories)) {
-        // Clear existing 'category' params and set new ones individually
-        params.delete(CATEGORY_PARAM);
-        categoryIds.map((category) => {
-          if (category !== undefined) {
-            params.append(CATEGORY_PARAM, categoryString(category));
-          }
-        });
+        params.set(CATEGORY_PARAM, categoryIds.map(categoryString).join(","));
       }
     } else {
       params.delete(CATEGORY_PARAM);
