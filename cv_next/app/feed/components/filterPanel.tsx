@@ -13,9 +13,7 @@ export const CATEGORY_PARAM = "category";
 export const DESCRIPTION_PARAM = "description";
 
 export const FilterPanel = ({
-  defaultFilters,
-  // eslint-disable-next-line unused-imports/no-unused-vars
-  cvs,
+  defaultFilters
 }: {
   defaultFilters: filterValues;
   cvs: CvModel[];
