@@ -14,6 +14,7 @@ import { useApiFetch } from "@/hooks/useAPIFetch";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
 import { useSearchParams } from "next/navigation";
 import { toCategoryNumber } from "@/lib/utils";
+import { useDebounceCallback } from "@/hooks/useDebounceCallback";
 
 export default function Feed() {
   const searchParams = useSearchParams();
@@ -43,7 +44,6 @@ export default function Feed() {
     };
   }, [ description, uriCategories ]);  
 
-  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
   /**
    * Trigger pagination when this element comes into view.
    *
@@ -53,7 +53,7 @@ export default function Feed() {
   function TriggerPagination({
     callbackTrigger,
   }: {
-    callbackTrigger: () => Promise<void>;
+    callbackTrigger: (...args: any[]) => void
   }) {
     const [triggerRef, inView] = useInView();
 
@@ -99,18 +99,7 @@ export default function Feed() {
     }
   }, [loadMore, fetchFromApi, filters]);
 
-  const debouncedFetchCvsCallback = useCallback(async () => {
-    if (debounceTimeout.current) {
-      clearTimeout(debounceTimeout.current);
-    }
-
-    return new Promise<void>((resolve) => {
-      debounceTimeout.current = setTimeout(async () => {
-        await fetchCvsCallback();
-        resolve();
-      }, 300); // Adjust delay as needed
-    });
-  }, [fetchCvsCallback]);
+  const debouncedFetchCvsCallback = useDebounceCallback(fetchCvsCallback);
 
   useEffect(() => {
     //before unmount, save current cvs state to context for smoother navigation

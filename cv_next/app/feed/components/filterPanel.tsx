@@ -7,6 +7,7 @@ import { filterValues } from "@/types/models/filters";
 import { categoryString } from "@/lib/utils";
 import { useSearchParams, usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { useDebounceValue } from "@/hooks/useDebounceCallback";
 
 export const CATEGORY_PARAM = "category";
 export const DESCRIPTION_PARAM = "description";
@@ -21,6 +22,8 @@ export const FilterPanel = ({
 }) => {
   const [searchValue, setSearchValue] = useState(defaultFilters.searchValue);
   const [categoryIds, setCategoryId] = useState(defaultFilters.categoryIds);
+
+  const debouncedSearchValue = useDebounceValue(searchValue);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -40,16 +43,16 @@ export const FilterPanel = ({
       params.delete(CATEGORY_PARAM);
     }
 
-    //NOTE: introducing debounce mechanism here would be *extremely* beneficial,
-    // please think about it.
-    if (searchValue) {
-      // Use 'set' for 'description'
-      params.set(DESCRIPTION_PARAM, searchValue);
+    const uriSearchValue = searchParams.get(DESCRIPTION_PARAM) ?? "";
+    if (debouncedSearchValue) {
+      if (uriSearchValue !== debouncedSearchValue) {
+        params.set(DESCRIPTION_PARAM, debouncedSearchValue);
+      }
     } else {
       params.delete(DESCRIPTION_PARAM);
     }
     router.replace(`${pathname}?${params}`);
-  }, [searchValue, searchParams, router, pathname, categoryIds]);
+  }, [debouncedSearchValue, searchParams, router, pathname, categoryIds]);
 
   const mapCategories: number[] = useMemo(() => {
     const keys = Object.keys(Categories.category)
