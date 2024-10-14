@@ -33,13 +33,8 @@ export async function getUserById(
     if (user[0].username === null || user[0].username === "") {
       const usernameResult = await generateUsername(user[0] as UserModel);
       if (usernameResult.ok && usernameResult.val) {
-        const result = await setUserName(user[0].id, usernameResult.val);
-        if (!result.ok) {
-          return Err("Error @ " + getUserById.name + "\n", result.errors);
-        } else {
-          //only update the user object if the username was successfully set
-          user[0].username = usernameResult.val;
-        }
+        //only update the user object if the username was successfully set
+        user[0].username = usernameResult.val;
       }
     }
 
@@ -49,55 +44,70 @@ export async function getUserById(
   }
 }
 
-async function generateUsername(user: UserModel):
-  Promise<Result<string | undefined, string>> {
+async function generateUsername(
+  user: UserModel
+): Promise<Result<string | undefined, string>> {
   if (!user.full_name) {
     //username generation is based on user's name, fallback to user id..
     return Err("Error @ " + generateUsername.name + "\n", {
-      err: Error("User's full name is empty")
+      err: Error("User's full name is empty"),
     });
   }
 
-  const { data: usernames, error } = await SupabaseHelper.getSupabaseInstance()
-    .from(Tables.profiles)
-    .select(`${ProfileKeys.username}`);
-  
-  if (error) {
-    return Err("Error @ " + generateUsername.name + "\n", {
-      postgrestError: error,
-    });
-  }
-  
   let username: string | undefined;
   let slugishedName = slugifyName(user.full_name);
   let isUnique = false;
   let attempt = 0;
 
-  while (!isUnique) {
+  while (!isUnique && attempt < 10) {
     username = generateUsernameAttempt(slugishedName);
-    isUnique = !usernames?.find((user) => user.username === username);
-    attempt++;
-    if (attempt > 10) {
+
+    const { data: usernames, error } =
+      await SupabaseHelper.getSupabaseInstance()
+        .from(Tables.profiles)
+        .select(`${ProfileKeys.username}`)
+        .eq(ProfileKeys.username, username);
+
+    if (error) {
       return Err("Error @ " + generateUsername.name + "\n", {
-        err: Error("Reached maximum username generation attempts"),
+        postgrestError: error,
       });
+    } else if (!usernames || usernames.length === 0) {
+      isUnique = true;
+      const updateUserNameResult = await setUserName(user.id, username);
+      if (!updateUserNameResult.ok) {
+        return Err(
+          "Error @ " + generateUsername.name + "\n",
+          updateUserNameResult.errors
+        );
+      } else {
+        return Ok(username);
+      }
     }
+    attempt++;
   }
-  return Ok(username);
+  return Err("Error @ " + generateUsername.name + "\n", {
+    err: Error("Reached maximum username generation attempts"),
+  });
 }
 
 function generateUsernameAttempt(name: string): string {
+  //ensure high entropy by using a random uuid and timestamp
   const timestamp = Math.floor(Date.now() / 1000).toString();
-  const inputString = `${name}.${timestamp}`;
-  const hash = crypto.createHash('sha256').update(inputString).digest('hex');
+  const uuid = crypto.randomUUID();
+  const inputString = `${name}.${timestamp}.${uuid}`;
+  const hash = crypto.createHash("sha256").update(inputString).digest("hex");
   const shortHash = hash.slice(0, 8);
-  
+
   return `${name}.${shortHash}`;
 }
 
 function slugifyName(fullName: string): string {
-  return fullName.split(" ").join("")
-    .replace(/\s+/g, '.').replace(/[^a-zA-Z0-9.]/g, '');
+  return fullName
+    .split(" ")
+    .join("")
+    .replace(/\s+/g, ".")
+    .replace(/[^a-zA-Z0-9.]/g, "");
 }
 
 /**
