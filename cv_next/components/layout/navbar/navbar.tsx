@@ -10,7 +10,7 @@ import { PopupToggle } from "./popupToggle";
 const navLinks = [
   {
     route: "Home",
-    path: "/",
+    path: "/about",
   },
   {
     route: "Feed",
@@ -45,14 +45,14 @@ export default function Navbar() {
         <div className="fixed top-0 z-40 h-[4.5rem] w-full bg-black bg-opacity-75 backdrop-blur-2xl" />
         <div className="fixed top-0 z-50 h-[4.5rem] w-full">
           <nav className="mx-auto flex items-center justify-between px-4 py-3 md:px-2 lg:max-w-7xl">
-          <div className="flex items-center space-x-4">
-            <Link href="/">
-              <h1 className="flex flex-row text-2xl font-bold text-white duration-200 lg:hover:scale-[1.10]">
-                <Image src={logo} width={60} height={40} alt="Header image" />
-                NEXT
-              </h1>
-            </Link>
-            <ModeToggle />
+            <div className="flex items-center space-x-4">
+              <Link href="/">
+                <h1 className="flex flex-row text-2xl font-bold text-white duration-200 lg:hover:scale-[1.10]">
+                  <Image src={logo} width={60} height={40} alt="Header image" />
+                  NEXT
+                </h1>
+              </Link>
+              <ModeToggle />
             </div>
 
             <div className="hidden items-center space-x-6 md:flex">
@@ -71,10 +71,11 @@ export default function Navbar() {
             <div className="flex items-center space-x-4">
               <div className="z-50 hidden space-x-4 md:flex">
                 <Link
-                  className="py-2 text-lg" 
-                  href="/upload" 
-                  style={{ lineHeight: "1.5" }} >
-                    <Upload />
+                  className="py-2 text-lg"
+                  href="/upload"
+                  style={{ lineHeight: "1.5" }}
+                >
+                  <Upload />
                 </Link>
                 <PopupToggle />
               </div>

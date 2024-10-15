@@ -36,6 +36,7 @@ export class Link_Definitions {
     "upload",
     "cv",
     "profile",
+    "about",
   ];
 }
 
