@@ -48,12 +48,6 @@ export const heroHeader: PageHeader = {
 We expect all interactions to be respectful and constructive, with no tolerance for abuse, hateful comments, or any form of inappropriate behavior.`,
 };
 
-export const inactiveHeader: PageHeader = {
-  header: `Access Denied`,
-  subheader: `This page requieres that you get approved by the moderators`,
-  image: `/access-denied.webp`,
-};
-
 export const routes: route[] = [
   {
     route: "Home",
@@ -95,3 +89,25 @@ export const Credits = [
   "Alon Green",
   "Yarden perets",
 ];
+
+type ErrorMessages = {
+  [key: string]: {
+    keyword: string;
+    title: string;
+    description: string;
+  };
+};
+
+export const Visible_Error_Messages: ErrorMessages = {
+  InactiveUser: {
+    keyword: "InactiveUser",
+    title: "Inactive User",
+    description: "That page requires that you get approved by the moderators.",
+  },
+  DefaultError: {
+    keyword: "default",
+    title: "An Error Occurred",
+    description:
+      "Please try again later and contact support if the problem persists.",
+  },
+};

@@ -28,6 +28,5 @@ export async function GET(request: Request) {
     }
   }
   // return the user to an error page with instructions
-  //TODO: move to regular error page
   return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/`);
 }
