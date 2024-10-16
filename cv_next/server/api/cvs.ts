@@ -159,7 +159,8 @@ export async function getPaginatedCvs(
       .from(Tables.cvs)
       .select("*")
       .order(CvKeys.created_at, { ascending: false })
-      .eq(CvKeys.deleted, !filterOutDeleted);
+      .eq(CvKeys.deleted, !filterOutDeleted)
+      .range(from, to - 1);
     let profileQuery = supabase.from(Tables.profiles).select(ProfileKeys.id);
 
     logger.debug(filters, "filters");
@@ -179,11 +180,7 @@ export async function getPaginatedCvs(
       return null;
     }
 
-    const uniqueCvs = [...new Map(cvs.map((cv) => [cv.id, cv])).values()].slice(
-      from,
-      to
-    );
-    return { page, cvs: uniqueCvs as CvModel[] };
+    return { page, cvs: cvs as CvModel[] };
   } catch (error) {
     logger.error(error, "getPaginatedCvs");
     return null;
