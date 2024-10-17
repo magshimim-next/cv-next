@@ -107,35 +107,6 @@ export async function getAllCvsByCategory(
   }
 }
 
-async function _getAllCvsByCategories(
-  categories: Categories.category[],
-  filterOutDeleted: boolean = true
-): Promise<any> {
-  try {
-    const supabase = SupabaseHelper.getSupabaseInstance();
-    let query = supabase
-      .from(Tables.cvs)
-      .select("*")
-      .in(CvKeys.category_id, categories);
-
-    if (filterOutDeleted) {
-      query = query.eq(CvKeys.deleted, false);
-    }
-
-    const { data: cvs, error } = await query;
-
-    if (error) {
-      logger.error(error, "getAllCvsByCategories");
-      return error;
-    }
-    logger.debug(cvs, "Fetched CVs: ");
-    return cvs as CvModel[];
-  } catch (error) {
-    logger.error(error, "getAllCvsByCategories");
-    return error;
-  }
-}
-
 /**
  * Retrieves a paginated list of CVs based on the provided page number.
  *
