@@ -18,7 +18,7 @@ const Footer: React.FC = () => {
                 <hr className ="w-11/12 h-1 mx-auto my-4 border-0 rounded md:my-10 dark:bg-slate-500"/>
             </div>
             <div className='flex justify-center mb-2'>
-                <img alt="Footer image" loading="lazy" width="125" height="75" src="/images/logo.png"/>
+                <Image alt="Footer image" loading="lazy" width="125" height="75" src="/images/logo.png"/>
             </div>
             <div className='flex justify-center mb-2'>
                 <p>&copy; {new Date().getFullYear()} Magshimim Next. All rights reserved.</p>
