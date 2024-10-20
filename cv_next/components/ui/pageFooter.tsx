@@ -1,6 +1,6 @@
 import React from 'react';
-import { Credits } from "@/lib/definitions";
 import Image from 'next/image';
+import { Credits } from "@/lib/definitions";
 
 
 const Footer: React.FC = () => {
