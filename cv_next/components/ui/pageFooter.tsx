@@ -1,7 +1,6 @@
 import React from 'react';
 import { Credits } from "@/lib/definitions";
 import Image from 'next/image';
-import linkedin from '@/public/icons/linkedin.svg';
 
 
 const Footer: React.FC = () => {
