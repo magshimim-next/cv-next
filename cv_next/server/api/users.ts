@@ -3,7 +3,6 @@ import "server-only";
 import SupabaseHelper from "./supabaseHelper";
 import { Ok, Err } from "@/lib/utils";
 import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
-import logger from "../base/logger";
 
 export async function getUserById(
   userId: string
@@ -28,30 +27,6 @@ export async function getUserById(
     return Ok(user[0] as UserModel);
   } catch (error) {
     return Err("Error @ " + getUserById.name + "\n" + error);
-  }
-}
-
-export async function getUserIdByName(
-  fullName: string
-): Promise<Result<string[], string>> {
-  try {
-    logger.debug(fullName);
-    let supabase = await SupabaseHelper.getSupabaseInstance();
-    let query = supabase
-      .from(Tables.profiles)
-      .select(ProfileKeys.id)
-      .or("full_name.ilike." + fullName + ", username.ilike." + fullName);
-    const { data: userIds, error } = await query;
-    if (error) {
-      logger.error(error);
-      return Err("Error @ " + getUserIdByName.name + "\n", error);
-    }
-    let Ids = userIds.map((idStruct) => idStruct.id);
-    logger.debug(Ids);
-    return Ok(Ids);
-  } catch (error) {
-    logger.error(error);
-    return Err("Error @ " + getUserIdByName.name + "\n" + error);
   }
 }
 
