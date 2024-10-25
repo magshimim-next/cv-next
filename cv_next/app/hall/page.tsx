@@ -1,20 +1,4 @@
-const contributors = [
-  { name: "Adam Abramov", contribution: "CSRF Account Takeover" },
-  {
-    name: "Adam Abramov",
-    contribution: "Insufficient Verification of Data Authenticity",
-  },
-  { name: "Youval Daizi", contribution: "Home button logged out users" },
-  {
-    name: "Harel Kristal",
-    contribution: "Login and Signout were visible regardless of state",
-  },
-  {
-    name: "Harel Kristal",
-    contribution: "Developer's Data Leak",
-  },
-  // Add more contributors as needed
-];
+import { External_Credits as contributors } from "@/lib/definitions";
 
 const hall: React.FC = () => {
   return (

@@ -80,14 +80,7 @@ export const routes: route[] = [
   },
 ];
 
-export const Contributers = [
-  {
-    name: "Adam Abramov", 
-    description: "thaks so munch thanks you thanks you tahks you tanks yu"
-  },
-]
-
-export const Credits = [
+export const Team_Credits = [
   "Ron Peer",
   "Arad Donenfeld",
   "Avner Mindelis",
@@ -99,4 +92,22 @@ export const Credits = [
   "Ilan Yashuk",
   "Assaf Kabesa",
   "Alon Green",
+];
+
+export const External_Credits = [
+  { name: "Adam Abramov", contribution: "CSRF Account Takeover" },
+  {
+    name: "Adam Abramov",
+    contribution: "Insufficient Verification of Data Authenticity",
+  },
+  { name: "Youval Daizi", contribution: "Home button logged out users" },
+  {
+    name: "Harel Kristal",
+    contribution: "Login and Signout were visible regardless of state",
+  },
+  {
+    name: "Harel Kristal",
+    contribution: "Developer's Data Leak",
+  },
+  // Add more contributors as needed
 ];
