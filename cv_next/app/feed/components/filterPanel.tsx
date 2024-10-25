@@ -2,9 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Categories from "@/types/models/categories";
 import { filterValues } from "@/types/models/filters";
-
 import { categoryString } from "@/lib/utils";
-
 import { useDebounceValue } from "@/hooks/useDebounceCallback";
 import { DropdownInput } from "./filters/valueSelect";
 import { InputBox } from "./inputbar";
