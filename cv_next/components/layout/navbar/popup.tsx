@@ -24,6 +24,11 @@ const navLinks = [
     req_login: true,
   },
   {
+    route: "Hall of Fame",
+    path: "/hall",
+    req_login: true,
+  },
+  {
     route: "Signout",
     path: "/",
     req_login: true,
