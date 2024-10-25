@@ -14,44 +14,26 @@ const DropdownCover: React.FC<DropdownProps> = ({ title, children }) => {
   };
 
   return (
-    <div
-      className={`mb-3 rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800`}
-      style={{ width: "100%" }}
-    >
+    <div className="mb-3 w-full rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800">
       <button
         onClick={toggleDropdown}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-          padding: "0.5rem",
-          backgroundColor: "inherit",
-          border: "none",
-          cursor: "pointer",
-          textAlign: "center",
-        }}
-        className="inline-flex items-center text-xl font-semibold text-gray-900 dark:text-white"
+        className="flex w-full cursor-pointer items-center justify-center border-none bg-inherit p-2 text-xl font-semibold text-gray-900 dark:text-white"
       >
         {title}
         <span
-          style={{
-            marginLeft: "8px",
-            transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
-            transition: "transform 0.3s ease",
-          }}
+          className={`ml-2 transform transition-transform duration-300 ${
+            isOpen ? "rotate-90" : "rotate-0"
+          }`}
         >
           ➤
         </span>
       </button>
       <div
-        style={{
-          maxHeight: isOpen ? "500px" : "0",
-          transition: "max-height 0.3s ease",
-          overflow: "hidden",
-        }}
+        className={`transition-max-height overflow-hidden duration-300 ${
+          isOpen ? "max-h-[500px]" : "max-h-0"
+        }`}
       >
-        <div style={{ padding: "0.5rem" }}>{children}</div>
+        <div className="p-2">{children}</div>
       </div>
     </div>
   );
