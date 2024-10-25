@@ -2,7 +2,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import { Viewport } from "next/dist/lib/metadata/types/metadata-interface";
 import Navbar from "@/components/layout/navbar/navbar";
-import Footer from "@/components/ui/pageFooter";
+import Footer from "@/components/layout/pageFooter";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { CvsProvider } from "@/providers/cvs-provider";
 
