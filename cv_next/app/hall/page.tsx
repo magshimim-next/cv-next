@@ -1,7 +1,18 @@
 const contributors = [
-  { name: "Alice", contribution: "Frontend Development" },
-  { name: "Bob", contribution: "Backend Development" },
-  { name: "Charlie", contribution: "UI/UX Design" },
+  { name: "Adam Abramov", contribution: "CSRF Account Takeover" },
+  {
+    name: "Adam Abramov",
+    contribution: "Insufficient Verification of Data Authenticity",
+  },
+  { name: "Youval Daizi", contribution: "Home button logged out users" },
+  {
+    name: "Harel Kristal",
+    contribution: "Login and Signout were visible regardless of state",
+  },
+  {
+    name: "Harel Kristal",
+    contribution: "Developer's Data Leak",
+  },
   // Add more contributors as needed
 ];
 
