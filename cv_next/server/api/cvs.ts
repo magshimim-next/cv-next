@@ -1,12 +1,12 @@
 import "server-only";
 
-import Categories from "@/types/models/categories";
-import Definitions from "../../lib/definitions";
-import SupabaseHelper from "./supabaseHelper";
 import { PostgrestError } from "@supabase/supabase-js";
-import logger from "../base/logger";
+import Categories from "@/types/models/categories";
 import { Tables, CvKeys, ProfileKeys } from "@/lib/supabase-definitions";
 import { filterValues } from "@/types/models/filters";
+import Definitions from "@/lib/definitions";
+import logger from "@/server/base/logger";
+import SupabaseHelper from "./supabaseHelper";
 
 /**
  * Retrieves a CV by its ID from the database.

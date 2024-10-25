@@ -2,13 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import Categories from "@/types/models/categories";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import Categories from "@/types/models/categories";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
-import Definitions from "@/lib/definitions";
+import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
 import { generateCategoryLink } from "@/lib/utils";
 import { useApiFetch } from "@/hooks/useAPIFetch";
-import { API_DEFINITIONS } from "@/lib/definitions";
 
 interface CVCardProps {
   cv: CvModel;
@@ -109,7 +108,7 @@ export default function CVItem({ cv }: CVCardProps) {
 
       interval.current = setInterval(() => {
         revalidateImage();
-      }, Definitions.FETCH_WAIT_TIME * 1000); // Revalidate every 2 minutes
+      }, Definitions.FETCH_WAIT_TIME * 1000);
     };
 
     fetchData();
@@ -174,7 +173,7 @@ export default function CVItem({ cv }: CVCardProps) {
               {cv.cv_categories.map((category, index) => (
                 <Link key={index} href={generateCategoryLink(category)}>
                   <div
-                    onClick={(e) => e.stopPropagation()} // Prevent redirection and handle the inner click event
+                    onClick={(e) => e.stopPropagation()}
                     className="rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
                   >
                     #{Categories.category[category]}

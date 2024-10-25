@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
-import { InputBox } from "./inputbar";
-import { DropdownInput } from "./filters/valueSelect";
+import { useEffect, useState, useMemo } from "react";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Categories from "@/types/models/categories";
-import { useMemo } from "react";
 import { filterValues } from "@/types/models/filters";
+
 import { categoryString } from "@/lib/utils";
-import { useSearchParams, usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
+
 import { useDebounceValue } from "@/hooks/useDebounceCallback";
+import { DropdownInput } from "./filters/valueSelect";
+import { InputBox } from "./inputbar";
 
 export const CATEGORY_PARAM = "category";
 export const DESCRIPTION_PARAM = "description";
 
 export const FilterPanel = ({
-  defaultFilters
+  defaultFilters,
 }: {
   defaultFilters: filterValues;
   cvs: CvModel[];
@@ -32,7 +32,7 @@ export const FilterPanel = ({
 
     if (categoryIds) {
       const uriCategories = searchParams.get(CATEGORY_PARAM)?.split(",") ?? [];
-      const stateCategories = categoryIds?.map(id => categoryString(id));
+      const stateCategories = categoryIds?.map((id) => categoryString(id));
       //only handle change if categories actually changed
       if (JSON.stringify(uriCategories) != JSON.stringify(stateCategories)) {
         params.set(CATEGORY_PARAM, categoryIds.map(categoryString).join(","));

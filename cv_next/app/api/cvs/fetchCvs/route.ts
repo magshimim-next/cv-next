@@ -1,8 +1,8 @@
 "use server";
 
+import { NextRequest, NextResponse } from "next/server";
 import { filterValues } from "@/types/models/filters";
 import { getPaginatedCvs } from "@/server/api/cvs";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {

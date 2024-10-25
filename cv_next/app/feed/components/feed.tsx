@@ -1,20 +1,31 @@
 "use client";
 
-import CVItemLink from "@/app/feed/components/CVItemLink";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import CVItem from "./CVItem";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useInView } from "react-intersection-observer";
+import ReactLoading from "react-loading";
+import { useSearchParams } from "next/navigation";
 import { CvsContext, CvsDispatchContext } from "@/providers/cvs-provider";
 import { ReloadButton } from "@/components/ui/reloadButton";
 import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
-import { useInView } from "react-intersection-observer";
-import { CATEGORY_PARAM, DESCRIPTION_PARAM, FilterPanel } from "@/app/feed/components/filterPanel";
-import ReactLoading from "react-loading";
+import {
+  CATEGORY_PARAM,
+  DESCRIPTION_PARAM,
+  FilterPanel,
+} from "@/app/feed/components/filterPanel";
 import { filterValues } from "@/types/models/filters";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
-import { useSearchParams } from "next/navigation";
+import CVItemLink from "@/app/feed/components/CVItemLink";
 import { toCategoryNumber } from "@/lib/utils";
 import { useDebounceCallback } from "@/hooks/useDebounceCallback";
+import CVItem from "./CVItem";
 
 export default function Feed() {
   const searchParams = useSearchParams();
@@ -40,9 +51,9 @@ export default function Feed() {
   const filters: filterValues = useMemo(() => {
     return {
       searchValue: description ?? "",
-      categoryIds: uriCategories?.split(",").map(toCategoryNumber) ?? []
+      categoryIds: uriCategories?.split(",").map(toCategoryNumber) ?? [],
     };
-  }, [ description, uriCategories ]);  
+  }, [description, uriCategories]);
 
   /**
    * Trigger pagination when this element comes into view.
@@ -53,7 +64,7 @@ export default function Feed() {
   function TriggerPagination({
     callbackTrigger,
   }: {
-    callbackTrigger: (...args: any[]) => void
+    callbackTrigger: (...args: any[]) => void;
   }) {
     const [triggerRef, inView] = useInView();
 
@@ -70,11 +81,10 @@ export default function Feed() {
     cvsRef.current = cvs;
   }, [cvs]);
 
-
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
       const nextPage = page.current + 1;
-    
+
       const response = await fetchFromApi(
         API_DEFINITIONS.CVS_API_BASE,
         API_DEFINITIONS.FETCH_CVS_ENDPOINT,
@@ -138,10 +148,7 @@ export default function Feed() {
   return (
     <main>
       <ScrollToTop />
-      <FilterPanel
-        defaultFilters={filters}
-        cvs={cvs}
-      ></FilterPanel>
+      <FilterPanel defaultFilters={filters} cvs={cvs}></FilterPanel>
       <div className="container mx-auto space-y-8 p-6">
         <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
           {cvs ? (

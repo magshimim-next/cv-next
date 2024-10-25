@@ -1,13 +1,13 @@
 "use server";
+import Image from "next/image";
 import { getCvsByUserId } from "@/server/api/cvs";
 import logger from "@/server/base/logger";
-import Image from "next/image";
-import CategoryCounter from "./categoryCounter";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
-import EditableUsername from "./editables/editableUsername";
-import EditableWorkStatus from "./editables/editableWorkStatus";
 import { fetchUserComments } from "@/app/actions/comments/fetchComments";
 import { getCvsFromComments } from "@/app/actions/cvs/fetchCvs";
+import CategoryCounter from "./categoryCounter";
+import EditableUsername from "./editables/editableUsername";
+import EditableWorkStatus from "./editables/editableWorkStatus";
 
 export default async function ProfileData({ user }: { user: UserModel }) {
   const cvs = await getCvsByUserId(user.id);
@@ -61,14 +61,14 @@ export default async function ProfileData({ user }: { user: UserModel }) {
           <CategoryCounter
             cvs={cvs}
             title="Most CVs are categorized under"
-            error="No CVs found"
+            error={`No CVs found, ${user.username || user.full_name} needs to upload a CV!`}
           />
         </div>
         <div className="flex justify-center">
           <CategoryCounter
             cvs={CVsFromComments}
             title="Most comments are from CVs that are categorized under"
-            error="No CVs found"
+            error={`No CVs found, ${user.username || user.full_name} needs to comment a bit more!`}
           />
         </div>
       </div>
