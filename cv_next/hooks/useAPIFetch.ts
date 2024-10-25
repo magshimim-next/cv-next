@@ -48,7 +48,7 @@ export const useApiFetch = () => {
       base: string,
       endpoint: string,
       body: Record<string, any>,
-      timeout: number = 5000
+      timeout: number = 10000
     ) => {
       const apiUrl = getRouteUri(base, endpoint);
 

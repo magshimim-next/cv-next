@@ -52,7 +52,7 @@ export const useUser = () => {
       mutate();
     }
     if (mounted && data && error) {
-        mutate(undefined, false);
+      mutate(undefined, false);
     }
   }, [mounted, data, error, mutate]);
 
