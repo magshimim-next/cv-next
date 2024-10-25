@@ -1,47 +1,52 @@
-import React from 'react';
-
 const contributors = [
-  { name: 'Alice', contribution: 'Frontend Development' },
-  { name: 'Bob', contribution: 'Backend Development' },
-  { name: 'Charlie', contribution: 'UI/UX Design' },
+  { name: "Alice", contribution: "Frontend Development" },
+  { name: "Bob", contribution: "Backend Development" },
+  { name: "Charlie", contribution: "UI/UX Design" },
   // Add more contributors as needed
 ];
 
 const hall: React.FC = () => {
-  const styles = {
-    container: {
-      textAlign: 'center' as const,
-      padding: '20px',
-    },
-    title: {
-      fontSize: '2.5em',
-      marginBottom: '20px',
-    },
-    contributor: {
-      listStyle: 'none',
-      margin: '10px 0',
-    },
-    contributorName: {
-      fontSize: '1.5em',
-      margin: '0',
-    },
-    contributorContribution: {
-      fontSize: '1em',
-      color: '#555',
-    },
-  };
-
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>{contribu</h1>
-      <ul>
-        {contributors.map((contributor, index) => (
-          <li key={index} style={styles.contributor}>
-            <h2 style={styles.contributorName}>{contributor.name}</h2>
-            <p style={styles.contributorContribution}>{contributor.contribution}</p>
-          </li>
-        ))}
-      </ul>
+    <div className="relative mx-auto h-full w-[700px] max-w-full xl:w-[1400px]">
+      <div style={{ textAlign: "center", padding: "20px" }}>
+        <h1 style={{ fontSize: "2.5em", marginBottom: "20px" }}>
+          A Huge Thank You to Our Contributors
+        </h1>
+        <ul>
+          <div className="justify-center xl:flex">
+            <div
+              id="grid-container"
+              className="w450:grid-cols-1 w450:gap-7 grid w-full grid-cols-2 gap-10 md:grid-cols-3 xl:w-1/2 xl:pb-16"
+            >
+              {contributors.map((contributor, index) => (
+                <a
+                  key={index}
+                  target="_blank"
+                  className="rounded-base mb-3 rounded-lg border-2 border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800"
+                  style={{
+                    borderColor: "#000",
+                    boxShadow: "4px 4px 0px 0px #000",
+                    transform: "translate(4px, 4px)",
+                  }}
+                >
+                  <p
+                    className="mt-3 text-lg sm:text-xl"
+                    style={{ fontWeight: "700" }}
+                  >
+                    {contributor.name}
+                  </p>
+                  <p
+                    className="mt-1 text-sm sm:text-base"
+                    style={{ fontWeight: "500" }}
+                  >
+                    {contributor.contribution}
+                  </p>
+                </a>
+              ))}
+            </div>
+          </div>
+        </ul>
+      </div>
     </div>
   );
 };
