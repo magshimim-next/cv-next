@@ -32,7 +32,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <CvsProvider>
             <Navbar />
-            <div className="container mx-auto space-y-8 p-6">{children}</div>
+            <div
+              className="container mx-auto max-w-full space-y-8 p-6"
+              style={{ width: "85%" }}
+            >
+              {children}
+            </div>
           </CvsProvider>
         </ThemeProvider>
       </body>
