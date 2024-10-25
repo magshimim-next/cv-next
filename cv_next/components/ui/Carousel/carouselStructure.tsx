@@ -28,7 +28,6 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
       className="embla"
       style={
         {
-          "maxWidth": "48rem",
           "margin": "auto",
           "--slide-height": "19rem",
           "--slide-spacing": "1rem",
