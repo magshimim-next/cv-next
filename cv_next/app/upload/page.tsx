@@ -8,7 +8,7 @@ import PopupWrapper from "@/components/ui/popupWrapper";
 import openLink from "@/public/images/openLink.png";
 import warningIcon from "@/public/images/warning.png";
 import Categories from "@/types/models/categories";
-import { InputValues, checkUploadCV } from "@/app/actions/cvs/uploadCv";
+import { checkUploadCV } from "@/app/actions/cvs/uploadCv";
 import { Button } from "@/app/feed/components/button";
 import { DropdownInput } from "@/app/feed/components/filters/valueSelect";
 import { InputBox, InputTextArea } from "@/app/feed/components/inputbar";
@@ -47,11 +47,9 @@ const InputRow = ({
 };
 
 export default function Page() {
-  const [catagoryId, setCatagoryId] =
-    useState<InputValues["cvCategories"]>(null);
-  const [description, setDescription] =
-    useState<InputValues["description"]>("");
-  const [link, setLink] = useState<InputValues["link"]>("");
+  const [catagoryId, setCatagoryId] = useState<number[]>([]);
+  const [description, setDescription] = useState("");
+  const [link, setLink] = useState("");
   const [errorMsg, setErrorMsg] = useState<string | null>();
 
   const validate = (() => {
@@ -155,7 +153,7 @@ export default function Page() {
               isValid={validate.catagoryIds()}
               inputElement={
                 <DropdownInput
-                  onChange={(e) => setCatagoryId(e || null)}
+                  onChange={(e) => setCatagoryId(e || [])}
                   placeHolder="Select category"
                   valueIds={getAllNumbersFromArr(
                     Object.keys(Categories.category)
