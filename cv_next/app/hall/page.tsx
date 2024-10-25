@@ -9,7 +9,10 @@ const hall: React.FC = () => {
   return (
     <div className="relative mx-auto h-full w-[700px] max-w-full xl:w-[1400px]">
       <div style={{ textAlign: "center", padding: "20px" }}>
-        <h1 style={{ fontSize: "2.5em", marginBottom: "20px" }}>
+        <h1
+          className="inline-flex items-center text-xl font-semibold text-gray-900 dark:text-white"
+          style={{ fontSize: "2.5em", marginBottom: "35px" }}
+        >
           A Huge Thank You to Our Contributors
         </h1>
         <ul>
