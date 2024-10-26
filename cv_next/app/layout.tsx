@@ -2,6 +2,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import { Viewport } from "next/dist/lib/metadata/types/metadata-interface";
 import Navbar from "@/components/layout/navbar/navbar";
+import Footer from "@/components/layout/pageFooter";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { CvsProvider } from "@/providers/cvs-provider";
 
@@ -32,7 +33,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <CvsProvider>
             <Navbar />
-            <div className="container mx-auto space-y-8 p-6">{children}</div>
+            <div className="container mx-auto w-full space-y-8 p-6 lg:max-w-[85%]">
+              {children}
+            </div>
+            <Footer />
           </CvsProvider>
         </ThemeProvider>
       </body>

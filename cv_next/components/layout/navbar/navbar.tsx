@@ -44,15 +44,24 @@ export default function Navbar() {
         <div className="fixed top-0 -z-50 h-[2.25rem] w-full translate-y-2/4 bg-white" />
         <div className="fixed top-0 z-40 h-[4.5rem] w-full bg-black bg-opacity-75 backdrop-blur-2xl" />
         <div className="fixed top-0 z-50 h-[4.5rem] w-full">
-          <nav className="mx-auto flex items-center justify-between px-4 py-3 md:px-2 lg:max-w-7xl">
-          <div className="flex items-center space-x-4">
-            <Link href="/">
-              <h1 className="flex flex-row text-2xl font-bold text-white duration-200 lg:hover:scale-[1.10]">
-                <Image src={logo} width={60} height={40} alt="Header image" />
-                NEXT
-              </h1>
-            </Link>
-            <ModeToggle />
+          <nav className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-4 py-3 md:px-6">
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center">
+                <div className="relative mr-1 h-10 w-[60px]">
+                  <Image
+                    src={logo}
+                    alt="Logo"
+                    layout="fill"
+                    objectFit="contain"
+                  />
+                </div>
+                <span className="text-2xl font-bold leading-none text-white">
+                  NEXT
+                </span>
+              </Link>
+              <div className="ml-4 flex items-center">
+                <ModeToggle />
+              </div>
             </div>
 
             <div className="hidden items-center space-x-6 md:flex">
@@ -71,10 +80,11 @@ export default function Navbar() {
             <div className="flex items-center space-x-4">
               <div className="z-50 hidden space-x-4 md:flex">
                 <Link
-                  className="py-2 text-lg" 
-                  href="/upload" 
-                  style={{ lineHeight: "1.5" }} >
-                    <Upload />
+                  className="py-2 text-lg"
+                  href="/upload"
+                  style={{ lineHeight: "1.5" }}
+                >
+                  <Upload />
                 </Link>
                 <PopupToggle />
               </div>
