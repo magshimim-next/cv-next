@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
-import { heroHeader, Credits, routes, UI_Location } from "@/lib/definitions";
+import { heroHeader, routes, UI_Location } from "@/lib/definitions";
 import { cn } from "@/lib/utils";
 import { LoginButtons } from "./loginButtons";
 
@@ -37,9 +37,6 @@ export const AboutLayout = () => {
           </div>
           <div className="flex flex-wrap justify-center gap-6 lg:gap-10">
             <RoutesRender />
-          </div>
-          <div className="flex h-12 w-full items-center justify-center rounded-md px-4 text-xs text-primary opacity-50 shadow-inner">
-            {`Credit to our team: ${Credits.slice(0, -1).join(", ")} and ${Credits.slice(-1)}`}
           </div>
         </div>
       </section>
