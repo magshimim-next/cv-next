@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
-import { heroHeader, Credits, routes, UI_Location } from "@/lib/definitions";
+import { heroHeader, routes, UI_Location } from "@/lib/definitions";
 import { cn } from "@/lib/utils";
 import { LoginButtons } from "./loginButtons";
 
