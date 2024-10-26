@@ -2,6 +2,7 @@
 import withPlaiceholder from "@plaiceholder/next";
 
 const nextConfig = {
+  basePath: '/dev',
   images: {
     domains: ["lh5.googleusercontent.com", "weepggwhsrfmizptbnua.supabase.co"],
     unoptimized: true,
@@ -13,12 +14,8 @@ const nextConfig = {
     config.externals.push({
       "utf-8-validate": "commonjs utf-8-validate",
       "bufferutil": "commonjs bufferutil",
-      "thread-stream": "commonjs thread-stream",
     });
     return config;
-  },
-  experimental: {
-    serverComponentsExternalPackages: ["pino", "pino-pretty"],
   },
 };
 

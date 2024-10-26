@@ -5,6 +5,7 @@ import logger from "@/server/base/logger";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { fetchUserComments } from "@/app/actions/comments/fetchComments";
 import { getCvsFromComments } from "@/app/actions/cvs/fetchCvs";
+import DropdownCover from "@/components/ui/dropdownCover";
 import CategoryCounter from "./categoryCounter";
 import EditableUsername from "./editables/editableUsername";
 import EditableWorkStatus from "./editables/editableWorkStatus";
@@ -48,30 +49,22 @@ export default async function ProfileData({ user }: { user: UserModel }) {
           <EditableWorkStatus user={user} />
         </div>
       </div>
-      <div
-        className={`mb-3 rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800`}
-        style={{ width: "100%" }}
-      >
-        <div className="flex justify-center">
-          <p className="inline-flex items-center text-xl font-semibold text-gray-900 dark:text-white">
-            Statistics
-          </p>
-        </div>
+      <DropdownCover title="Statistics">
         <div className="col-md-12 mt-2 flex justify-center">
           <CategoryCounter
             cvs={cvs}
             title="Most CVs are categorized under"
-            error="No CVs found"
+            error={`No CVs found, ${user.username || user.full_name} needs to upload a CV!`}
           />
         </div>
         <div className="flex justify-center">
           <CategoryCounter
             cvs={CVsFromComments}
             title="Most comments are from CVs that are categorized under"
-            error="No CVs found"
+            error={`No CVs found, ${user.username || user.full_name} needs to comment a bit more!`}
           />
         </div>
-      </div>
+      </DropdownCover>
     </div>
   );
 }

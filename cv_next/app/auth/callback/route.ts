@@ -4,12 +4,10 @@ import Definitions from "@/lib/definitions";
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { checkRedirect } from "@/lib/utils";
 import logger from "@/server/base/logger";
-
 export async function GET(request: Request) {
   const { searchParams, origin: _origin } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next") || "";
-
   if (code) {
     const supabase = SupabaseHelper.getSupabaseInstance();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
@@ -29,7 +27,6 @@ export async function GET(request: Request) {
       logger.error(error, "Error at auth callback");
     }
   }
-
   // return the user to an error page with instructions
   //TODO: move to regular error page
   return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/`);

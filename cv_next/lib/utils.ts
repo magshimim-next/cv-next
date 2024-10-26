@@ -95,6 +95,14 @@ export function getAllNumbersFromArr(arr: string[]) {
     .map((value) => parseInt(value));
 }
 
+export const categoryString = (categoryNumber: number) =>
+  `${Categories.category[categoryNumber].toLowerCase()}`;
+
+export function toCategoryNumber(name: string): number {
+  let fixedName = name[0].charAt(0).toUpperCase() + name.slice(1);
+  return Categories.category[fixedName as keyof typeof Categories.category];
+}
+
 /**
  * The function will check if the redirectPath provided is within our website
  * @param redirectPath The path the user wants to redirect to
@@ -103,6 +111,7 @@ export function getAllNumbersFromArr(arr: string[]) {
 export function checkRedirect(redirectPath: string): boolean {
   return (
     redirectPath === "" ||
+    redirectPath === "/" ||
     Link_Definitions.ALLOWED_REDIRECTS.some((prefix) =>
       redirectPath.startsWith("/" + prefix)
     )

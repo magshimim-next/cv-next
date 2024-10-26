@@ -37,6 +37,7 @@ export class Link_Definitions {
     "cv",
     "profile",
     "hall",
+    "about",
   ];
 }
 
@@ -93,6 +94,7 @@ export const Team_Credits = [
   "Ilan Yashuk",
   "Assaf Kabesa",
   "Alon Green",
+  "Yarden Perets",
 ];
 
 export const External_Credits = [
