@@ -9,6 +9,7 @@ import DropdownCover from "@/components/ui/dropdownCover";
 import CategoryCounter from "./categoryCounter";
 import EditableUsername from "./editables/editableUsername";
 import EditableWorkStatus from "./editables/editableWorkStatus";
+import FirstTimeSignIn from "./firstTimeSignIn";
 
 export default async function ProfileData({ user }: { user: UserModel }) {
   const cvs = await getCvsByUserId(user.id);
@@ -43,6 +44,9 @@ export default async function ProfileData({ user }: { user: UserModel }) {
           </DynamicProfileImage>
         </div>
         <div className="flex justify-center">
+          <div style={{ marginRight: "10px", marginTop: "8px" }}>
+            <FirstTimeSignIn />
+          </div>
           <EditableUsername user={user} />
         </div>
         <div className="flex justify-center">
