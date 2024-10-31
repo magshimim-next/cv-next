@@ -7,7 +7,6 @@ import { PostgrestError } from "@supabase/supabase-js";
 import logger from "../base/logger";
 import { Tables, CvKeys, ProfileKeys } from "@/lib/supabase-definitions";
 import { filterValues } from "@/app/feed/components/filterPanel";
-import { Err, Ok } from "@/lib/utils";
 
 /**
  * Retrieves a CV by its ID from the database.
@@ -212,30 +211,5 @@ export async function updateCV(cv: CvModel): Promise<PostgrestError | null> {
     logger.error(error, "cvs::updateCV");
     //TODO: handle error
     return null;
-  }
-}
-
-/**
- * Changes the username of a given user.
- *
- * @param {string} cvId - The ID of the user to update.
- * @param {string} newLink - The new username.
- * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
- */
-export async function setCvLink(
-  cvId: string,
-  newLink: string
-): Promise<Result<void, string>> {
-  try {
-    const { error } = await SupabaseHelper.getSupabaseInstance()
-      .from(Tables.cvs)
-      .update({ document_link: newLink })
-      .eq(CvKeys.id, cvId);
-    if (error) {
-      return Err(setCvLink.name, error);
-    }
-    return Ok.EMPTY;
-  } catch (err) {
-    return Err(setCvLink.name, undefined, err as Error);
   }
 }
