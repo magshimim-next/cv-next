@@ -1,9 +1,16 @@
-import Hero from "@/components/pages/hero"
+import { redirect } from "next/navigation";
+import { AboutLayout } from "@/app/about/components/aboutLayout";
+import { getUser } from "@/app/actions/users/getUser";
 
-export default function Home() {
+export default async function Page() {
+  const userDataResponse = await getUser();
+  if (userDataResponse.ok) {
+    redirect(`/feed`);
+  }
+
   return (
     <main>
-      <Hero />
+      <AboutLayout />
     </main>
-  )
+  );
 }

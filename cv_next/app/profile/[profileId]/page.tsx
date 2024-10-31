@@ -2,9 +2,10 @@
 
 import { notFound } from "next/navigation";
 import { getUserModel } from "@/app/actions/users/getUser";
+import { getCvsByUserId } from "@/server/api/cvs";
+import { ScrollToTop } from "@/components/ui/scrollToTop";
 import ProfileData from "./components/profileData";
 import ProfileCvs from "./components/profileCvs";
-import { getCvsByUserId } from "@/server/api/cvs";
 
 export default async function Page({
   params,
@@ -23,17 +24,29 @@ export default async function Page({
 
   return (
     <div>
-      <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[40%_60%] md:gap-x-4">
-        <section className="h-[78.75rem] flex-col rounded-lg">
-          {cvs?.length ? <ProfileCvs cvs={cvs} /> : <></>}
-        </section>
-
-        <section className="h-[78.75rem] flex-col self-start">
-          <div>
-            <ProfileData user={result.val} />
-          </div>
-        </section>
+      <div className="md:hidden">
+        <ScrollToTop />
       </div>
+      {cvs?.length ? (
+        <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[35%_65%] md:gap-x-6">
+          <section className=" flex-col self-start">
+            <div>
+              <ProfileData user={result.val} />
+            </div>
+          </section>
+          <section className="flex-col rounded-lg">
+            <ProfileCvs cvs={cvs} />
+          </section>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-y-4 md:gap-x-4">
+          <section className=" flex-col self-start">
+            <div style={{ width: "60%", margin: "auto" }}>
+              <ProfileData user={result.val} />
+            </div>
+          </section>
+        </div>
+      )}
     </div>
   );
 }

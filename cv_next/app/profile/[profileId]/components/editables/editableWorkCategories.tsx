@@ -1,9 +1,9 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
 import { Check, X } from "lucide-react";
+import isEqual from "lodash.isequal";
 import Categories from "@/types/models/categories";
 import { setNewWorkCategories } from "@/app/actions/users/updateUser";
-import isEqual from "lodash.isequal";
 
 export default function EditableWorkCategories({
   user,
@@ -92,7 +92,7 @@ export default function EditableWorkCategories({
               setTempWorkCategories(updatedCategories);
             }
           }}
-          className="dark:bg-theme-800"
+          className="mb-2 dark:bg-theme-800"
           style={{
             marginLeft: "5px",
             flexDirection: "column",
@@ -116,7 +116,7 @@ export default function EditableWorkCategories({
 
     return (
       <div className="flex-col items-center ">
-        <div className="flex justify-center text-base">
+        <div className="flex flex-col justify-center text-base md:flex-row">
           {editableCategories}
         </div>
         <div className="flex justify-center text-base">

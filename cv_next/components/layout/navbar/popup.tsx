@@ -1,10 +1,10 @@
 "use client";
 import Image from "next/image";
-import closeIcon from "@/public/images/closeIcon.png";
 import { useRef, useEffect } from "react";
 import Link from "next/link";
-import { useSupabase } from "@/hooks/supabase";
+import { IoCloseSharp } from "react-icons/io5";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
+import { useUser } from "@/hooks/useUser";
 
 const navLinks = [
   {
@@ -13,27 +13,25 @@ const navLinks = [
     req_login: false,
   },
   {
-    route: "Feed",
-    path: "/feed",
+    route: "Upload",
+    path: "/upload",
     req_login: true,
   },
   {
     route: "Signout",
-    path: "/",
+    path: "/signout",
     req_login: true,
   },
 ];
 
 interface PopupProps {
   closeCb: () => void;
-  userData: UserModel | null;
-  updateSignIn: () => void;
 }
 
 const UserDataComponent: React.FC<{
-  userData: UserModel | null;
   closeCb: () => void;
-}> = ({ userData, closeCb }) => {
+}> = ({ closeCb }) => {
+  const { userData } = useUser();
   return (
     <div className="mt-10 flex w-full flex-col items-center">
       {userData ? (
@@ -69,23 +67,15 @@ const UserDataComponent: React.FC<{
   );
 };
 
-export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
+export default function Popup({ closeCb }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const supabase = useSupabase();
+  const { userData, mutateUser: _mutateUser } = useUser();
 
   useEffect(() => {
     if (dialogRef.current) {
       dialogRef.current.show();
     }
   }, []);
-
-  const handleSelection = (route: string) => {
-    if (route === "Signout") {
-      supabase.auth.signOut();
-      updateSignIn();
-    }
-    closeCb();
-  };
 
   return (
     <div className="fixed left-0 top-0 flex h-full w-full items-center justify-center">
@@ -102,12 +92,12 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
           className="absolute left-5 top-5 h-7 w-7 cursor-pointer"
           onClick={closeCb}
         >
-          <Image alt="closeIcon" src={closeIcon}></Image>
+          <IoCloseSharp size={30} />
         </div>
         <ul className="mt-20 flex w-full flex-col items-center">
           {userData ? (
             <div className="mt-10 flex w-full flex-col items-center">
-              <UserDataComponent userData={userData} closeCb={closeCb} />
+              <UserDataComponent closeCb={closeCb} />
               {navLinks.map(
                 (link) =>
                   link.req_login && (
@@ -115,9 +105,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
                       <Link
                         className="text-lg font-medium hover:underline"
                         href={link.path}
-                        onClick={() => {
-                          handleSelection(link.route);
-                        }}
+                        onClick={closeCb}
                       >
                         {link.route}
                       </Link>
@@ -127,7 +115,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
             </div>
           ) : (
             <div className="mt-10 flex w-full flex-col items-center">
-              <UserDataComponent userData={userData} closeCb={closeCb} />
+              <UserDataComponent closeCb={closeCb} />
               {navLinks.map(
                 (link) =>
                   !link.req_login && (
@@ -135,9 +123,7 @@ export default function Popup({ closeCb, userData, updateSignIn }: PopupProps) {
                       <Link
                         className="text-lg font-medium hover:underline"
                         href={link.path}
-                        onClick={() => {
-                          handleSelection(link.route);
-                        }}
+                        onClick={closeCb}
                       >
                         {link.route}
                       </Link>

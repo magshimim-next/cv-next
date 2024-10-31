@@ -1,10 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { PencilIcon, Check, X } from "lucide-react";
-import { useSupabase } from "@/hooks/supabase";
+import { useRouter } from "next/navigation";
+import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { setNewUsername } from "@/app/actions/users/updateUser";
 
 export default function EditableUsername({ user }: { user: UserModel }) {
+  const router = useRouter();
   const [value, setValue] = useState(user.username || user.full_name || "");
   const [tempValue, setTempValue] = useState(
     user.username || user.full_name || ""
@@ -12,25 +14,29 @@ export default function EditableUsername({ user }: { user: UserModel }) {
   const [isEditing, setIsEditing] = useState(false);
   const [viewingCurrentUser, setViewingCurrentUser] = useState(false);
   const [errorUpdating, setError] = useState("");
-  const supabase = useSupabase();
+  const supabase = createClientComponent();
 
   useEffect(() => {
     async function getUser() {
       const userId = (await supabase.auth.getUser()).data.user?.id;
-      if (!userId) throw new Error("User not found");
+      if (!userId) router.push("/inactive");
       if (userId === user.id) {
         setViewingCurrentUser(true);
       }
     }
     getUser();
-  }, [supabase.auth, user.id]);
+  }, [supabase.auth, user.id, router]);
 
   useEffect(() => {
     (async () => {
       if (value != (user.username || user.full_name) && viewingCurrentUser) {
         const result = await setNewUsername(user.id, value);
         if (!result.ok) {
-          if (result.postgrestError?.message.includes("duplicate key value")) {
+          if (
+            result.errors.postgrestError?.message.includes(
+              "duplicate key value"
+            )
+          ) {
             setError("Name unavailable!");
           } else {
             setError("Error updating the username!");

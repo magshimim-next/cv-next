@@ -1,29 +1,31 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Check, X } from "lucide-react";
-import { useSupabase } from "@/hooks/supabase";
+import { useRouter } from "next/navigation";
+import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { setNewWorkStatus } from "@/app/actions/users/updateUser";
 import { ProfileKeys } from "@/lib/supabase-definitions";
 import EditableWorkCategories from "./editableWorkCategories";
 
 export default function EditableWorkStatus({ user }: { user: UserModel }) {
+  const router = useRouter();
   const [viewingCurrentUser, setViewingCurrentUser] = useState(false);
 
   const [workStatus, setWorkStatus] = useState(user.work_status);
   const [tempWorkStatus, setTempWorkStatus] = useState(user.work_status);
 
-  const supabase = useSupabase();
+  const supabase = createClientComponent();
 
   useEffect(() => {
     async function getUser() {
       const userId = (await supabase.auth.getUser()).data.user?.id;
-      if (!userId) throw new Error("User not found");
+      if (!userId) router.push("/inactive");
       if (userId === user.id) {
         setViewingCurrentUser(true);
       }
     }
     getUser();
-  }, [supabase.auth, user.id]);
+  }, [supabase.auth, user.id, router]);
 
   useEffect(() => {
     (async () => {

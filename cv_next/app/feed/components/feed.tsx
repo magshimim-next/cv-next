@@ -1,17 +1,37 @@
 "use client";
 
-import CVItemLink from "@/app/feed/components/CVItemLink";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { fetchCvsForFeed } from "@/app/actions/cvs/fetchCvs";
-import CVItem from "./CVItem";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useInView } from "react-intersection-observer";
+import ReactLoading from "react-loading";
+import { useSearchParams } from "next/navigation";
 import { CvsContext, CvsDispatchContext } from "@/providers/cvs-provider";
 import { ReloadButton } from "@/components/ui/reloadButton";
-import Definitions from "@/lib/definitions";
-import { useInView } from "react-intersection-observer";
-import { FilterPanel, filterValues } from "@/app/feed/components/filterPanel";
-import ReactLoading from "react-loading";
+import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
+import {
+  CATEGORY_PARAM,
+  DESCRIPTION_PARAM,
+  FilterPanel,
+} from "@/app/feed/components/filterPanel";
+import { filterValues } from "@/types/models/filters";
+import { useApiFetch } from "@/hooks/useAPIFetch";
+import { ScrollToTop } from "@/components/ui/scrollToTop";
+import CVItemLink from "@/app/feed/components/CVItemLink";
+import { toCategoryNumber } from "@/lib/utils";
+import { useDebounceCallback } from "@/hooks/useDebounceCallback";
+import CVItem from "./CVItem";
 
 export default function Feed() {
+  const searchParams = useSearchParams();
+  const uriCategories = searchParams.get(CATEGORY_PARAM);
+  const description = searchParams.get(DESCRIPTION_PARAM);
+
   const cvsContextConsumer = useContext(CvsContext);
   const cvsDispatchContextConsumer = useContext(CvsDispatchContext);
   const initialCvs = cvsContextConsumer.cvs?.length
@@ -26,10 +46,14 @@ export default function Feed() {
       : Definitions.PAGINATION_INIT_PAGE_NUMBER
   );
   const [loadMore, setLoadMore] = useState(true);
-  const [filters, setFilters] = useState<filterValues>({
-    searchValue: "",
-    categoryIds: null,
-  });
+  const fetchFromApi = useApiFetch();
+  //aggregate the filters
+  const filters: filterValues = useMemo(() => {
+    return {
+      searchValue: description ?? "",
+      categoryIds: uriCategories?.split(",").map(toCategoryNumber) ?? [],
+    };
+  }, [description, uriCategories]);
 
   /**
    * Trigger pagination when this element comes into view.
@@ -40,7 +64,7 @@ export default function Feed() {
   function TriggerPagination({
     callbackTrigger,
   }: {
-    callbackTrigger: () => Promise<void>;
+    callbackTrigger: (...args: any[]) => void;
   }) {
     const [triggerRef, inView] = useInView();
 
@@ -60,18 +84,32 @@ export default function Feed() {
   const fetchCvsCallback = useCallback(async () => {
     if (loadMore) {
       const nextPage = page.current + 1;
-      const response = await fetchCvsForFeed({
-        page: nextPage,
-        filters: filters,
-      });
+
+      const response = await fetchFromApi(
+        API_DEFINITIONS.CVS_API_BASE,
+        API_DEFINITIONS.FETCH_CVS_ENDPOINT,
+        {
+          nextPage,
+          filters,
+        }
+      );
+
       if (response && response.cvs.length > 0) {
-        setCvs((prevCvs) => [...prevCvs, ...response.cvs]);
+        setCvs((prevCvs) => {
+          const newCvs = response.cvs.filter(
+            (newCv: CvModel) =>
+              !prevCvs.some((prevCv) => prevCv.id === newCv.id)
+          );
+          return [...prevCvs, ...newCvs];
+        });
         page.current = nextPage;
       } else {
         setLoadMore(false);
       }
     }
-  }, [loadMore, filters]);
+  }, [loadMore, fetchFromApi, filters]);
+
+  const debouncedFetchCvsCallback = useDebounceCallback(fetchCvsCallback);
 
   useEffect(() => {
     //before unmount, save current cvs state to context for smoother navigation
@@ -103,17 +141,14 @@ export default function Feed() {
     forceReload();
   }, [filters, forceReload]);
 
-  const onFilterChange = useCallback((filters: filterValues) => {
-    setFilters(filters);
-  }, []);
+  useEffect(() => {
+    debouncedFetchCvsCallback();
+  }, [debouncedFetchCvsCallback]);
 
   return (
     <main>
-      <FilterPanel
-        defaultFilters={filters}
-        cvs={cvs}
-        onChange={onFilterChange}
-      ></FilterPanel>
+      <ScrollToTop />
+      <FilterPanel defaultFilters={filters} cvs={cvs}></FilterPanel>
       <div className="container mx-auto space-y-8 p-6">
         <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
           {cvs ? (
@@ -125,19 +160,25 @@ export default function Feed() {
           ) : (
             <></>
           )}
-          <TriggerPagination callbackTrigger={fetchCvsCallback} />
+          <TriggerPagination callbackTrigger={debouncedFetchCvsCallback} />
         </div>
         {!loadMore ? (
-          <div className="sticky bottom-5 z-10 flex justify-center">
-            <ReloadButton callback={forceReload}>Reload</ReloadButton>
+          <div className="text-center">
+            {cvs.length ? (
+              <div className="sticky bottom-5 z-10 flex justify-center">
+                <ReloadButton callback={forceReload}>Reload</ReloadButton>
+              </div>
+            ) : (
+              <p>No CVs found that matched your filters</p>
+            )}
           </div>
         ) : (
           <div className="z-10 flex justify-center">
             <ReactLoading
               type={"spinningBubbles"}
               color={"#000"}
-              height={667}
-              width={375}
+              height={"40%"}
+              width={"40%"}
             />
           </div>
         )}

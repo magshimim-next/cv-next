@@ -13,8 +13,12 @@ const nextConfig = {
     config.externals.push({
       "utf-8-validate": "commonjs utf-8-validate",
       "bufferutil": "commonjs bufferutil",
+      "thread-stream": "commonjs thread-stream",
     });
     return config;
+  },
+  experimental: {
+    serverComponentsExternalPackages: ["pino", "pino-pretty"],
   },
 };
 

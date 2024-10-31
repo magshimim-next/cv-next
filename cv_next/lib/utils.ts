@@ -1,7 +1,7 @@
-import { PostgrestError } from "@supabase/supabase-js";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import Categories from "@/types/models/categories";
+import { Link_Definitions } from "./definitions";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -65,12 +65,8 @@ export namespace Ok {
  * @param {E} val - the error value
  * @return {Result<never, E>} the Result object with ok set to false and containing the specified error value
  */
-export function Err<E>(
-  where: E,
-  postgrestError?: PostgrestError,
-  err?: Error
-): Result<never, E> {
-  return { ok: false, where, postgrestError, err };
+export function Err<E>(where: E, errors: ErrorDetails = {}): Result<never, E> {
+  return { ok: false, where, errors };
 }
 
 /**
@@ -92,3 +88,32 @@ export function transformToPreviewLink(link: string): string {
 
 export const generateCategoryLink = (categoryNumber: number) =>
   `/feed?category=${Categories.category[categoryNumber].toLowerCase()}`;
+
+export function getAllNumbersFromArr(arr: string[]) {
+  return arr
+    .filter((value) => !isNaN(parseInt(value)))
+    .map((value) => parseInt(value));
+}
+
+export const categoryString = (categoryNumber: number) =>
+  `${Categories.category[categoryNumber].toLowerCase()}`;
+
+export function toCategoryNumber(name: string): number {
+  let fixedName = name[0].charAt(0).toUpperCase() + name.slice(1);
+  return Categories.category[fixedName as keyof typeof Categories.category];
+}
+
+/**
+ * The function will check if the redirectPath provided is within our website
+ * @param redirectPath The path the user wants to redirect to
+ * @returns true if can redirect to it, false otherwise
+ */
+export function checkRedirect(redirectPath: string): boolean {
+  return (
+    redirectPath === "" ||
+    redirectPath === "/" ||
+    Link_Definitions.ALLOWED_REDIRECTS.some((prefix) =>
+      redirectPath.startsWith("/" + prefix)
+    )
+  );
+}

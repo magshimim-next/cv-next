@@ -1,40 +1,33 @@
 "use server";
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { type CookieOptions, createServerClient } from "@supabase/ssr";
-import { Link_Definitions } from "@/lib/definitions";
-
+import Definitions from "@/lib/definitions";
+import SupabaseHelper from "@/server/api/supabaseHelper";
+import { checkRedirect } from "@/lib/utils";
+import logger from "@/server/base/logger";
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams, origin: _origin } = new URL(request.url);
   const code = searchParams.get("code");
+  const next = searchParams.get("next") || "";
   if (code) {
-    const cookieStore = cookies();
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookieEncoding: "raw",
-        cookies: {
-          get(name: string) {
-            return cookieStore.get(name)?.value;
-          },
-          set(name: string, value: string, options: CookieOptions) {
-            cookieStore.set({ name, value, ...options });
-          },
-          remove(name: string, options: CookieOptions) {
-            cookieStore.delete({ name, ...options });
-          },
-        },
-      }
-    );
+    const supabase = SupabaseHelper.getSupabaseInstance();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(
-        `${origin}` + Link_Definitions.AUTH_DEFAULT_REDIRECT + "feed"
-      );
+      if (checkRedirect(next)) {
+        return NextResponse.redirect(
+          `${process.env.NEXT_PUBLIC_BASE_URL}${Definitions.AUTH_DEFAULT_REDIRECT}${next}`
+        );
+      } else {
+        const notFoundUrl = new URL(
+          "/not-found",
+          process.env.NEXT_PUBLIC_BASE_URL
+        );
+        return NextResponse.redirect(notFoundUrl);
+      }
+    } else {
+      logger.error(error, "Error at auth callback");
     }
   }
-
   // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/`); //TODO: move to regular error page
+  //TODO: move to regular error page
+  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/`);
 }
