@@ -100,29 +100,33 @@ const ResolvedSection = ({
   setResolvedCommentAction,
 }: ResolvedSectionProps) => {
   return userResolved ? (
-    <button
-      className="text-green-500"
-      onClick={() => setResolvedCommentAction(false)}
-    >
-      <GoCheckCircleFill
-        style={{
-          transform: "translateY(2px)",
-        }}
-        fontSize="1.4rem"
-      />
-    </button>
+    <Tooltip id="Resolve icon" message="Unresolve">
+      <button
+        className="text-green-500"
+        onClick={() => setResolvedCommentAction(false)}
+      >
+        <GoCheckCircleFill
+          style={{
+            transform: "translateY(2px)",
+          }}
+          fontSize="1.4rem"
+        />
+      </button>
+    </Tooltip>
   ) : (
-    <button
-      className="text-green-500"
-      onClick={() => setResolvedCommentAction(true)}
-    >
-      <GoCheckCircle
-        style={{
-          transform: "translateY(2px)",
-        }}
-        fontSize="1.4rem"
-      />
-    </button>
+    <Tooltip id="Resolve icon" message="Resolve">
+      <button
+        className="text-green-500"
+        onClick={() => setResolvedCommentAction(true)}
+      >
+        <GoCheckCircle
+          style={{
+            transform: "translateY(2px)",
+          }}
+          fontSize="1.4rem"
+        />
+      </button>
+    </Tooltip>
   );
 };
 
