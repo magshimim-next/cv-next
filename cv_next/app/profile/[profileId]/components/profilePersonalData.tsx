@@ -76,7 +76,7 @@ export const ProfilePersonalData = ({
             exitEditMode={() => setIsEditing(false)}
           />
         ) : (
-          <ProfileDisplay user={userData ?? user} />
+          <ProfileDisplay user={isCurrentUser ? userData ?? user : user} />
         )}
       </div>
     </div>
