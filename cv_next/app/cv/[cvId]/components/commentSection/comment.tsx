@@ -149,8 +149,8 @@ const CommenterActions = ({
     <>
       <span>
         <>
-          <button className="text-red-500" onClick={() => setShowAlert(true)}>
-            <Tooltip id="Trash icon" message="delete">
+          <Tooltip id="Trash icon" message="delete">
+            <button className="text-red-500" onClick={() => setShowAlert(true)}>
               <FaRegTrashCan
                 data-tooltip-target="Trash Icon"
                 style={{
@@ -158,8 +158,8 @@ const CommenterActions = ({
                 }}
                 fontSize="1.4rem"
               />
-            </Tooltip>
-          </button>
+            </button>
+          </Tooltip>
           <span> </span>
         </>
       </span>
