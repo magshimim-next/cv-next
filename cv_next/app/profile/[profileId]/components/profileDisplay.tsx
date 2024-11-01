@@ -1,3 +1,4 @@
+import { ProfileKeys } from "@/lib/supabase-definitions";
 import Categories from "@/types/models/categories";
 
 export const ProfileDisplay = ({ user }: { user: UserModel }) => {
@@ -18,7 +19,7 @@ export const ProfileDisplay = ({ user }: { user: UserModel }) => {
         </div>
         <div className="flex justify-between">
           <label htmlFor="workStatus">Work Status: </label>
-          <span id="workStatus">{user.work_status || "Nothing"}</span>
+          <span id="workStatus">{ProfileKeys.work_status[user.work_status] || "Nothing"}</span>
         </div>
       </div>
     </>
