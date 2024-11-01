@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { getUserById } from "@/server/api/users";
+import { getUserById, getUserByUsername } from "@/server/api/users";
 import { Err } from "@/lib/utils";
 import logger, { logErrorWithTrace } from "@/server/base/logger";
 import SupabaseHelper from "@/server/api/supabaseHelper";
@@ -16,9 +16,9 @@ import Definitions from "@/lib/definitions";
 //TODO: delete this and replace any user-related fetches with getUser(),
 // currently this relies on user id received from the browser which is unsafe.
 export const getUserModel = async (
-  userId: string
+  username: string
 ): Promise<Result<UserModel, string>> => {
-  const result = await getUserById(userId);
+  const result = await getUserByUsername(username);
   if (result.ok) {
     return result;
   } else {

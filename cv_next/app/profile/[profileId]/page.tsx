@@ -10,6 +10,7 @@ import ProfileCvs from "./components/profileCvs";
 export default async function Page({
   params,
 }: {
+  //TODO: change to profileUsename instead of profileId
   params: { profileId: string };
 }) {
   const { profileId } = params;

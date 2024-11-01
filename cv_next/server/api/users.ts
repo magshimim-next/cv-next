@@ -44,6 +44,34 @@ export async function getUserById(
   }
 }
 
+export async function getUserByUsername(
+  username: string
+): Promise<Result<UserModel, string>> {
+  try {
+    const { data: user, error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.profiles)
+      .select("*")
+      .eq(ProfileKeys.username, username);
+
+    if (error) {
+      return Err("Error @ " + getUserByUsername.name + "\n", {
+        postgrestError: error,
+      });
+    }
+
+    if (!user || user.length !== 1) {
+      return Err(
+        "Expected only one match for query; users found: " +
+          (user ? user.length : 0)
+      );
+    }
+
+    return Ok(user[0] as UserModel);
+  } catch (error) {
+    return Err("Error @ " + getUserByUsername.name + "\n" + error);
+  }
+}
+
 async function generateUsername(
   user: UserModel
 ): Promise<Result<string | undefined, string>> {
