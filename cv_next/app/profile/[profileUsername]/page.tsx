@@ -4,18 +4,19 @@ import { notFound } from "next/navigation";
 import { getUserModel } from "@/app/actions/users/getUser";
 import { getCvsByUserId } from "@/server/api/cvs";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
+import logger from "@/server/base/logger";
 import ProfileData from "./components/profileData";
 import ProfileCvs from "./components/profileCvs";
 
 export default async function Page({
   params,
 }: {
-  //TODO: change to profileUsename instead of profileId
-  params: { profileId: string };
+  params: { profileUsername: string };
 }) {
-  const { profileId } = params;
+  const { profileUsername } = params;
+  logger.info("profileUsername: " + profileUsername);
 
-  const result = await getUserModel(profileId);
+  const result = await getUserModel(profileUsername);
 
   if (result === null || !result.ok) {
     notFound();
