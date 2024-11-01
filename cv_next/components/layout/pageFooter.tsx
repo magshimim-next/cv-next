@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Credits } from "@/lib/definitions";
+import { Team_Credits as Credits } from "@/lib/definitions";
 
 const Footer: React.FC = () => {
   return (
