@@ -88,14 +88,6 @@ export default function ProfileForm({
     });
   };
 
-  const categoriesValidation = {
-    //NOTE: after discussion, this validation might be removed.
-    validate: {
-      maxSize: (selectedCategories: number[]) =>
-        selectedCategories.length <= 3 || "Max 3 categories",
-    },
-  };
-
   return (
     <form onSubmit={handleSubmit(handleOnSubmit)}>
       <div className="flex justify-between">
@@ -117,7 +109,6 @@ export default function ProfileForm({
         labels={mapCategories.map((id) => Categories.category[id])}
         control={control}
         defaultValue={user.work_status_categories ?? undefined}
-        validation={categoriesValidation}
       />
 
       <div className="flex justify-between">

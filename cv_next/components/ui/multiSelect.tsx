@@ -14,7 +14,7 @@ interface MultiSelectProps<T extends FieldValues> {
   options: number[];
   labels: string[];
   control: Control<T>;
-  validation: Partial<{
+  validation?: Partial<{
     required: string | ValidationRule<boolean>;
     min: ValidationRule<number>;
     max: ValidationRule<number>;
