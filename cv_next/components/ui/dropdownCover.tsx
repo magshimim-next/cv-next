@@ -22,10 +22,10 @@ const DropdownCover: React.FC<DropdownProps> = ({ title, children }) => {
         {title}
         <span
           className={`ml-2 transform transition-transform duration-300 ${
-            isOpen ? "rotate-90" : "rotate-0"
+            isOpen ? "rotate-45" : "rotate-0"
           }`}
         >
-          ➤
+          +
         </span>
       </button>
       <div
