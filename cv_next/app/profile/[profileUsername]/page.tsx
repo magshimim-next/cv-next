@@ -15,8 +15,9 @@ export default async function Page({
 }) {
   const { profileUsername } = params;
   logger.info("profileUsername: " + profileUsername);
+  const cleanUsername = decodeURIComponent(profileUsername);
 
-  const result = await getUserModel(profileUsername);
+  const result = await getUserModel(cleanUsername);
 
   if (result === null || !result.ok) {
     notFound();
