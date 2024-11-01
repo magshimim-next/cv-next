@@ -5,7 +5,11 @@ export const CvPreview = ({ cv }: { cv: CvModel }) => {
 
   return (
     <div style={{ height: "100%" }}>
-      <iframe src={previewUrl + "&rm=minimal"} width="100%" height="100%" />
+      <iframe
+        src={previewUrl + "&rm=minimal"}
+        className="h-1/2 md:h-full"
+        width="100%"
+      />
     </div>
   );
 };
