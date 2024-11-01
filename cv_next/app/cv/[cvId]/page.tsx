@@ -25,12 +25,12 @@ export default async function Page({ params }: { params: { cvId: string } }) {
     <div>
       <ScrollToTop />
       <CvData cv={cv} />
-      <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[70%_30%] md:gap-x-4">
+      <div className="grid grid-cols-1 grid-rows-[30%_70%] gap-y-4 md:grid-cols-[70%_30%]  md:gap-x-4">
         <section className="h-[78.75rem] flex-col rounded-lg">
           {cv ? <CvPreview cv={cv} /> : null}
         </section>
 
-        <section className="h-[78.75rem] flex-col self-start rounded-lg">
+        <section className="h-[80rem] flex-col self-start rounded-lg md:h-[78.75rem]">
           <div
             style={{ display: "flex", flexDirection: "column", height: "100%" }}
           >
