@@ -3,8 +3,7 @@ import Link from "next/link";
 import { useState, useRef } from "react";
 import { Upload } from "lucide-react";
 import Image from "next/image";
-import { ModeToggle } from "@/components/layout/navbar/modeToggle";
-import logo from "@/public/images/logo.png";
+import { ModeToggle, themeManager } from "@/components/layout/navbar/modeToggle";
 import { PopupToggle } from "./popupToggle";
 
 const navLinks = [
@@ -48,7 +47,7 @@ export default function Navbar() {
           <div className="flex items-center space-x-4">
             <Link href="/">
               <h1 className="flex flex-row text-2xl font-bold text-white duration-200 lg:hover:scale-[1.10]">
-                <Image src={logo} width={60} height={40} alt="Header image" />
+                <Image src={themeManager.getIcons().logo} width={60} height={40} alt="Header image" />
                 NEXT
               </h1>
             </Link>

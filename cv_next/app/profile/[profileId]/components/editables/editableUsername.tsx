@@ -71,7 +71,7 @@ export default function EditableUsername({ user }: { user: UserModel }) {
   if (!viewingCurrentUser) {
     return (
       <div className="flex items-center">
-        <p className="inline-flex items-center text-xl font-semibold text-gray-900 dark:text-white">
+        <p className="inline-flex items-center text-xl font-semibold text-text-color">
           {value}
         </p>
       </div>
@@ -87,17 +87,17 @@ export default function EditableUsername({ user }: { user: UserModel }) {
             value={tempValue}
             onChange={handleChange}
             autoFocus
-            className="mr-2 rounded-md border border-gray-300 p-2 text-xl font-semibold text-gray-900 dark:text-white"
+            className="mr-2 rounded-md border border-input-border p-2 text-xl font-semibold text-text-color"
           />
           <button
             onClick={handleSave}
-            className="text-xl text-gray-600 dark:text-gray-300"
+            className="text-xl text-text-color"
           >
             <Check />
           </button>
           <button
             onClick={handleCancel}
-            className="text-xl text-gray-600 dark:text-gray-300"
+            className="text-xl text-text-color"
           >
             <X />
           </button>
@@ -105,12 +105,12 @@ export default function EditableUsername({ user }: { user: UserModel }) {
       ) : (
         <div>
           <div className="flex justify-center">
-            <p className="inline-flex items-center text-xl font-semibold text-gray-900 dark:text-white">
+            <p className="inline-flex items-center text-xl font-semibold text-text-color">
               {value}
             </p>
             <button
               onClick={handleStartEditing}
-              className="ml-2 text-gray-600 dark:text-gray-300"
+              className="ml-2 text-text-color"
             >
               <PencilIcon size={20} />
             </button>

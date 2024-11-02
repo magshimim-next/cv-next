@@ -27,7 +27,7 @@ export default async function ProfileData({ user }: { user: UserModel }) {
     <div className="flex flex-col items-center">
       <div
         style={{ width: "100%" }}
-        className={`fill-available mb-3 rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800`}
+        className={`fill-available mb-3 rounded-lg border-b border-card-border p-6 text-base bg-card-background`}
       >
         <div style={{ marginBottom: "10px" }} className="flex justify-center">
           <DynamicProfileImage isPlaceholder={user.avatar_url ? false : true}>
@@ -49,11 +49,11 @@ export default async function ProfileData({ user }: { user: UserModel }) {
         </div>
       </div>
       <div
-        className={`mb-3 rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800`}
+        className={`mb-3 rounded-lg border-b border-card-border bg-card-background p-6 text-base`}
         style={{ width: "100%" }}
       >
         <div className="flex justify-center">
-          <p className="inline-flex items-center text-xl font-semibold text-gray-900 dark:text-white">
+          <p className="inline-flex items-center text-xl font-semibold text-text-color">
             Statistics
           </p>
         </div>
