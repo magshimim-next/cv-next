@@ -90,9 +90,12 @@ export default function ProfileForm({
 
   return (
     <form onSubmit={handleSubmit(handleOnSubmit)}>
-      <div className="flex justify-between">
-        <label htmlFor="username">Username: </label>
+      <div className="flex flex-wrap justify-between">
+        <label className="font-bold" htmlFor="username">
+          Username:{" "}
+        </label>
         <input
+          className="w-full"
           id="username"
           {...register("username", { required: "Username is required" })}
           defaultValue={user.username ?? ""}
@@ -111,8 +114,10 @@ export default function ProfileForm({
         defaultValue={user.work_status_categories ?? undefined}
       />
 
-      <div className="flex justify-between">
-        <label htmlFor="workStatus">Work Status</label>
+      <div className="flex flex-wrap justify-between">
+        <label className="font-bold" htmlFor="workStatus">
+          Work Status
+        </label>
         <select
           id="workStatus"
           {...register("workStatus", { required: "Work status is required" })}

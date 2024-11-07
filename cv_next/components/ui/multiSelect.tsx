@@ -71,8 +71,8 @@ export const MultiSelect = <T extends FieldValues>({
 
   return (
     <>
-      <div className="flex justify-between">
-        <label htmlFor={name}>{label}</label>
+      <div className="flex justify-between flex-wrap">
+        <label className="font-bold" htmlFor={name}>{label}</label>
         <select
           value=""
           onChange={(event) => handleChange(parseInt(event.target.value))}
@@ -87,7 +87,7 @@ export const MultiSelect = <T extends FieldValues>({
             ))}
         </select>
       </div>
-      <div className="w-100 bg-theme-700">
+      <div className="w-full bg-theme-700 max-h-16 overflow-y-scroll">
         {field?.value?.length
           ? field?.value.map((value: any, idx: number) => (
               <a
