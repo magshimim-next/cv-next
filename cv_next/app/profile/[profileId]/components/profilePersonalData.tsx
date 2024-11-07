@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ImagePlusIcon, PencilIcon } from "lucide-react";
+import { PencilIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { useUser } from "@/hooks/useUser";
@@ -27,10 +27,6 @@ export const ProfilePersonalData = ({
     }
   }, [user.id, userData]);
 
-  const changePfp = () => {
-    //To be implemented
-  };
-
   return (
     <div
       className="fill-available mb-3 w-full rounded-lg border-b
@@ -42,13 +38,6 @@ export const ProfilePersonalData = ({
             isPlaceholder={user.avatar_url ? false : true}
             className="relative"
           >
-            {isEditing && (
-              <ImagePlusIcon
-                size={20}
-                className="absolute left-0 top-0 z-10 ml-2 mt-2 cursor-pointer opacity-85"
-                onClick={changePfp}
-              />
-            )}
             <Image
               alt="profile"
               src={user.avatar_url || ""}
