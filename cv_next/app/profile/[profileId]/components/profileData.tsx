@@ -1,14 +1,13 @@
 "use server";
-import Image from "next/image";
+
+import { revalidateTag } from "next/cache";
 import { getCvsByUserId } from "@/server/api/cvs";
 import logger from "@/server/base/logger";
-import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { fetchUserComments } from "@/app/actions/comments/fetchComments";
 import { getCvsFromComments } from "@/app/actions/cvs/fetchCvs";
 import DropdownCover from "@/components/ui/dropdownCover";
 import CategoryCounter from "./categoryCounter";
-import EditableUsername from "./editables/editableUsername";
-import EditableWorkStatus from "./editables/editableWorkStatus";
+import { ProfilePersonalData } from "./profilePersonalData";
 
 export default async function ProfileData({ user }: { user: UserModel }) {
   const cvs = await getCvsByUserId(user.id);
@@ -23,32 +22,15 @@ export default async function ProfileData({ user }: { user: UserModel }) {
     return <div>Error Fetching user&apos;s CVs</div>;
   }
   const CVsFromComments = await getCvsFromComments(commentsResult);
+  const revalidate = () => {
+    "use server";
+
+    revalidateTag("user-" + user.id);
+  };
 
   return (
     <div className="flex flex-col items-center">
-      <div
-        style={{ width: "100%" }}
-        className={`fill-available mb-3 rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800`}
-      >
-        <div style={{ marginBottom: "10px" }} className="flex justify-center">
-          <DynamicProfileImage isPlaceholder={user.avatar_url ? false : true}>
-            <Image
-              alt="profile"
-              src={user.avatar_url || ""}
-              width={90}
-              height={60 * 1.4142}
-              className="rounded-lg p-2"
-              priority={true}
-            ></Image>
-          </DynamicProfileImage>
-        </div>
-        <div className="flex justify-center">
-          <EditableUsername user={user} />
-        </div>
-        <div className="flex justify-center">
-          <EditableWorkStatus user={user} />
-        </div>
-      </div>
+      <ProfilePersonalData user={user} revalidationFn={revalidate} />
       <DropdownCover title="Statistics">
         <div className="col-md-12 mt-2 flex justify-center">
           <CategoryCounter

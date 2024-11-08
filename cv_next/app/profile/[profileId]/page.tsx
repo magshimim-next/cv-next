@@ -1,6 +1,7 @@
 "use server";
 
 import { notFound } from "next/navigation";
+import { unstable_cache } from "next/cache";
 import { getUserModel } from "@/app/actions/users/getUser";
 import { getCvsByUserId } from "@/server/api/cvs";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
@@ -14,7 +15,15 @@ export default async function Page({
 }) {
   const { profileId } = params;
 
-  const result = await getUserModel(profileId);
+  const userFetcher = getUserModel(profileId);
+
+  const getCachedUser = unstable_cache(
+    async () => await userFetcher,
+    [profileId],
+    { tags: ["user-" + profileId] }
+  );
+
+  const result = await getCachedUser();
 
   if (result === null || !result.ok) {
     notFound();
