@@ -1,3 +1,4 @@
+"use client";
 import { createContext, useState, useContext, ReactNode } from "react";
 import PopupWrapper from "@/components/ui/popupWrapper";
 
