@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -11,25 +11,29 @@ import {
   routes,
   UI_Location,
 } from "@/lib/definitions";
-import PopupWrapper from "@/components/ui/popupWrapper";
+import { useError } from "@/providers/error-provider";
 import { LoginButtons } from "./loginButtons";
 
 export const AboutLayout = () => {
   const searchparams = useSearchParams();
-  const [errorMsg, setErrorMsg] = useState<string | null>();
-  const [errorDescription, setErrorDescription] = useState<string | null>();
+  const { showError } = useError();
   const router = useRouter();
+  const error = searchparams.get("error");
 
   useEffect(() => {
-    const error = searchparams.get("error");
-    if (error == Visible_Error_Messages.InactiveUser.keyword) {
-      setErrorMsg(Visible_Error_Messages.InactiveUser.title);
-      setErrorDescription(Visible_Error_Messages.InactiveUser.description);
+    if (error === Visible_Error_Messages.InactiveUser.keyword) {
+      showError(
+        Visible_Error_Messages.InactiveUser.title,
+        Visible_Error_Messages.InactiveUser.description,
+        () => router.push("/signup")
+      );
     } else if (error != null) {
-      setErrorMsg(Visible_Error_Messages.DefaultError.title);
-      setErrorDescription(Visible_Error_Messages.DefaultError.description);
+      showError(
+        Visible_Error_Messages.DefaultError.title,
+        Visible_Error_Messages.DefaultError.description
+      );
     }
-  }, [searchparams]);
+  }, [error, showError, router]);
 
   return (
     <main className="p-4">
@@ -37,23 +41,6 @@ export const AboutLayout = () => {
         <div className="flex flex-1 flex-col items-center gap-4 text-center lg:gap-8">
           <div className="flex flex-col items-center justify-center space-y-4">
             <h1 className="flex items-center justify-center text-4xl font-bold lg:text-7xl">
-              {errorMsg && (
-                <PopupWrapper
-                  onClose={() => {
-                    setErrorMsg(null);
-                    router.push("/signout");
-                  }}
-                >
-                  <div className="flex flex-col items-center justify-center rounded-md border-2 border-black bg-red-700 px-4 py-2 text-white">
-                    <div className="text-xl font-bold">{errorMsg}</div>
-                    {errorDescription && (
-                      <div className="mt-2 text-lg text-white/90">
-                        {errorDescription}
-                      </div>
-                    )}
-                  </div>
-                </PopupWrapper>
-              )}
               {heroHeader.image && (
                 <div className="mr-4 flex-shrink-0">
                   <Image
