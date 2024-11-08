@@ -25,7 +25,7 @@ export const AboutLayout = () => {
       showError(
         Visible_Error_Messages.InactiveUser.title,
         Visible_Error_Messages.InactiveUser.description,
-        () => router.push("/signup")
+        () => router.push("/signout")
       );
     } else if (error != null) {
       showError(
