@@ -14,6 +14,7 @@ import { DropdownInput } from "@/app/feed/components/filters/valueSelect";
 import { InputBox, InputTextArea } from "@/app/feed/components/inputbar";
 import { getAllNumbersFromArr } from "@/lib/utils";
 import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
+import { useError } from "@/providers/error-provider";
 
 const InputRow = ({
   inputElement,
@@ -50,7 +51,7 @@ export default function Page() {
   const [catagoryId, setCatagoryId] = useState<number[]>([]);
   const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
-  const [errorMsg, setErrorMsg] = useState<string | null>();
+  const { showError } = useError();
 
   const validate = (() => {
     const checkIfLinkIsValid = () => {
@@ -78,26 +79,21 @@ export default function Page() {
 
   async function startUpload() {
     if (!validate.cv()) return;
-    setErrorMsg(
-      await checkUploadCV({
-        cvData: {
-          cvCategories: catagoryId,
-          description: description,
-          link: link,
-        },
-      })
-    );
+    const uploadResp = await checkUploadCV({
+      cvData: {
+        cvCategories: catagoryId,
+        description: description,
+        link: link,
+      },
+    });
+    if (uploadResp) {
+      showError(uploadResp, "");
+    }
   }
+
   return (
     <main className="p-4">
       <Suspense fallback={<div>Loading...</div>}>
-        {errorMsg && (
-          <PopupWrapper onClose={() => setErrorMsg(null)}>
-            <div className="flex items-center justify-center rounded-md border-2 border-black bg-red-700 px-4 py-2 text-xl text-white">
-              {errorMsg}
-            </div>
-          </PopupWrapper>
-        )}
         <div className="flex w-full flex-col items-center justify-center">
           <h1 className="mb-6 text-4xl font-bold sm:text-5xl md:text-6xl">
             Upload CV
