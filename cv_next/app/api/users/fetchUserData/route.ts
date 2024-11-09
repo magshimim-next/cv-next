@@ -32,7 +32,7 @@ async function getUserNameHandler(data: { userId: string }) {
       { status: 500 }
     );
   } else {
-    const userName = result.val.username ?? result.val.full_name;
+    const userName = result.val.full_name; //result.val.username ??
     return NextResponse.json({
       fullName: userName ?? null,
     });

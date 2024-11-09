@@ -7,9 +7,9 @@ import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 
 export default function CvData({ cv }: { cv: CvModel }) {
   const uploader = JSON.parse(JSON.stringify(cv.user_id));
-  const userName = uploader.username?.length
-    ? uploader.username
-    : uploader.full_name;
+  const userName = uploader.full_name; // uploader.username?.length
+  //   ? uploader.username
+  //   : uploader.full_name;
   return (
     <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[65%_35%] md:gap-x-4">
       <article

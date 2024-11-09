@@ -283,3 +283,76 @@ export async function userIsAdmin(): Promise<Result<void, string>> {
     });
   }
 }
+
+/**
+ * check if the username is valid and generate one if it's not
+ *
+ * @returns {Promise<Result<Boolean, String>} whether the username is valid and was generated or not
+ */
+export async function validateUsername(): Promise<Result<Boolean, String>> {
+  const id = await getCurrentId();
+
+  if (!id.ok || !id.val) {
+    return Err(validateUsername.name, { err: Error("No user was connected!") });
+  }
+
+  const { data: user, error } = await SupabaseHelper.getSupabaseInstance()
+    .from(Tables.profiles)
+    .select("*")
+    .eq(ProfileKeys.id, id.val)
+    .single();
+
+  if (error) {
+    return Err(validateUsername.name, { postgrestError: error });
+  }
+
+  let isGenerated = false;
+  if (user.username === null || user.username === "") {
+    const usernameResult = await generateUsername(user as UserModel);
+    if (usernameResult.ok && usernameResult.val) {
+      //only update the user object if the username was successfully set
+      user.username = usernameResult.val;
+      isGenerated = true;
+
+      const updateDisplayNameResult = await setDisplayName(
+        user.id,
+        usernameResult.val
+      );
+      if (!updateDisplayNameResult.ok) {
+        return Err(
+          "Error @ " + validateUsername.name + "\n",
+          updateDisplayNameResult.errors
+        );
+      }
+    }
+  }
+
+  return Ok(isGenerated);
+}
+
+/**
+ * Changes the dispaly name of a given user.
+ *
+ * @param {string} userId - The ID of the user to update.
+ * @param {string} newDisplayName - The new display name.
+ * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ */
+export async function setDisplayName(
+  userId: string,
+  newDisplayName: string
+): Promise<Result<void, string>> {
+  try {
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.profiles)
+      .update({ full_name: newDisplayName })
+      .eq(ProfileKeys.id, userId);
+    if (error) {
+      return Err(setDisplayName.name, { postgrestError: error });
+    }
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(setDisplayName.name, {
+      err: err as Error,
+    });
+  }
+}

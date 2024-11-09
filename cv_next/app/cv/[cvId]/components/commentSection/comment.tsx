@@ -389,7 +389,7 @@ export default function Comment({
               className="text-lg font-medium hover:underline"
               href={`/profile/${commenter.username}`}
             >
-              {commenter.username || commenter.full_name}
+              {commenter.full_name}
             </Link>
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-400">

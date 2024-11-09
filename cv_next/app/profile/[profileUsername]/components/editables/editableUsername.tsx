@@ -3,13 +3,13 @@ import React, { useState, useEffect } from "react";
 import { PencilIcon, Check, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
-import { setNewUsername } from "@/app/actions/users/updateUser";
+import { setNewDisplayName } from "@/app/actions/users/updateUser";
 
 export default function EditableUsername({ user }: { user: UserModel }) {
   const router = useRouter();
-  const [value, setValue] = useState(user.username || user.full_name || "");
+  const [value, setValue] = useState(user.full_name || user.username || "");
   const [tempValue, setTempValue] = useState(
-    user.username || user.full_name || ""
+    user.full_name || user.username || ""
   );
   const [isEditing, setIsEditing] = useState(false);
   const [viewingCurrentUser, setViewingCurrentUser] = useState(false);
@@ -30,7 +30,7 @@ export default function EditableUsername({ user }: { user: UserModel }) {
   useEffect(() => {
     (async () => {
       if (value != (user.username || user.full_name) && viewingCurrentUser) {
-        const result = await setNewUsername(user.id, value);
+        const result = await setNewDisplayName(user.id, value);
         if (!result.ok) {
           if (
             result.errors.postgrestError?.message.includes(
@@ -41,8 +41,8 @@ export default function EditableUsername({ user }: { user: UserModel }) {
           } else {
             setError("Error updating the username!");
           }
-          setValue(user.username || user.full_name || "");
-          setTempValue(user.username || user.full_name || "");
+          setValue(user.full_name || user.username || "");
+          setTempValue(user.full_name || user.username || "");
         }
       }
     })();

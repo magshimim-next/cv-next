@@ -4,6 +4,7 @@ import Definitions from "@/lib/definitions";
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { checkRedirect } from "@/lib/utils";
 import logger from "@/server/base/logger";
+import { validateUsername } from "@/server/api/users";
 export async function GET(request: Request) {
   const { searchParams, origin: _origin } = new URL(request.url);
   const code = searchParams.get("code");
@@ -13,9 +14,20 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       if (checkRedirect(next)) {
-        return NextResponse.redirect(
-          `${process.env.NEXT_PUBLIC_BASE_URL}${Definitions.AUTH_DEFAULT_REDIRECT}${next}`
-        );
+        const isValid = await validateUsername();
+        if (isValid.ok) {
+          if (isValid.val) {
+            logger.info(
+              validateUsername.name,
+              "Username was generated successfully"
+            );
+          }
+          return NextResponse.redirect(
+            `${process.env.NEXT_PUBLIC_BASE_URL}${Definitions.AUTH_DEFAULT_REDIRECT}${next}`
+          );
+        } else {
+          logger.error(isValid.errors, "Error in validating Username");
+        }
       } else {
         const notFoundUrl = new URL(
           "/not-found",
