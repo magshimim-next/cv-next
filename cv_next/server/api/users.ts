@@ -138,6 +138,31 @@ function slugifyName(fullName: string): string {
     .replace(/[^a-zA-Z0-9.]/g, "");
 }
 
+export const updateUser = async (
+  user: Partial<UserModel>
+): Promise<Result<void, string>> => {
+  if (user?.id === undefined) {
+    return Err(updateUser.name, {
+      err: Error("User ID is undefined"),
+    });
+  }
+  const { id } = user;
+  try {
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.profiles)
+      .update({ ...user })
+      .eq(ProfileKeys.id, id);
+    if (error) {
+      return Err(updateUser.name, { postgrestError: error });
+    }
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(updateUser.name, {
+      err: err as Error,
+    });
+  }
+};
+
 /**
  * Changes the username of a given user.
  *

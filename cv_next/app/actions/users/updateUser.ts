@@ -5,9 +5,28 @@ import {
   setWorkStatus,
   setWorkCategories,
   setDisplayName,
+  updateUser,
 } from "@/server/api/users";
 import { Err } from "@/lib/utils";
 import { logErrorWithTrace } from "@/server/base/logger";
+
+/**
+ * Partial update to a user.
+ *
+ * @param {Partial<UserModel>} user - partial user data to update
+ * @returns {Promise<Result<void, string>>} A Promise with the result of the operation.
+ */
+export const updateUserAction = async (
+  user: Partial<UserModel>
+): Promise<Result<void, string>> => {
+  const result = await updateUser(user);
+  if (result.ok) {
+    return result;
+  } else {
+    logErrorWithTrace(result);
+    return Err("Couldn't update the user", result.errors);
+  }
+};
 
 /**
  * Updates a user's username.
