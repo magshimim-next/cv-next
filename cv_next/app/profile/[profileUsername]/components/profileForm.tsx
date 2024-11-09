@@ -54,7 +54,7 @@ export default function ProfileForm({
     // Only update if the value has changed
     if (username !== user.username) {
       //TODO: username needs to be handled very differently!
-      userDataToUpdate.username = username;
+      userDataToUpdate.full_name = username;
     }
     if (
       JSON.stringify(workCategories.toSorted()) !==
@@ -98,7 +98,7 @@ export default function ProfileForm({
           className="w-full"
           id="username"
           {...register("username", { required: "Username is required" })}
-          defaultValue={user.username ?? ""}
+          defaultValue={user.full_name ?? ""}
         />
         {errors.username && (
           <FormErrorMessage message={errors.username.message} />

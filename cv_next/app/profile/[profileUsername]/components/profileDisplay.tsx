@@ -9,7 +9,7 @@ export const ProfileDisplay = ({ user }: { user: UserModel }) => {
           <label className="font-bold" htmlFor="username">
             Username:{" "}
           </label>
-          <span id="username">{user.username}</span>
+          <span id="username">{user.full_name}</span>
         </div>
         <div className="flex flex-wrap justify-between">
           <label className="font-bold" htmlFor="workCategories">

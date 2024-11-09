@@ -25,7 +25,7 @@ export default async function ProfileData({ user }: { user: UserModel }) {
   const revalidate = () => {
     "use server";
 
-    revalidateTag("user-" + user.id);
+    revalidateTag("user-" + user.username);
   };
 
   return (
