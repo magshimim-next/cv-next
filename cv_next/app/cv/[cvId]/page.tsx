@@ -29,24 +29,14 @@ export default async function Page({ params }: { params: { cvId: string } }) {
         <section className="h-[78.75rem] flex-col rounded-lg">
           {cv ? <CvPreview cv={cv} /> : null}
         </section>
-
-        <section className="h-[80rem] flex-col self-start rounded-lg md:h-[78.75rem]">
-          <div
-            style={{ display: "flex", flexDirection: "column", height: "100%" }}
-          >
-            <div style={{ flex: "0 0 auto" }}>
-              <CommentForm cv={cv} />
-            </div>
-            <div
-              style={{
-                flex: "1 1 auto",
-                overflowY: "auto",
-              }}
-            >
+        <div className="flex">
+          <section className="flex h-[85vh] max-h-[85vh] w-[50vh] flex-col self-start overflow-y-auto overflow-x-hidden">
+            <CommentForm cv={cv} />
+            <div className="flex h-[85vh] max-h-[85vh] w-[100%] flex-col self-start overflow-y-auto overflow-x-hidden">
               <CommentsSection cv={cv} />
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
     </div>
   );

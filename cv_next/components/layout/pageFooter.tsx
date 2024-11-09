@@ -18,9 +18,9 @@ const Footer: React.FC = () => {
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             className="lucide lucide-linkedin"
           >
             <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
@@ -59,7 +59,7 @@ const Footer: React.FC = () => {
         </p>
       </div>
       <div className="mb-2 flex justify-center">
-        <div className="mb-2 flex h-10 max-w-fit items-center justify-center rounded-md px-5 text-xs opacity-50 shadow-md hover:shadow-xl">
+        <div className="mb-2 flex h-fit max-w-fit items-center justify-center rounded-md px-5 text-xs opacity-50 shadow-md hover:shadow-xl">
           {`Credit to our team: ${Credits.slice(0, -1).join(", ")} and ${Credits.slice(-1)}`}
         </div>
       </div>
