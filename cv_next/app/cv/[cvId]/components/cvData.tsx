@@ -7,7 +7,7 @@ import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 
 export default function CvData({ cv }: { cv: CvModel }) {
   const uploader = JSON.parse(JSON.stringify(cv.user_id));
-  const userName = uploader.full_name || uploader.username;
+  const displayName = uploader.full_name || uploader.username;
   return (
     <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[65%_35%] md:gap-x-4">
       <article
@@ -34,7 +34,7 @@ export default function CvData({ cv }: { cv: CvModel }) {
                   className="text-lg font-medium hover:underline"
                   href={`/profile/${uploader.username}`}
                 >
-                  {userName}
+                  {displayName}
                 </Link>
               </p>
               <div className="flex flex-wrap space-x-2">
