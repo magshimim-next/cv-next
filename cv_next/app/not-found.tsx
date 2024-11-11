@@ -30,8 +30,7 @@ export default function NotFound() {
             </div>
             <div className="items-center-justify-center flex flex-row">
               <h2 className="place-self-center text-left text-3xl">
-                This page didn’t land the job. Try another
-                page!&nbsp;
+                This page didn’t land the job. Try another page!&nbsp;
                 <a href="/" className="underline">
                   Go Home
                 </a>
