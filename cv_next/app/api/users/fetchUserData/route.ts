@@ -34,7 +34,7 @@ async function getUserNameHandler(data: { userId: string }) {
       { status: 500 }
     );
   } else {
-    const userName = result.val.username || result.val.full_name;
+    const userName = result.val.username || result.val.display_name;
     return NextResponse.json({
       username: userName ?? null,
     });
@@ -60,7 +60,7 @@ async function getDisplayNameHandler(data: { userId: string }) {
       { status: 500 }
     );
   } else {
-    const displayName = result.val.full_name || result.val.username;
+    const displayName = result.val.display_name || result.val.username;
     return NextResponse.json({
       display_name: displayName ?? null,
     });

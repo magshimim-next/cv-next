@@ -60,7 +60,7 @@ const UserDataComponent: React.FC<{
             href={`/profile/${userData?.username}`}
             onClick={closeCb}
           >
-            {userData.full_name || userData.username}
+            {userData.display_name || userData.username}
           </Link>
         </div>
       ) : (

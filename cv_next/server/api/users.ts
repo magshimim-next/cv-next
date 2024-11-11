@@ -75,7 +75,7 @@ export async function getUserByUsername(
 async function generateUsername(
   user: UserModel
 ): Promise<Result<string | undefined, string>> {
-  if (!user.full_name) {
+  if (!user.display_name) {
     //username generation is based on user's name, fallback to user id..
     return Err("Error @ " + generateUsername.name + "\n", {
       err: Error("User's full name is empty"),
@@ -83,7 +83,7 @@ async function generateUsername(
   }
 
   let username: string | undefined;
-  let slugishedName = slugifyName(user.full_name);
+  let slugishedName = slugifyName(user.display_name);
   let isUnique = false;
   let attempt = 0;
 
@@ -369,7 +369,8 @@ export async function setDisplayName(
   try {
     const { error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.profiles)
-      .update({ full_name: newDisplayName })
+      //wont work until full_name is changed to full_name in the db
+      .update({ display_name: newDisplayName })
       .eq(ProfileKeys.id, userId);
     if (error) {
       return Err(setDisplayName.name, { postgrestError: error });

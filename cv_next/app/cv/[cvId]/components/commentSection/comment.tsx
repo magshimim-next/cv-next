@@ -129,7 +129,7 @@ const ResolvedSection = ({
 interface CommenterModel {
   id: string;
   username?: string;
-  full_name?: string;
+  display_name?: string;
 }
 
 interface CommenterActionsProps {
@@ -389,7 +389,7 @@ export default function Comment({
               className="text-lg font-medium hover:underline"
               href={`/profile/${commenter.username}`}
             >
-              {commenter.full_name}
+              {commenter.display_name}
             </Link>
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-400">
