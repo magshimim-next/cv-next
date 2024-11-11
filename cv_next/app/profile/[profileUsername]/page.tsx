@@ -5,7 +5,6 @@ import { unstable_cache } from "next/cache";
 import { getUserModel } from "@/app/actions/users/getUser";
 import { getCvsByUserId } from "@/server/api/cvs";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
-import logger from "@/server/base/logger";
 import ProfileData from "./components/profileData";
 import ProfileCvs from "./components/profileCvs";
 
@@ -15,11 +14,8 @@ export default async function Page({
   params: { profileUsername: string };
 }) {
   const { profileUsername } = params;
-  logger.info("profileUsername: " + profileUsername);
   const cleanUsername = decodeURIComponent(profileUsername);
-
   const userFetcher = await getUserModel(cleanUsername);
-  //const userFetcher = getUserModel(profileId);
 
   const getCachedUser = unstable_cache(
     async () => await userFetcher,
