@@ -1,11 +1,12 @@
 "use client";
-import Link from "next/link";
 import { useState, useRef } from "react";
 import { Upload } from "lucide-react";
 import Image from "next/image";
-import { ModeToggle } from "@/components/layout/navbar/modeToggle";
+import Link from "next/link";
 import logo from "@/public/images/logo.png";
+import { ModeToggle } from "@/components/layout/navbar/modeToggle";
 import { PopupToggle } from "./popupToggle";
+import { ScrollToggle } from "./scrollToggle";
 
 const navLinks = [
   {
@@ -22,6 +23,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const isScrolled = ScrollToggle();
 
   const handleClick = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -41,8 +43,8 @@ export default function Navbar() {
   return (
     <>
       <header className="relative top-0 h-[4.5rem] w-full select-none">
-        <div className="fixed top-0 -z-50 h-[2.25rem] w-full translate-y-2/4 bg-white" />
-        <div className="fixed top-0 z-40 h-[4.5rem] w-full bg-black bg-opacity-75 backdrop-blur-2xl" />
+        <div className="fixed top-0 -z-50 h-[2.25rem] w-full translate-y-2/4" />
+        <div className="fixed top-0 z-40 h-[4.5rem] w-full" />
         <div className="fixed top-0 z-50 h-[4.5rem] w-full">
           <nav className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-4 py-3 md:px-6">
             <div className="flex items-center">
@@ -55,16 +57,22 @@ export default function Navbar() {
                     objectFit="contain"
                   />
                 </div>
-                <span className="text-2xl font-bold leading-none text-white">
+                <span
+                  className={`delay-50 text-2xl font-bold leading-none text-white transition-opacity duration-150 ease-in-out ${isScrolled ? "opacity-0" : "opacity-100"}`}
+                >
                   NEXT
                 </span>
               </Link>
-              <div className="ml-4 flex items-center">
+              <div
+                className={`delay-50 ml-4 flex items-center transition-opacity duration-150 ease-in-out ${isScrolled ? "opacity-0" : "opacity-100"}`}
+              >
                 <ModeToggle />
               </div>
             </div>
 
-            <div className="hidden items-center space-x-6 md:flex">
+            <div
+              className={`delay-50 hidden items-center space-x-6 transition-opacity duration-150 ease-in-out md:flex ${isScrolled ? "opacity-0" : "opacity-100"}`}
+            >
               {navLinks.map((link) => (
                 <Link
                   key={link.route}
