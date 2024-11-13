@@ -10,7 +10,7 @@ const hall: React.FC = () => {
           A Huge Thank You to Our Contributors
         </h1>
         <h3 className="pb-8 text-base font-light text-muted-foreground lg:text-lg">
-          Want to also be in this list? Contact as in the community chat and win
+          Want to also be in this list? Contact us in the community chat and win
           eternal glory!
         </h3>
         <ul>

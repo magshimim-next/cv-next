@@ -1,13 +1,42 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { buttonVariants } from "@/components/ui/button";
-import { heroHeader, routes, UI_Location } from "@/lib/definitions";
 import { cn } from "@/lib/utils";
+import {
+  Visible_Error_Messages,
+  heroHeader,
+  routes,
+  UI_Location,
+} from "@/lib/definitions";
+import { useError } from "@/providers/error-provider";
 import { LoginButtons } from "./loginButtons";
 
 export const AboutLayout = () => {
+  const searchparams = useSearchParams();
+  const { showError } = useError();
+  const router = useRouter();
+  const error = searchparams.get("error");
+
+  useEffect(() => {
+    if (error === Visible_Error_Messages.InactiveUser.keyword) {
+      showError(
+        Visible_Error_Messages.InactiveUser.title,
+        Visible_Error_Messages.InactiveUser.description,
+        () => router.push("/signout")
+      );
+    } else if (error != null) {
+      showError(
+        Visible_Error_Messages.DefaultError.title,
+        Visible_Error_Messages.DefaultError.description
+      );
+    }
+  }, [error, showError, router]);
+
   return (
-    <main>
+    <main className="p-4">
       <section className="container mx-auto flex flex-col text-center lg:items-center lg:gap-8 ">
         <div className="flex flex-1 flex-col items-center gap-4 text-center lg:gap-8">
           <div className="flex flex-col items-center justify-center space-y-4">
