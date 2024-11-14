@@ -58,7 +58,7 @@ export const FilterPanel = ({
   }, []);
 
   return (
-    <div className=" my-[10px] flex flex-col items-center justify-between gap-2 md:flex-row">
+    <div className=" sticky top-3 z-10 my-[10px] flex flex-col items-center justify-between gap-2 px-6 md:flex-row">
       <InputBox
         placeHolder="Input text to search"
         value={searchValue}
