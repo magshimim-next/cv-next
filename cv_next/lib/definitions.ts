@@ -42,7 +42,7 @@ export class Link_Definitions {
 }
 
 export const heroHeader: PageHeader = {
-  header: `Next`,
+  header: `NEXT`,
   image: `/images/logo.png`,
   subheader: `Improve the Magshimim Next Community's resumes.`,
   explanation: `As a community, we can help each other secure jobs by enhancing our members' resumes. This website is a platform to upload resumes, allow others to review them, and make them better.
@@ -95,6 +95,7 @@ export const Team_Credits = [
   "Assaf Kabesa",
   "Alon Green",
   "Yarden Perets",
+  "Omri Anidgar",
 ];
 
 export const External_Credits = [

@@ -11,7 +11,7 @@ export const AboutLayout = () => {
       <section className="container mx-auto flex flex-col text-center lg:items-center lg:gap-8 ">
         <div className="flex flex-1 flex-col items-center gap-4 text-center lg:gap-8">
           <div className="flex flex-col items-center justify-center space-y-4">
-            <h1 className="flex items-center justify-center text-4xl font-bold lg:text-7xl">
+            <h1 className="flex select-none items-center justify-center text-4xl font-bold lg:text-7xl">
               {heroHeader.image && (
                 <div className="mr-4 flex-shrink-0">
                   <Image
@@ -20,6 +20,7 @@ export const AboutLayout = () => {
                     height={75}
                     alt="Header image"
                     className="object-cover"
+                    draggable="false"
                   />
                 </div>
               )}
