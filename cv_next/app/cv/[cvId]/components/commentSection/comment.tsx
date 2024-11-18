@@ -16,9 +16,8 @@ import { addComment } from "@/app/actions/comments/addComment";
 import { upvoteComment } from "@/app/actions/comments/setLike";
 import { setResolved } from "@/app/actions/comments/setResolved";
 import { deleteComment } from "@/app/actions/comments/deleteComment";
-import Alert from "../../../../../components/ui/alert";
-import Tooltip from "../../../../../components/ui/tooltip";
-//what the ^
+import Alert from "@/components/ui/alert";
+import Tooltip from "@/components/ui/tooltip";
 
 interface NewCommentBlockProps {
   commentOnCommentStatus: boolean;

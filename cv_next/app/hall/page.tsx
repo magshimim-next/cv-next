@@ -5,7 +5,7 @@ const hall: React.FC = () => {
   return (
     <div className="relative mx-auto h-full w-[700px] max-w-full xl:w-[1400px]">
       <ScrollToTop />
-      <div style={{ textAlign: "center", padding: "5px" }}>
+      <div className="p-1 text-center">
         <h1 className="mb-5 inline-flex items-center pt-3 text-2xl font-bold text-gray-900 dark:text-white sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl">
           A Huge Thank You to Our Contributors
         </h1>
