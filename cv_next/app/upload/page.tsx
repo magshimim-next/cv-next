@@ -48,7 +48,7 @@ const InputRow = ({
 };
 
 export default function Page() {
-  const [catagoryId, setCatagoryId] = useState<number[]>([]);
+  const [categoryId, setCategoryId] = useState<number[]>([]);
   const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const { showError } = useError();
@@ -62,14 +62,14 @@ export default function Page() {
       return validateGoogleViewOnlyUrl(link);
     };
     const checkIfCatagorisAreValid = () => {
-      return !!catagoryId && catagoryId.length >= 1 && catagoryId.length <= 3;
+      return !!categoryId && categoryId.length >= 1 && categoryId.length <= 3;
     };
     const checkIfDescriptionIsValid = () => {
       return !!description && description.length <= 500;
     };
     return {
       link: checkIfLinkIsValid,
-      catagoryIds: checkIfCatagorisAreValid,
+      categoryIds: checkIfCatagorisAreValid,
       description: checkIfDescriptionIsValid,
       cv: () => {
         if (!checkIfCatagorisAreValid()) return false;
@@ -85,7 +85,7 @@ export default function Page() {
     if (!validate.cv()) return;
     const uploadResp = await checkUploadCV({
       cvData: {
-        cvCategories: catagoryId,
+        cvCategories: categoryId,
         description: description,
         link: link,
       },
@@ -156,11 +156,11 @@ export default function Page() {
             <InputRow
               title="Category"
               inputDescription="Please select 1-3 categories"
-              isValid={!isCategoryTouched || validate.catagoryIds()}
+              isValid={!isCategoryTouched || validate.categoryIds()}
               inputElement={
                 <DropdownInput
                   onChange={(e) => {
-                    setCatagoryId(e || []);
+                    setCategoryId(e || []);
                     setIsCategoryTouched(true);
                   }}
                   placeHolder="Select category"
@@ -168,7 +168,7 @@ export default function Page() {
                     Object.keys(Categories.category)
                   )}
                   getValueById={(e) => Categories.category[e]}
-                  valueId={catagoryId}
+                  valueId={categoryId}
                   noneText="none"
                 />
               }
