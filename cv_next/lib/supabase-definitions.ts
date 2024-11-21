@@ -34,7 +34,7 @@ export const CvKeys: {
 
 export const ProfileKeys: {
   avatar_url: "avatar_url";
-  full_name: "full_name";
+  full_name: "display_name";
   updated_at: "updated_at";
   username: "username";
   id: "id";
@@ -50,7 +50,7 @@ export const ProfileKeys: {
   };
 } = {
   avatar_url: "avatar_url",
-  full_name: "full_name",
+  full_name: "display_name",
   updated_at: "updated_at",
   username: "username",
   id: "id",
