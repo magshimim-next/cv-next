@@ -53,12 +53,16 @@ export default function Page() {
   const [link, setLink] = useState("");
   const { showError } = useError();
 
+  const [isLinkTouched, setIsLinkTouched] = useState(false);
+  const [isDescriptionTouched, setIsDescriptionTouched] = useState(false);
+  const [isCategoryTouched, setIsCategoryTouched] = useState(false);
+
   const validate = (() => {
     const checkIfLinkIsValid = () => {
       return validateGoogleViewOnlyUrl(link);
     };
     const checkIfCatagorisAreValid = () => {
-      return !!catagoryId && catagoryId.length <= 3;
+      return !!catagoryId && catagoryId.length >= 1 && catagoryId.length <= 3;
     };
     const checkIfDescriptionIsValid = () => {
       return !!description && description.length <= 500;
@@ -102,11 +106,14 @@ export default function Page() {
             <InputRow
               title="Link"
               inputDescription="Please enter a Google Docs link of the CV"
-              isValid={validate.link()}
+              isValid={!isLinkTouched || validate.link()}
               inputElement={
                 <div className="flex w-full flex-row items-center justify-between">
                   <InputBox
-                    onChange={(e) => setLink(e)}
+                    onChange={(e) => {
+                      setLink(e);
+                      setIsLinkTouched(true);
+                    }}
                     placeHolder="Enter CV link"
                     value={link}
                   />
@@ -134,10 +141,13 @@ export default function Page() {
             <InputRow
               title="Description"
               inputDescription="Please enter a description 1 > 500 chars"
-              isValid={validate.description()}
+              isValid={!isDescriptionTouched || validate.description()}
               inputElement={
                 <InputTextArea
-                  onChange={setDescription}
+                  onChange={(e) => {
+                    setDescription(e);
+                    setIsDescriptionTouched(true);
+                  }}
                   placeHolder="Enter description"
                   value={description}
                 />
@@ -146,10 +156,13 @@ export default function Page() {
             <InputRow
               title="Category"
               inputDescription="Please select 1-3 categories"
-              isValid={validate.catagoryIds()}
+              isValid={!isCategoryTouched || validate.catagoryIds()}
               inputElement={
                 <DropdownInput
-                  onChange={(e) => setCatagoryId(e || [])}
+                  onChange={(e) => {
+                    setCatagoryId(e || []);
+                    setIsCategoryTouched(true);
+                  }}
                   placeHolder="Select category"
                   valueIds={getAllNumbersFromArr(
                     Object.keys(Categories.category)
