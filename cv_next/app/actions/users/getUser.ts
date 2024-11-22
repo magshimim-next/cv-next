@@ -66,8 +66,7 @@ export async function signInWithSocialProvider(provider: any, nextURL: string) {
           nextURL,
       },
     });
-  console.log(data);
-  console.log(error);
+
   if (error) logger.error(error, "Error signin");
   if (data.url) {
     redirect(data.url);
