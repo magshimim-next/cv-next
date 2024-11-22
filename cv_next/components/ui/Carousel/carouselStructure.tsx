@@ -1,8 +1,7 @@
 "use client";
-import React from "react";
 import { EmblaOptionsType } from "embla-carousel";
-import { PrevButton, NextButton, usePrevNextButtons } from "./carouselArrows";
 import useEmblaCarousel from "embla-carousel-react";
+import { PrevButton, NextButton, usePrevNextButtons } from "./carouselArrows";
 import { DotButton, useDotButton } from "./carouselDots";
 
 type PropType = {
@@ -29,7 +28,6 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
       className="embla"
       style={
         {
-          "maxWidth": "48rem",
           "margin": "auto",
           "--slide-height": "19rem",
           "--slide-spacing": "1rem",

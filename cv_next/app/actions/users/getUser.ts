@@ -1,10 +1,10 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { getUserById } from "@/server/api/users";
 import { Err } from "@/lib/utils";
 import logger, { logErrorWithTrace } from "@/server/base/logger";
 import SupabaseHelper from "@/server/api/supabaseHelper";
-import { redirect } from "next/navigation";
 import Definitions from "@/lib/definitions";
 
 /**

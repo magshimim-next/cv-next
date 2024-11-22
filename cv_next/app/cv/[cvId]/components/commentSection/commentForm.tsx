@@ -1,11 +1,11 @@
 "use client";
-import { addComment } from "@/app/actions/comments/addComment";
-import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useRef } from "react";
 import { RxPaperPlane } from "react-icons/rx";
 import { mutate } from "swr";
-import { usePathname } from "next/navigation";
+
+import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
+import { addComment } from "@/app/actions/comments/addComment";
 
 const COMMENT_FIELD_NAME = "comment";
 
@@ -16,6 +16,10 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
   const supabase = createClientComponent();
 
   const formAction = async (formData: FormData) => {
+    // Reset the form after submission and check if the comment is empty
+    formRef.current?.reset();
+    if ((formData.get(COMMENT_FIELD_NAME) as String).length <= 0) return;
+
     const userId = await supabase.auth.getUser();
     if (userId.error) {
       router.push(`/login?next=${pathname}`);
@@ -28,14 +32,13 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
       };
 
       await addComment(comment).finally(() => {
-        formRef.current?.reset();
         mutate(cv.id);
       });
     }
   };
 
   return (
-    <form className="mb-6" ref={formRef} action={formAction}>
+    <form className="mb-2" ref={formRef} action={formAction}>
       <div
         className="grid grid-cols-[90%_10%] rounded-lg rounded-t-lg border border-gray-200 bg-white py-2
                             pl-4 pr-2 dark:border-gray-700 dark:bg-gray-800"

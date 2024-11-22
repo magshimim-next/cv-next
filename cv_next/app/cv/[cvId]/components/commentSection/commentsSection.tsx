@@ -1,12 +1,12 @@
 "use client";
 
 import useSWR from "swr";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+
+import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { fetchCvComments } from "@/app/actions/comments/fetchComments";
 import Comment from "./comment";
-import { useEffect, useMemo, useState } from "react";
-import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
-import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
 
 export default function CommentsSection({ cv }: { cv: CvModel }) {
   const pathname = usePathname();

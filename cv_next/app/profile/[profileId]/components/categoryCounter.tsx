@@ -6,7 +6,9 @@ import Categories from "@/types/models/categories";
 const getTopCategories = async (cvs: CvModel[]) => {
   const categoryCount: { [key: number]: number } = {};
   cvs.forEach((cv) => {
-    categoryCount[cv.category_id] = (categoryCount[cv.category_id] || 0) + 1;
+    cv.cv_categories.forEach((category_id) => {
+      categoryCount[category_id] = (categoryCount[category_id] || 0) + 1;
+    });
   });
 
   const categoryCountArray = Object.entries(categoryCount).map(

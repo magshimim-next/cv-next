@@ -1,12 +1,11 @@
 import "server-only";
 
-import Categories from "@/types/models/categories";
-import Definitions from "../../lib/definitions";
-import SupabaseHelper from "./supabaseHelper";
 import { PostgrestError } from "@supabase/supabase-js";
-import logger from "../base/logger";
 import { Tables, CvKeys, ProfileKeys } from "@/lib/supabase-definitions";
 import { filterValues } from "@/types/models/filters";
+import Definitions from "@/lib/definitions";
+import logger from "@/server/base/logger";
+import SupabaseHelper from "./supabaseHelper";
 
 /**
  * Retrieves a CV by its ID from the database.
@@ -77,65 +76,6 @@ export async function getCvsByUserId(
     return null;
   }
 }
-
-export async function getAllCvsByCategory(
-  category: Categories.category,
-  filterOutDeleted: boolean = true
-): Promise<CvModel[] | null> {
-  try {
-    const supabase = SupabaseHelper.getSupabaseInstance();
-    let query = supabase
-      .from(Tables.cvs)
-      .select("*")
-      .eq(CvKeys.category_id, category);
-
-    if (filterOutDeleted) {
-      query = query.eq(CvKeys.deleted, false);
-    }
-
-    const { data: cvs, error } = await query;
-
-    if (error) {
-      logger.error(error, "getAllCvsByCategory");
-      return null;
-    }
-
-    return cvs as CvModel[];
-  } catch (error) {
-    logger.error(error, "getAllCvsByCategory");
-    return null;
-  }
-}
-
-async function _getAllCvsByCategories(
-  categories: Categories.category[],
-  filterOutDeleted: boolean = true
-): Promise<any> {
-  try {
-    const supabase = SupabaseHelper.getSupabaseInstance();
-    let query = supabase
-      .from(Tables.cvs)
-      .select("*")
-      .in(CvKeys.category_id, categories);
-
-    if (filterOutDeleted) {
-      query = query.eq(CvKeys.deleted, false);
-    }
-
-    const { data: cvs, error } = await query;
-
-    if (error) {
-      logger.error(error, "getAllCvsByCategories");
-      return error;
-    }
-    logger.debug(cvs, "Fetched CVs: ");
-    return cvs as CvModel[];
-  } catch (error) {
-    logger.error(error, "getAllCvsByCategories");
-    return error;
-  }
-}
-
 /**
  * Retrieves a paginated list of CVs based on the provided page number.
  *
@@ -158,36 +98,72 @@ export async function getPaginatedCvs(
     let query = supabase
       .from(Tables.cvs)
       .select("*")
+      .order(CvKeys.created_at, { ascending: false })
+      .eq(CvKeys.deleted, !filterOutDeleted)
       .range(from, to - 1);
+    let profileQuery = supabase.from(Tables.profiles).select(ProfileKeys.id);
 
     logger.debug(filters, "filters");
-    if (filters) {
-      if (filters.searchValue) {
-        query = query.textSearch(CvKeys.description, filters.searchValue);
-      }
-      if (filters.categoryIds) {
-        logger.debug(filters.categoryIds, "category ids");
-        query = query.overlaps(CvKeys.cv_categories, filters.categoryIds);
-      }
-    }
 
-    if (filterOutDeleted) {
-      query = query.eq(CvKeys.deleted, false);
-    }
+    profileQuery = applyProfileSearchFilter(profileQuery, filters);
+    query = applyCategoryFilter(query, filters);
+    query = await applyProfileSearchToCvs(query, profileQuery, filters);
 
     const { data: cvs, error } = await query;
-    logger.debug(cvs?.map((cv) => cv.cv_categories, "cvs"));
+    logger.debug(
+      cvs?.map((cv) => cv.cv_categories),
+      "cvs"
+    );
 
     if (error) {
       logger.error(error, "getPaginatedCvs");
       return null;
     }
 
-    return { page: page, cvs: cvs as CvModel[] };
+    return { page, cvs: cvs as CvModel[] };
   } catch (error) {
     logger.error(error, "getPaginatedCvs");
     return null;
   }
+}
+
+function applyProfileSearchFilter(profileQuery: any, filters?: filterValues) {
+  if (filters?.searchValue) {
+    const searchValue = `%${filters.searchValue}%`;
+    profileQuery = profileQuery.or(
+      `${ProfileKeys.full_name}.ilike.${searchValue},${ProfileKeys.username}.ilike.${searchValue}`
+    );
+  }
+  return profileQuery;
+}
+
+function applyCategoryFilter(query: any, filters?: filterValues) {
+  if (filters?.categoryIds?.length) {
+    logger.debug(filters.categoryIds, "category ids");
+    query = query.overlaps(CvKeys.cv_categories, filters.categoryIds);
+  }
+  return query;
+}
+
+async function applyProfileSearchToCvs(
+  query: any,
+  profileQuery: any,
+  filters?: filterValues
+) {
+  if (filters?.searchValue) {
+    const { data: profiles, error: profileError } = await profileQuery;
+    if (profileError) {
+      logger.error(profileError, "getPaginatedCvs - profileQuery");
+      return query;
+    }
+
+    const profileIds = profiles?.map((profile: UserModel) => profile.id) || [];
+    const searchValue = `%${filters.searchValue}%`;
+    query = query.or(
+      `${CvKeys.description}.ilike.${searchValue},${CvKeys.user_id}.in.(${profileIds.join(",")})`
+    );
+  }
+  return query;
 }
 
 /**
