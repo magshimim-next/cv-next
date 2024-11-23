@@ -7,7 +7,7 @@ export const ProfileDisplay = ({ user }: { user: UserModel }) => {
       <div className="m-auto w-full">
         <div className="flex flex-wrap justify-between">
           <label className="font-bold" htmlFor="username">
-            Username:{" "}
+            display name:{" "}
           </label>
           <span id="username">{user.display_name}</span>
         </div>

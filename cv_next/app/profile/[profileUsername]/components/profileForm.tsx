@@ -92,7 +92,7 @@ export default function ProfileForm({
     <form onSubmit={handleSubmit(handleOnSubmit)}>
       <div className="flex flex-wrap justify-between">
         <label className="font-bold" htmlFor="username">
-          Username:{" "}
+          display name:{" "}
         </label>
         <input
           className="w-full"
