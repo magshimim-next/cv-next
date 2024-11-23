@@ -7,7 +7,6 @@ frontend:
         - "npm install"
     build:
       commands:
-        - "cd cv_next"
         - "npm run build"
   artifacts:
     baseDirectory: /cv_next/.next
