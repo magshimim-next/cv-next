@@ -1,7 +1,7 @@
 version: 1
 frontend:
   phases:
-    prebuild:
+    preBuild:
       commands:
         - "cd cv_next"
         - "npm install"
