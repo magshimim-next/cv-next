@@ -4,7 +4,7 @@ frontend:
     preBuild:
       commands:
         - "cd cv_next"
-        - "npm install"
+        - "npm ci"
     build:
       commands:
         - "npm run build"
