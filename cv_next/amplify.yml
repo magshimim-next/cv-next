@@ -13,7 +13,7 @@ applications:
           commands:
             - "npm run build"
       artifacts:
-        baseDirectory: .next
+        baseDirectory: /cv_next/.next
         files:
           - "**/*"
       cache:
