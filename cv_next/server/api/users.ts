@@ -3,7 +3,6 @@ import "server-only";
 import crypto from "crypto";
 import { Ok, Err } from "@/lib/utils";
 import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
-import logger from "../base/logger";
 import SupabaseHelper from "./supabaseHelper";
 
 export async function getUserById(
@@ -393,16 +392,13 @@ export async function setFirstLogin(
   }
 
   try {
-    const { data, error } =
+    const { error } =
       await SupabaseHelper.getSupabaseInstance().auth.updateUser({
         data: { is_first_login: isFirstLogin },
       });
     if (error) {
       return Err(setFirstLogin.name, { authError: error });
     }
-
-    logger.info("First login set to: " + isFirstLogin);
-    logger.info(`User data: ${JSON.stringify(data)}`);
     return Ok.EMPTY;
   } catch (err) {
     return Err(setFirstLogin.name, {
