@@ -3,6 +3,7 @@ import "server-only";
 import crypto from "crypto";
 import { Ok, Err } from "@/lib/utils";
 import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
+import logger from "../base/logger";
 import SupabaseHelper from "./supabaseHelper";
 
 export async function getUserById(
@@ -339,15 +340,9 @@ export async function validateUsername(): Promise<Result<Boolean, String>> {
       user.username = usernameResult.val;
       isGenerated = true;
 
-      const updateDisplayNameResult = await setDisplayName(
-        user.id,
-        usernameResult.val
-      );
-      if (!updateDisplayNameResult.ok) {
-        return Err(
-          "Error @ " + validateUsername.name + "\n",
-          updateDisplayNameResult.errors
-        );
+      const res = await setFirstLogin(true);
+      if (!res.ok) {
+        return Err("Error @ " + validateUsername.name + "\n", res.errors);
       }
     }
   }
@@ -356,7 +351,7 @@ export async function validateUsername(): Promise<Result<Boolean, String>> {
 }
 
 /**
- * Changes the dispaly name of a given user.
+ * Changes the display name of a given user.
  *
  * @param {string} userId - The ID of the user to update.
  * @param {string} newDisplayName - The new display name.
@@ -378,6 +373,39 @@ export async function setDisplayName(
     return Ok.EMPTY;
   } catch (err) {
     return Err(setDisplayName.name, {
+      err: err as Error,
+    });
+  }
+}
+
+/*
+ * Set the first login status of the current user.
+ *
+ * @param {boolean} isFirstLogin - first login status.
+ * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ */
+export async function setFirstLogin(
+  isFirstLogin: boolean
+): Promise<Result<void, string>> {
+  const id = await getCurrentId();
+  if (!id.ok || !id.val) {
+    return Err(setFirstLogin.name, { err: Error("No user was connected!") });
+  }
+
+  try {
+    const { data, error } =
+      await SupabaseHelper.getSupabaseInstance().auth.updateUser({
+        data: { is_first_login: isFirstLogin },
+      });
+    if (error) {
+      return Err(setFirstLogin.name, { authError: error });
+    }
+
+    logger.info("First login set to: " + isFirstLogin);
+    logger.info(`User data: ${JSON.stringify(data)}`);
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(setFirstLogin.name, {
       err: err as Error,
     });
   }
