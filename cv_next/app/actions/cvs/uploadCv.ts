@@ -1,15 +1,15 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { uploadCV, getCvsByUserId } from "@/server/api/cvs";
 import { transformGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
-import { redirect } from "next/navigation";
 import logger from "@/server/base/logger";
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { encodeValue } from "@/lib/utils";
 export interface InputValues {
   link: string;
   description: string;
-  catagoryId: number[] | null;
+  cvCategories: number[] | null;
 }
 
 export const checkUploadCV = async ({
@@ -17,6 +17,7 @@ export const checkUploadCV = async ({
 }: {
   cvData: InputValues;
 }): Promise<string | null> => {
+  // TODO: change to the getUser of #99 after merge
   const supabase = SupabaseHelper.getSupabaseInstance();
   const connectedUser = await supabase.auth.getUser();
   if (connectedUser.error || !connectedUser.data.user) {
@@ -27,7 +28,8 @@ export const checkUploadCV = async ({
   if (
     !cvData.link?.trim() ||
     !cvData.description?.trim() ||
-    cvData.catagoryId === undefined
+    cvData.cvCategories == undefined ||
+    cvData.cvCategories.length <= 0
   ) {
     logger.error("Missing variables!");
     return "Missing variables!";
@@ -48,9 +50,8 @@ export const checkUploadCV = async ({
   const cvToUpload: NewCvModel = {
     document_link: transformedURL,
     description: cvData.description,
-    category_id: (cvData.catagoryId ?? [0])[0],
     user_id: userId,
-    cv_categories: cvData.catagoryId ?? [],
+    cv_categories: cvData.cvCategories,
   };
 
   logger.debug("Can upload:", cvToUpload);

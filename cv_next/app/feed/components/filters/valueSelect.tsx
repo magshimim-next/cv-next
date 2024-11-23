@@ -9,6 +9,7 @@ export const DropdownInput = ({
   text,
   isApplyOptionVisible,
   noneText,
+  selected,
 }: {
   placeHolder: string;
   valueIds: number[];
@@ -18,13 +19,15 @@ export const DropdownInput = ({
   text?: string;
   isApplyOptionVisible?: boolean;
   noneText: "all" | "none";
+  selected?: number[] | null;
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<number[]>(
+    selected || []
+  );
   const isPlaceHolder = valueId === null;
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [selectTitle, setSelectTitle] = useState("");
-
   const menuBorderStyle = isMenuOpen ? "outline-b-0 rounded-b-none" : "";
   const selectionStyle = isMenuOpen ? "block" : "hidden";
   const textValue = isPlaceHolder ? (

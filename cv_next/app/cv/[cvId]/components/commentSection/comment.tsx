@@ -1,23 +1,23 @@
 "use client";
 
-import { deleteComment } from "@/app/actions/comments/deleteComment";
-import { setResolved } from "@/app/actions/comments/setResolved";
-import { upvoteComment } from "@/app/actions/comments/setLike";
-import { addComment } from "@/app/actions/comments/addComment";
 import { useSWRConfig } from "swr";
 import { RxPlus } from "react-icons/rx";
-import { GoCheckCircle } from "react-icons/go";
-import { GoCheckCircleFill } from "react-icons/go";
+import { GoCheckCircle, GoCheckCircleFill } from "react-icons/go";
+
 import { FaRegTrashCan } from "react-icons/fa6";
 import { FaComment } from "react-icons/fa";
-import Tooltip from "../../../../../components/ui/tooltip";
-import { AiTwotoneLike } from "react-icons/ai";
-import { AiFillLike } from "react-icons/ai";
+import { AiTwotoneLike, AiFillLike } from "react-icons/ai";
+
 import { useCallback, useState } from "react";
-import Alert from "../../../../../components/ui/alert";
 import Link from "next/link";
 import { HiXMark } from "react-icons/hi2";
 import { usePathname, useRouter } from "next/navigation";
+import { addComment } from "@/app/actions/comments/addComment";
+import { upvoteComment } from "@/app/actions/comments/setLike";
+import { setResolved } from "@/app/actions/comments/setResolved";
+import { deleteComment } from "@/app/actions/comments/deleteComment";
+import Alert from "@/components/ui/alert";
+import Tooltip from "@/components/ui/tooltip";
 
 interface NewCommentBlockProps {
   commentOnCommentStatus: boolean;
@@ -286,7 +286,8 @@ export default function Comment({
     ): CommentModel[] => {
       const newCommentsOfComments = new Map<string, CommentModel[]>(
         prevData?.reduce((acc, cur) => {
-          const key = cur.parent_comment_Id || "root"; // Use 'root' for top-level comments
+          // Use 'root' for top-level comments
+          const key = cur.parent_comment_Id || "root";
           if (!acc.has(key)) {
             acc.set(key, []);
           }
@@ -379,7 +380,7 @@ export default function Comment({
   return (
     <article
       key={comment.id}
-      className={`${commentBackground} text-base ${childOrParentStyling}`}
+      className={`${commentBackground} relative text-base ${childOrParentStyling}`}
     >
       <footer className="mb-2 flex items-center justify-between">
         <div className="flex items-center">

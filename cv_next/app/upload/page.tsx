@@ -1,18 +1,20 @@
 "use client";
 
-import { Suspense, useState } from "react";
-import { InputBox, InputTextArea } from "../feed/components/inputbar";
-import { DropdownInput } from "../feed/components/filters/valueSelect";
 import Image from "next/image";
+import { Suspense, useState } from "react";
+
+import { CvPreview } from "@/components/cvPerview";
+import PopupWrapper from "@/components/ui/popupWrapper";
 import openLink from "@/public/images/openLink.png";
 import warningIcon from "@/public/images/warning.png";
 import Categories from "@/types/models/categories";
+import { checkUploadCV } from "@/app/actions/cvs/uploadCv";
+import { Button } from "@/app/feed/components/button";
+import { DropdownInput } from "@/app/feed/components/filters/valueSelect";
+import { InputBox, InputTextArea } from "@/app/feed/components/inputbar";
 import { getAllNumbersFromArr } from "@/lib/utils";
-import { CvPreview } from "@/components/cvPerview";
-import PopupWrapper from "@/components/ui/popupWrapper";
-import { Button } from "../feed/components/button";
-import { checkUploadCV, InputValues } from "../actions/cvs/uploadCv";
 import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
+import { useError } from "@/providers/error-provider";
 
 const InputRow = ({
   inputElement,
@@ -46,11 +48,10 @@ const InputRow = ({
 };
 
 export default function Page() {
-  const [catagoryId, setCatagoryId] = useState<InputValues["catagoryId"]>(null);
-  const [description, setDescription] =
-    useState<InputValues["description"]>("");
-  const [link, setLink] = useState<InputValues["link"]>("");
-  const [errorMsg, setErrorMsg] = useState<string | null>();
+  const [catagoryId, setCatagoryId] = useState<number[]>([]);
+  const [description, setDescription] = useState("");
+  const [link, setLink] = useState("");
+  const { showError } = useError();
 
   const validate = (() => {
     const checkIfLinkIsValid = () => {
@@ -78,26 +79,21 @@ export default function Page() {
 
   async function startUpload() {
     if (!validate.cv()) return;
-    setErrorMsg(
-      await checkUploadCV({
-        cvData: {
-          catagoryId: catagoryId,
-          description: description,
-          link: link,
-        },
-      })
-    );
+    const uploadResp = await checkUploadCV({
+      cvData: {
+        cvCategories: catagoryId,
+        description: description,
+        link: link,
+      },
+    });
+    if (uploadResp) {
+      showError(uploadResp, "");
+    }
   }
+
   return (
     <main className="p-4">
       <Suspense fallback={<div>Loading...</div>}>
-        {errorMsg && (
-          <PopupWrapper onClose={() => setErrorMsg(null)}>
-            <div className="flex items-center justify-center rounded-md border-2 border-black bg-red-700 px-4 py-2 text-xl text-white">
-              {errorMsg}
-            </div>
-          </PopupWrapper>
-        )}
         <div className="flex w-full flex-col items-center justify-center">
           <h1 className="mb-6 text-4xl font-bold sm:text-5xl md:text-6xl">
             Upload CV
@@ -153,7 +149,7 @@ export default function Page() {
               isValid={validate.catagoryIds()}
               inputElement={
                 <DropdownInput
-                  onChange={(e) => setCatagoryId(e || null)}
+                  onChange={(e) => setCatagoryId(e || [])}
                   placeHolder="Select category"
                   valueIds={getAllNumbersFromArr(
                     Object.keys(Categories.category)

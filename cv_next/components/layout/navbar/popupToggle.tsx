@@ -1,9 +1,9 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import Popup from "./popup";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { useUser } from "@/hooks/useUser";
+import Popup from "./popup";
 
 interface PopupToggleProps {
   closeHamburger?: () => void;
