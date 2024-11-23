@@ -363,7 +363,6 @@ export async function setDisplayName(
   try {
     const { error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.profiles)
-      //wont work until full_name is changed to full_name in the db
       .update({ display_name: newDisplayName })
       .eq(ProfileKeys.id, userId);
     if (error) {
