@@ -1,0 +1,17 @@
+version: 1
+frontend:
+  phases:
+    prebuild:
+      commands:
+        - "cd cv_next"
+        - "npm install"
+    build:
+      commands:
+        - "cd cv_next"
+        - "npm run build"
+  artifacts:
+    baseDirectory: /cv_next/.next
+    files:
+      - "**/*"
+  cache:
+    paths: []
