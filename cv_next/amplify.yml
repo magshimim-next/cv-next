@@ -1,6 +1,8 @@
 version: 1
 applications:
-  - frontend:
+  - appRoot: cv_next
+    frontend:
+      buildPath: "/" # run install and build from monorepo project root
       phases:
         preBuild:
           commands:
