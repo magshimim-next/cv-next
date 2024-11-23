@@ -1,4 +1,4 @@
-name: Docker Image CICD
+name: DEV - Docker Image CICD
 
 on:
   push:
@@ -29,3 +29,5 @@ jobs:
 
       - name: CD PIPE - rebuilding the app - bro what
         run: 'curl -s -o /dev/null -H "Content-Type: application/json" -H "Authorization: Bearer ${{ secrets.DIGITALOCEAN_TOKEN }}" "https://api.digitalocean.com/v2/apps/${{ secrets.DIGITALOCEAN_DP_ID_DEV }}/deployments" -XPOST -d ''{"force_build": true}'''
+
+ 

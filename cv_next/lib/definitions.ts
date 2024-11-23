@@ -31,20 +31,22 @@ export class API_DEFINITIONS {
 export class Link_Definitions {
   public static readonly AUTH_CALLBACK_REDIRECT = "/auth/callback";
   public static readonly AUTH_DEFAULT_REDIRECT = "/";
+  public static readonly ALLOWED_REDIRECTS = [
+    "feed",
+    "upload",
+    "cv",
+    "profile",
+    "hall",
+    "about",
+  ];
 }
 
 export const heroHeader: PageHeader = {
-  header: `Next`,
+  header: `NEXT`,
   image: `/images/logo.png`,
   subheader: `Improve the Magshimim Next Community's resumes.`,
   explanation: `As a community, we can help each other secure jobs by enhancing our members' resumes. This website is a platform to upload resumes, allow others to review them, and make them better.
 We expect all interactions to be respectful and constructive, with no tolerance for abuse, hateful comments, or any form of inappropriate behavior.`,
-};
-
-export const inactiveHeader: PageHeader = {
-  header: `Access Denied`,
-  subheader: `This page requieres that you get approved by the moderators`,
-  image: `/access-denied.webp`,
 };
 
 export const routes: route[] = [
@@ -74,7 +76,7 @@ export const routes: route[] = [
   },
 ];
 
-export const Credits = [
+export const Team_Credits = [
   "Ron Peer",
   "Arad Donenfeld",
   "Avner Mindelis",
@@ -85,4 +87,47 @@ export const Credits = [
   "Ethan Krimer",
   "Ilan Yashuk",
   "Assaf Kabesa",
+  "Alon Green",
+  "Yarden Perets",
+  "Omri Anidgar",
 ];
+
+export const External_Credits = [
+  { name: "Adam Abramov", contribution: "CSRF Account Takeover" },
+  {
+    name: "Adam Abramov",
+    contribution: "Insufficient Verification of Data Authenticity",
+  },
+  { name: "Youval Daizi", contribution: "Home button logged out users" },
+  {
+    name: "Harel Kristal",
+    contribution: "Login and Signout were visible regardless of state",
+  },
+  {
+    name: "Harel Kristal",
+    contribution: "Developer's Data Leak",
+  },
+  // Add more contributors as needed
+];
+
+type ErrorMessages = {
+  [key: string]: {
+    keyword: string;
+    title: string;
+    description: string;
+  };
+};
+
+export const Visible_Error_Messages: ErrorMessages = {
+  InactiveUser: {
+    keyword: "InactiveUser",
+    title: "Inactive User",
+    description: "That page requires that you get approved by the moderators.",
+  },
+  DefaultError: {
+    keyword: "default",
+    title: "An Error Occurred",
+    description:
+      "Please try again later and contact support if the problem persists.",
+  },
+};
