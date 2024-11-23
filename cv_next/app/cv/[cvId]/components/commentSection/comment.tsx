@@ -16,8 +16,8 @@ import { addComment } from "@/app/actions/comments/addComment";
 import { upvoteComment } from "@/app/actions/comments/setLike";
 import { setResolved } from "@/app/actions/comments/setResolved";
 import { deleteComment } from "@/app/actions/comments/deleteComment";
-import Alert from "../../../../../components/ui/alert";
-import Tooltip from "../../../../../components/ui/tooltip";
+import Alert from "@/components/ui/alert";
+import Tooltip from "@/components/ui/tooltip";
 
 interface NewCommentBlockProps {
   commentOnCommentStatus: boolean;
@@ -380,7 +380,7 @@ export default function Comment({
   return (
     <article
       key={comment.id}
-      className={`${commentBackground} text-base ${childOrParentStyling}`}
+      className={`${commentBackground} relative text-base ${childOrParentStyling}`}
     >
       <footer className="mb-2 flex items-center justify-between">
         <div className="flex items-center">

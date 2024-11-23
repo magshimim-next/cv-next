@@ -9,7 +9,7 @@ export default function CvData({ cv }: { cv: CvModel }) {
   const uploader = JSON.parse(JSON.stringify(cv.user_id));
   const displayName = uploader.display_name || uploader.username;
   return (
-    <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[65%_35%] md:gap-x-4">
+    <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[70%_30%] md:gap-x-4">
       <article
         key={cv.id}
         className={`mb-3 h-fit flex-col rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800`}
