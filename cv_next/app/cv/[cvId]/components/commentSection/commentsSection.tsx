@@ -58,7 +58,7 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
   }, [pathname, router, supabase.auth]);
 
   return (
-    <>
+    <div className="h-[73vh] overflow-auto">
       {comments
         ? comments.map((comment: CommentModel) =>
             !comment.parent_comment_Id ? (
@@ -74,6 +74,6 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
             ) : null
           )
         : null}
-    </>
+    </div>
   );
 }

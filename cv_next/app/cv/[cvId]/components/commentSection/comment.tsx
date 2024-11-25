@@ -16,8 +16,8 @@ import { addComment } from "@/app/actions/comments/addComment";
 import { upvoteComment } from "@/app/actions/comments/setLike";
 import { setResolved } from "@/app/actions/comments/setResolved";
 import { deleteComment } from "@/app/actions/comments/deleteComment";
-import Alert from "../../../../../components/ui/alert";
-import Tooltip from "../../../../../components/ui/tooltip";
+import Alert from "@/components/ui/alert";
+import Tooltip from "@/components/ui/tooltip";
 
 interface NewCommentBlockProps {
   commentOnCommentStatus: boolean;
@@ -133,7 +133,7 @@ const ResolvedSection = ({
 interface CommenterModel {
   id: string;
   username?: string;
-  full_name?: string;
+  display_name?: string;
 }
 
 interface CommenterActionsProps {
@@ -385,16 +385,16 @@ export default function Comment({
   return (
     <article
       key={comment.id}
-      className={`${commentBackground} text-base ${childOrParentStyling}`}
+      className={`${commentBackground} relative text-base ${childOrParentStyling}`}
     >
       <footer className="mb-2 flex items-center justify-between">
         <div className="flex items-center">
           <p className="mr-3 inline-flex items-center text-sm font-semibold text-gray-900 dark:text-white">
             <Link
               className="text-lg font-medium hover:underline"
-              href={`/profile/${commenter.id}`}
+              href={`/profile/${commenter.username}`}
             >
-              {commenter.username || commenter.full_name}
+              {commenter.display_name}
             </Link>
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-400">
