@@ -4,6 +4,7 @@ import {
   setUserName,
   setWorkStatus,
   setWorkCategories,
+  setDisplayName,
   updateUser,
 } from "@/server/api/users";
 import { Err } from "@/lib/utils";
@@ -84,5 +85,25 @@ export const setNewWorkCategories = async (
   } else {
     logErrorWithTrace(result);
     return Err("Couldn't update the categories", result.errors);
+  }
+};
+
+/**
+ * Updates a user's display name
+ *
+ * @param {string} userId - The ID of the user to update
+ * @param {string} newDisplayName - The new display name
+ * @return {Promise<Result<void, string>>} A Promise with the result of the operation.
+ */
+export const setNewDisplayName = async (
+  userId: string,
+  newDisplayName: string
+): Promise<Result<void, string>> => {
+  const result = await setDisplayName(userId, newDisplayName);
+  if (result.ok) {
+    return result;
+  } else {
+    logErrorWithTrace(result);
+    return Err("Couldn't update the display name", result.errors);
   }
 };
