@@ -1,0 +1,21 @@
+version: 1
+applications:
+  - appRoot: cv_next
+    frontend:
+      buildPath: "/" # run install and build from monorepo project root
+      phases:
+        preBuild:
+          commands:
+            - "cd cv_next"
+            - "echo UPDATED"
+            - "npm ci"
+        build:
+          commands:
+            - "npm run build"
+      artifacts:
+        baseDirectory: /cv_next/.next
+        files:
+          - "**/*"
+      cache:
+        paths:
+          - node_modules/**/*
