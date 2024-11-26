@@ -31,6 +31,7 @@ const hall: React.FC = () => {
           </h3>
           <ul>
             <div className="flex max-h-[80vh] w-full flex-row-reverse flex-wrap justify-center justify-center self-center overflow-y-auto overflow-x-hidden xl:flex">
+
               {contributors.map((contributor, index) => (
                 // key = index for now, but its bad practice.
                 // https://robinpokorny.com/blog/index-as-a-key-is-an-anti-pattern/
