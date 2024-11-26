@@ -89,18 +89,30 @@ export const Team_Credits = [
   "Assaf Kabesa",
   "Alon Green",
   "Yarden Perets",
+  "Omri Anidgar",
 ];
 
 export const External_Credits = [
-  { name: "Adam Abramov", contribution: "CSRF Account Takeover" },
   {
     name: "Adam Abramov",
+    title: "Reverse Engineer",
+    contribution: "CSRF Account Takeover",
+    linkedIn: "https://www.linkedin.com/in/theresearcher/",
+    gitHub: "example.com",
+  },
+  {
+    name: "Adam Abramov",
+    title: "Reverse Engineer",
     contribution: "Insufficient Verification of Data Authenticity",
+    linkedIn: "https://www.linkedin.com/in/theresearcher/",
+    gitHub: "example.com",
   },
   { name: "Youval Daizi", contribution: "Home button logged out users" },
   {
     name: "Harel Kristal",
+    title: "Penetration tester",
     contribution: "Login and Signout were visible regardless of state",
+    linkedIn: "https://www.linkedin.com/in/harel-kristal/",
   },
   {
     name: "Harel Kristal",
