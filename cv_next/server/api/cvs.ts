@@ -18,7 +18,7 @@ export async function getCvById(cvId: string): Promise<CvModel | null> {
     const { data: cvs, error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.cvs)
       .select(
-        `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.full_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
+        `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
       )
       .eq(CvKeys.id, cvId);
 
@@ -131,7 +131,7 @@ function applyProfileSearchFilter(profileQuery: any, filters?: filterValues) {
   if (filters?.searchValue) {
     const searchValue = `%${filters.searchValue}%`;
     profileQuery = profileQuery.or(
-      `${ProfileKeys.full_name}.ilike.${searchValue},${ProfileKeys.username}.ilike.${searchValue}`
+      `${ProfileKeys.display_name}.ilike.${searchValue},${ProfileKeys.username}.ilike.${searchValue}`
     );
   }
   return profileQuery;

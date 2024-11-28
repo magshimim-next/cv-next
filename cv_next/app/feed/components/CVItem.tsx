@@ -52,17 +52,17 @@ export default function CVItem({ cv }: CVCardProps) {
     [fetchFromApi]
   );
 
-  const getCachedUserName = useMemo(
+  const getCachedDisplayName = useMemo(
     () => async (userId: string) => {
       const data = await fetchFromApi(
         API_DEFINITIONS.USERS_API_BASE,
         API_DEFINITIONS.FETCH_USERS_ENDPOINT,
         {
-          pathname: "getUserName",
+          pathname: "getDisplayName",
           userId,
         }
       );
-      return data.fullName;
+      return data.display_name;
     },
     [fetchFromApi]
   );
@@ -93,7 +93,8 @@ export default function CVItem({ cv }: CVCardProps) {
       };
 
       const getAuthorName = async () => {
-        const userUploading = (await getCachedUserName(cv.user_id || "")) || "";
+        const userUploading =
+          (await getCachedDisplayName(cv.user_id || "")) || "";
         setAuthorName(userUploading);
       };
 
@@ -116,7 +117,7 @@ export default function CVItem({ cv }: CVCardProps) {
     cv.document_link,
     cv.user_id,
     getBlur,
-    getCachedUserName,
+    getCachedDisplayName,
     getURL,
     revalidatePreview,
   ]);

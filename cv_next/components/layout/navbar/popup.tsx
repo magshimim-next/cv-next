@@ -57,10 +57,10 @@ const UserDataComponent: React.FC<{
 
           <Link
             className="text-lg font-medium hover:underline"
-            href={`/profile/${userData?.id}`}
+            href={`/profile/${userData?.username}`}
             onClick={closeCb}
           >
-            {userData.username || userData.full_name}
+            {userData.display_name || userData.username}
           </Link>
         </div>
       ) : (
