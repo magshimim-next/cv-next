@@ -11,16 +11,16 @@ import ProfileCvs from "./components/profileCvs";
 export default async function Page({
   params,
 }: {
-  params: { profileId: string };
+  params: { profileUsername: string };
 }) {
-  const { profileId } = params;
-
-  const userFetcher = getUserModel(profileId);
+  const { profileUsername } = params;
+  const cleanUsername = decodeURIComponent(profileUsername);
+  const userFetcher = await getUserModel(cleanUsername);
 
   const getCachedUser = unstable_cache(
     async () => await userFetcher,
-    [profileId],
-    { tags: ["user-" + profileId] }
+    [cleanUsername],
+    { tags: ["user-" + cleanUsername] }
   );
 
   const result = await getCachedUser();

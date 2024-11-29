@@ -38,7 +38,7 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
   };
 
   return (
-    <form className="mb-6" ref={formRef} action={formAction}>
+    <form className="mb-2" ref={formRef} action={formAction}>
       <div
         className="grid grid-cols-[90%_10%] rounded-lg rounded-t-lg border border-gray-200 bg-white py-2
                             pl-4 pr-2 dark:border-gray-700 dark:bg-gray-800"
