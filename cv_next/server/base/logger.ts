@@ -11,14 +11,14 @@ const logger = pino({
   },
   transport: {
     targets: [
-      {
-        level: "trace",
-        target: "pino/file",
-        options: {
-          destination: `${process.env.BASE_LOGGER! || "./CVnext_server.log"}`,
-        },
-      },
-      { level: "info", target: "pino-pretty" },
+      // {
+      //   level: "trace",
+      //   target: "pino/file",
+      //   options: {
+      //     destination: `${process.env.BASE_LOGGER! || "./CVnext_server.log"}`,
+      //   },
+      // },
+      { level: "trace", target: "pino-pretty" },
     ],
   },
 });
