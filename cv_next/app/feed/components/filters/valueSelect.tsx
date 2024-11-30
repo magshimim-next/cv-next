@@ -39,20 +39,17 @@ export const DropdownInput = ({
   );
 
   const changeIsMenuOpen = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setIsMenuOpen((prev) => !prev);
   };
 
   const handleCheckboxChange = (categoryId: number) => {
     setSelectedCategories((prevSelectedIds) => {
       if (prevSelectedIds.includes(categoryId)) {
-        return prevSelectedIds.filter(
-          (selectedId) => selectedId !== categoryId
-        );
+        return prevSelectedIds.filter((id) => id !== categoryId);
       } else {
         return [...prevSelectedIds, categoryId];
       }
     });
-    setIsMenuOpen(true);
   };
 
   const handleAllSelection = () => {
@@ -68,9 +65,18 @@ export const DropdownInput = ({
   };
 
   useEffect(() => {
-    onChange(selectedCategories.length ? selectedCategories : null);
+    if (JSON.stringify(selectedCategories) !== JSON.stringify(valueId)) {
+      onChange(selectedCategories.length ? selectedCategories : null);
+    }
     setSelectTitle(selectedCategories.map(getValueById).join(", "));
-  }, [selectedCategories, onChange, setSelectTitle, getValueById]);
+  }, [selectedCategories, valueId, getValueById, onChange]);
+
+  useEffect(() => {
+    if (JSON.stringify(valueId) !== JSON.stringify(selectedCategories)) {
+      setSelectedCategories(valueId || []);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [valueId]);
 
   return (
     <>
