@@ -2,10 +2,10 @@
 
 import { redirect } from "next/navigation";
 import { uploadCV, getCvsByUserId } from "@/server/api/cvs";
+import { transformToPreviewLink, encodeValue } from "@/lib/utils";
 import { transformGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 import logger from "@/server/base/logger";
 import SupabaseHelper from "@/server/api/supabaseHelper";
-import { encodeValue } from "@/lib/utils";
 export interface InputValues {
   link: string;
   description: string;
@@ -45,6 +45,21 @@ export const checkUploadCV = async ({
   if (transformedURL == "") {
     logger.error("Couldn't transform the link", cvData.link);
     return "Regex invalid!";
+  }
+
+  const res = await fetch(transformToPreviewLink(transformedURL), {
+    method: "HEAD",
+  });
+
+  if (res.status !== 200) {
+    logger.error("Couldn't Find The CV", cvData.link);
+    return "Invalid URL for CV";
+  }
+
+  const cookieHeader = res.headers.get("set-cookie");
+  if (!cookieHeader || !cookieHeader.includes("COMPASS")) {
+    logger.error("COMPASS cookie not found", cvData.link);
+    return "CV File is Private";
   }
 
   const cvToUpload: NewCvModel = {
