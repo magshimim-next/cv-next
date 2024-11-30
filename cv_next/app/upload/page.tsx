@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm, Controller } from "react-hook-form";
+import Image from "next/image";
 import { InputBox, InputTextArea } from "@/app/feed/components/inputbar";
 import { DropdownInput } from "@/app/feed/components/filters/valueSelect";
 import { Button } from "@/app/feed/components/button";
@@ -9,6 +10,9 @@ import Categories from "@/types/models/categories";
 import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 import { useError } from "@/providers/error-provider";
 import { checkUploadCV } from "@/app/actions/cvs/uploadCv";
+import PopupWrapper from "@/components/ui/popupWrapper";
+import openLink from "@/public/images/openLink.png";
+import { CvPreview } from "@/components/cvPerview";
 
 type FormValues = {
   link: string;
@@ -60,12 +64,32 @@ export default function Page() {
                 "Invalid Google Docs link format",
             }}
             render={({ field }) => (
-              <div>
-                <InputBox
-                  onChange={field.onChange}
-                  value={field.value}
-                  placeHolder="Enter Google Docs link"
-                />
+              <div className="flex flex-col">
+                <div className="flex items-center">
+                  <InputBox
+                    onChange={field.onChange}
+                    value={field.value}
+                    placeHolder="Enter Google Docs link"
+                  />
+                  <PopupWrapper
+                    clickable={
+                      <div className="ml-2 flex h-12 w-12 flex-row items-center justify-center">
+                        <Image
+                          className={`dark:invert ${!validateGoogleViewOnlyUrl(field.value) && "opacity-25"}`}
+                          alt=""
+                          src={openLink}
+                          width={24}
+                          height={24}
+                        />
+                      </div>
+                    }
+                    disableButton={!validateGoogleViewOnlyUrl(field.value)}
+                  >
+                    <div className="bg-secondary">
+                      {field.value && <CvPreview document_link={field.value} />}
+                    </div>
+                  </PopupWrapper>
+                </div>
                 {errors.link && (
                   <p className="mt-1 text-sm text-red-500">
                     {errors.link.message}
