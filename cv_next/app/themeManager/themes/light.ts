@@ -1,5 +1,5 @@
-import { Theme } from "../themeManager";
 import logo from "@/public/images/logo.png";
+import { Theme } from "../themeManager";
 
 export const lightTheme: Theme = {
     styleVariables: {

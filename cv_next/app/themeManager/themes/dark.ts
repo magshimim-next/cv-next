@@ -1,5 +1,5 @@
-import { Theme } from "../themeManager";
 import logo from "@/public/images/whiteLogo.png";
+import { Theme } from "../themeManager";
 
 export const darkTheme: Theme = {
     styleVariables: {

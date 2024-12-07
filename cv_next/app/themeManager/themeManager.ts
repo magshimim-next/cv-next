@@ -1,7 +1,6 @@
 import { StaticImageData } from "next/image"
 import { darkTheme } from "./themes/dark"
 import { lightTheme } from "./themes/light"
-import { useEffect, useState } from "react"
 
 export interface Theme {
     styleVariables: {[key: string] : string},

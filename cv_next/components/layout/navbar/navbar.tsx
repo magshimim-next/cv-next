@@ -1,11 +1,11 @@
 "use client";
+import logo from "@/public/images/logo.png";
 import Link from "next/link";
 import { useState, useRef } from "react";
 import { Upload } from "lucide-react";
 import Image from "next/image";
 import { ModeToggle } from "@/components/layout/navbar/modeToggle";
 import { PopupToggle } from "./popupToggle";
-import logo from "@/public/images/logo.png";
 
 const navLinks = [
   {

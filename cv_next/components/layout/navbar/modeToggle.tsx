@@ -10,10 +10,6 @@ export const themeManager = new ThemeManager('dark')
 
 export function ModeToggle() {
   const { theme, setTheme } = useTheme();
-  
-  useEffect(()=> {
-    themeManager.setTheme(theme === "light" ? "light" : "dark")
-  }, [])
 
   useEffect(()=> {
     themeManager.setTheme(theme === "light" ? "light" : "dark")
