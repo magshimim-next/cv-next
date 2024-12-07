@@ -13,7 +13,6 @@ export const Tables: {
 };
 
 export const CvKeys: {
-  category_id: "category_id";
   cv_categories: "cv_categories";
   created_at: "created_at";
   deleted: "deleted";
@@ -23,7 +22,6 @@ export const CvKeys: {
   resolved: "resolved";
   user_id: "user_id";
 } = {
-  category_id: "category_id",
   cv_categories: "cv_categories",
   created_at: "created_at",
   deleted: "deleted",
@@ -36,9 +34,8 @@ export const CvKeys: {
 
 export const ProfileKeys: {
   avatar_url: "avatar_url";
-  full_name: "full_name";
+  display_name: "display_name";
   updated_at: "updated_at";
-  user_type: "user_type";
   username: "username";
   id: "id";
   work_status: {
@@ -53,9 +50,8 @@ export const ProfileKeys: {
   };
 } = {
   avatar_url: "avatar_url",
-  full_name: "full_name",
+  display_name: "display_name",
   updated_at: "updated_at",
-  user_type: "user_type",
   username: "username",
   id: "id",
   work_status: {

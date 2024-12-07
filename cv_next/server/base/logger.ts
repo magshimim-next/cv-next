@@ -1,9 +1,28 @@
 import "server-only";
-import pino from "pino";
-import pretty from "pino-pretty";
+import { pino } from "pino";
 
-const stream = pretty({ colorize: true });
-const logger = pino({ level: "warn" }, stream);
+const logger = pino({
+  level: "trace",
+  timestamp: pino.stdTimeFunctions.isoTime,
+  formatters: {
+    bindings(_bindings) {
+      return {};
+    },
+  },
+  transport: undefined,
+  // {
+  //   targets: [
+  //     {
+  //       level: "trace",
+  //       target: "pino/file",
+  //       options: {
+  //         destination: `${process.env.BASE_LOGGER! || "./CVnext_server.log"}`,
+  //       },
+  //     },
+  //     { level: "trace", target: "pino-pretty" },
+  //   ],
+  // },
+});
 
 export default logger;
 

@@ -2,14 +2,14 @@
 
 import { redirect } from "next/navigation";
 import { uploadCV, getCvsByUserId } from "@/server/api/cvs";
+import { transformToPreviewLink, encodeValue } from "@/lib/utils";
 import { transformGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 import logger from "@/server/base/logger";
 import SupabaseHelper from "@/server/api/supabaseHelper";
-import { encodeValue } from "@/lib/utils";
 export interface InputValues {
   link: string;
   description: string;
-  catagoryId: number[] | null;
+  cvCategories: number[] | null;
 }
 
 export const checkUploadCV = async ({
@@ -28,7 +28,8 @@ export const checkUploadCV = async ({
   if (
     !cvData.link?.trim() ||
     !cvData.description?.trim() ||
-    cvData.catagoryId === undefined
+    cvData.cvCategories == undefined ||
+    cvData.cvCategories.length <= 0
   ) {
     logger.error("Missing variables!");
     return "Missing variables!";
@@ -46,12 +47,26 @@ export const checkUploadCV = async ({
     return "Regex invalid!";
   }
 
+  const res = await fetch(transformToPreviewLink(transformedURL), {
+    method: "HEAD",
+  });
+
+  if (res.status !== 200) {
+    logger.error("Couldn't Find The CV", cvData.link);
+    return "Invalid URL for CV";
+  }
+
+  const cookieHeader = res.headers.get("set-cookie");
+  if (!cookieHeader || !cookieHeader.includes("COMPASS")) {
+    logger.error("COMPASS cookie not found", cvData.link);
+    return "CV File is Private";
+  }
+
   const cvToUpload: NewCvModel = {
     document_link: transformedURL,
     description: cvData.description,
-    category_id: (cvData.catagoryId ?? [0])[0],
     user_id: userId,
-    cv_categories: cvData.catagoryId ?? [],
+    cv_categories: cvData.cvCategories,
   };
 
   logger.debug("Can upload:", cvToUpload);

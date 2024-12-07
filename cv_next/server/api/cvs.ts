@@ -1,11 +1,10 @@
 import "server-only";
 
 import { PostgrestError } from "@supabase/supabase-js";
-import Categories from "@/types/models/categories";
 import { Tables, CvKeys, ProfileKeys } from "@/lib/supabase-definitions";
 import { filterValues } from "@/types/models/filters";
-import Definitions from "../../lib/definitions";
-import logger from "../base/logger";
+import Definitions from "@/lib/definitions";
+import logger from "@/server/base/logger";
 import SupabaseHelper from "./supabaseHelper";
 
 /**
@@ -19,7 +18,7 @@ export async function getCvById(cvId: string): Promise<CvModel | null> {
     const { data: cvs, error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.cvs)
       .select(
-        `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.full_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
+        `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
       )
       .eq(CvKeys.id, cvId);
 
@@ -77,65 +76,6 @@ export async function getCvsByUserId(
     return null;
   }
 }
-
-export async function getAllCvsByCategory(
-  category: Categories.category,
-  filterOutDeleted: boolean = true
-): Promise<CvModel[] | null> {
-  try {
-    const supabase = SupabaseHelper.getSupabaseInstance();
-    let query = supabase
-      .from(Tables.cvs)
-      .select("*")
-      .eq(CvKeys.category_id, category);
-
-    if (filterOutDeleted) {
-      query = query.eq(CvKeys.deleted, false);
-    }
-
-    const { data: cvs, error } = await query;
-
-    if (error) {
-      logger.error(error, "getAllCvsByCategory");
-      return null;
-    }
-
-    return cvs as CvModel[];
-  } catch (error) {
-    logger.error(error, "getAllCvsByCategory");
-    return null;
-  }
-}
-
-async function _getAllCvsByCategories(
-  categories: Categories.category[],
-  filterOutDeleted: boolean = true
-): Promise<any> {
-  try {
-    const supabase = SupabaseHelper.getSupabaseInstance();
-    let query = supabase
-      .from(Tables.cvs)
-      .select("*")
-      .in(CvKeys.category_id, categories);
-
-    if (filterOutDeleted) {
-      query = query.eq(CvKeys.deleted, false);
-    }
-
-    const { data: cvs, error } = await query;
-
-    if (error) {
-      logger.error(error, "getAllCvsByCategories");
-      return error;
-    }
-    logger.debug(cvs, "Fetched CVs: ");
-    return cvs as CvModel[];
-  } catch (error) {
-    logger.error(error, "getAllCvsByCategories");
-    return error;
-  }
-}
-
 /**
  * Retrieves a paginated list of CVs based on the provided page number.
  *
@@ -156,52 +96,19 @@ export async function getPaginatedCvs(
 
     const supabase = SupabaseHelper.getSupabaseInstance();
     let query = supabase
-      .from("cvs")
+      .from(Tables.cvs)
       .select("*")
-      .order(CvKeys.created_at, { ascending: false });
-    let profileQuery = supabase.from("profiles").select("id");
+      .order(CvKeys.created_at, { ascending: false })
+      .eq(CvKeys.deleted, !filterOutDeleted)
+      .range(from, to - 1);
+    let profileQuery = supabase.from(Tables.profiles).select(ProfileKeys.id);
 
     logger.debug(filters, "filters");
 
-    // Filter by searchValue
-    if (filters?.searchValue) {
-      const searchValue = `%${filters.searchValue}%`;
-      profileQuery = profileQuery.or(
-        `full_name.ilike.${searchValue},username.ilike.${searchValue}`
-      );
-    }
+    profileQuery = applyProfileSearchFilter(profileQuery, filters);
+    query = applyCategoryFilter(query, filters);
+    query = await applyProfileSearchToCvs(query, profileQuery, filters);
 
-    // Filter by categoryIds
-    if (filters?.categoryIds) {
-      logger.debug(filters.categoryIds, "category ids");
-      query = query.overlaps(CvKeys.cv_categories, filters.categoryIds);
-    }
-
-    // Execute profile query to get user IDs if a search value is provided
-    let profileIds: string[] | null = null;
-    if (filters?.searchValue) {
-      const { data: profiles, error: profileError } = await profileQuery;
-      if (profileError) {
-        logger.error(profileError, "getPaginatedCvs - profileQuery");
-        return null;
-      }
-      profileIds = profiles?.map((profile) => profile.id) || null;
-    }
-
-    // Apply text search to CVs
-    if (filters?.searchValue) {
-      const searchValue = `%${filters.searchValue}%`;
-      query = query.or(
-        `description.ilike.${searchValue},user_id.in.(${profileIds?.join(",")})`
-      );
-    }
-
-    // Filter out deleted CVs
-    if (filterOutDeleted) {
-      query = query.eq("deleted", false);
-    }
-
-    // Fetch the CVs
     const { data: cvs, error } = await query;
     logger.debug(
       cvs?.map((cv) => cv.cv_categories),
@@ -213,17 +120,50 @@ export async function getPaginatedCvs(
       return null;
     }
 
-    // Deduplicate CVs
-    const uniqueCvs = [...new Map(cvs.map((cv) => [cv.id, cv])).values()].slice(
-      from,
-      to
-    );
-
-    return { page, cvs: uniqueCvs as CvModel[] };
+    return { page, cvs: cvs as CvModel[] };
   } catch (error) {
     logger.error(error, "getPaginatedCvs");
     return null;
   }
+}
+
+function applyProfileSearchFilter(profileQuery: any, filters?: filterValues) {
+  if (filters?.searchValue) {
+    const searchValue = `%${filters.searchValue}%`;
+    profileQuery = profileQuery.or(
+      `${ProfileKeys.display_name}.ilike.${searchValue},${ProfileKeys.username}.ilike.${searchValue}`
+    );
+  }
+  return profileQuery;
+}
+
+function applyCategoryFilter(query: any, filters?: filterValues) {
+  if (filters?.categoryIds?.length) {
+    logger.debug(filters.categoryIds, "category ids");
+    query = query.overlaps(CvKeys.cv_categories, filters.categoryIds);
+  }
+  return query;
+}
+
+async function applyProfileSearchToCvs(
+  query: any,
+  profileQuery: any,
+  filters?: filterValues
+) {
+  if (filters?.searchValue) {
+    const { data: profiles, error: profileError } = await profileQuery;
+    if (profileError) {
+      logger.error(profileError, "getPaginatedCvs - profileQuery");
+      return query;
+    }
+
+    const profileIds = profiles?.map((profile: UserModel) => profile.id) || [];
+    const searchValue = `%${filters.searchValue}%`;
+    query = query.or(
+      `${CvKeys.description}.ilike.${searchValue},${CvKeys.user_id}.in.(${profileIds.join(",")})`
+    );
+  }
+  return query;
 }
 
 /**
