@@ -4,8 +4,6 @@ import { Viewport } from "next/dist/lib/metadata/types/metadata-interface";
 import Navbar from "@/components/layout/navbar/navbar";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { CvsProvider } from "@/providers/cvs-provider";
-import { ThemeManager } from "./themeManager/themeManager";
-import { createContext } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 

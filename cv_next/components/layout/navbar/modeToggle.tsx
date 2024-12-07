@@ -3,14 +3,13 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { isBrowser } from "@/lib/utils";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { ThemeManager } from "@/app/themeManager/themeManager";
 
 export const themeManager = new ThemeManager('dark')
 
 export function ModeToggle() {
   const { theme, setTheme } = useTheme();
-  // const {themeManager} = useContext(themeContext)
   
   useEffect(()=> {
     themeManager.setTheme(theme === "light" ? "light" : "dark")
