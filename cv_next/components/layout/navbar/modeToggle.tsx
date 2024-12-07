@@ -1,9 +1,9 @@
 "use client";
+import { useEffect } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { isBrowser } from "@/lib/utils";
-import { useEffect } from "react";
 import { ThemeManager } from "@/app/themeManager/themeManager";
 
 export const themeManager = new ThemeManager('dark')
