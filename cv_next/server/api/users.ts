@@ -3,6 +3,7 @@ import "server-only";
 import crypto from "crypto";
 import { Ok, Err } from "@/lib/utils";
 import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
+import logger from "../base/logger";
 import SupabaseHelper from "./supabaseHelper";
 
 export async function getUserById(
@@ -401,6 +402,30 @@ export async function setFirstLogin(
     return Ok.EMPTY;
   } catch (err) {
     return Err(setFirstLogin.name, {
+      err: err as Error,
+    });
+  }
+}
+
+export async function isCurrentFirstLogin(): Promise<Result<Boolean, string>> {
+  try {
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
+
+    if (error) {
+      return Err(setFirstLogin.name, { authError: error });
+    } else if (!user) {
+      return Err(setFirstLogin.name, { err: Error("User object is empty") });
+    }
+
+    const metadata = user.user_metadata;
+    logger.info(`isCurrentFirstLogin ${metadata.is_first_login}`);
+    return Ok(metadata.is_first_login);
+  } catch (err) {
+    return Err(isCurrentFirstLogin.name, {
       err: err as Error,
     });
   }

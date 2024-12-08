@@ -4,7 +4,7 @@ import Definitions from "@/lib/definitions";
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { checkRedirect } from "@/lib/utils";
 import logger from "@/server/base/logger";
-import { validateUsername } from "@/server/api/users";
+import { validateUsername, isCurrentFirstLogin } from "@/server/api/users";
 export async function GET(request: Request) {
   const { searchParams, origin: _origin } = new URL(request.url);
   const code = searchParams.get("code");
@@ -22,6 +22,14 @@ export async function GET(request: Request) {
               "Username was generated successfully"
             );
           }
+
+          const isFirstLogin = await isCurrentFirstLogin();
+          if (isFirstLogin.ok) {
+            return NextResponse.redirect(
+              `${process.env.NEXT_PUBLIC_BASE_URL}${Definitions.FIRST_LOGIN_REDIRECT}`
+            );
+          }
+
           return NextResponse.redirect(
             `${process.env.NEXT_PUBLIC_BASE_URL}${Definitions.AUTH_DEFAULT_REDIRECT}${next}`
           );

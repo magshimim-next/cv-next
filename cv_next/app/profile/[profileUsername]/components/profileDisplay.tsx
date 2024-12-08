@@ -1,6 +1,5 @@
 import { ProfileKeys } from "@/lib/supabase-definitions";
 import Categories from "@/types/models/categories";
-import FirstTimeSignIn from "./firstTimeSignIn";
 
 export const ProfileDisplay = ({ user }: { user: UserModel }) => {
   return (
@@ -11,9 +10,6 @@ export const ProfileDisplay = ({ user }: { user: UserModel }) => {
             display name:{" "}
           </label>
           <span id="username">{user.display_name}</span>
-          <div style={{ marginRight: "10px", marginTop: "2px" }}>
-            <FirstTimeSignIn />
-          </div>
         </div>
 
         <div className="flex flex-wrap justify-between">
