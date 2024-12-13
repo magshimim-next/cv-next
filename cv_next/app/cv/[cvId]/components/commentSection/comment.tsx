@@ -8,7 +8,7 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import { FaComment } from "react-icons/fa";
 import { AiTwotoneLike, AiFillLike } from "react-icons/ai";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { HiXMark } from "react-icons/hi2";
 import { addComment } from "@/app/actions/comments/addComment";
@@ -31,7 +31,15 @@ const NewCommentBlock = ({
   setCommentOnComment,
   addNewCommentClickEvent,
   setCommentOnCommentStatus,
+  parentCommenter,
 }: NewCommentBlockProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (commentOnCommentStatus && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [commentOnCommentStatus]);
+
   return commentOnCommentStatus ? (
     <div
       style={{
@@ -41,6 +49,7 @@ const NewCommentBlock = ({
       }}
     >
       <input
+        ref={inputRef}
         type="text"
         value={`${parentCommenter} `}
         onChange={(e) => setCommentOnComment(e.target.value)}
