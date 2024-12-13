@@ -140,8 +140,15 @@ export default function Navbar() {
                 </li>
               ))}
             </ul>
-            <div className="mt-4 flex justify-between">
+            <div className="mt-4 flex">
               <PopupToggle closeHamburger={handleClick} />
+              <Link
+                className="ml-8 py-2 text-lg"
+                href="/upload"
+                style={{ lineHeight: "1.5" }}
+              >
+                <Upload />
+              </Link>
             </div>
           </div>
         )}
