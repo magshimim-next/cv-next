@@ -11,7 +11,6 @@ import { AiTwotoneLike, AiFillLike } from "react-icons/ai";
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { HiXMark } from "react-icons/hi2";
-import { usePathname, useRouter } from "next/navigation";
 import { addComment } from "@/app/actions/comments/addComment";
 import { upvoteComment } from "@/app/actions/comments/setLike";
 import { setResolved } from "@/app/actions/comments/setResolved";
@@ -256,12 +255,10 @@ export default function Comment({
   commentsOfComment = [],
   setCommentsOfComments,
 }: CommentProps) {
-  const router = useRouter();
   const [commentOnCommentStatus, setCommentOnCommentStatus] =
     useState<boolean>(false);
   const [commentOnComment, setCommentOnComment] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
-  const pathname = usePathname();
   const { mutate } = useSWRConfig();
 
   const onAlertClick = async (type: boolean) => {
@@ -281,62 +278,32 @@ export default function Comment({
       commentToAdd.parent_comment_Id = comment.parent_comment_Id;
     }
 
-    const optimisticData = (
-      prevData: CommentModel[] | undefined
-    ): CommentModel[] => {
-      const newCommentsOfComments = new Map<string, CommentModel[]>(
-        prevData?.reduce((acc, cur) => {
-          // Use 'root' for top-level comments
-          const key = cur.parent_comment_Id || "root";
-          if (!acc.has(key)) {
-            acc.set(key, []);
-          }
-          acc.get(key)!.push(cur);
-          return acc;
-        }, new Map<string, CommentModel[]>()) || []
-      );
-
-      const parentId = comment.id;
-      if (!newCommentsOfComments.has(parentId)) {
-        newCommentsOfComments.set(parentId, []);
-      }
-      newCommentsOfComments
-        .get(parentId)!
-        .push(commentToAdd as unknown as CommentModel);
-
-      return Array.from(newCommentsOfComments.values()).flat();
-    };
+    mutate(comment.document_id, (currentSubComments: CommenterModel[] = []) => [
+      ...currentSubComments,
+      {
+        ...commentToAdd,
+        id: Date.now().toString(),
+        deleted: false,
+        last_update: new Date().toISOString(),
+        resolved: false,
+        upvoted: [],
+        user_id: userId,
+      },
+    ]);
 
     try {
+      await addComment(commentToAdd);
+      mutate(comment.document_id);
+    } catch (error) {
+      // Rollback optimistic update
       mutate(
         comment.document_id,
-        async () => {
-          await addComment(commentToAdd);
-          return optimisticData(commentsOfComment);
-        },
-        {
-          optimisticData: optimisticData(commentsOfComment),
-          rollbackOnError: (error) => {
-            if (error instanceof Error) {
-              return error.name !== "AbortError";
-            }
-            return true;
-          },
-          revalidate: true,
-        }
+        (currentComments: CommentModel[] = []) =>
+          currentComments.filter((comment) => comment.id !== comment.id),
+        false
       );
-    } catch (error) {
-      router.push(`/login?next=${pathname}`);
     }
-  }, [
-    commentOnComment,
-    comment,
-    userId,
-    mutate,
-    commentsOfComment,
-    router,
-    pathname,
-  ]);
+  }, [commentOnComment, comment, userId, mutate]);
 
   const date = new Date(
     comment.last_update ? comment.last_update : new Date().getTime()
