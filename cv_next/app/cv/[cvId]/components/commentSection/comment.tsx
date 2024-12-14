@@ -34,11 +34,17 @@ const NewCommentBlock = ({
   parentCommenter,
 }: NewCommentBlockProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [inputValue, setInputValue] = useState(`${parentCommenter} `);
+
   useEffect(() => {
     if (commentOnCommentStatus && inputRef.current) {
       inputRef.current.focus();
     }
   }, [commentOnCommentStatus]);
+
+  useEffect(() => {
+    setInputValue(`${parentCommenter} `);
+  }, [parentCommenter]);
 
   return commentOnCommentStatus ? (
     <div
@@ -51,8 +57,11 @@ const NewCommentBlock = ({
       <input
         ref={inputRef}
         type="text"
-        value={`${parentCommenter} `}
-        onChange={(e) => setCommentOnComment(e.target.value)}
+        value={inputValue}
+        onChange={(e) => {
+          setInputValue(e.target.value);
+          setCommentOnComment(e.target.value);
+        }}
         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
         required
       />
