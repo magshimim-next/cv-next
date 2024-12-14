@@ -8,10 +8,9 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import { FaComment } from "react-icons/fa";
 import { AiTwotoneLike, AiFillLike } from "react-icons/ai";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { HiXMark } from "react-icons/hi2";
-import { usePathname, useRouter } from "next/navigation";
 import { addComment } from "@/app/actions/comments/addComment";
 import { upvoteComment } from "@/app/actions/comments/setLike";
 import { setResolved } from "@/app/actions/comments/setResolved";
@@ -24,6 +23,7 @@ interface NewCommentBlockProps {
   setCommentOnComment: (value: string) => void;
   addNewCommentClickEvent: () => Promise<void>;
   setCommentOnCommentStatus: (status: boolean) => void;
+  parentCommenter: string;
 }
 
 const NewCommentBlock = ({
@@ -31,7 +31,21 @@ const NewCommentBlock = ({
   setCommentOnComment,
   addNewCommentClickEvent,
   setCommentOnCommentStatus,
+  parentCommenter,
 }: NewCommentBlockProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [inputValue, setInputValue] = useState(`@${parentCommenter} `);
+
+  useEffect(() => {
+    if (commentOnCommentStatus && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [commentOnCommentStatus]);
+
+  useEffect(() => {
+    setInputValue(`@${parentCommenter} `);
+  }, [parentCommenter]);
+
   return commentOnCommentStatus ? (
     <div
       style={{
@@ -41,8 +55,13 @@ const NewCommentBlock = ({
       }}
     >
       <input
+        ref={inputRef}
         type="text"
-        onChange={(e) => setCommentOnComment(e.target.value)}
+        value={inputValue}
+        onChange={(e) => {
+          setInputValue(e.target.value);
+          setCommentOnComment(e.target.value);
+        }}
         className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
         required
       />
@@ -256,12 +275,10 @@ export default function Comment({
   commentsOfComment = [],
   setCommentsOfComments,
 }: CommentProps) {
-  const router = useRouter();
   const [commentOnCommentStatus, setCommentOnCommentStatus] =
     useState<boolean>(false);
   const [commentOnComment, setCommentOnComment] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
-  const pathname = usePathname();
   const { mutate } = useSWRConfig();
 
   const onAlertClick = async (type: boolean) => {
@@ -281,62 +298,32 @@ export default function Comment({
       commentToAdd.parent_comment_Id = comment.parent_comment_Id;
     }
 
-    const optimisticData = (
-      prevData: CommentModel[] | undefined
-    ): CommentModel[] => {
-      const newCommentsOfComments = new Map<string, CommentModel[]>(
-        prevData?.reduce((acc, cur) => {
-          // Use 'root' for top-level comments
-          const key = cur.parent_comment_Id || "root";
-          if (!acc.has(key)) {
-            acc.set(key, []);
-          }
-          acc.get(key)!.push(cur);
-          return acc;
-        }, new Map<string, CommentModel[]>()) || []
-      );
-
-      const parentId = comment.id;
-      if (!newCommentsOfComments.has(parentId)) {
-        newCommentsOfComments.set(parentId, []);
-      }
-      newCommentsOfComments
-        .get(parentId)!
-        .push(commentToAdd as unknown as CommentModel);
-
-      return Array.from(newCommentsOfComments.values()).flat();
-    };
+    mutate(comment.document_id, (currentSubComments: CommenterModel[] = []) => [
+      ...currentSubComments,
+      {
+        ...commentToAdd,
+        id: Date.now().toString(),
+        deleted: false,
+        last_update: new Date().toISOString(),
+        resolved: false,
+        upvoted: [],
+        user_id: userId,
+      },
+    ]);
 
     try {
+      await addComment(commentToAdd);
+      mutate(comment.document_id);
+    } catch (error) {
+      // Rollback optimistic update
       mutate(
         comment.document_id,
-        async () => {
-          await addComment(commentToAdd);
-          return optimisticData(commentsOfComment);
-        },
-        {
-          optimisticData: optimisticData(commentsOfComment),
-          rollbackOnError: (error) => {
-            if (error instanceof Error) {
-              return error.name !== "AbortError";
-            }
-            return true;
-          },
-          revalidate: true,
-        }
+        (currentComments: CommentModel[] = []) =>
+          currentComments.filter((comment) => comment.id !== comment.id),
+        false
       );
-    } catch (error) {
-      router.push(`/login?next=${pathname}`);
     }
-  }, [
-    commentOnComment,
-    comment,
-    userId,
-    mutate,
-    commentsOfComment,
-    router,
-    pathname,
-  ]);
+  }, [commentOnComment, comment, userId, mutate]);
 
   const date = new Date(
     comment.last_update ? comment.last_update : new Date().getTime()
@@ -443,6 +430,7 @@ export default function Comment({
         setCommentOnComment={setCommentOnComment}
         addNewCommentClickEvent={addNewCommentClickEvent}
         setCommentOnCommentStatus={setCommentOnCommentStatus}
+        parentCommenter={commenter.display_name}
       />
       {commentsOfComment?.map((comment) => (
         <Comment

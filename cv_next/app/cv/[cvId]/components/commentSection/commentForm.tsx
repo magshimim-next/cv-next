@@ -31,9 +31,34 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
         user_id: userId.data.user.id,
       };
 
-      await addComment(comment).finally(() => {
+      mutate(
+        cv.id,
+        (currentComments: CommentModel[] = []) => [
+          ...currentComments,
+          {
+            ...comment,
+            id: Date.now().toString(),
+            deleted: false,
+            last_update: new Date().toISOString(),
+            resolved: false,
+            upvotes: [],
+          },
+        ],
+        false
+      );
+
+      try {
+        await addComment(comment);
         mutate(cv.id);
-      });
+      } catch (error) {
+        // Rollback optimistic update
+        mutate(
+          cv.id,
+          (currentComments: CommentModel[] = []) =>
+            currentComments.filter((comment) => comment.id !== comment.id),
+          false
+        );
+      }
     }
   };
 
