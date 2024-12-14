@@ -34,7 +34,7 @@ const NewCommentBlock = ({
   parentCommenter,
 }: NewCommentBlockProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [inputValue, setInputValue] = useState(`${parentCommenter} `);
+  const [inputValue, setInputValue] = useState(`@${parentCommenter} `);
 
   useEffect(() => {
     if (commentOnCommentStatus && inputRef.current) {
@@ -43,7 +43,7 @@ const NewCommentBlock = ({
   }, [commentOnCommentStatus]);
 
   useEffect(() => {
-    setInputValue(`${parentCommenter} `);
+    setInputValue(`@${parentCommenter} `);
   }, [parentCommenter]);
 
   return commentOnCommentStatus ? (
