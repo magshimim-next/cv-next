@@ -79,11 +79,7 @@ export default function Navbar() {
 
             <div className="flex items-center space-x-4">
               <div className="z-50 hidden space-x-4 md:flex">
-                <Link
-                  className="py-2 text-lg"
-                  href="/upload"
-                  style={{ lineHeight: "1.5" }}
-                >
+                <Link className="py-2 text-lg leading-6" href="/upload">
                   <Upload />
                 </Link>
                 <PopupToggle />
