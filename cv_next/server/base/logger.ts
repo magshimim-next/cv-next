@@ -9,18 +9,19 @@ const logger = pino({
       return {};
     },
   },
-  transport: {
-    targets: [
-      {
-        level: "trace",
-        target: "pino/file",
-        options: {
-          destination: `${process.env.BASE_LOGGER! || "./CVnext_server.log"}`,
-        },
-      },
-      { level: "info", target: "pino-pretty" },
-    ],
-  },
+  transport: undefined,
+  // {
+  //   targets: [
+  //     {
+  //       level: "trace",
+  //       target: "pino/file",
+  //       options: {
+  //         destination: `${process.env.BASE_LOGGER! || "./CVnext_server.log"}`,
+  //       },
+  //     },
+  //     { level: "trace", target: "pino-pretty" },
+  //   ],
+  // },
 });
 
 export default logger;
