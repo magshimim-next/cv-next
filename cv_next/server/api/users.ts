@@ -313,9 +313,9 @@ export async function userIsAdmin(): Promise<Result<void, string>> {
 /**
  * check if the username is valid and generate one if it's not
  *
- * @returns {Promise<Result<Boolean, String>} whether the username is valid and was generated or not
+ * @returns {Promise<Result<String, String>} return the username or an error message
  */
-export async function validateUsername(): Promise<Result<Boolean, String>> {
+export async function validateUsername(): Promise<Result<String, String>> {
   const id = await getCurrentId();
 
   if (!id.ok || !id.val) {
@@ -332,13 +332,13 @@ export async function validateUsername(): Promise<Result<Boolean, String>> {
     return Err(validateUsername.name, { postgrestError: error });
   }
 
-  let isGenerated = false;
+  let username = user.username ?? "";
   if (user.username === null || user.username === "") {
     const usernameResult = await generateUsername(user as UserModel);
     if (usernameResult.ok && usernameResult.val) {
       //only update the user object if the username was successfully set
       user.username = usernameResult.val;
-      isGenerated = true;
+      username = usernameResult.val;
 
       const res = await setFirstLogin(true);
       if (!res.ok) {
@@ -347,7 +347,7 @@ export async function validateUsername(): Promise<Result<Boolean, String>> {
     }
   }
 
-  return Ok(isGenerated);
+  return Ok(username);
 }
 
 /**
