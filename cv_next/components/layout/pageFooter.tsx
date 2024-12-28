@@ -3,7 +3,7 @@ import { Team_Credits as Credits } from "@/lib/definitions";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="inset-x-0 bottom-0 w-full p-4 font-light text-primary">
+    <footer className="inset-x-0 bottom-0 mt-auto w-full p-4 font-light text-primary">
       <div className="container flex columns-4 justify-center">
         <hr className="mx-auto my-4 h-1 w-11/12 rounded border-0 dark:bg-slate-500 md:my-10" />
         <a
