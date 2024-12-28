@@ -25,8 +25,8 @@ export default function Page({
     }
 
     const isValid = await setNewUsername(res.val.id, newUsername);
-    await mutateUser();
     if (isValid.ok) {
+      await mutateUser();
       router.push(`/profile/${newUsername}`);
     }
   }

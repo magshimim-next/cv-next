@@ -1,7 +1,7 @@
 "use server";
 
 import { notFound } from "next/navigation";
-import { unstable_cache } from "next/cache";
+import { unstable_cache, revalidateTag } from "next/cache";
 import { getUserModel } from "@/app/actions/users/getUser";
 import { getCvsByUserId } from "@/server/api/cvs";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
@@ -16,6 +16,8 @@ export default async function Page({
   const { profileUsername } = params;
   const cleanUsername = decodeURIComponent(profileUsername);
   const userFetcher = await getUserModel(cleanUsername);
+
+  revalidateTag("user-" + cleanUsername);
 
   const getCachedUser = unstable_cache(
     async () => await userFetcher,
