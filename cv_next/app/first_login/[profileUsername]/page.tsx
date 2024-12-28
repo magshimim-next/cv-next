@@ -16,6 +16,7 @@ export default function Page({
 }: {
   params: { profileUsername: string };
 }) {
+  const { mutateUser } = useUser();
   const { profileUsername } = params;
 
   async function onConfirm() {
@@ -26,6 +27,7 @@ export default function Page({
     }
 
     const isValid = await setNewUsername(res.val.id, newUsername);
+    await mutateUser();
     if (isValid.ok) {
       router.push(`/profile/${newUsername}`);
     }
@@ -43,7 +45,6 @@ export default function Page({
 
   const [newUsername, setUsername] = useState<string>("");
   const router = useRouter();
-  const { userData } = useUser();
 
   return (
     <main>
