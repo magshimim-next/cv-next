@@ -1,5 +1,3 @@
-// import { redirect } from "next/navigation";
-// import { getUser } from "@/app/actions/users/getUser";
 "use client";
 
 import { useState } from "react";
