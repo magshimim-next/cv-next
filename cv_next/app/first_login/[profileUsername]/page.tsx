@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { notFound, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { setNewUsername } from "@/app/actions/users/updateUser";
-import { getUserModel } from "@/app/actions/users/getUser";
+import { getUserModel, getUser } from "@/app/actions/users/getUser";
 import { Button } from "@/app/feed/components/button";
 import { InputBox } from "@/app/feed/components/inputbar";
 import { useUser } from "@/hooks/useUser";
@@ -17,22 +17,44 @@ export default function Page({
   const { mutateUser } = useUser();
   const { profileUsername } = params;
 
+  useEffect(() => {
+    onEnter();
+  }, [profileUsername]);
+
+  async function onEnter() {
+    const res = await getUserModel(profileUsername);
+    const current = await getUser();
+
+    if (
+      res === null ||
+      !current.ok ||
+      !res.ok ||
+      res.val.id !== current.val.id
+    ) {
+      router.push(`/not_found`);
+      return;
+    }
+  }
+
   async function onConfirm() {
     const res = await getUserModel(profileUsername);
 
     if (res === null || !res.ok) {
-      notFound();
+      router.push(`/not_found`);
+      return;
     }
 
     const isValid = await setNewUsername(res.val.id, newUsername);
     if (isValid.ok) {
       await mutateUser();
+      //await setFirstLogin(false);
       router.push(`/profile/${newUsername}`);
     }
   }
 
   const validate = (() => {
     const checkNewUsername = () => {
+      //TODO: need to add a check for the username rules
       return true;
     };
 
