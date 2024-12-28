@@ -5,7 +5,7 @@ import { ScrollToTop } from "@/components/ui/scrollToTop";
 import { External_Credits as contributors } from "@/lib/definitions";
 import styles from "./styles.module.css";
 
-const startsCount = 15; //15 max, hard codded in css
+const startsCount = 15;
 
 const hall: React.FC = () => {
   return (
@@ -36,7 +36,7 @@ const hall: React.FC = () => {
           </h3>
           <ul>
             <div className="flex max-h-[80vh] w-full flex-row-reverse flex-wrap justify-center justify-center self-center overflow-y-auto overflow-x-hidden xl:flex">
-              {contributors.map((contributor, index) => (
+              {contributors.map((contributor) => (
                 <div
                   key={contributor.name}
                   className={`${styles.card} relative m-[1vh] flex h-[25vh] w-[25vh] flex-col justify-between rounded-lg bg-primary-foreground p-4 text-center`}
