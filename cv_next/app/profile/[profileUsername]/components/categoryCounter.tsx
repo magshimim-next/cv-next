@@ -43,7 +43,7 @@ export default async function CategoryCounter({
   const categoryElements = top3CategoryIds.map((categoryId, index) => (
     <span
       key={index}
-      className="right-0 mx-4 mb-2 justify-center rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400"
+      className="mx-3 mb-2 inline-flex items-center justify-center rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white shadow-md hover:bg-gray-400"
     >
       {Categories.category[categoryId]}
       {index < top3CategoryIds.length - 1}
@@ -55,7 +55,7 @@ export default async function CategoryCounter({
       {cvs.length ? (
         <div>
           <div className="mb-2 flex justify-center text-center">{title}</div>
-          <div className="flex flex-col items-center md:flex-row md:justify-center">
+          <div className="flex flex-col flex-wrap items-center lg:flex-row lg:justify-center">
             {categoryElements}
           </div>
         </div>
