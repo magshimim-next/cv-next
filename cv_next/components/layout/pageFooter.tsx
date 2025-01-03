@@ -3,7 +3,7 @@ import { Team_Credits as Credits } from "@/lib/definitions";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="inset-x-0 bottom-0 w-full p-4 font-light text-primary">
+    <footer className="inset-x-0 bottom-0 mt-auto w-full p-4 font-light text-primary">
       <div className="container flex columns-4 justify-center">
         <hr className="mx-auto my-4 h-1 w-11/12 rounded border-0 dark:bg-slate-500 md:my-10" />
         <a
@@ -59,7 +59,7 @@ const Footer: React.FC = () => {
         </p>
       </div>
       <div className="mb-2 flex justify-center">
-        <div className="mb-2 flex h-10 max-w-fit items-center justify-center rounded-md px-5 text-xs opacity-50 shadow-md hover:shadow-xl">
+        <div className="mb-2 flex h-fit max-w-fit items-center justify-center rounded-md px-5 text-xs opacity-50 shadow-md hover:shadow-xl">
           {`Credit to our team: ${Credits.slice(0, -1).join(", ")} and ${Credits.slice(-1)}`}
         </div>
       </div>
