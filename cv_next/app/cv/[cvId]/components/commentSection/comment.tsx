@@ -298,29 +298,43 @@ export default function Comment({
       commentToAdd.parent_comment_Id = comment.parent_comment_Id;
     }
 
-    mutate(comment.document_id, (currentSubComments: CommenterModel[] = []) => [
-      ...currentSubComments,
+    mutate(
+      comment.document_id,
+      (currentSubComments: CommenterModel[] = []) => [
+        ...currentSubComments,
+        {
+          ...commentToAdd,
+          id: Date.now().toString(),
+          deleted: false,
+          last_update: new Date().toISOString(),
+          resolved: false,
+          upvoted: [],
+        },
+      ],
       {
-        ...commentToAdd,
-        id: Date.now().toString(),
-        deleted: false,
-        last_update: new Date().toISOString(),
-        resolved: false,
-        upvoted: [],
-        user_id: userId,
-      },
-    ]);
+        optimisticData: true,
+        rollbackOnError: true,
+        revalidate: false,
+      }
+    );
 
-    try {
-      await addComment(commentToAdd);
-      mutate(comment.document_id);
-    } catch (error) {
-      // Rollback optimistic update
+    const addedComment = await addComment(commentToAdd);
+    if (addedComment.ok) {
       mutate(
         comment.document_id,
-        (currentComments: CommentModel[] = []) =>
-          currentComments.filter((comment) => comment.id !== comment.id),
-        false
+        async (currentSubComments: CommenterModel[] = []) => {
+          return [
+            ...currentSubComments,
+            {
+              ...addedComment,
+              id: addedComment.val.id,
+              last_update: new Date().toISOString(),
+            },
+          ];
+        },
+        {
+          revalidate: true,
+        }
       );
     }
   }, [commentOnComment, comment, userId, mutate]);
@@ -355,7 +369,7 @@ export default function Comment({
     });
   };
 
-  const commenter = JSON.parse(JSON.stringify(comment.user_id));
+  const commenter = JSON.parse(JSON.stringify(comment.user_id || "Loading..."));
 
   const userVoted = comment.upvotes?.includes(userId) || false;
   const userResolved = comment.resolved;
