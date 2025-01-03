@@ -43,6 +43,9 @@ export const DropdownInput = ({
   };
 
   const handleCheckboxChange = (categoryId: number) => {
+    if (JSON.stringify(valueId) !== JSON.stringify(selectedCategories)) {
+      setSelectedCategories(valueId || []);
+    }
     setSelectedCategories((prevSelectedIds) => {
       if (prevSelectedIds.includes(categoryId)) {
         return prevSelectedIds.filter((id) => id !== categoryId);
@@ -70,13 +73,6 @@ export const DropdownInput = ({
     }
     setSelectTitle(selectedCategories.map(getValueById).join(", "));
   }, [selectedCategories, valueId, getValueById, onChange]);
-
-  useEffect(() => {
-    if (JSON.stringify(valueId) !== JSON.stringify(selectedCategories)) {
-      setSelectedCategories(valueId || []);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [valueId]);
 
   return (
     <>
