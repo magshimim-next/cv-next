@@ -1,12 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
-import Categories from "@/types/models/categories";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
-import { generateCategoryLink } from "@/lib/utils";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import CategoriesDisplay from "./catagoryDisplay";
 
