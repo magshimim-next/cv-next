@@ -22,10 +22,10 @@ import {
 import { filterValues } from "@/types/models/filters";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
-import CVItemLink from "@/app/feed/components/CVItemLink";
+import CVItemLink from "@/app/feed/components/CV/CVItemLink";
 import { toCategoryNumber } from "@/lib/utils";
 import { useDebounceCallback } from "@/hooks/useDebounceCallback";
-import CVItem from "./CVItem";
+import CVItem from "./CV/CVItem";
 
 export default function Feed() {
   const searchParams = useSearchParams();

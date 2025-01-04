@@ -1,7 +1,7 @@
 import { EmblaOptionsType } from "embla-carousel";
 import EmblaCarousel from "@/components/ui/Carousel/carouselStructure";
-import CVItem from "@/app/feed/components/CVItem";
-import CVItemLink from "@/app/feed/components/CVItemLink";
+import CVItem from "@/app/feed/components/CV/CVItem";
+import CVItemLink from "@/app/feed/components/CV/CVItemLink";
 
 export default function ProfileCvs({ cvs }: { cvs: CvModel[] }) {
   const options: EmblaOptionsType = { loop: true };
