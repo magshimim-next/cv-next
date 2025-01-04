@@ -19,18 +19,27 @@ export default function CategoriesDisplay({ categories }: CategoriesDisplayProps
         if(thisElement) {
             if(thisElement.clientWidth < thisElement.scrollWidth) {
                 const overflowCatagory =  displayedCatagories[displayedCatagories.length - 1]
-                setOverFlowingCatagories([...overFlowingCatagories, overflowCatagory])
+                
+                setOverFlowingCatagories([overflowCatagory, ...overFlowingCatagories])
                 setDisplayedCatagories(displayedCatagories.slice(0, -1))
             }
         }
-    }, [thisElement])
+    })
+
+    const shiftTheCatagories = () => {
+        const overflowCatagory =  overFlowingCatagories[overFlowingCatagories.length - 1]
+        const displayedCatagory =  displayedCatagories[displayedCatagories.length - 1]
+
+        setOverFlowingCatagories([displayedCatagory, ...overFlowingCatagories.slice(0, -1)])
+        setDisplayedCatagories([overflowCatagory, ...displayedCatagories.slice(0, -1)])
+    }
 
     return <>
-        <div className="mt-2 flex space-x-2" ref={(el => setThisElement(el))}>
+        <div className="mt-2 flex space-x-2 overflow-visible" ref={(el => setThisElement(el))}>
             {displayedCatagories.map((categoryId) => (
                 <CategoryDisplay categoryId={categoryId} />
             ))}
-            { overFlowingCatagories.length && <OverflowNumber categories={overFlowingCatagories}/> }
+            { overFlowingCatagories.length && <OverflowNumber categories={overFlowingCatagories} onClick={shiftTheCatagories}/> }
         </div>
     </>
 }
@@ -48,11 +57,14 @@ function CategoryDisplay({ categoryId }: {categoryId: number;} ) {
     </>
 }
 
-function OverflowNumber({ categories }: {categories: number[]} ) {
+function OverflowNumber({ categories, onClick }: {categories: number[], onClick: () => void} ) {
     return <>
         <div
-            onClick={(e) => e.stopPropagation()}
-            className="rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400"
+            onClick={(e) => {
+                e.stopPropagation()
+                onClick()
+            }}
+            className="rounded-full bg-gray-700 px-2 py-1 text-sm font-semibold text-white hover:bg-gray-400 flex justify-center items-center"
             title={categories.map(categoryId => `#${Categories.category[categoryId]}`).join(" ")}
             >
                 +{categories.length}
