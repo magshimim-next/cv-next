@@ -62,7 +62,7 @@ export const useApiFetch = () => {
           throw error;
         } else {
           if ((error as Error).message.includes("CV is private")) {
-            throw new Error("CV is private");
+            return { base64: "CV_IS_PRIVATE" };
           }
           throw new Error("An unknown error occurred during the API fetch");
         }
