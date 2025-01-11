@@ -74,10 +74,13 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
         <textarea
           id={COMMENT_FIELD_NAME}
           name={COMMENT_FIELD_NAME}
-          rows={2}
-          className="row-span-2 mt-2 min-h-[2.5rem] w-full resize-y flex-col overflow-hidden border-0 px-0
-                                text-sm leading-5 text-gray-900 focus:outline-none focus:ring-0
-                                dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
+          rows={5}
+          className={`
+    row-span-2 mt-2 min-h-[2.5rem] w-full resize-none flex-col overflow-auto
+    border-0 px-0 text-sm leading-5 text-gray-900
+    focus:outline-none focus:ring-0 dark:bg-gray-800
+    dark:text-white dark:placeholder-gray-400
+  `}
           placeholder="Write a comment..."
         />
         <button
