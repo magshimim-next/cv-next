@@ -4,6 +4,7 @@ import Link from "next/link";
 import Categories from "@/types/models/categories";
 import { generateCategoryLink } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { useWindowSize } from "@/hooks/useWindowSize";
 
 interface CategoriesDisplayProps {
     categories: number[]
@@ -14,17 +15,31 @@ export default function CategoriesDisplay({ categories }: CategoriesDisplayProps
     
     const [displayedCatagories, setDisplayedCatagories] = useState<number[]>(categories);
     const [overFlowingCatagories, setOverFlowingCatagories] = useState<number[]>([]);
+    const [savedWidth, setSavedWidth] = useState<number>();
+
+    const windowSize = useWindowSize()
+    
     
     useEffect(() => {
-        if(thisElement) {
-            if(thisElement.clientWidth < thisElement.scrollWidth) {
-                const overflowCatagory =  displayedCatagories[displayedCatagories.length - 1]
-                
-                setOverFlowingCatagories([overflowCatagory, ...overFlowingCatagories])
-                setDisplayedCatagories(displayedCatagories.slice(0, -1))
-            }
+        if(thisElement && thisElement.clientWidth < thisElement.scrollWidth) {
+            const overflowCatagory =  displayedCatagories[displayedCatagories.length - 1]
+            
+            setOverFlowingCatagories([overflowCatagory, ...overFlowingCatagories])
+            setDisplayedCatagories(displayedCatagories.slice(0, -1))
         }
     })
+
+    useEffect(() => {
+        if(windowSize && savedWidth !== windowSize.width) {
+            resetCatagoriesArray()
+            setSavedWidth(windowSize.width)
+        }
+    }, [windowSize])
+
+    const resetCatagoriesArray = () => {
+        setDisplayedCatagories(categories)
+        setOverFlowingCatagories([])
+    }
 
     const shiftTheCatagories = () => {
         const overflowCatagory =  overFlowingCatagories[overFlowingCatagories.length - 1]
@@ -51,7 +66,7 @@ function CategoryDisplay({ categoryId }: {categoryId: number;} ) {
             onClick={(e) => e.stopPropagation()}
             className="rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
             >
-                #{Categories.category[categoryId]}
+                {getCatagoryText(categoryId)}
             </div>
         </Link>
     </>
@@ -65,10 +80,14 @@ function OverflowNumber({ categories, onClick }: {categories: number[], onClick:
                 onClick()
             }}
             className="rounded-full bg-gray-700 px-2 py-1 text-sm font-semibold text-white hover:bg-gray-400 flex justify-center items-center"
-            title={categories.map(categoryId => `#${Categories.category[categoryId]}`).join(" ")}
+            title={categories.map(getCatagoryText).join(", ")}
             >
                 +{categories.length}
         </div>
     </>
+}
+
+function getCatagoryText(id: number) {
+    return `#${Categories.category[id]}`
 }
 
