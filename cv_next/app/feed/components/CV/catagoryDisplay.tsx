@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import useWindowSize from "@/hooks/useWindowSize";
 import Link from "next/link";
+import useWindowSize from "@/hooks/useWindowSize";
 import Categories from "@/types/models/categories";
 import { generateCategoryLink } from "@/lib/utils";
 
@@ -27,7 +27,7 @@ export default function CategoriesDisplay({ categories }: CategoriesDisplayProps
             setOverFlowingCatagories([overflowCatagory, ...overFlowingCatagories])
             setDisplayedCatagories(displayedCatagories.slice(0, -1))
         }
-    }, [categories, displayedCatagories, overFlowingCatagories])
+    }, [thisElement, categories, displayedCatagories, overFlowingCatagories])
 
     useEffect(() => {
         if(windowSize && savedWidth !== windowSize.width) {
