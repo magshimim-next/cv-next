@@ -10,7 +10,7 @@ interface CategoriesDisplayProps {
     categories: number[]
 }
 
-export default function CategoriesDisplay({ categories }: CategoriesDisplayProps) {1
+export default function CategoriesDisplay({ categories }: CategoriesDisplayProps) {
     const [thisElement, setThisElement] = useState<HTMLDivElement | null>();
     
     const [displayedCatagories, setDisplayedCatagories] = useState<number[]>(categories);
