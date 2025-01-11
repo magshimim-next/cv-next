@@ -149,7 +149,7 @@ export default function CVItem({ cv }: CVCardProps) {
         <Image
           width={500}
           height={500 * 1.4142}
-          className="w-full rounded-lg p-2"
+          className="h-full w-full rounded-lg p-2"
           src={realURL}
           placeholder="blur"
           blurDataURL={base64Data}
