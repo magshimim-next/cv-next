@@ -4,7 +4,7 @@ interface windowSize {
     width: number,
     height: number,
   }
-export const useWindowSize = () => {
+export default function useWindowSize() {
     const [windowSize, setWindowSize] = useState<windowSize>();
 
     useEffect(() => {

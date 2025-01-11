@@ -4,7 +4,7 @@ import Link from "next/link";
 import Categories from "@/types/models/categories";
 import { generateCategoryLink } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { useWindowSize } from "@/hooks/useWindowSize";
+import useWindowSize from "@/hooks/useWindowSize";
 
 interface CategoriesDisplayProps {
     categories: number[]
