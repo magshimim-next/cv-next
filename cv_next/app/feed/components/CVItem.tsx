@@ -29,7 +29,7 @@ export default function CVItem({ cv }: CVCardProps) {
         API_DEFINITIONS.FETCH_PREVIEWS_ENDPOINT,
         {
           pathname: "getBlurredCv",
-          cvLink: imageURL,
+          CVPreviewLink: imageURL,
         }
       );
       return data.base64;
