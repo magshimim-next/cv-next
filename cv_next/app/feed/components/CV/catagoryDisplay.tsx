@@ -1,10 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import useWindowSize from "@/hooks/useWindowSize";
 import Link from "next/link";
 import Categories from "@/types/models/categories";
 import { generateCategoryLink } from "@/lib/utils";
-import { useEffect, useState } from "react";
-import useWindowSize from "@/hooks/useWindowSize";
 
 interface CategoriesDisplayProps {
     categories: number[]
@@ -27,7 +27,7 @@ export default function CategoriesDisplay({ categories }: CategoriesDisplayProps
             setOverFlowingCatagories([overflowCatagory, ...overFlowingCatagories])
             setDisplayedCatagories(displayedCatagories.slice(0, -1))
         }
-    })
+    }, [categories, displayedCatagories, overFlowingCatagories])
 
     useEffect(() => {
         if(windowSize && savedWidth !== windowSize.width) {
@@ -52,7 +52,7 @@ export default function CategoriesDisplay({ categories }: CategoriesDisplayProps
     return <>
         <div className="mt-2 flex space-x-2 overflow-visible" ref={(el => setThisElement(el))}>
             {displayedCatagories.map((categoryId) => (
-                <CategoryDisplay categoryId={categoryId} />
+                <CategoryDisplay key={categoryId} categoryId={categoryId} />
             ))}
             { overFlowingCatagories.length && <OverflowNumber categories={overFlowingCatagories} onClick={shiftTheCatagories}/> }
         </div>
