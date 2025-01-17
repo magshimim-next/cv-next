@@ -20,15 +20,13 @@ import Tooltip from "@/components/ui/tooltip";
 
 interface NewCommentBlockProps {
   commentOnCommentStatus: boolean;
-  setCommentOnComment: (value: string) => void;
-  addNewCommentClickEvent: () => Promise<void>;
+  addNewCommentClickEvent: (commentData: string) => Promise<void>;
   setCommentOnCommentStatus: (status: boolean) => void;
   parentCommenter: string;
 }
 
 const NewCommentBlock = ({
   commentOnCommentStatus,
-  setCommentOnComment,
   addNewCommentClickEvent,
   setCommentOnCommentStatus,
   parentCommenter,
@@ -47,11 +45,15 @@ const NewCommentBlock = ({
     }
   }, [commentOnCommentStatus, inputValue, parentCommenter]);
 
+  const handleSubmit = async () => {
+    await addNewCommentClickEvent(inputValue);
+    setCommentOnCommentStatus(!commentOnCommentStatus);
+  };
+
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.ctrlKey && !e.shiftKey) {
       e.preventDefault();
-      await addNewCommentClickEvent();
-      setCommentOnCommentStatus(!commentOnCommentStatus);
+      await handleSubmit();
     } else if (e.key === "Enter" && e.ctrlKey) {
       e.preventDefault();
       setInputValue((prev) => prev + "\n");
@@ -71,7 +73,6 @@ const NewCommentBlock = ({
         value={inputValue}
         onChange={(e) => {
           setInputValue(e.target.value);
-          setCommentOnComment(e.target.value);
         }}
         onFocus={(e) =>
           e.currentTarget.setSelectionRange(
@@ -86,8 +87,7 @@ const NewCommentBlock = ({
       <RxPlus
         style={{ fontSize: "5vh", cursor: "pointer" }}
         onClick={async () => {
-          await addNewCommentClickEvent();
-          setCommentOnCommentStatus(!commentOnCommentStatus);
+          await handleSubmit();
         }}
       />
     </div>
@@ -295,7 +295,7 @@ export default function Comment({
 }: CommentProps) {
   const [commentOnCommentStatus, setCommentOnCommentStatus] =
     useState<boolean>(false);
-  const [commentOnComment, setCommentOnComment] = useState<string>("");
+  //const [commentOnComment, setCommentOnComment] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const { mutate } = useSWRConfig();
 
@@ -304,58 +304,61 @@ export default function Comment({
     setShowAlert(false);
   };
 
-  const addNewCommentClickEvent = useCallback(async () => {
-    const commentToAdd: NewCommentModel = {
-      data: commentOnComment,
-      document_id: comment.document_id,
-      parent_comment_Id: comment.id,
-      user_id: userId,
-    };
+  const addNewCommentClickEvent = useCallback(
+    async (commentData: string) => {
+      const commentToAdd: NewCommentModel = {
+        data: commentData,
+        document_id: comment.document_id,
+        parent_comment_Id: comment.id,
+        user_id: userId,
+      };
 
-    if (comment.parent_comment_Id) {
-      commentToAdd.parent_comment_Id = comment.parent_comment_Id;
-    }
-
-    mutate(
-      comment.document_id,
-      (currentSubComments: CommenterModel[] = []) => [
-        ...currentSubComments,
-        {
-          ...commentToAdd,
-          id: Date.now().toString(),
-          deleted: false,
-          last_update: new Date().toISOString(),
-          resolved: false,
-          upvoted: [],
-        },
-      ],
-      {
-        optimisticData: true,
-        rollbackOnError: true,
-        revalidate: false,
+      if (comment.parent_comment_Id) {
+        commentToAdd.parent_comment_Id = comment.parent_comment_Id;
       }
-    );
 
-    const addedComment = await addComment(commentToAdd);
-    if (addedComment.ok) {
       mutate(
         comment.document_id,
-        async (currentSubComments: CommenterModel[] = []) => {
-          return [
-            ...currentSubComments,
-            {
-              ...addedComment,
-              id: addedComment.val.id,
-              last_update: new Date().toISOString(),
-            },
-          ];
-        },
+        (currentSubComments: CommenterModel[] = []) => [
+          ...currentSubComments,
+          {
+            ...commentToAdd,
+            id: Date.now().toString(),
+            deleted: false,
+            last_update: new Date().toISOString(),
+            resolved: false,
+            upvoted: [],
+          },
+        ],
         {
-          revalidate: true,
+          optimisticData: true,
+          rollbackOnError: true,
+          revalidate: false,
         }
       );
-    }
-  }, [commentOnComment, comment, userId, mutate]);
+
+      const addedComment = await addComment(commentToAdd);
+      if (addedComment.ok) {
+        mutate(
+          comment.document_id,
+          async (currentSubComments: CommenterModel[] = []) => {
+            return [
+              ...currentSubComments,
+              {
+                ...addedComment,
+                id: addedComment.val.id,
+                last_update: new Date().toISOString(),
+              },
+            ];
+          },
+          {
+            revalidate: true,
+          }
+        );
+      }
+    },
+    [comment, userId, mutate]
+  );
 
   const date = new Date(
     comment.last_update ? comment.last_update : new Date().getTime()
@@ -467,7 +470,6 @@ export default function Comment({
       <AlertComponent showAlert={showAlert} onAlertClick={onAlertClick} />
       <NewCommentBlock
         commentOnCommentStatus={commentOnCommentStatus}
-        setCommentOnComment={setCommentOnComment}
         addNewCommentClickEvent={addNewCommentClickEvent}
         setCommentOnCommentStatus={setCommentOnCommentStatus}
         parentCommenter={commenter.display_name}
