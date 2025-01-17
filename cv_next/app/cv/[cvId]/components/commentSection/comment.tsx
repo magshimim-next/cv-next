@@ -420,7 +420,9 @@ export default function Comment({
           </p>
         </div>
       </footer>
-      <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
+      <p className="whitespace-pre-wrap text-gray-500 dark:text-gray-400">
+        {comment.data}
+      </p>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <span style={{ display: "flex", width: "100%" }}>
           <div>
