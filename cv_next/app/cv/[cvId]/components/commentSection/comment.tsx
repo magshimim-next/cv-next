@@ -39,12 +39,13 @@ const NewCommentBlock = ({
   useEffect(() => {
     if (commentOnCommentStatus && inputRef.current) {
       inputRef.current.focus();
+    } else if (
+      !commentOnCommentStatus &&
+      inputValue != `@${parentCommenter} `
+    ) {
+      setInputValue(`@${parentCommenter} `);
     }
-  }, [commentOnCommentStatus]);
-
-  useEffect(() => {
-    setInputValue(`@${parentCommenter} `);
-  }, [parentCommenter]);
+  }, [commentOnCommentStatus, inputValue, parentCommenter]);
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.ctrlKey && !e.shiftKey) {
