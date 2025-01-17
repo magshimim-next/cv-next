@@ -47,7 +47,7 @@ const NewCommentBlock = ({
   }, [parentCommenter]);
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.ctrlKey) {
+    if (e.key === "Enter" && !e.ctrlKey && !e.shiftKey) {
       e.preventDefault();
       await addNewCommentClickEvent();
       setCommentOnCommentStatus(!commentOnCommentStatus);
