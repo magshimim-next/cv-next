@@ -154,6 +154,7 @@ export default function Page() {
                 valueId={field.value}
                 noneText="none"
                 placeHolder="Select categories"
+                exclude={[Categories.category.Undefined]}
               />
             )}
           />
