@@ -33,7 +33,7 @@ const NewCommentBlock = ({
   setCommentOnCommentStatus,
   parentCommenter,
 }: NewCommentBlockProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [inputValue, setInputValue] = useState(`@${parentCommenter} `);
 
   useEffect(() => {
@@ -46,6 +46,17 @@ const NewCommentBlock = ({
     setInputValue(`@${parentCommenter} `);
   }, [parentCommenter]);
 
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.ctrlKey) {
+      e.preventDefault();
+      await addNewCommentClickEvent();
+      setCommentOnCommentStatus(!commentOnCommentStatus);
+    } else if (e.key === "Enter" && e.ctrlKey) {
+      e.preventDefault();
+      setInputValue((prev) => prev + "\n");
+    }
+  };
+
   return commentOnCommentStatus ? (
     <div
       style={{
@@ -54,16 +65,22 @@ const NewCommentBlock = ({
         alignItems: "center",
       }}
     >
-      <input
+      <textarea
         ref={inputRef}
-        type="text"
         value={inputValue}
         onChange={(e) => {
           setInputValue(e.target.value);
           setCommentOnComment(e.target.value);
         }}
-        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-        required
+        onFocus={(e) =>
+          e.currentTarget.setSelectionRange(
+            e.currentTarget.value.length,
+            e.currentTarget.value.length
+          )
+        }
+        onKeyDown={handleKeyDown}
+        rows={2}
+        className="mb-2 mt-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
       />
       <RxPlus
         style={{ fontSize: "5vh", cursor: "pointer" }}
