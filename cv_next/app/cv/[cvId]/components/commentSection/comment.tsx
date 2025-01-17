@@ -80,7 +80,7 @@ const NewCommentBlock = ({
         }
         onKeyDown={handleKeyDown}
         rows={2}
-        className="mb-2 mt-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        className="mb-1 mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
       />
       <RxPlus
         style={{ fontSize: "5vh", cursor: "pointer" }}
@@ -423,7 +423,13 @@ export default function Comment({
       <p className="whitespace-pre-wrap text-gray-500 dark:text-gray-400">
         {comment.data}
       </p>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: "0.5rem",
+        }}
+      >
         <span style={{ display: "flex", width: "100%" }}>
           <div>
             <GeneralActions
