@@ -88,14 +88,22 @@ async function getImageURLHandler(data: { cvId: string }) {
 /**
  * Get a blurred version of a cv
  *
- * @param {string} cvId - The cv to get a blurred version of
+ * @param {string} CVPreviewLink - The cv to get a blurred version of
  * @return {Promise<string>} a promised string with the base64 of the blur
  */
-async function getBlurredCvHandler(data: { cvLink: string }) {
-  const cvLink = data.cvLink;
-  const resp = await fetch(cvLink, {
+async function getBlurredCvHandler(data: { CVPreviewLink: string }) {
+  const cvPreviewLink = data.CVPreviewLink;
+
+  const resp = await fetch(cvPreviewLink, {
     next: { revalidate: Definitions.FETCH_WAIT_TIME },
+    redirect: "manual",
   });
+
+  if (resp.status === 302) {
+    logger.error("Redirected when asked for usercontent, probably private");
+    return NextResponse.json({ message: "CV is private" }, { status: 500 });
+  }
+
   const arrayBuffer = await resp.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
   const { base64 } = await getPlaiceholder(buffer, {

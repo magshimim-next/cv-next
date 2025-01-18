@@ -8,11 +8,11 @@ import SupabaseHelper from "./supabaseHelper";
  * Add a new comment to the database.
  *
  * @param {NewCommentModel} comment - the comment to be added
- * @return {Promise<Result<void, string>>} A Promise that resolves to a Result object containing no value if successful, or an error message.
+ * @return {Promise<Result<CommentModel, string>>} A Promise that resolves to a Result object containing the added comment if successful, or an error message.
  */
 export async function addCommentToCv(
   comment: NewCommentModel
-): Promise<Result<void, string>> {
+): Promise<Result<CommentModel, string>> {
   try {
     const { data, error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.comments)
@@ -29,7 +29,7 @@ export async function addCommentToCv(
         err: new Error("adding comment failed"),
       });
     }
-    return Ok.EMPTY;
+    return Ok(data[0]);
   } catch (err) {
     return Err(addCommentToCv.name, {
       err: err as Error,

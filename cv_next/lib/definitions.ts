@@ -138,6 +138,16 @@ export const Visible_Error_Messages: ErrorMessages = {
     description:
       "Username already exist. Please try again with a different username.",
   },
+  PrivateCV: {
+    keyword: "PrivateCV",
+    title: "This CV has been set to private!",
+    description: "Maybe the author just wasn't ready yet...",
+  },
+  CurrentUserPrivateCV: {
+    keyword: "CurrentUserPrivateCV",
+    title: "Your CV is set to private!",
+    description: "Please update your CV settings to make it public again.",
+  },
   DefaultError: {
     keyword: "default",
     title: "An Error Occurred",

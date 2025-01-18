@@ -1,14 +1,24 @@
 "use client";
+import { useEffect } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { isBrowser } from "@/lib/utils";
+import { ThemeManager } from "@/app/themeManager/themeManager";
+
+export const themeManager = new ThemeManager("dark");
 
 export function ModeToggle() {
   const { theme, setTheme } = useTheme();
 
+  useEffect(() => {
+    themeManager.setTheme(theme === "light" ? "light" : "dark");
+  }, [theme]);
+
   const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    themeManager.setTheme(newTheme);
   };
 
   return (

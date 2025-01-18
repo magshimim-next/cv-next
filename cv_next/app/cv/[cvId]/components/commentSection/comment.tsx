@@ -8,10 +8,9 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import { FaComment } from "react-icons/fa";
 import { AiTwotoneLike, AiFillLike } from "react-icons/ai";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { HiXMark } from "react-icons/hi2";
-import { usePathname, useRouter } from "next/navigation";
 import { addComment } from "@/app/actions/comments/addComment";
 import { upvoteComment } from "@/app/actions/comments/setLike";
 import { setResolved } from "@/app/actions/comments/setResolved";
@@ -21,17 +20,46 @@ import Tooltip from "@/components/ui/tooltip";
 
 interface NewCommentBlockProps {
   commentOnCommentStatus: boolean;
-  setCommentOnComment: (value: string) => void;
-  addNewCommentClickEvent: () => Promise<void>;
+  addNewCommentClickEvent: (commentData: string) => Promise<void>;
   setCommentOnCommentStatus: (status: boolean) => void;
+  parentCommenter: string;
 }
 
 const NewCommentBlock = ({
   commentOnCommentStatus,
-  setCommentOnComment,
   addNewCommentClickEvent,
   setCommentOnCommentStatus,
+  parentCommenter,
 }: NewCommentBlockProps) => {
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const [inputValue, setInputValue] = useState(`@${parentCommenter} `);
+
+  useEffect(() => {
+    if (commentOnCommentStatus && inputRef.current) {
+      inputRef.current.focus();
+    } else if (
+      !commentOnCommentStatus &&
+      inputValue != `@${parentCommenter} `
+    ) {
+      setInputValue(`@${parentCommenter} `);
+    }
+  }, [commentOnCommentStatus, inputValue, parentCommenter]);
+
+  const handleSubmit = async () => {
+    await addNewCommentClickEvent(inputValue);
+    setCommentOnCommentStatus(!commentOnCommentStatus);
+  };
+
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.ctrlKey && !e.shiftKey) {
+      e.preventDefault();
+      await handleSubmit();
+    } else if (e.key === "Enter" && e.ctrlKey) {
+      e.preventDefault();
+      setInputValue((prev) => prev + "\n");
+    }
+  };
+
   return commentOnCommentStatus ? (
     <div
       style={{
@@ -40,17 +68,26 @@ const NewCommentBlock = ({
         alignItems: "center",
       }}
     >
-      <input
-        type="text"
-        onChange={(e) => setCommentOnComment(e.target.value)}
-        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-        required
+      <textarea
+        ref={inputRef}
+        value={inputValue}
+        onChange={(e) => {
+          setInputValue(e.target.value);
+        }}
+        onFocus={(e) =>
+          e.currentTarget.setSelectionRange(
+            e.currentTarget.value.length,
+            e.currentTarget.value.length
+          )
+        }
+        onKeyDown={handleKeyDown}
+        rows={2}
+        className="mb-1 mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
       />
       <RxPlus
         style={{ fontSize: "5vh", cursor: "pointer" }}
         onClick={async () => {
-          await addNewCommentClickEvent();
-          setCommentOnCommentStatus(!commentOnCommentStatus);
+          await handleSubmit();
         }}
       />
     </div>
@@ -261,12 +298,10 @@ export default function Comment({
   commentsOfComment = [],
   setCommentsOfComments,
 }: CommentProps) {
-  const router = useRouter();
   const [commentOnCommentStatus, setCommentOnCommentStatus] =
     useState<boolean>(false);
-  const [commentOnComment, setCommentOnComment] = useState<string>("");
+  //const [commentOnComment, setCommentOnComment] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
-  const pathname = usePathname();
   const { mutate } = useSWRConfig();
 
   const onAlertClick = async (type: boolean) => {
@@ -274,74 +309,61 @@ export default function Comment({
     setShowAlert(false);
   };
 
-  const addNewCommentClickEvent = useCallback(async () => {
-    const commentToAdd: NewCommentModel = {
-      data: commentOnComment,
-      document_id: comment.document_id,
-      parent_comment_Id: comment.id,
-      user_id: userId,
-    };
+  const addNewCommentClickEvent = useCallback(
+    async (commentData: string) => {
+      const commentToAdd: NewCommentModel = {
+        data: commentData,
+        document_id: comment.document_id,
+        parent_comment_Id: comment.id,
+        user_id: userId,
+      };
 
-    if (comment.parent_comment_Id) {
-      commentToAdd.parent_comment_Id = comment.parent_comment_Id;
-    }
-
-    const optimisticData = (
-      prevData: CommentModel[] | undefined
-    ): CommentModel[] => {
-      const newCommentsOfComments = new Map<string, CommentModel[]>(
-        prevData?.reduce((acc, cur) => {
-          // Use 'root' for top-level comments
-          const key = cur.parent_comment_Id || "root";
-          if (!acc.has(key)) {
-            acc.set(key, []);
-          }
-          acc.get(key)!.push(cur);
-          return acc;
-        }, new Map<string, CommentModel[]>()) || []
-      );
-
-      const parentId = comment.id;
-      if (!newCommentsOfComments.has(parentId)) {
-        newCommentsOfComments.set(parentId, []);
+      if (comment.parent_comment_Id) {
+        commentToAdd.parent_comment_Id = comment.parent_comment_Id;
       }
-      newCommentsOfComments
-        .get(parentId)!
-        .push(commentToAdd as unknown as CommentModel);
 
-      return Array.from(newCommentsOfComments.values()).flat();
-    };
-
-    try {
       mutate(
         comment.document_id,
-        async () => {
-          await addComment(commentToAdd);
-          return optimisticData(commentsOfComment);
-        },
-        {
-          optimisticData: optimisticData(commentsOfComment),
-          rollbackOnError: (error) => {
-            if (error instanceof Error) {
-              return error.name !== "AbortError";
-            }
-            return true;
+        (currentSubComments: CommenterModel[] = []) => [
+          ...currentSubComments,
+          {
+            ...commentToAdd,
+            id: Date.now().toString(),
+            deleted: false,
+            last_update: new Date().toISOString(),
+            resolved: false,
+            upvoted: [],
           },
-          revalidate: true,
+        ],
+        {
+          optimisticData: true,
+          rollbackOnError: true,
+          revalidate: false,
         }
       );
-    } catch (error) {
-      router.push(`/login?next=${pathname}`);
-    }
-  }, [
-    commentOnComment,
-    comment,
-    userId,
-    mutate,
-    commentsOfComment,
-    router,
-    pathname,
-  ]);
+
+      const addedComment = await addComment(commentToAdd);
+      if (addedComment.ok) {
+        mutate(
+          comment.document_id,
+          async (currentSubComments: CommenterModel[] = []) => {
+            return [
+              ...currentSubComments,
+              {
+                ...addedComment,
+                id: addedComment.val.id,
+                last_update: new Date().toISOString(),
+              },
+            ];
+          },
+          {
+            revalidate: true,
+          }
+        );
+      }
+    },
+    [comment, userId, mutate]
+  );
 
   const date = new Date(
     comment.last_update ? comment.last_update : new Date().getTime()
@@ -373,7 +395,7 @@ export default function Comment({
     });
   };
 
-  const commenter = JSON.parse(JSON.stringify(comment.user_id));
+  const commenter = JSON.parse(JSON.stringify(comment.user_id || "Loading..."));
 
   const userVoted = comment.upvotes?.includes(userId) || false;
   const userResolved = comment.resolved;
@@ -407,8 +429,16 @@ export default function Comment({
           </p>
         </div>
       </footer>
-      <p className="text-gray-500 dark:text-gray-400">{comment.data}</p>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <p className="whitespace-pre-wrap text-gray-500 dark:text-gray-400">
+        {comment.data}
+      </p>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: "0.5rem",
+        }}
+      >
         <span style={{ display: "flex", width: "100%" }}>
           <div>
             <GeneralActions
@@ -445,9 +475,9 @@ export default function Comment({
       <AlertComponent showAlert={showAlert} onAlertClick={onAlertClick} />
       <NewCommentBlock
         commentOnCommentStatus={commentOnCommentStatus}
-        setCommentOnComment={setCommentOnComment}
         addNewCommentClickEvent={addNewCommentClickEvent}
         setCommentOnCommentStatus={setCommentOnCommentStatus}
+        parentCommenter={commenter.display_name}
       />
       {commentsOfComment?.map((comment) => (
         <Comment

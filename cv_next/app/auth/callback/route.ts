@@ -1,6 +1,6 @@
 "use server";
 import { NextResponse } from "next/server";
-import Definitions from "@/lib/definitions";
+import Definitions, { Visible_Error_Messages } from "@/lib/definitions";
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import { checkRedirect } from "@/lib/utils";
 import logger from "@/server/base/logger";
@@ -31,6 +31,11 @@ export async function GET(request: Request) {
           );
         } else {
           logger.error(isValid.errors, "Error in validating Username");
+          const nextUrl = new URL(
+            `/?error=${Visible_Error_Messages.InactiveUser.keyword}`,
+            process.env.NEXT_PUBLIC_BASE_URL
+          );
+          return NextResponse.redirect(nextUrl);
         }
       } else {
         const notFoundUrl = new URL(
