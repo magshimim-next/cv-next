@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { FaQuestionCircle } from "react-icons/fa";
 import {
   setNewUsername,
   setFirstLoginCurrent,
@@ -10,12 +11,14 @@ import { Button } from "@/app/feed/components/button";
 import { InputBox } from "@/app/feed/components/inputbar";
 import { useUser } from "@/hooks/useUser";
 import { useError } from "@/providers/error-provider";
-import { Visible_Error_Messages } from "@/lib/definitions";
+import Definitions, { Visible_Error_Messages } from "@/lib/definitions";
+import Tooltip from "@/components/ui/tooltip";
 import FirstTimeSignIn from "./firstTimeSignIn";
 
 export const NewUsernameForm = ({ user }: { user: UserModel }) => {
   let profileUsername = user?.username ?? "";
   const [newUsername, setUsername] = useState<string>("");
+  const [validUsername, setValidUsername] = useState<boolean>(true);
   const { mutateUser } = useUser();
   const router = useRouter();
   const { showError } = useError();
@@ -41,16 +44,28 @@ export const NewUsernameForm = ({ user }: { user: UserModel }) => {
   }
 
   const validate = (() => {
+    const checkUsernameLength = (len: number) => {
+      return (
+        len <= Definitions.MAX_CHAR_NAME && len >= Definitions.MIN_CHAR_NAME
+      );
+    };
+
     const checkNewUsername = () => {
       //only alphanumeric characters and underscores
-      const regex = /^[a-zA-Z0-9_.]+$/;
-      return regex.test(newUsername);
+      const regex = /^[a-zA-Z0-9][a-zA-Z0-9_.]*$/;
+      return regex.test(newUsername) && checkUsernameLength(newUsername.length);
     };
 
     return {
       newUsername: checkNewUsername,
     };
   })();
+
+  useEffect(() => {
+    if (newUsername == "") return;
+
+    setValidUsername(validate.newUsername());
+  }, [newUsername]);
 
   return (
     <main>
@@ -76,6 +91,20 @@ export const NewUsernameForm = ({ user }: { user: UserModel }) => {
           >
             new username:
           </label>
+
+          {!validUsername && (
+            <div className="flex items-center justify-center space-x-4 text-destructive">
+              <Tooltip
+                message="Use at least one alphanumeric (0-9 a-z A-Z) and special characters ( _ .) and should be between 1-20 characters long"
+                id="firstTime"
+              >
+                <div className="mr-2">
+                  <FaQuestionCircle />
+                </div>
+              </Tooltip>
+              Username should match the requested format
+            </div>
+          )}
 
           <div className="mt-5 text-sm font-light text-muted-foreground lg:text-xl">
             <InputBox
