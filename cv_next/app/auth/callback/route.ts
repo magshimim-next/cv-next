@@ -24,9 +24,6 @@ export async function GET(request: Request) {
           const isFirstLogin = await isCurrentFirstLogin();
           if (isFirstLogin.ok) {
             next = `${Definitions.FIRST_LOGIN_REDIRECT}/${isValid.val}`;
-            // return NextResponse.redirect(
-            //   `${process.env.NEXT_PUBLIC_BASE_URL}${Definitions.AUTH_DEFAULT_REDIRECT}${Definitions.FIRST_LOGIN_REDIRECT}${Definitions.AUTH_DEFAULT_REDIRECT}${isValid.val}`
-            // );
           }
 
           return NextResponse.redirect(

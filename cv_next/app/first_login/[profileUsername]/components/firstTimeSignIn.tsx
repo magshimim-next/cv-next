@@ -14,8 +14,6 @@ export default function FirstTimeSignIn() {
       const res = await getFirstTimeLogin();
       if (res.ok) {
         setIsFirstLogin(res.val);
-      } else {
-        //TODO: push to inactive page
       }
     }
 
@@ -26,7 +24,7 @@ export default function FirstTimeSignIn() {
     <>
       {isFirstLogin && (
         <Tooltip
-          message="First time sign in? Change your username"
+          message="First time signing in? Change your username"
           id="firstTime"
         >
           <FaQuestionCircle />
