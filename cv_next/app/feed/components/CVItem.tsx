@@ -8,7 +8,7 @@ import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
 import { generateCategoryLink } from "@/lib/utils";
 import { useApiFetch } from "@/hooks/useAPIFetch";
-import access_denied from "@/public/images/access_denied.jpg";
+import access_denied from "@/public/images/access_denied.png";
 
 interface CVCardProps {
   cv: CvModel;
@@ -149,7 +149,7 @@ export default function CVItem({ cv }: CVCardProps) {
         <Image
           width={500}
           height={500 * 1.4142}
-          className="h-full w-full rounded-lg p-2"
+          className="w-full rounded-lg p-2"
           src={realURL}
           placeholder="blur"
           blurDataURL={base64Data}
