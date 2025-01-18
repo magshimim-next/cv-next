@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Categories from "@/types/models/categories";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { useError } from "@/providers/error-provider";
+import { Visible_Error_Messages } from "@/lib/definitions";
 
 export default function CvData({
   cv,
@@ -23,14 +24,14 @@ export default function CvData({
 
   if (currentUserIsAuthor) {
     showError(
-      "Your CV is set to private!",
-      "Please update your CV settings to make it public again.",
+      Visible_Error_Messages.CurrentUserPrivateCV.title,
+      Visible_Error_Messages.CurrentUserPrivateCV.description,
       () => router.push("/feed")
     );
   } else {
     showError(
-      "This CV has been set to private!",
-      "Maybe the author just wasn't ready yet...",
+      Visible_Error_Messages.PrivateCV.title,
+      Visible_Error_Messages.PrivateCV.description,
       () => router.push("/feed")
     );
   }
