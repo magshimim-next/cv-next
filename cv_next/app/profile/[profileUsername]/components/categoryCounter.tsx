@@ -43,7 +43,8 @@ export default async function CategoryCounter({
   const categoryElements = top3CategoryIds.map((categoryId, index) => (
     <span
       key={index}
-      className="mx-3 mb-2 inline-flex items-center justify-center rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white shadow-md hover:bg-gray-400"
+      className="right-0 mx-4 mb-2 justify-center rounded-full bg-btn-background px-3 py-1 text-sm font-semibold text-text-color hover:bg-btn-hover-background"
+
     >
       {Categories.category[categoryId]}
       {index < top3CategoryIds.length - 1}
