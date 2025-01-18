@@ -93,19 +93,23 @@ export const Team_Credits = [
 ];
 
 export const External_Credits = [
-  { name: "Adam Abramov", contribution: "CSRF Account Takeover" },
   {
     name: "Adam Abramov",
-    contribution: "Insufficient Verification of Data Authenticity",
+    title: "Reverse Engineer",
+    avatar_url:
+      "https://media.licdn.com/dms/image/v2/C4D03AQHAcHq94s1hnw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1646571585264?e=1740614400&v=beta&t=V6Dvr0Yh4tLkkjz4cvLYrstcuQse_cCOTki6pJIci8c",
+    contribution:
+      "Insufficient Verification of Data Authenticity & CSRF Account Takeover",
+    linkedIn: "https://www.linkedin.com/in/theresearcher/",
+    gitHub: "example.com",
   },
   { name: "Youval Daizi", contribution: "Home button logged out users" },
   {
     name: "Harel Kristal",
-    contribution: "Login and Signout were visible regardless of state",
-  },
-  {
-    name: "Harel Kristal",
-    contribution: "Developer's Data Leak",
+    title: "Penetration tester",
+    contribution:
+      "Login and Signout were visible regardless of state & Developer's Data Leak",
+    linkedIn: "https://www.linkedin.com/in/harel-kristal/",
   },
   // Add more contributors as needed
 ];
@@ -123,6 +127,16 @@ export const Visible_Error_Messages: ErrorMessages = {
     keyword: "InactiveUser",
     title: "Inactive User",
     description: "That page requires that you get approved by the moderators.",
+  },
+  PrivateCV: {
+    keyword: "PrivateCV",
+    title: "This CV has been set to private!",
+    description: "Maybe the author just wasn't ready yet...",
+  },
+  CurrentUserPrivateCV: {
+    keyword: "CurrentUserPrivateCV",
+    title: "Your CV is set to private!",
+    description: "Please update your CV settings to make it public again.",
   },
   DefaultError: {
     keyword: "default",

@@ -44,6 +44,7 @@ export default async function CategoryCounter({
     <span
       key={index}
       className="right-0 mx-4 mb-2 justify-center rounded-full bg-btn-background px-3 py-1 text-sm font-semibold text-text-color hover:bg-btn-hover-background"
+
     >
       {Categories.category[categoryId]}
       {index < top3CategoryIds.length - 1}
@@ -55,7 +56,7 @@ export default async function CategoryCounter({
       {cvs.length ? (
         <div>
           <div className="mb-2 flex justify-center text-center">{title}</div>
-          <div className="flex justify-center text-base">
+          <div className="flex flex-col flex-wrap items-center lg:flex-row lg:justify-center">
             {categoryElements}
           </div>
         </div>

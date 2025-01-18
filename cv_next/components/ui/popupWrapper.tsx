@@ -21,6 +21,7 @@ export default function PopupWrapper({
     <div>
       {clickable && (
         <button
+          type="button"
           className="cursor-pointer rounded-full"
           disabled={disableButton}
           onClick={() => {
