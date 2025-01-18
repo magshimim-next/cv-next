@@ -8,11 +8,11 @@ import logger, { logErrorWithTrace } from "@/server/base/logger";
  * Adds a new comment to the cv.
  *
  * @param {NewCommentModel} comment - the comment to be added
- * @return {Promise<Result<void, string>>} a Promise that resolves to a Result object containing no value if successful, or an error message
+ * @return {Promise<Result<CommentModel, string>>} a Promise that resolves to a Result object containing the added comment if successful, or an error message
  */
 export const addComment = async (
   comment: NewCommentModel
-): Promise<Result<void, string>> => {
+): Promise<Result<CommentModel, string>> => {
   const currentIdResult = await getCurrentId();
   if (!currentIdResult.ok) {
     logErrorWithTrace(currentIdResult);
