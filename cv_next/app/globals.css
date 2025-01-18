@@ -31,7 +31,7 @@
   --secondary-foreground: var(--theme-800);
   --accent: var(--theme-200);
   --accent-foreground: var(--theme-800);
-  --destructive: #da6161;
+  --destructive: #f87171;
   --destructive-foreground: var(--theme-100);
   --ring: var(--theme-600);
 }
@@ -53,7 +53,7 @@
   --secondary-foreground: var(--theme-800);
   --accent: var(--theme-700);
   --accent-foreground: var(--white);
-  --destructive: #da6161;
+  --destructive: #991b1b;
   --destructive-foreground: var(--theme-800);
   --ring: var(--theme-100);
 }

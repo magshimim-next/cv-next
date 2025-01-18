@@ -1,6 +1,6 @@
 "use client";
 import { useRouter, usePathname } from "next/navigation";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { RxPaperPlane } from "react-icons/rx";
 import { mutate } from "swr";
 
@@ -14,8 +14,10 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement | null>(null);
   const supabase = createClientComponent();
+  const [formData, setFormData] = useState(new FormData());
+  const [text, setText] = useState("");
 
-  const formAction = async (formData: FormData) => {
+  const formAction = async () => {
     // Reset the form after submission and check if the comment is empty
     formRef.current?.reset();
     if ((formData.get(COMMENT_FIELD_NAME) as String).length <= 0) return;
@@ -31,10 +33,55 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
         user_id: userId.data.user.id,
       };
 
-      await addComment(comment).finally(() => {
+      mutate(
+        cv.id,
+        (currentComments: CommentModel[] = []) => [
+          ...currentComments,
+          {
+            ...comment,
+            id: Date.now().toString(),
+            deleted: false,
+            last_update: new Date().toISOString(),
+            resolved: false,
+            upvotes: [],
+          },
+        ],
+        false
+      );
+
+      try {
+        await addComment(comment);
         mutate(cv.id);
-      });
+      } catch (error) {
+        // Rollback optimistic update
+        mutate(
+          cv.id,
+          (currentComments: CommentModel[] = []) =>
+            currentComments.filter((comment) => comment.id !== comment.id),
+          false
+        );
+      }
     }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && e.ctrlKey) {
+      e.preventDefault();
+      setText((prev) => prev + "\n");
+    } else if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
+      e.preventDefault();
+      formAction();
+      setText("");
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    setText(value);
+
+    const updatedFormData = new FormData();
+    updatedFormData.set(COMMENT_FIELD_NAME, value);
+    setFormData(updatedFormData);
   };
 
   return (
@@ -49,6 +96,9 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
         <textarea
           id={COMMENT_FIELD_NAME}
           name={COMMENT_FIELD_NAME}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          value={text}
           rows={5}
           className={`
     row-span-2 mt-2 min-h-[2.5rem] w-full resize-none flex-col overflow-auto
