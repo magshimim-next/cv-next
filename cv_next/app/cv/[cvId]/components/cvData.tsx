@@ -21,20 +21,20 @@ export default function CvData({
   const { showError } = useError();
   const router = useRouter();
 
-  if (!validCV) {
-    if (currentUserIsAuthor) {
-      showError(
-        "Your CV is set to private!",
-        "Please update your CV settings to make it public again."
-      );
-    } else {
-      showError(
-        "This CV has been set to private!",
-        "Maybe the author just wasn't ready yet...",
-        () => router.push("/feed")
-      );
-    }
+  if (currentUserIsAuthor) {
+    showError(
+      "Your CV is set to private!",
+      "Please update your CV settings to make it public again.",
+      () => router.push("/feed")
+    );
+  } else {
+    showError(
+      "This CV has been set to private!",
+      "Maybe the author just wasn't ready yet...",
+      () => router.push("/feed")
+    );
   }
+
   const showData = validCV ? "md:grid-cols-[70%_30%]" : "";
 
   return (
