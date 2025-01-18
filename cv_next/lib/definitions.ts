@@ -39,6 +39,7 @@ export class Link_Definitions {
     "profile",
     "hall",
     "about",
+    "first_login",
   ];
 }
 
