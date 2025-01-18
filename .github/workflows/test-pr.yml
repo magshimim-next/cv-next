@@ -1,0 +1,19 @@
+name: Run Tests on PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          npm install  # Or appropriate command for your project (yarn, pnpm, etc.)
+
+      - name: Run tests
+        run: |
+          npm test # Or appropriate command for your test runner (e.g., yarn test, jest, pytest)
