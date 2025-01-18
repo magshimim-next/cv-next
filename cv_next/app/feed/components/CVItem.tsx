@@ -16,7 +16,6 @@ interface CVCardProps {
 
 export default function CVItem({ cv }: CVCardProps) {
   const [realURL, setRealURL] = useState("");
-  const [authorName, setAuthorName] = useState("");
   const [validCV, setValidCV] = useState(false);
   const fetchFromApi = useApiFetch();
 
@@ -54,21 +53,6 @@ export default function CVItem({ cv }: CVCardProps) {
     [fetchFromApi]
   );
 
-  const getCachedDisplayName = useMemo(
-    () => async (userId: string) => {
-      const data = await fetchFromApi(
-        API_DEFINITIONS.USERS_API_BASE,
-        API_DEFINITIONS.FETCH_USERS_ENDPOINT,
-        {
-          pathname: "getDisplayName",
-          userId,
-        }
-      );
-      return data.display_name;
-    },
-    [fetchFromApi]
-  );
-
   const revalidatePreview = useCallback(
     async (cvLink: string) => {
       await fetchFromApi(
@@ -94,12 +78,6 @@ export default function CVItem({ cv }: CVCardProps) {
         setRealURL(imageUrl);
       };
 
-      const getAuthorName = async () => {
-        const userUploading =
-          (await getCachedDisplayName(cv.user_id || "")) || "";
-        setAuthorName(userUploading);
-      };
-
       const getBlurCv = async () => {
         const base64 = await getBlur(getGoogleImageUrl(cv.document_link));
         if (base64 == "CV_IS_PRIVATE") {
@@ -111,7 +89,6 @@ export default function CVItem({ cv }: CVCardProps) {
       };
 
       await getBlurCv();
-      //await getAuthorName();
       if (validCV) {
         await revalidateImage();
 
@@ -126,7 +103,6 @@ export default function CVItem({ cv }: CVCardProps) {
     cv.document_link,
     cv.user_id,
     getBlur,
-    getCachedDisplayName,
     getURL,
     revalidatePreview,
     validCV,
