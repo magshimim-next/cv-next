@@ -19,6 +19,7 @@ type ThemeTypes = keyof typeof themes
 
 const CSS_VARIABLES_PREFIX = '--'
 
+//this is not a singleton because there is no need for it to be in more then one location, if you move need to you can make it a singleton 
 export class ThemeManager {
     private currentTheme: ThemeTypes = "dark";
 
