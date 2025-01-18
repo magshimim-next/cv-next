@@ -9,10 +9,7 @@ export async function middleware(request: NextRequest) {
     request,
   });
 
-  if (
-    request.nextUrl.pathname.startsWith(API_DEFINITIONS.CVS_API_BASE) ||
-    request.nextUrl.pathname.startsWith(API_DEFINITIONS.USERS_API_BASE)
-  ) {
+  if (request.nextUrl.pathname.startsWith(API_DEFINITIONS.CVS_API_BASE)) {
     return NextResponse.next();
   }
 
