@@ -9,6 +9,8 @@ import { getUserModel } from "@/app/actions/users/getUser";
 import { Button } from "@/app/feed/components/button";
 import { InputBox } from "@/app/feed/components/inputbar";
 import { useUser } from "@/hooks/useUser";
+import { useError } from "@/providers/error-provider";
+import { Visible_Error_Messages } from "@/lib/definitions";
 import FirstTimeSignIn from "./firstTimeSignIn";
 
 export const NewUsernameForm = ({ user }: { user: UserModel }) => {
@@ -16,6 +18,7 @@ export const NewUsernameForm = ({ user }: { user: UserModel }) => {
   const [newUsername, setUsername] = useState<string>("");
   const { mutateUser } = useUser();
   const router = useRouter();
+  const { showError } = useError();
 
   async function onConfirm() {
     const res = await getUserModel(profileUsername);
@@ -29,13 +32,18 @@ export const NewUsernameForm = ({ user }: { user: UserModel }) => {
       await setFirstLoginCurrent(false);
       await mutateUser();
       router?.push(`/profile/${newUsername}`);
+    } else {
+      showError(
+        Visible_Error_Messages.DuplicateUsername.title,
+        Visible_Error_Messages.DuplicateUsername.description
+      );
     }
   }
 
   const validate = (() => {
     const checkNewUsername = () => {
       //only alphanumeric characters and underscores
-      const regex = /^[a-zA-Z0-9_]+$/;
+      const regex = /^[a-zA-Z0-9_.]+$/;
       return regex.test(newUsername);
     };
 

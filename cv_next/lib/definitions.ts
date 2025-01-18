@@ -130,6 +130,12 @@ export const Visible_Error_Messages: ErrorMessages = {
     title: "Inactive User",
     description: "That page requires that you get approved by the moderators.",
   },
+  DuplicateUsername: {
+    keyword: "DuplicateUsername",
+    title: "Duplicate Username",
+    description:
+      "Username already exist. Please try again with a different username.",
+  },
   DefaultError: {
     keyword: "default",
     title: "An Error Occurred",
