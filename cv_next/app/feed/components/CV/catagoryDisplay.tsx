@@ -50,11 +50,13 @@ export default function CategoriesDisplay({ categories }: CategoriesDisplayProps
     }
 
     return <>
-        <div className="mt-2 flex space-x-2 overflow-visible" ref={(el => setThisElement(el))}>
-            {displayedCatagories.map((categoryId) => (
-                <CategoryDisplay key={categoryId} categoryId={categoryId} />
-            ))}
-            { overFlowingCatagories.length && <OverflowNumber categories={overFlowingCatagories} onClick={shiftTheCatagories}/> }
+        <div className="flex flex-row justify-between mt-2 space-x-2" ref={(el => setThisElement(el))}>
+            <div className="flex space-x-2">
+                {displayedCatagories.map((categoryId) => (
+                    <CategoryDisplay key={categoryId} categoryId={categoryId} />
+                ))}
+            </div>
+            { overFlowingCatagories.length ? <OverflowNumber categories={overFlowingCatagories} onClick={shiftTheCatagories}/> : <></> }
         </div>
     </>
 }
@@ -79,7 +81,7 @@ function OverflowNumber({ categories, onClick }: {categories: number[], onClick:
                 e.stopPropagation()
                 onClick()
             }}
-            className="rounded-full bg-gray-700 px-2 py-1 text-sm font-semibold text-white hover:bg-gray-400 flex justify-center items-center"
+            className="rounded-full bg-gray-700 px-2 py-1 text-sm font-semibold text-white hover:bg-gray-400 flex justify-center items-center right-0"
             title={categories.map(getCatagoryText).join(", ")}
             >
                 +{categories.length}
