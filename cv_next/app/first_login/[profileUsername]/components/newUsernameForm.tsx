@@ -11,7 +11,8 @@ import { Button } from "@/app/feed/components/button";
 import { InputBox } from "@/app/feed/components/inputbar";
 import { useUser } from "@/hooks/useUser";
 import { useError } from "@/providers/error-provider";
-import Definitions, { Visible_Error_Messages } from "@/lib/definitions";
+import { checkUsername } from "@/helpers/usernameRegexHelper";
+import { Visible_Error_Messages } from "@/lib/definitions";
 import Tooltip from "@/components/ui/tooltip";
 import FirstTimeSignIn from "./firstTimeSignIn";
 
@@ -44,16 +45,8 @@ export const NewUsernameForm = ({ user }: { user: UserModel }) => {
   }
 
   const validate = (() => {
-    const checkUsernameLength = (len: number) => {
-      return (
-        len <= Definitions.MAX_CHAR_NAME && len >= Definitions.MIN_CHAR_NAME
-      );
-    };
-
     const checkNewUsername = () => {
-      //only alphanumeric characters and underscores
-      const regex = /^[a-zA-Z0-9][a-zA-Z0-9_.]*$/;
-      return regex.test(newUsername) && checkUsernameLength(newUsername.length);
+      return checkUsername(newUsername);
     };
 
     return {

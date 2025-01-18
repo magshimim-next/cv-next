@@ -3,6 +3,7 @@ import "server-only";
 import crypto from "crypto";
 import { Ok, Err } from "@/lib/utils";
 import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
+import { checkUsername } from "@/helpers/usernameRegexHelper";
 import logger from "../base/logger";
 import SupabaseHelper from "./supabaseHelper";
 
@@ -175,6 +176,12 @@ export async function setUserName(
   userId: string,
   newUserName: string
 ): Promise<Result<void, string>> {
+  if (!checkUsername(newUserName)) {
+    return Err(
+      `${setUserName.name} New username should match the requested format`
+    );
+  }
+
   try {
     const { error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.profiles)
