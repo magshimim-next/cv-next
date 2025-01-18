@@ -111,7 +111,7 @@ export default function CVItem({ cv }: CVCardProps) {
       };
 
       await getBlurCv();
-      await getAuthorName();
+      //await getAuthorName();
       if (validCV) {
         await revalidateImage();
 
@@ -141,6 +141,7 @@ export default function CVItem({ cv }: CVCardProps) {
     []
   );
 
+  const author_obj = JSON.parse(JSON.stringify(cv.user_id || "Loading..."));
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
 
   return (
@@ -176,7 +177,7 @@ export default function CVItem({ cv }: CVCardProps) {
           <div className="absolute bottom-0 left-0 mx-5 mb-2.5">
             <div className="flex flex-wrap items-baseline">
               <div className="mr-2 text-xl font-bold text-neutral-700">
-                {authorName}
+                {author_obj.display_name}
               </div>
               <p className="text-xs text-neutral-400">{formattedDate}</p>
             </div>
