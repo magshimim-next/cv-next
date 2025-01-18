@@ -22,7 +22,7 @@ export async function GET(request: Request) {
           );
 
           const isFirstLogin = await isCurrentFirstLogin();
-          if (isFirstLogin.ok) {
+          if (isFirstLogin.ok && isFirstLogin.val) {
             next = `${Definitions.FIRST_LOGIN_REDIRECT}/${isValid.val}`;
           }
 
