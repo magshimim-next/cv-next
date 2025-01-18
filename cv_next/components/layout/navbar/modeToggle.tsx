@@ -6,10 +6,9 @@ import { Button } from "@/components/ui/button";
 import { isBrowser } from "@/lib/utils";
 import { ThemeManager } from "@/app/themeManager/themeManager";
 
-export const themeManager = new ThemeManager('dark')
-
 export function ModeToggle() {
   const { theme, setTheme } = useTheme();
+  const themeManager = new ThemeManager('dark')
 
   useEffect(()=> {
     themeManager.setTheme(theme === "light" ? "light" : "dark")
