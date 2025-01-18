@@ -21,22 +21,30 @@ export default async function Page({ params }: { params: { cvId: string } }) {
   if (cv === null) {
     notFound();
   }
+
+  const resp = await fetch(cv.document_link, {
+    redirect: "manual",
+  });
+  const validCV = resp.status === 200;
+  const fullCV = validCV ? "md:grid-cols-[70%_30%]" : "";
   return (
     <div>
       <ScrollToTop />
-      <CvData cv={cv} />
-      <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[70%_30%] md:gap-x-4">
+      <CvData cv={cv} validCV={validCV} />
+      <div className={`grid grid-cols-1 gap-y-4 ${fullCV} md:gap-x-4`}>
         <section className=" flex-col rounded-lg">
           {cv ? <CvPreview cv={cv} /> : null}
         </section>
-        <div className="flex">
-          <section className="flex h-[85vh] max-h-[85vh] w-[50vh] flex-col self-start overflow-y-auto overflow-x-hidden">
-            <CommentForm cv={cv} />
-            <div className="flex h-[85vh] max-h-[85vh] w-[100%] flex-col self-start overflow-y-auto overflow-x-hidden">
-              <CommentsSection cv={cv} />
-            </div>
-          </section>
-        </div>
+        {validCV && (
+          <div className="flex">
+            <section className="flex h-[85vh] max-h-[85vh] w-[50vh] flex-col self-start overflow-y-auto overflow-x-hidden">
+              <CommentForm cv={cv} />
+              <div className="flex h-[85vh] max-h-[85vh] w-[100%] flex-col self-start overflow-y-auto overflow-x-hidden">
+                <CommentsSection cv={cv} />
+              </div>
+            </section>
+          </div>
+        )}
       </div>
     </div>
   );
