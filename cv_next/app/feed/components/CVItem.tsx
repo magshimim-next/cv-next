@@ -8,6 +8,7 @@ import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
 import { generateCategoryLink } from "@/lib/utils";
 import { useApiFetch } from "@/hooks/useAPIFetch";
+import access_denied from "@/public/images/access_denied.png";
 
 interface CVCardProps {
   cv: CvModel;
@@ -16,6 +17,7 @@ interface CVCardProps {
 export default function CVItem({ cv }: CVCardProps) {
   const [realURL, setRealURL] = useState("");
   const [authorName, setAuthorName] = useState("");
+  const [validCV, setValidCV] = useState(false);
   const fetchFromApi = useApiFetch();
 
   const [base64Data, setBase64Data] = useState(
@@ -29,7 +31,7 @@ export default function CVItem({ cv }: CVCardProps) {
         API_DEFINITIONS.FETCH_PREVIEWS_ENDPOINT,
         {
           pathname: "getBlurredCv",
-          cvLink: imageURL,
+          CVPreviewLink: imageURL,
         }
       );
       return data.base64;
@@ -100,16 +102,23 @@ export default function CVItem({ cv }: CVCardProps) {
 
       const getBlurCv = async () => {
         const base64 = await getBlur(getGoogleImageUrl(cv.document_link));
+        if (base64 == "CV_IS_PRIVATE") {
+          setRealURL(access_denied.src);
+          return;
+        }
+        setValidCV(true);
         setBase64Data(base64);
       };
 
       await getBlurCv();
       await getAuthorName();
-      await revalidateImage();
+      if (validCV) {
+        await revalidateImage();
 
-      interval.current = setInterval(() => {
-        revalidateImage();
-      }, Definitions.FETCH_WAIT_TIME * 1000);
+        interval.current = setInterval(() => {
+          revalidateImage();
+        }, Definitions.FETCH_WAIT_TIME * 1000);
+      }
     };
 
     fetchData();
@@ -120,6 +129,7 @@ export default function CVItem({ cv }: CVCardProps) {
     getCachedDisplayName,
     getURL,
     revalidatePreview,
+    validCV,
   ]);
 
   useEffect(
