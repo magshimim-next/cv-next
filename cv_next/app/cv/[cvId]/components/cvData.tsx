@@ -10,9 +10,11 @@ import { useError } from "@/providers/error-provider";
 export default function CvData({
   cv,
   validCV,
+  currentUserIsAuthor,
 }: {
   cv: CvModel;
   validCV: boolean;
+  currentUserIsAuthor: boolean;
 }) {
   const uploader = JSON.parse(JSON.stringify(cv.user_id));
   const displayName = uploader.display_name || uploader.username;
@@ -20,14 +22,21 @@ export default function CvData({
   const router = useRouter();
 
   if (!validCV) {
-    showError(
-      "This CV has been set to private!",
-      "Maybe the author just wasn't ready yet...",
-      () => router.push("/feed")
-    );
+    if (currentUserIsAuthor) {
+      showError(
+        "Your CV is set to private!",
+        "Please update your CV settings to make it public again."
+      );
+    } else {
+      showError(
+        "This CV has been set to private!",
+        "Maybe the author just wasn't ready yet...",
+        () => router.push("/feed")
+      );
+    }
   }
-
   const showData = validCV ? "md:grid-cols-[70%_30%]" : "";
+
   return (
     <div className={`grid grid-cols-1 gap-y-4 ${showData} md:gap-x-4`}>
       <article
