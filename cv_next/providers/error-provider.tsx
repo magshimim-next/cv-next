@@ -43,10 +43,10 @@ export const ErrorProvider = ({ children }: { children: ReactNode }) => {
       {children}
       {errorMsg && (
         <PopupWrapper onClose={clearError}>
-          <div className="flex flex-col items-center justify-center rounded-md border-2 border-black bg-red-700 px-4 py-2 text-white">
+          <div className="flex flex-col items-center justify-center rounded-md border-2 border-primary bg-destructive px-4 py-2 text-primary">
             <div className="text-xl font-bold">{errorMsg}</div>
             {errorDescription && (
-              <div className="mt-2 text-lg text-white/90">
+              <div className="mt-2 text-lg text-primary">
                 {errorDescription}
               </div>
             )}
