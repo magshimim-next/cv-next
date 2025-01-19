@@ -51,18 +51,6 @@ We expect all interactions to be respectful and constructive, with no tolerance 
 
 export const routes: route[] = [
   {
-    route: "Home",
-    path: "/",
-    image: "/images/home.png",
-    UILocation: UI_Location.navbar,
-  },
-  {
-    route: "Feed",
-    path: "/feed",
-    image: "/images/feed.png",
-    UILocation: UI_Location.navbar,
-  },
-  {
     route: "Login",
     path: "/login",
     image: "",

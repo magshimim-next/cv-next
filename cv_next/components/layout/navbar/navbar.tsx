@@ -1,22 +1,11 @@
 "use client";
-import logo from "@/public/images/logo.png";
 import Link from "next/link";
 import { useState, useRef } from "react";
 import { Upload } from "lucide-react";
 import Image from "next/image";
+import logo from "@/public/images/logo.png";
 import { ModeToggle } from "@/components/layout/navbar/modeToggle";
 import { PopupToggle } from "./popupToggle";
-
-const navLinks = [
-  {
-    route: "Home",
-    path: "/about",
-  },
-  {
-    route: "Feed",
-    path: "/feed",
-  },
-];
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -63,20 +52,6 @@ export default function Navbar() {
                 <ModeToggle />
               </div>
             </div>
-
-            <div className="hidden items-center space-x-6 md:flex">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.route}
-                  className="py-2 text-lg font-medium text-white hover:underline"
-                  href={link.path}
-                  style={{ lineHeight: "1.5" }}
-                >
-                  {link.route}
-                </Link>
-              ))}
-            </div>
-
             <div className="flex items-center space-x-4">
               <div className="z-50 hidden space-x-4 md:flex">
                 <Link className="py-2 text-lg leading-6" href="/upload">
@@ -123,19 +98,6 @@ export default function Navbar() {
             className="fixed left-0 right-0 top-[4.5rem] z-40 bg-slate-500 bg-opacity-75 p-4 opacity-95 backdrop-blur-2xl dark:bg-theme-800 md:hidden"
             tabIndex={-1}
           >
-            <ul className="space-y-4">
-              {navLinks.map((link) => (
-                <li key={link.route}>
-                  <Link
-                    className="text-lg font-medium text-white hover:underline"
-                    href={link.path}
-                    onClick={handleClick}
-                  >
-                    {link.route}
-                  </Link>
-                </li>
-              ))}
-            </ul>
             <div className="mt-4 flex">
               <PopupToggle closeHamburger={handleClick} />
               <Link
