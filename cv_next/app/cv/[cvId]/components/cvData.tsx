@@ -22,18 +22,20 @@ export default function CvData({
   const { showError } = useError();
   const router = useRouter();
 
-  if (currentUserIsAuthor) {
-    showError(
-      Visible_Error_Messages.CurrentUserPrivateCV.title,
-      Visible_Error_Messages.CurrentUserPrivateCV.description,
-      () => router.push("/feed")
-    );
-  } else {
-    showError(
-      Visible_Error_Messages.PrivateCV.title,
-      Visible_Error_Messages.PrivateCV.description,
-      () => router.push("/feed")
-    );
+  if (!validCV) {
+    if (currentUserIsAuthor) {
+      showError(
+        Visible_Error_Messages.CurrentUserPrivateCV.title,
+        Visible_Error_Messages.CurrentUserPrivateCV.description,
+        () => router.push("/feed")
+      );
+    } else {
+      showError(
+        Visible_Error_Messages.PrivateCV.title,
+        Visible_Error_Messages.PrivateCV.description,
+        () => router.push("/feed")
+      );
+    }
   }
 
   const showData = validCV ? "md:grid-cols-[70%_30%]" : "";
