@@ -8,22 +8,22 @@ import { ThemeManager } from "@/app/themeManager/themeManager";
 
 export function ModeToggle() {
   const { theme, setTheme } = useTheme();
-  const [themeManager, setThemeManager] = useState<ThemeManager>()
+  const [themeManager, setThemeManager] = useState<ThemeManager>();
 
   useEffect(() => {
-    setThemeManager(new ThemeManager('dark'))
-  }, [])
+    setThemeManager(new ThemeManager("dark"));
+  }, []);
 
-  useEffect(()=> {
-    if(themeManager) {
-      themeManager.setTheme(theme === "light" ? "light" : "dark")
+  useEffect(() => {
+    if (themeManager) {
+      themeManager.setTheme(theme === "light" ? "light" : "dark");
     }
-  }, [theme, themeManager])
+  }, [theme, themeManager]);
 
   const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light"
+    const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
-    themeManager?.setTheme(newTheme)
+    themeManager?.setTheme(newTheme);
   };
 
   return (

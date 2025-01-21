@@ -44,7 +44,6 @@ export default async function CategoryCounter({
     <span
       key={index}
       className="right-0 mx-4 mb-2 justify-center rounded-full bg-btn-background px-3 py-1 text-sm font-semibold text-text-color hover:bg-btn-hover-background"
-
     >
       {Categories.category[categoryId]}
       {index < top3CategoryIds.length - 1}

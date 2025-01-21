@@ -11,8 +11,11 @@ export default class Definitions {
   public static readonly MAX_OPERATIONS_REFILL_PER_SECOND = 2;
   public static readonly CVS_REVALIDATE_TIME_IN_SECONDS = 0;
   public static readonly FETCH_WAIT_TIME = 120;
+  public static readonly MAX_CHAR_NAME = 70;
+  public static readonly MIN_CHAR_NAME = 1;
   public static readonly COMMENTS_REVALIDATE_TIME_IN_SECONDS = 0;
   public static readonly AUTH_CALLBACK_REDIRECT = "/auth/callback";
+  public static readonly FIRST_LOGIN_REDIRECT = "first_login";
   public static readonly AUTH_DEFAULT_REDIRECT = "/";
   public static readonly PLAICEHOLDER_IMAGE_SIZE = 15;
   public static readonly PLAICEHOLDER_IMAGE_DATA =
@@ -38,6 +41,7 @@ export class Link_Definitions {
     "profile",
     "hall",
     "about",
+    "first_login",
   ];
 }
 
@@ -127,6 +131,12 @@ export const Visible_Error_Messages: ErrorMessages = {
     keyword: "InactiveUser",
     title: "Inactive User",
     description: "That page requires that you get approved by the moderators.",
+  },
+  DuplicateUsername: {
+    keyword: "DuplicateUsername",
+    title: "Duplicate Username",
+    description:
+      "Username already exist. Please try again with a different username.",
   },
   PrivateCV: {
     keyword: "PrivateCV",
