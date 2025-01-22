@@ -4,19 +4,19 @@
 **/.firebaserc
 
 # dependencies
-cv_next/node_modules
-cv_next/.pnp
+node_modules
+.pnp
 .pnp.js
 
 # testing
-cv_next/coverage
+ coverage
 
 # next.js
-cv_next/.next/
-cv_next/out/
+.next/
+out/
 
 # production
-cv_next/build
+build
 
 # misc
 .DS_Store
