@@ -6,6 +6,7 @@ import { mutate } from "swr";
 
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { addComment } from "@/app/actions/comments/addComment";
+import Definitions from "@/lib/definitions";
 
 const COMMENT_FIELD_NAME = "comment";
 
@@ -24,7 +25,7 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
 
     const userId = await supabase.auth.getUser();
     if (userId.error) {
-      router.push(`/login?next=${pathname}`);
+      router.push(`/${Definitions.LOGIN_REDIRECT}?next=${pathname}`);
     } else {
       const comment: NewCommentModel = {
         data: formData.get(COMMENT_FIELD_NAME) as string,
