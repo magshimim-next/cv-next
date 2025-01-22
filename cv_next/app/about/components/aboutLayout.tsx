@@ -65,9 +65,6 @@ export const AboutLayout = () => {
           <div className="flex flex-wrap justify-center gap-6 lg:gap-10">
             <Login />
           </div>
-          <div className="flex flex-wrap justify-center gap-6 lg:gap-10">
-            <RoutesRender />
-          </div>
         </div>
       </section>
     </main>
