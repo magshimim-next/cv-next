@@ -55,7 +55,7 @@
     "import/named": 0,
     "no-relative-import-paths/no-relative-import-paths": [
       "warn",
-      { "allowSameFolder": true, "rootDir": "cv_next/", "prefix": "@" }
+      { "allowSameFolder": true, "rootDir": "./", "prefix": "@" }
     ],
     "no-inline-comments": "warn"
   },
@@ -66,7 +66,7 @@
     "import/resolver": {
       "typescript": {
         "alwaysTryTypes": true,
-        "project": "cv_next"
+        "project": "cv-next"
       }
     }
   }

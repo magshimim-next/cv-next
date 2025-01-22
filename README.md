@@ -1,6 +1,6 @@
 # CV Next
 
-![image](./cv_next/public/images/logo.png)
+![image](./public/images/logo.png)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)](#)
 [![Next.js](https://img.shields.io/badge/Next.js-black?logo=next.js&logoColor=white)](#)
 [![Google Drive](https://img.shields.io/badge/Google%20Drive-4285F4?logo=googledrive&logoColor=fff)](#)
@@ -13,11 +13,10 @@ A (not so) simple CV upload and peer review system.
 
 ```
 git clone https://github.com/magshimim-next/cv-next.git
-cd cv_next
 npm install
 ```
 
-then fill in an .env.local config file with the credentials to Supabase(Supabase URL and anon key) that you can get from us in the community chat, and add the base URL(usually localhost for local development) as seen in the [example env file](./cv_next/.env.local.example).
+then fill in an .env.local config file with the credentials to Supabase(Supabase URL and anon key) that you can get from us in the community chat, and add the base URL(usually localhost for local development) as seen in the [example env file](./.env.local.example).
 
 ### Local Usage
 
