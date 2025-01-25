@@ -31,10 +31,14 @@ export default function Login() {
       <div className="p-4 md:p-5 lg:p-6">
         <div className="grid gap-y-3">
           <Button className="c-bOcPnF" onClick={onClick}>
-            <FcGoogle />
-            <span style={{ marginLeft: "5px" }}>
-              {isloggedIn ? "Sign in with Google" : "Signout"}
-            </span>
+            {isloggedIn ? (
+              <>
+                <FcGoogle />
+                <span className="ml-2">Sign in with Google</span>
+              </>
+            ) : (
+              "Signout"
+            )}
           </Button>
         </div>
       </div>
