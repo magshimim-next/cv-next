@@ -22,6 +22,9 @@
     ]
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@plaiceholder/next": "^3.0.0",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
@@ -39,7 +42,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "lodash.isequal": "^4.5.0",
     "lucide-react": "^0.263.1",
-    "next": "^14.2.20",
+    "next": "^14.2.22",
     "next-themes": "^0.2.1",
     "pino": "^9.2.0",
     "pino-pretty": "^11.2.1",

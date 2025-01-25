@@ -12,9 +12,9 @@ import {
   UI_Location,
 } from "@/lib/definitions";
 import { useError } from "@/providers/error-provider";
-import { LoginButtons } from "./loginButtons";
+import Login from "./login";
 
-export const AboutLayout = () => {
+export const LoginLayout = () => {
   const searchparams = useSearchParams();
   const { showError } = useError();
   const router = useRouter();
@@ -63,10 +63,7 @@ export const AboutLayout = () => {
             </h3>
           </div>
           <div className="flex flex-wrap justify-center gap-6 lg:gap-10">
-            <LoginButtons />
-          </div>
-          <div className="flex flex-wrap justify-center gap-6 lg:gap-10">
-            <RoutesRender />
+            <Login />
           </div>
         </div>
       </section>

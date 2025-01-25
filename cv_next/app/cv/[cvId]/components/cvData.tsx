@@ -2,14 +2,46 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Categories from "@/types/models/categories";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
+import { useError } from "@/providers/error-provider";
+import { Visible_Error_Messages } from "@/lib/definitions";
 
-export default function CvData({ cv }: { cv: CvModel }) {
+export default function CvData({
+  cv,
+  validCV,
+  currentUserIsAuthor,
+}: {
+  cv: CvModel;
+  validCV: boolean;
+  currentUserIsAuthor: boolean;
+}) {
   const uploader = JSON.parse(JSON.stringify(cv.user_id));
   const displayName = uploader.display_name || uploader.username;
+  const { showError } = useError();
+  const router = useRouter();
+
+  if (!validCV) {
+    if (currentUserIsAuthor) {
+      showError(
+        Visible_Error_Messages.CurrentUserPrivateCV.title,
+        Visible_Error_Messages.CurrentUserPrivateCV.description,
+        () => router.push("/feed")
+      );
+    } else {
+      showError(
+        Visible_Error_Messages.PrivateCV.title,
+        Visible_Error_Messages.PrivateCV.description,
+        () => router.push("/feed")
+      );
+    }
+  }
+
+  const showData = validCV ? "md:grid-cols-[70%_30%]" : "";
+
   return (
-    <div className="grid grid-cols-1 gap-y-4 md:grid-cols-[70%_30%] md:gap-x-4">
+    <div className={`grid grid-cols-1 gap-y-4 ${showData} md:gap-x-4`}>
       <article
         key={cv.id}
         className={`mb-3 h-fit flex-col rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800`}

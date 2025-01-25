@@ -22,7 +22,8 @@ const postHandler = async (
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch data from ${url}`);
+      const errorData = await response.json();
+      throw errorData;
     }
 
     return response.json();
@@ -31,12 +32,8 @@ const postHandler = async (
       if (error.name === "AbortError") {
         throw new Error(`Request to ${url} timed out after ${timeout}ms`);
       }
-      throw error;
-    } else {
-      throw new Error(
-        `An unknown error occurred during the fetch request to ${url}`
-      );
     }
+    throw error;
   } finally {
     clearTimeout(id);
   }
@@ -58,8 +55,15 @@ export const useApiFetch = () => {
         return data;
       } catch (error) {
         if (error instanceof Error) {
+          if (error.message.includes("timed out after")) {
+            //redundat to log this
+            return;
+          }
           throw error;
         } else {
+          if ((error as Error).message.includes("CV is private")) {
+            return { base64: "CV_IS_PRIVATE" };
+          }
           throw new Error("An unknown error occurred during the API fetch");
         }
       }

@@ -6,6 +6,7 @@ import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import CategoriesDisplay from "./categoryDisplay";
+import access_denied from "@/public/images/access_denied.png";
 
 interface CVCardProps {
   cv: CvModel;
@@ -13,7 +14,7 @@ interface CVCardProps {
 
 export default function CVItem({ cv }: CVCardProps) {
   const [realURL, setRealURL] = useState("");
-  const [authorName, setAuthorName] = useState("");
+  const [validCV, setValidCV] = useState(false);
   const fetchFromApi = useApiFetch();
 
   const [base64Data, setBase64Data] = useState(
@@ -27,7 +28,7 @@ export default function CVItem({ cv }: CVCardProps) {
         API_DEFINITIONS.FETCH_PREVIEWS_ENDPOINT,
         {
           pathname: "getBlurredCv",
-          cvLink: imageURL,
+          CVPreviewLink: imageURL,
         }
       );
       return data.base64;
@@ -46,21 +47,6 @@ export default function CVItem({ cv }: CVCardProps) {
         }
       );
       return data.publicUrl;
-    },
-    [fetchFromApi]
-  );
-
-  const getCachedDisplayName = useMemo(
-    () => async (userId: string) => {
-      const data = await fetchFromApi(
-        API_DEFINITIONS.USERS_API_BASE,
-        API_DEFINITIONS.FETCH_USERS_ENDPOINT,
-        {
-          pathname: "getDisplayName",
-          userId,
-        }
-      );
-      return data.display_name;
     },
     [fetchFromApi]
   );
@@ -90,24 +76,24 @@ export default function CVItem({ cv }: CVCardProps) {
         setRealURL(imageUrl);
       };
 
-      const getAuthorName = async () => {
-        const userUploading =
-          (await getCachedDisplayName(cv.user_id || "")) || "";
-        setAuthorName(userUploading);
-      };
-
       const getBlurCv = async () => {
         const base64 = await getBlur(getGoogleImageUrl(cv.document_link));
+        if (base64 == "CV_IS_PRIVATE") {
+          setRealURL(access_denied.src);
+          return;
+        }
+        setValidCV(true);
         setBase64Data(base64);
       };
 
       await getBlurCv();
-      await getAuthorName();
-      await revalidateImage();
+      if (validCV) {
+        await revalidateImage();
 
-      interval.current = setInterval(() => {
-        revalidateImage();
-      }, Definitions.FETCH_WAIT_TIME * 1000);
+        interval.current = setInterval(() => {
+          revalidateImage();
+        }, Definitions.FETCH_WAIT_TIME * 1000);
+      }
     };
 
     fetchData();
@@ -115,9 +101,9 @@ export default function CVItem({ cv }: CVCardProps) {
     cv.document_link,
     cv.user_id,
     getBlur,
-    getCachedDisplayName,
     getURL,
     revalidatePreview,
+    validCV,
   ]);
 
   useEffect(
@@ -129,6 +115,7 @@ export default function CVItem({ cv }: CVCardProps) {
     []
   );
 
+  const author_obj = JSON.parse(JSON.stringify(cv.user_id || "Loading..."));
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
 
   return (
@@ -164,7 +151,7 @@ export default function CVItem({ cv }: CVCardProps) {
           <div className="absolute bottom-0 left-0 right-0 mx-5 mb-2.5">
             <div className="flex flex-wrap items-baseline">
               <div className="mr-2 text-xl font-bold text-neutral-700">
-                {authorName}
+                {author_obj.display_name}
               </div>
               <p className="text-xs text-neutral-400">{formattedDate}</p>
             </div>
