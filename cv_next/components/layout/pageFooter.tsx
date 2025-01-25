@@ -5,7 +5,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="inset-x-0 bottom-0 mt-auto w-full p-4 font-light text-primary">
       <div className="container flex items-center justify-center">
-        <hr className="h-1 flex-grow rounded border-0 dark:bg-slate-500" />
+        <hr className="h-1 flex-grow rounded border-0 bg-slate-500" />
         <div className="flex items-center space-x-6 px-4">
           <a
             href="https://instagram.com/magshimim.next"
@@ -44,7 +44,7 @@ const Footer: React.FC = () => {
             </svg>
           </a>
         </div>
-        <hr className="h-1 flex-grow rounded border-0 dark:bg-slate-500" />
+        <hr className="h-1 flex-grow rounded border-0 bg-slate-500" />
       </div>
 
       <div className="mb-2 mt-3 flex justify-center">
