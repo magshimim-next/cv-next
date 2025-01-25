@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState, useEffect, useRef, useCallback } from "react";
 import Categories from "@/types/models/categories";
 import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
-import { generateCategoryLink } from "@/lib/utils";
+import { generateCategoryLink, shimmer, toBase64 } from "@/lib/utils";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import access_denied from "@/public/images/access_denied.png";
 
@@ -77,7 +77,7 @@ export default function CVItem({ cv }: CVCardProps) {
           className="w-full rounded-lg p-2"
           src={realURL}
           placeholder="blur"
-          blurDataURL={Definitions.PLAICEHOLDER_IMAGE_DATA}
+          blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(300, 300))}`}
           alt="CV Preview"
           priority
         />
@@ -87,9 +87,9 @@ export default function CVItem({ cv }: CVCardProps) {
             width={500}
             height={500}
             className="w-full rounded-lg p-2"
-            src={Definitions.PLAICEHOLDER_IMAGE_DATA}
+            src={`data:image/svg+xml;base64,${toBase64(shimmer(300, 300))}`}
             placeholder="blur"
-            blurDataURL={Definitions.PLAICEHOLDER_IMAGE_DATA}
+            blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(300, 300))}`}
             alt="CV Preview"
             priority
           />
