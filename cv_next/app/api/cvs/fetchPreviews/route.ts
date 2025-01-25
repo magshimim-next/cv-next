@@ -49,7 +49,10 @@ async function revalidatePreviewHandler(data: {
 
   if (isSimilar) {
     logger.debug("Files were similar");
-    return NextResponse.json({ message: "No changes" });
+    const publicUrl = SupabaseHelper.getSupabaseInstance()
+      .storage.from(Storage.cvs)
+      .getPublicUrl(fileName).data.publicUrl;
+    return NextResponse.json({ publicUrl });
   }
 
   blobDataMap.delete(docsID || "");
