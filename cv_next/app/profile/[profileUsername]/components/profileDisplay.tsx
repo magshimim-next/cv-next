@@ -11,6 +11,7 @@ export const ProfileDisplay = ({ user }: { user: UserModel }) => {
           </label>
           <span id="username">{user.display_name}</span>
         </div>
+
         <div className="flex flex-wrap justify-between">
           <label className="font-bold" htmlFor="workCategories">
             Work Categories:{" "}

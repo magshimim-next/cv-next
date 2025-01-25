@@ -73,8 +73,26 @@ module.exports = {
           900: "var(--theme-900)",
           950: "var(--theme-950)",
         },
+        "text-color": "var(--text-color)",
+        "card-background": "var(--card-background)",
+        "card-border": "var(--card-border)",
+
+        "btn-background": "var(--btn-background)",
+        "btn-hover-background": "var(--btn-hover-background)",
+
+        "input-background": "var(--input-background)",
+        "input-border": "var(--input-border)",
+        
         "background": "var(--background)",
+        
         "forground": "var(--forground)",
+
+
+
+
+
+
+
         "muted": "var(--muted)",
         "muted-foreground": "var(--muted-foreground)",
         "card": "var(--card)",

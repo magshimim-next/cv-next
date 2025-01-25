@@ -137,29 +137,33 @@ const ResolvedSection = ({
   setResolvedCommentAction,
 }: ResolvedSectionProps) => {
   return userResolved ? (
-    <button
-      className="text-green-500"
-      onClick={() => setResolvedCommentAction(false)}
-    >
-      <GoCheckCircleFill
-        style={{
-          transform: "translateY(2px)",
-        }}
-        fontSize="1.4rem"
-      />
-    </button>
+    <Tooltip id="Resolve icon" message="Unresolve">
+      <button
+        className="text-green-500"
+        onClick={() => setResolvedCommentAction(false)}
+      >
+        <GoCheckCircleFill
+          style={{
+            transform: "translateY(2px)",
+          }}
+          fontSize="1.4rem"
+        />
+      </button>
+    </Tooltip>
   ) : (
-    <button
-      className="text-green-500"
-      onClick={() => setResolvedCommentAction(true)}
-    >
-      <GoCheckCircle
-        style={{
-          transform: "translateY(2px)",
-        }}
-        fontSize="1.4rem"
-      />
-    </button>
+    <Tooltip id="Resolve icon" message="Resolve">
+      <button
+        className="text-green-500"
+        onClick={() => setResolvedCommentAction(true)}
+      >
+        <GoCheckCircle
+          style={{
+            transform: "translateY(2px)",
+          }}
+          fontSize="1.4rem"
+        />
+      </button>
+    </Tooltip>
   );
 };
 
@@ -186,16 +190,17 @@ const CommenterActions = ({
     <>
       <span>
         <>
-          <button className="text-red-500" onClick={() => setShowAlert(true)}>
-            <FaRegTrashCan
-              data-tooltip-target="Trash Icon"
-              style={{
-                transform: "translateY(2px)",
-              }}
-              fontSize="1.4rem"
-            />
-          </button>
-          <Tooltip id="Trash icon" message="delete"></Tooltip>
+          <Tooltip id="Trash Icon" message="Delete">
+            <button className="text-red-500" onClick={() => setShowAlert(true)}>
+              <FaRegTrashCan
+                data-tooltip-target="Trash Icon"
+                style={{
+                  transform: "translateY(2px)",
+                }}
+                fontSize="1.4rem"
+              />
+            </button>
+          </Tooltip>
           <span> </span>
         </>
       </span>
