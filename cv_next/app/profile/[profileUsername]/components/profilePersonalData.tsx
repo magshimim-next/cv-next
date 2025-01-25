@@ -36,14 +36,13 @@ export const ProfilePersonalData = ({
         <div className="flex w-full justify-center">
           <DynamicProfileImage
             isPlaceholder={user.avatar_url ? false : true}
-            className="relative"
+            className="relative overflow-hidden rounded-full"
           >
             <Image
               alt="profile"
               src={user.avatar_url || ""}
               width={90}
               height={60 * 1.4142}
-              className="rounded-lg p-2"
               priority={true}
             ></Image>
           </DynamicProfileImage>
