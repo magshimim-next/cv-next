@@ -18,9 +18,6 @@ export default class Definitions {
   public static readonly FIRST_LOGIN_REDIRECT = "first_login";
   public static readonly LOGIN_REDIRECT = "login";
   public static readonly AUTH_DEFAULT_REDIRECT = "/";
-  public static readonly PLAICEHOLDER_IMAGE_SIZE = 15;
-  public static readonly PLAICEHOLDER_IMAGE_DATA =
-    "data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mPs7p5fDwAFlAI2LB7hbAAAAABJRU5ErkJggg==";
 }
 
 export class API_DEFINITIONS {
