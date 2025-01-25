@@ -43,12 +43,9 @@ export default function CvData({
 
   return (
     <div className={`grid grid-cols-1 gap-y-4 ${showData} md:gap-x-4`}>
-      <article
-        key={cv.id}
-        className={`mb-3 h-fit flex-col rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800`}
-      >
-        <footer className="mb-2 flex items-center justify-between">
-          <div className="flex items-center">
+      <article className="mb-3 flex flex-col rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800">
+        <div className="mb-3 flex items-center">
+          <div className="mr-3">
             <DynamicProfileImage
               isPlaceholder={uploader.avatar_url ? false : true}
               placeHolderStyle={{ fontSize: "35px" }}
@@ -61,32 +58,24 @@ export default function CvData({
                 className="rounded-lg p-2"
               />
             </DynamicProfileImage>
-            <div className="ml-3 flex items-center">
-              <p className="mr-3 inline-flex items-center font-semibold text-gray-900 dark:text-white">
-                <Link
-                  className="text-xl font-medium hover:underline"
-                  href={`/profile/${uploader.username}`}
-                >
-                  {displayName}
-                </Link>
-              </p>
-              <div className="flex flex-wrap items-center space-x-2">
-                {cv.cv_categories.map((category, index) => (
-                  <Link key={index} href={generateCategoryLink(category)}>
-                    <div
-                      onClick={(e) => e.stopPropagation()}
-                      className="rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
-                    >
-                      #{Categories.category[category]}
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
           </div>
-        </footer>
+          <Link href={`/profile/${uploader.username}`}>
+            <p className="text-xl font-medium hover:underline">{displayName}</p>
+          </Link>
+        </div>
+        <div className="mb-3 flex flex-wrap items-center space-x-2">
+          {cv.cv_categories.map((category, index) => (
+            <Link key={index} href={generateCategoryLink(category)}>
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
+              >
+                #{Categories.category[category]}
+              </div>
+            </Link>
+          ))}
+        </div>
         <p className="text-gray-500 dark:text-gray-400">{cv.description}</p>
-        <span> </span>
       </article>
     </div>
   );
