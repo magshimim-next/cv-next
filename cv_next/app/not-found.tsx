@@ -1,8 +1,8 @@
 import Image from "next/image";
-import notFound404 from "../public/images/404.png";
-import notFound404Light from "../public/images/404Light.png";
-import blackChair from "../public/images/chair.png";
-import whiteChair from "../public/images/whiteChair.png";
+import notFound404 from "@/public/images/404.png";
+import notFound404Light from "@/public/images/404Light.png";
+import blackChair from "@/public/images/chair.png";
+import whiteChair from "@/public/images/whiteChair.png";
 
 export default function NotFound() {
   return (
