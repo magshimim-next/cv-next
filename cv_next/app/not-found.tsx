@@ -26,7 +26,8 @@ export default function NotFound() {
         </div>
 
         <h2 className="text-center text-xl md:text-left md:text-3xl">
-          This page didn’t land the job. Try another page!&nbsp;
+          This page didn’t land the job.&nbsp;
+          <span className="mt-2 block md:inline">Try another page!&nbsp;</span>
           <a href="/" className="text-blue-600 underline hover:text-blue-800">
             Go Home
           </a>
