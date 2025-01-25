@@ -62,7 +62,7 @@ const Footer: React.FC = () => {
         </p>
       </div>
       <div className="mb-2 flex justify-center">
-        <div className="mb-2 flex h-fit max-w-fit items-center justify-center rounded-md px-5 text-xs opacity-50 shadow-md hover:shadow-xl">
+        <div className="mb-2 flex h-fit max-w-fit items-center justify-center rounded-md px-5 text-center text-xs opacity-50 shadow-md hover:shadow-xl sm:text-left">
           {`Credit to our team: ${Credits.slice(0, -1).join(", ")} and ${Credits.slice(-1)}`}
         </div>
       </div>
