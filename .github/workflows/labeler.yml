@@ -3,14 +3,15 @@ on:
 - pull_request_target
 
 jobs:
-  label:
-
-    runs-on: ubuntu-latest
+  triage:
+    name: Triage Pull Request
     permissions:
       contents: read
       pull-requests: write
-
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/labeler@v5
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        sync-labels: false
+        configuration-path: .github/labeler.yml
