@@ -68,14 +68,16 @@ export default function CvData({
             <Link key={index} href={generateCategoryLink(category)}>
               <div
                 onClick={(e) => e.stopPropagation()}
-                className="rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
+                className="rounded-full bg-gray-700 px-3 py-1 text-xs font-semibold text-white hover:bg-gray-400 hover:underline"
               >
                 #{Categories.category[category]}
               </div>
             </Link>
           ))}
         </div>
-        <p className="text-gray-500 dark:text-gray-400">{cv.description}</p>
+        <p className="text-gray-500 dark:text-gray-400 sm:text-lg">
+          {cv.description}
+        </p>
       </article>
     </div>
   );
