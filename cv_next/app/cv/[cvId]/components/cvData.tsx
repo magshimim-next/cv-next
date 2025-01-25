@@ -60,22 +60,20 @@ export default function CvData({
             </DynamicProfileImage>
           </div>
           <Link href={`/profile/${uploader.username}`}>
-            <p className="mr-3 text-xl font-medium hover:underline">
-              {displayName}
-            </p>
+            <p className="text-xl font-medium hover:underline">{displayName}</p>
           </Link>
-          <div className="flex flex-wrap items-center space-x-2">
-            {cv.cv_categories.map((category, index) => (
-              <Link key={index} href={generateCategoryLink(category)}>
-                <div
-                  onClick={(e) => e.stopPropagation()}
-                  className="rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
-                >
-                  #{Categories.category[category]}
-                </div>
-              </Link>
-            ))}
-          </div>
+        </div>
+        <div className="mb-3 flex flex-wrap items-center space-x-2">
+          {cv.cv_categories.map((category, index) => (
+            <Link key={index} href={generateCategoryLink(category)}>
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
+              >
+                #{Categories.category[category]}
+              </div>
+            </Link>
+          ))}
         </div>
         <p className="text-gray-500 dark:text-gray-400">{cv.description}</p>
       </article>
