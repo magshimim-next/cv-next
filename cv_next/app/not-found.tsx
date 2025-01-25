@@ -1,6 +1,8 @@
 import Image from "next/image";
 import blackChair from "@/public/images/chair.png";
 import whiteChair from "@/public/images/whiteChair.png";
+import notFound404 from "@/public/images/404.png";
+import notFound404Light from "@/public/images/404Light.png";
 
 export default function NotFound() {
   return (
@@ -11,18 +13,29 @@ export default function NotFound() {
             <Image
               alt="blackChair"
               src={blackChair}
-              className="w-40 dark:hidden sm:w-56"
+              className="w-40 dark:hidden sm:w-60"
             />
             <Image
               alt="whiteChair"
               src={whiteChair}
-              className="hidden w-40 dark:block sm:w-56"
+              className="hidden w-40 dark:block sm:w-60"
             />
           </div>
-
-          <h1 className="text-center text-4xl font-bold md:text-left md:text-7xl">
-            Page Not Found
-          </h1>
+          <div className="flex flex-col items-center justify-center">
+            <Image
+              alt="404"
+              src={notFound404}
+              className="w-40 dark:hidden sm:w-56"
+            />
+            <Image
+              alt="404"
+              src={notFound404Light}
+              className="hidden w-40 dark:block sm:w-56"
+            />
+            <h1 className="text-center text-4xl font-bold md:text-left md:text-7xl">
+              Page Not Found
+            </h1>
+          </div>
         </div>
 
         <h2 className="text-center text-xl md:text-left md:text-3xl">
