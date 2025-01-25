@@ -16,6 +16,7 @@ export default class Definitions {
   public static readonly COMMENTS_REVALIDATE_TIME_IN_SECONDS = 0;
   public static readonly AUTH_CALLBACK_REDIRECT = "/auth/callback";
   public static readonly FIRST_LOGIN_REDIRECT = "first_login";
+  public static readonly LOGIN_REDIRECT = "login";
   public static readonly AUTH_DEFAULT_REDIRECT = "/";
   public static readonly PLAICEHOLDER_IMAGE_SIZE = 15;
   public static readonly PLAICEHOLDER_IMAGE_DATA =
@@ -40,7 +41,6 @@ export class Link_Definitions {
     "cv",
     "profile",
     "hall",
-    "about",
     "first_login",
   ];
 }

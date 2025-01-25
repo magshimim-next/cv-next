@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { AboutLayout } from "@/app/about/components/aboutLayout";
 import { getUser } from "@/app/actions/users/getUser";
+import { LoginLayout } from "../login/components/loginLayout";
 
 export default async function Page() {
   const userDataResponse = await getUser();
@@ -10,7 +10,7 @@ export default async function Page() {
 
   return (
     <main>
-      <AboutLayout />
+      <LoginLayout />
     </main>
   );
 }
