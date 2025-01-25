@@ -7,6 +7,7 @@ import Categories from "@/types/models/categories";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { useError } from "@/providers/error-provider";
 import { Visible_Error_Messages } from "@/lib/definitions";
+import { generateCategoryLink } from "@/lib/utils";
 
 export default function CvData({
   cv,
@@ -61,21 +62,24 @@ export default function CvData({
               />
             </DynamicProfileImage>
             <div className="ml-3 flex items-center">
-              <p className="mr-3 inline-flex items-center text-sm font-semibold text-gray-900 dark:text-white">
+              <p className="mr-3 inline-flex items-center font-semibold text-gray-900 dark:text-white">
                 <Link
-                  className="text-lg font-medium hover:underline"
+                  className="text-xl font-medium hover:underline"
                   href={`/profile/${uploader.username}`}
                 >
                   {displayName}
                 </Link>
               </p>
-              <div className="flex flex-wrap space-x-2">
+              <div className="flex flex-wrap items-center space-x-2">
                 {cv.cv_categories.map((category, index) => (
-                  <div key={index}>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {Categories.category[category]}
-                    </p>
-                  </div>
+                  <Link key={index} href={generateCategoryLink(category)}>
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      className="rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
+                    >
+                      #{Categories.category[category]}
+                    </div>
+                  </Link>
                 ))}
               </div>
             </div>
