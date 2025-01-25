@@ -14,7 +14,7 @@ import {
 import { useError } from "@/providers/error-provider";
 import Login from "./login";
 
-export const AboutLayout = () => {
+export const LoginLayout = () => {
   const searchparams = useSearchParams();
   const { showError } = useError();
   const router = useRouter();

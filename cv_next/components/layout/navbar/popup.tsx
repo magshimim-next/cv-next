@@ -9,7 +9,7 @@ import { useUser } from "@/hooks/useUser";
 const navLinks = [
   {
     route: "Login",
-    path: "/about",
+    path: "/login",
     req_login: false,
   },
   {
