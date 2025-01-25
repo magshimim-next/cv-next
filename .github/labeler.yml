@@ -8,46 +8,45 @@ area/api:
   - changed-files:
     - any-glob-to-any-file:
         - "**/api/**"
-        - "**/api/**/**"
 
 area/backend:
   - changed-files:
     - any-glob-to-any-file:
         - "**/pages/api/**"
-        - "**/pages/api/**/**"
 
 area/components:
   - changed-files:
     - any-glob-to-any-file:
         - "**/components/**"
-        - "**/components/**/**"
-
 
 area/build:
   - changed-files:
     - any-glob-to-any-file:
-        - "**/next.config.js"
-        - "**/package.json"
-        - "**/package-lock.json"
-        - "**/yarn.lock"
-        - "**/Dockerfile"
-        - "**/DockerfileDev"
-        - "**/.github/**"
-        - "**/.github/**/**"
+      - "**/next.config.js"
+      - "**/package.json"
+      - "**/package-lock.json"
+      - "**/yarn.lock"
+      - "**/Dockerfile"
+      - "**/DockerfileDev"
+      - "**/.eslintrc.js" 
+      - "**/babel.config.js"
+      - "**/webpack.config.js"
+
+area/github:
+  - changed-files:
+    - any-glob-to-any-file:
+        - ".github/**"
 
 area/database:
   - changed-files:
     - any-glob-to-any-file:
         - "**/prisma/**"
-        - "**/prisma/**/**"
 
 area/frontend:
   - changed-files:
     - any-glob-to-any-file:
         - "**/pages/**"
-        - "**/pages/**/**"
         - "**/components/**"
-        - "**/components/**/**"
         - "**/*.js"
         - "**/*.jsx"
         - "**/*.ts"
@@ -57,37 +56,31 @@ area/logging:
   - changed-files:
     - any-glob-to-any-file:
         - "**/log/**"
-        - "**/log/**/**"
 
 area/performance:
   - changed-files:
     - any-glob-to-any-file:
         - "**/performance/**"
-        - "**/performance/**/**"
 
 area/release:  
   - changed-files:
     - any-glob-to-any-file:
         - "**/release/**"
-        - "**/release/**/**"
 
 area/server:
   - changed-files:
     - any-glob-to-any-file:
         - "**/server/**"
-        - "**/server/**/**"
 
 area/security:
   - changed-files:
     - any-glob-to-any-file:
         - "**/security/**"
-        - "**/security/**/**"
 
 area/testing:
   - changed-files:
     - any-glob-to-any-file:
         - "**/test/**"
-        - "**/test/**/**"
         - "**/*.test.js"
         - "**/*.test.jsx"
         - "**/*.test.ts"
@@ -97,22 +90,26 @@ area/UI:
   - changed-files:
     - any-glob-to-any-file:
         - "**/ui/**"
-        - "**/ui/**/**"
 
 area/UX:
   - changed-files:
     - any-glob-to-any-file:
         - "**/ux/**"
-        - "**/ux/**/**"
-
 
 
 kind/documentation:
   - changed-files:
       - any-glob-to-any-file:
-        - docs/*
         - docs/**/*
         - '**/*.md'
         - mkdocs.yml
         - NOTICE
         - LICENSE
+
+kind/feature:
+  - title: "feat:"
+  - title: "feature:"
+
+kind/bugfix:
+  - title: "fix:"
+  - title: "bug:"
