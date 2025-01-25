@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Categories from "@/types/models/categories";
-import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
 import { generateCategoryLink } from "@/lib/utils";
 import { useApiFetch } from "@/hooks/useAPIFetch";
@@ -16,46 +15,11 @@ interface CVCardProps {
 
 export default function CVItem({ cv }: CVCardProps) {
   const [realURL, setRealURL] = useState("");
-  const [validCV, setValidCV] = useState(false);
   const fetchFromApi = useApiFetch();
-
-  const [base64Data, setBase64Data] = useState(
-    Definitions.PLAICEHOLDER_IMAGE_DATA
-  );
-
-  const getBlur = useMemo(
-    () => async (imageURL: string) => {
-      const data = await fetchFromApi(
-        API_DEFINITIONS.CVS_API_BASE,
-        API_DEFINITIONS.FETCH_PREVIEWS_ENDPOINT,
-        {
-          pathname: "getBlurredCv",
-          CVPreviewLink: imageURL,
-        }
-      );
-      return data.base64;
-    },
-    [fetchFromApi]
-  );
-
-  const getURL = useMemo(
-    () => async (cvId: string) => {
-      const data = await fetchFromApi(
-        API_DEFINITIONS.CVS_API_BASE,
-        API_DEFINITIONS.FETCH_PREVIEWS_ENDPOINT,
-        {
-          pathname: "getImageURL",
-          cvId,
-        }
-      );
-      return data.publicUrl;
-    },
-    [fetchFromApi]
-  );
 
   const revalidatePreview = useCallback(
     async (cvLink: string) => {
-      await fetchFromApi(
+      const data = await fetchFromApi(
         API_DEFINITIONS.CVS_API_BASE,
         API_DEFINITIONS.FETCH_PREVIEWS_ENDPOINT,
         {
@@ -63,6 +27,7 @@ export default function CVItem({ cv }: CVCardProps) {
           cvLink,
         }
       );
+      return data;
     },
     [fetchFromApi]
   );
@@ -72,41 +37,24 @@ export default function CVItem({ cv }: CVCardProps) {
   useEffect(() => {
     const fetchData = async () => {
       const revalidateImage = async () => {
-        await revalidatePreview(cv.document_link);
-        const imageUrl =
-          (await getURL(getIdFromLink(cv.document_link) || "")) ?? "";
-        setRealURL(imageUrl);
-      };
-
-      const getBlurCv = async () => {
-        const base64 = await getBlur(getGoogleImageUrl(cv.document_link));
-        if (base64 == "CV_IS_PRIVATE") {
+        const data = await revalidatePreview(cv.document_link);
+        if (data?.error == "CV_IS_PRIVATE") {
           setRealURL(access_denied.src);
           return;
+        } else if (data?.publicUrl) {
+          setRealURL(data.publicUrl);
         }
-        setValidCV(true);
-        setBase64Data(base64);
       };
 
-      await getBlurCv();
-      if (validCV) {
-        await revalidateImage();
+      await revalidateImage();
 
-        interval.current = setInterval(() => {
-          revalidateImage();
-        }, Definitions.FETCH_WAIT_TIME * 1000);
-      }
+      interval.current = setInterval(() => {
+        revalidateImage();
+      }, Definitions.FETCH_WAIT_TIME * 1000);
     };
 
     fetchData();
-  }, [
-    cv.document_link,
-    cv.user_id,
-    getBlur,
-    getURL,
-    revalidatePreview,
-    validCV,
-  ]);
+  }, [cv.document_link, revalidatePreview]);
 
   useEffect(
     () => () => {
@@ -129,7 +77,7 @@ export default function CVItem({ cv }: CVCardProps) {
           className="w-full rounded-lg p-2"
           src={realURL}
           placeholder="blur"
-          blurDataURL={base64Data}
+          blurDataURL={Definitions.PLAICEHOLDER_IMAGE_DATA}
           alt="CV Preview"
           priority
         />
@@ -139,9 +87,9 @@ export default function CVItem({ cv }: CVCardProps) {
             width={500}
             height={500}
             className="w-full rounded-lg p-2"
-            src={base64Data}
+            src={Definitions.PLAICEHOLDER_IMAGE_DATA}
             placeholder="blur"
-            blurDataURL={base64Data}
+            blurDataURL={Definitions.PLAICEHOLDER_IMAGE_DATA}
             alt="CV Preview"
             priority
           />

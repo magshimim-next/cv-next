@@ -1,6 +1,5 @@
 "use server";
 
-import { getPlaiceholder } from "plaiceholder";
 import { NextRequest, NextResponse } from "next/server";
 import Definitions from "@/lib/definitions";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
@@ -14,18 +13,8 @@ const blobDataMap = new Map<string, Blob>();
 export async function POST(req: NextRequest) {
   const data = await req.json();
   if (data.pathname.endsWith("revalidatePreview")) {
-    await revalidatePreviewHandler(data);
-    return NextResponse.json({ status: 200 });
+    return await revalidatePreviewHandler(data);
   }
-
-  if (data.pathname.endsWith("getImageURL")) {
-    return await getImageURLHandler(data);
-  }
-
-  if (data.pathname.endsWith("getBlurredCv")) {
-    return await getBlurredCvHandler(data);
-  }
-
   return NextResponse.json({ error: "Not Found" }, { status: 404 });
 }
 
@@ -41,7 +30,14 @@ async function revalidatePreviewHandler(data: { cvLink: string }) {
   const fileName = id + ".png";
   const response = await fetch(getGoogleImageUrl(cvLink), {
     next: { revalidate: Definitions.FETCH_WAIT_TIME },
+    redirect: "manual",
   });
+
+  if (response.status === 302) {
+    logger.error("Redirected when asked for usercontent, probably private");
+    return NextResponse.json({ message: "CV is private" }, { status: 500 });
+  }
+
   const blob = await response.blob();
   const isSimilar = await compareHashes(
     blob,
@@ -65,49 +61,13 @@ async function revalidatePreviewHandler(data: { cvLink: string }) {
       logger.debug(error, "RLS error on upload");
     } else {
       logger.debug(data, "File uploaded successfully:");
+      const publicUrl = SupabaseHelper.getSupabaseInstance()
+        .storage.from(Storage.cvs)
+        .getPublicUrl(fileName).data.publicUrl;
+      return NextResponse.json({ publicUrl });
     }
   } else {
     logger.debug("Files were similar");
   }
-}
-
-/**
- * Get the image URL of a given CV from supabase
- *
- * @param {string} cvId - The cv we want to show
- * @return {Promise<string | null>} a promised string with the imag eurl from supabase or null
- */
-async function getImageURLHandler(data: { cvId: string }) {
-  const cvId = data.cvId;
-  let publicUrl = SupabaseHelper.getSupabaseInstance()
-    .storage.from(Storage.cvs)
-    .getPublicUrl(cvId + ".png").data.publicUrl;
-  return NextResponse.json({ publicUrl: publicUrl });
-}
-
-/**
- * Get a blurred version of a cv
- *
- * @param {string} CVPreviewLink - The cv to get a blurred version of
- * @return {Promise<string>} a promised string with the base64 of the blur
- */
-async function getBlurredCvHandler(data: { CVPreviewLink: string }) {
-  const cvPreviewLink = data.CVPreviewLink;
-
-  const resp = await fetch(cvPreviewLink, {
-    next: { revalidate: Definitions.FETCH_WAIT_TIME },
-    redirect: "manual",
-  });
-
-  if (resp.status === 302) {
-    logger.error("Redirected when asked for usercontent, probably private");
-    return NextResponse.json({ message: "CV is private" }, { status: 500 });
-  }
-
-  const arrayBuffer = await resp.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-  const { base64 } = await getPlaiceholder(buffer, {
-    size: Definitions.PLAICEHOLDER_IMAGE_SIZE,
-  });
-  return NextResponse.json({ base64 });
+  return NextResponse.json({ message: "No changes" });
 }
