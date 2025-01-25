@@ -13,8 +13,8 @@ interface CategoriesDisplayProps {
 export default function CategoriesDisplay({ categories }: CategoriesDisplayProps) {
     const [thisElement, setThisElement] = useState<HTMLDivElement | null>();
     
-    const [displayedCatagories, setDisplayedCatagories] = useState<number[]>(categories);
-    const [overFlowingCatagories, setOverFlowingCatagories] = useState<number[]>([]);
+    const [displayedCategories, setDisplayedCategories] = useState<number[]>(categories);
+    const [overFlowingCategories, setOverFlowingCategories] = useState<number[]>([]);
     const [savedWidth, setSavedWidth] = useState<number>();
 
     const windowSize = useWindowSize()
@@ -22,41 +22,41 @@ export default function CategoriesDisplay({ categories }: CategoriesDisplayProps
     
     useEffect(() => {
         if(thisElement && thisElement.clientWidth < thisElement.scrollWidth) {
-            const overflowCatagory =  displayedCatagories[displayedCatagories.length - 1]
+            const overflowCategory =  displayedCategories[displayedCategories.length - 1]
             
-            setOverFlowingCatagories([overflowCatagory, ...overFlowingCatagories])
-            setDisplayedCatagories(displayedCatagories.slice(0, -1))
+            setOverFlowingCategories([overflowCategory, ...overFlowingCategories])
+            setDisplayedCategories(displayedCategories.slice(0, -1))
         }
-    }, [thisElement, categories, displayedCatagories, overFlowingCatagories])
+    }, [thisElement, categories, displayedCategories, overFlowingCategories])
 
     useEffect(() => {
         if(windowSize && savedWidth !== windowSize.width) {
-            resetCatagoriesArray()
+            resetCategoriesArray()
             setSavedWidth(windowSize.width)
         }
-    }, [windowSize])
+    }, [windowSize, displayedCategories, overFlowingCategories, savedWidth])
 
-    const resetCatagoriesArray = () => {
-        setDisplayedCatagories(categories)
-        setOverFlowingCatagories([])
+    const resetCategoriesArray = () => {
+        setDisplayedCategories(categories)
+        setOverFlowingCategories([])
     }
 
-    const shiftTheCatagories = () => {
-        const overflowCatagory =  overFlowingCatagories[overFlowingCatagories.length - 1]
-        const displayedCatagory =  displayedCatagories[displayedCatagories.length - 1]
+    const shiftTheCategories = () => {
+        const overflowCategory =  overFlowingCategories[overFlowingCategories.length - 1]
+        const displayedCategory =  displayedCategories[displayedCategories.length - 1]
 
-        setOverFlowingCatagories([displayedCatagory, ...overFlowingCatagories.slice(0, -1)])
-        setDisplayedCatagories([overflowCatagory, ...displayedCatagories.slice(0, -1)])
+        setOverFlowingCategories([displayedCategory, ...overFlowingCategories.slice(0, -1)])
+        setDisplayedCategories([overflowCategory, ...displayedCategories.slice(0, -1)])
     }
 
     return <>
         <div className="flex flex-row justify-between mt-2 space-x-2" ref={(el => setThisElement(el))}>
             <div className="flex space-x-2">
-                {displayedCatagories.map((categoryId) => (
+                {displayedCategories.map((categoryId) => (
                     <CategoryDisplay key={categoryId} categoryId={categoryId} />
                 ))}
             </div>
-            { overFlowingCatagories.length ? <OverflowNumber categories={overFlowingCatagories} onClick={shiftTheCatagories}/> : <></> }
+            { overFlowingCategories.length ? <OverflowNumber categories={overFlowingCategories} onClick={shiftTheCategories}/> : <></> }
         </div>
     </>
 }
@@ -68,7 +68,7 @@ function CategoryDisplay({ categoryId }: {categoryId: number;} ) {
             onClick={(e) => e.stopPropagation()}
             className="rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
             >
-                {getCatagoryText(categoryId)}
+                {getCategoryText(categoryId)}
             </div>
         </Link>
     </>
@@ -82,14 +82,14 @@ function OverflowNumber({ categories, onClick }: {categories: number[], onClick:
                 onClick()
             }}
             className="rounded-full bg-gray-700 px-2 py-1 text-sm font-semibold text-white hover:bg-gray-400 flex justify-center items-center right-0"
-            title={categories.map(getCatagoryText).join(", ")}
+            title={categories.map(getCategoryText).join(", ")}
             >
                 +{categories.length}
         </div>
     </>
 }
 
-function getCatagoryText(id: number) {
+function getCategoryText(id: number) {
     return `#${Categories.category[id]}`
 }
 

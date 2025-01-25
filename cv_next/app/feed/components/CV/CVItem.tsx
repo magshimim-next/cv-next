@@ -5,7 +5,7 @@ import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
 import { useApiFetch } from "@/hooks/useAPIFetch";
-import CategoriesDisplay from "./catagoryDisplay";
+import CategoriesDisplay from "./categoryDisplay";
 
 interface CVCardProps {
   cv: CvModel;
