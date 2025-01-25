@@ -5,8 +5,8 @@ import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
 import { useApiFetch } from "@/hooks/useAPIFetch";
-import CategoriesDisplay from "./categoryDisplay";
 import access_denied from "@/public/images/access_denied.png";
+import CategoriesDisplay from "./categoryDisplay";
 
 interface CVCardProps {
   cv: CvModel;
