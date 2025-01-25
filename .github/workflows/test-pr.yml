@@ -9,14 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - run:
-          cd ./cv_next
-
+        with:
+          fetch-depth: 0
+          
       - name: Install dependencies
         run: |
-          npm install  # Or appropriate command for your project (yarn, pnpm, etc.)
+          cd ./cv_next 
+          npm install  
 
       - name: Run tests
         run: |
-          npm test # Or appropriate command for your test runner (e.g., yarn test, jest, pytest)
+          npm test 
