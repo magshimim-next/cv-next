@@ -10,6 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - run:
+        cd ./cv_next
+        
       - name: Install dependencies
         run: |
           npm install  # Or appropriate command for your project (yarn, pnpm, etc.)
