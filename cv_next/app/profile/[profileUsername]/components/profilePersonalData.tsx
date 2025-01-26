@@ -5,6 +5,7 @@ import { PencilIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { useUser } from "@/hooks/useUser";
+import Tooltip from "@/components/ui/tooltip";
 import ProfileForm from "./profileForm";
 import { ProfileDisplay } from "./profileDisplay";
 
@@ -49,12 +50,14 @@ export const ProfilePersonalData = ({
           </DynamicProfileImage>
         </div>
         {isCurrentUser && (
-          <PencilIcon
-            className="cursor-pointer"
-            size={20}
-            onClick={() => setIsEditing(!isEditing)}
-            fill={isEditing ? "currentColor" : undefined}
-          />
+          <Tooltip id="Edit Icon" message={isEditing ? "Cancel" : "Edit"}>
+            <PencilIcon
+              className="cursor-pointer"
+              size={20}
+              onClick={() => setIsEditing(!isEditing)}
+              fill={isEditing ? "currentColor" : undefined}
+            />
+          </Tooltip>
         )}
       </div>
       <div className="m-auto w-full">
