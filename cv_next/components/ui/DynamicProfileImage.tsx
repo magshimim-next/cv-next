@@ -20,7 +20,11 @@ const DynamicProfileImage: React.FC<ThemeImageProps> = ({
   if (isPlaceholder) {
     return <div className={className ?? ""}>{defaultProfileIcon}</div>;
   } else {
-    return <div className={className ?? ""}>{children}</div>;
+    return (
+      <div className={className ?? "overflow-hidden rounded-full"}>
+        {children}
+      </div>
+    );
   }
 };
 
