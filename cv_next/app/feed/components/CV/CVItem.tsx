@@ -6,7 +6,7 @@ import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import access_denied from "@/public/images/access_denied.png";
-import { CvCategory } from "@/components/ui/cvCategory";
+import CategoriesDisplay from "./categoryDisplay";
 
 interface CVCardProps {
   cv: CvModel;
@@ -148,22 +148,14 @@ export default function CVItem({ cv }: CVCardProps) {
 
       <div className="overlay gradient-blur-backdrop absolute bottom-0 flex h-full w-full rounded-lg backdrop-blur-[0.5px] transition hover:via-transparent hover:backdrop-blur-none">
         <div className="overlay absolute bottom-0 h-1/5 w-full rounded-xl bg-transparent p-6">
-          <div className="absolute bottom-0 left-0 mx-5 mb-2.5">
+          <div className="absolute bottom-0 left-0 right-0 mx-5 mb-2.5">
             <div className="flex flex-wrap items-baseline">
               <div className="mr-2 text-xl font-bold text-neutral-700">
                 {author_obj.display_name}
               </div>
               <p className="text-xs text-neutral-400">{formattedDate}</p>
             </div>
-            <div className="mt-2 flex flex-wrap space-x-2">
-              {cv.cv_categories.map((category, index) => (
-                <CvCategory
-                  key={index}
-                  categoryId={category}
-                  onClick={(e) => e.stopPropagation()}
-                />
-              ))}
-            </div>
+            <CategoriesDisplay categories={cv.cv_categories} />
           </div>
         </div>
       </div>
