@@ -36,14 +36,14 @@ export default async function ProfileData({ user }: { user: UserModel }) {
           <CategoryCounter
             cvs={cvs}
             title="Most CVs are categorized under"
-            error={`No CVs found, ${user.username || user.display_name} needs to upload a CV!`}
+            error={`No CVs found, ${user.display_name || user.username} needs to upload a CV!`}
           />
         </div>
         <div className="flex justify-center">
           <CategoryCounter
             cvs={CVsFromComments}
             title="Most comments are from CVs that are categorized under"
-            error={`No CVs found, ${user.username || user.display_name} needs to comment a bit more!`}
+            error={`No CVs found, ${user.display_name || user.username} needs to comment a bit more!`}
           />
         </div>
       </DropdownCover>
