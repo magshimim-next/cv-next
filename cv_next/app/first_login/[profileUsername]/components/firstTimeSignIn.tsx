@@ -24,8 +24,9 @@ export default function FirstTimeSignIn() {
     <>
       {isFirstLogin && (
         <Tooltip
-          message="First time signing in? Change your username"
+          message={"First time signing in?\nChange your username"}
           id="firstTime"
+          styleCSS="whitespace-pre"
         >
           <FaQuestionCircle />
         </Tooltip>
