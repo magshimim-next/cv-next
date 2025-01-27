@@ -6,6 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { fetchCvComments } from "@/app/actions/comments/fetchComments";
+import Definitions from "@/lib/definitions";
 import Comment from "./comment";
 
 export default function CommentsSection({ cv }: { cv: CvModel }) {
@@ -51,7 +52,7 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
     async function getUser() {
       const userId = await supabase.auth.getUser();
       if (userId.error) {
-        router.push(`/login?next=${pathname}`);
+        router.push(`/${Definitions.LOGIN_REDIRECT}?next=${pathname}`);
       } else setUserId(userId.data.user.id);
     }
     getUser();

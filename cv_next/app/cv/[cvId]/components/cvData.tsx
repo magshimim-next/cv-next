@@ -52,9 +52,8 @@ export default function CvData({
               <Image
                 alt="profile"
                 src={uploader.avatar_url || ""}
-                width={50}
+                width={40}
                 height={30 * 1.4142}
-                className="rounded-lg p-2"
               />
             </DynamicProfileImage>
           </div>

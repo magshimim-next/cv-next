@@ -16,6 +16,7 @@ export default class Definitions {
   public static readonly COMMENTS_REVALIDATE_TIME_IN_SECONDS = 0;
   public static readonly AUTH_CALLBACK_REDIRECT = "/auth/callback";
   public static readonly FIRST_LOGIN_REDIRECT = "first_login";
+  public static readonly LOGIN_REDIRECT = "login";
   public static readonly AUTH_DEFAULT_REDIRECT = "/";
   public static readonly PLAICEHOLDER_IMAGE_SIZE = 15;
   public static readonly PLAICEHOLDER_IMAGE_DATA =
@@ -24,11 +25,9 @@ export default class Definitions {
 
 export class API_DEFINITIONS {
   public static readonly CVS_API_BASE = "/api/cvs";
-  public static readonly USERS_API_BASE = "/api/users";
   public static readonly FETCH_CVS_ENDPOINT = "fetchCvs";
   public static readonly FETCH_PREVIEWS_ENDPOINT = "fetchPreviews";
   public static readonly FETCH_USERS_ENDPOINT = "fetchUserData";
-  public static readonly REVALIDATE_USERS_ENDPOINT = "revalidateSignout";
 }
 
 export class Link_Definitions {
@@ -40,7 +39,6 @@ export class Link_Definitions {
     "cv",
     "profile",
     "hall",
-    "about",
     "first_login",
   ];
 }
