@@ -1,10 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 import useWindowSize from "@/hooks/useWindowSize";
 import Categories from "@/types/models/categories";
-import { generateCategoryLink } from "@/lib/utils";
+import { CvCategory } from "@/components/ui/cvCategory";
 
 interface CategoriesDisplayProps {
   categories: number[];
@@ -75,8 +74,12 @@ export default function CategoriesDisplay({
         ref={(el) => setThisElement(el)}
       >
         <div className="flex space-x-2">
-          {displayedCategories.map((categoryId) => (
-            <CategoryDisplay key={categoryId} categoryId={categoryId} />
+          {displayedCategories.map((categoryId, index) => (
+            <CvCategory
+              key={index}
+              categoryId={categoryId}
+              onClick={(e) => e.stopPropagation()}
+            />
           ))}
         </div>
         {overFlowingCategories.length && (
@@ -86,21 +89,6 @@ export default function CategoriesDisplay({
           />
         )}
       </div>
-    </>
-  );
-}
-
-function CategoryDisplay({ categoryId }: { categoryId: number }) {
-  return (
-    <>
-      <Link href={generateCategoryLink(categoryId)}>
-        <div
-          onClick={(e) => e.stopPropagation()}
-          className="rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
-        >
-          {getCategoryText(categoryId)}
-        </div>
-      </Link>
     </>
   );
 }
