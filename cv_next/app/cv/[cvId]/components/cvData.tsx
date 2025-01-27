@@ -3,11 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Categories from "@/types/models/categories";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { useError } from "@/providers/error-provider";
 import { Visible_Error_Messages } from "@/lib/definitions";
-import { generateCategoryLink } from "@/lib/utils";
+import { CvCategory } from "@/components/ui/cvCategory";
 
 export default function CvData({
   cv,
@@ -65,14 +64,11 @@ export default function CvData({
         </div>
         <div className="mb-3 flex flex-wrap items-center space-x-2">
           {cv.cv_categories.map((category, index) => (
-            <Link key={index} href={generateCategoryLink(category)}>
-              <div
-                onClick={(e) => e.stopPropagation()}
-                className="rounded-full bg-gray-700 px-3 py-1 text-xs font-semibold text-white hover:bg-gray-400 hover:underline"
-              >
-                #{Categories.category[category]}
-              </div>
-            </Link>
+            <CvCategory
+              key={index}
+              categoryId={category}
+              onClick={(e) => e.stopPropagation()}
+            />
           ))}
         </div>
         <p className="text-gray-500 dark:text-gray-400 sm:text-lg">

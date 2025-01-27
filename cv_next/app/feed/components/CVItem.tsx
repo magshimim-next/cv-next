@@ -1,14 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
-import Categories from "@/types/models/categories";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
-import { generateCategoryLink } from "@/lib/utils";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import access_denied from "@/public/images/access_denied.png";
+import { CvCategory } from "@/components/ui/cvCategory";
 
 interface CVCardProps {
   cv: CvModel;
@@ -182,14 +180,11 @@ export default function CVItem({ cv }: CVCardProps) {
             </div>
             <div className="mt-2 flex flex-wrap space-x-2">
               {cv.cv_categories.map((category, index) => (
-                <Link key={index} href={generateCategoryLink(category)}>
-                  <div
-                    onClick={(e) => e.stopPropagation()}
-                    className="rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
-                  >
-                    #{Categories.category[category]}
-                  </div>
-                </Link>
+                <CvCategory
+                  key={index}
+                  categoryId={category}
+                  onClick={(e) => e.stopPropagation()}
+                />
               ))}
             </div>
           </div>

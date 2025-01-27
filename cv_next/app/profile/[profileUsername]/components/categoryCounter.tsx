@@ -1,9 +1,7 @@
 "use server";
 
 import { cache } from "react";
-import Link from "next/link";
-import Categories from "@/types/models/categories";
-import { generateCategoryLink } from "@/lib/utils";
+import { CvCategory } from "@/components/ui/cvCategory";
 
 const getTopCategories = async (cvs: CvModel[]) => {
   const categoryCount: { [key: number]: number } = {};
@@ -43,11 +41,7 @@ export default async function CategoryCounter({
   const top3CategoryIds = await cachedTopCategories(cvs);
 
   const categoryElements = top3CategoryIds.map((categoryId, index) => (
-    <Link key={index} href={generateCategoryLink(categoryId)}>
-      <div className="mb-2 mr-2 rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline">
-        #{Categories.category[categoryId]}
-      </div>
-    </Link>
+    <CvCategory key={index} categoryId={categoryId} />
   ));
 
   return (
