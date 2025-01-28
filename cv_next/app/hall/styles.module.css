@@ -116,7 +116,7 @@
   width: 20px;
   background: url(https://static.vecteezy.com/system/resources/previews/023/258/446/non_2x/a-star-with-transparent-background-sticker-illustration-free-png.png)
     no-repeat center bottom/cover;
-  animation: animate 40s linear infinite;
+  animation: animate 30s linear infinite;
   bottom: -10%;
   filter: drop-shadow(2px 4px 10px gold);
 }
