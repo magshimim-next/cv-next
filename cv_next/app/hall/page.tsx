@@ -35,7 +35,7 @@ const hall: React.FC = () => {
             win eternal glory!
           </h3>
           <ul>
-            <div className="flex h-auto w-full flex-row-reverse flex-wrap justify-center self-center xl:flex">
+            <div className="flex h-auto w-full flex-row-reverse flex-wrap justify-center gap-3 self-center xl:flex">
               {contributors.map((contributor) => (
                 <div
                   key={contributor.name}
