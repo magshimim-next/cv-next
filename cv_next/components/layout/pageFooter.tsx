@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Team_Credits as Credits } from "@/lib/definitions";
 
 const Footer: React.FC = () => {
@@ -61,9 +62,17 @@ const Footer: React.FC = () => {
           &copy; {new Date().getFullYear()} Magshimim Next. All rights reserved.
         </p>
       </div>
-      <div className="mb-2 flex justify-center">
-        <div className="mb-2 flex h-fit max-w-fit items-center justify-center rounded-md px-5 text-center text-xs opacity-50 shadow-md hover:shadow-xl sm:text-left">
+      <div className="flex justify-center">
+        <div className="flex h-fit max-w-fit items-center justify-center rounded-md px-5 text-center text-xs opacity-50 shadow-md hover:shadow-xl sm:text-left">
           {`Credit to our team: ${Credits.slice(0, -1).join(", ")} and ${Credits.slice(-1)}`}
+        </div>
+      </div>
+      <div className="flex justify-center">
+        <div className="flex h-fit max-w-fit items-center justify-center rounded-md px-5 text-center text-xs opacity-50 shadow-md hover:shadow-xl sm:text-left">
+          {`Want to see more amazing people? Go to our `}
+          <Link href="/hall" className="text-blue-500 hover:underline">
+            &nbsp;Hall of Fame
+          </Link>
         </div>
       </div>
     </footer>
