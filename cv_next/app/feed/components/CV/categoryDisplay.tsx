@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import useWindowSize from "@/hooks/useWindowSize";
 import Categories from "@/types/models/categories";
 import { CvCategory } from "@/components/ui/cvCategory";
+import Tooltip from "@/components/ui/tooltip";
 
 interface CategoriesDisplayProps {
   categories: number[];
@@ -102,16 +103,21 @@ function OverflowNumber({
 }) {
   return (
     <>
-      <div
-        onClick={(e) => {
-          e.stopPropagation();
-          onClick();
-        }}
-        className="right-0 flex items-center justify-center rounded-full bg-gray-700 px-2 py-1 text-sm font-semibold text-white hover:bg-gray-400"
-        title={categories.map(getCategoryText).join(", ")}
+      <Tooltip
+        id="categories"
+        message={categories.map(getCategoryText).join(", ")}
       >
-        +{categories.length}
-      </div>
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+          }}
+          className="right-0 flex items-center justify-center rounded-full bg-gray-700 px-2 py-1 text-sm font-semibold text-white hover:bg-gray-400"
+          // title={categories.map(getCategoryText).join(", ")}
+        >
+          +{categories.length}
+        </div>
+      </Tooltip>
     </>
   );
 }
