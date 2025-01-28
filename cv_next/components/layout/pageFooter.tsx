@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Team_Credits as Credits } from "@/lib/definitions";
 
 const Footer: React.FC = () => {
@@ -56,14 +57,24 @@ const Footer: React.FC = () => {
           src="/images/logo.png"
         />
       </div>
-      <div className="mb-2 flex justify-center">
+      <div className="mb-2 flex justify-center text-center">
         <p>
           &copy; {new Date().getFullYear()} Magshimim Next. All rights reserved.
         </p>
       </div>
-      <div className="mb-2 flex justify-center">
-        <div className="mb-2 flex h-fit max-w-fit items-center justify-center rounded-md px-5 text-center text-xs opacity-50 shadow-md hover:shadow-xl sm:text-left">
-          {`Credit to our team: ${Credits.slice(0, -1).join(", ")} and ${Credits.slice(-1)}`}
+      <div className="mt-1 rounded-md opacity-50 shadow-md">
+        <div className="mb-1 flex justify-center">
+          <div className="mb-1 flex h-fit max-w-fit items-center justify-center px-5 text-center text-xs hover:shadow-xl sm:text-left">
+            {`Credit to our team: ${Credits.slice(0, -1).join(", ")} and ${Credits.slice(-1)}`}
+          </div>
+        </div>
+        <div className="flex justify-center text-center text-xs hover:shadow-xl sm:text-left">
+          <span className="mb-2 text-xs ">
+            {`Want to see more amazing people? Go to our `}
+            <Link href="/hall" className="text-blue-500 hover:underline">
+              &nbsp;Hall of Fame
+            </Link>
+          </span>
         </div>
       </div>
     </footer>
