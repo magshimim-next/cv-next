@@ -52,8 +52,7 @@ export default function Navbar() {
                   <Image
                     src={logo}
                     alt="Logo"
-                    layout="fill"
-                    objectFit="contain"
+                    className="h-full w-full object-contain"
                   />
                 </div>
                 <span className="text-2xl font-bold leading-none text-white">
