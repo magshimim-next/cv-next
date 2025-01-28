@@ -109,7 +109,7 @@ export const External_Credits = [
   },
   {
     name: "Harel Kristal",
-    title: "Penetration tester",
+    title: "Penetration Tester",
     contribution:
       "Login and Signout were always visible & Developer's data leak.",
     linkedIn: "https://www.linkedin.com/in/harel-kristal/",
