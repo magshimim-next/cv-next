@@ -28,7 +28,7 @@ const hall: React.FC = () => {
             HALL OF FAME
           </h1>
           <h3 className="pb8 font-bold lg:text-lg">
-            Awesome people who contributed to the project
+            Awesome People Who Contributed to the Project{" "}
           </h3>
           <h3 className="pb-8 text-base font-light text-muted-foreground lg:text-lg">
             Want to also be in this list? Contact us in the community chat and
