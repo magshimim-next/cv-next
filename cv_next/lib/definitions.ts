@@ -89,6 +89,7 @@ export const Team_Credits = [
   "Alon Green",
   "Yarden Perets",
   "Omri Anidgar",
+  "Shoham Yosef Bitton",
 ];
 
 export const External_Credits = [
