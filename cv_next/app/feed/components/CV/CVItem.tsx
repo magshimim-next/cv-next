@@ -1,13 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { useState, useEffect, useRef, useCallback } from "react";
-import Categories from "@/types/models/categories";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
-import { generateCategoryLink, shimmer, toBase64 } from "@/lib/utils";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import access_denied from "@/public/images/access_denied.png";
+import CategoriesDisplay from "./categoryDisplay";
 
 interface CVCardProps {
   cv: CvModel;
@@ -15,11 +14,46 @@ interface CVCardProps {
 
 export default function CVItem({ cv }: CVCardProps) {
   const [realURL, setRealURL] = useState("");
+  const [validCV, setValidCV] = useState(false);
   const fetchFromApi = useApiFetch();
+
+  const [base64Data, setBase64Data] = useState(
+    Definitions.PLAICEHOLDER_IMAGE_DATA
+  );
+
+  const getBlur = useMemo(
+    () => async (imageURL: string) => {
+      const data = await fetchFromApi(
+        API_DEFINITIONS.CVS_API_BASE,
+        API_DEFINITIONS.FETCH_PREVIEWS_ENDPOINT,
+        {
+          pathname: "getBlurredCv",
+          CVPreviewLink: imageURL,
+        }
+      );
+      return data.base64;
+    },
+    [fetchFromApi]
+  );
+
+  const getURL = useMemo(
+    () => async (cvId: string) => {
+      const data = await fetchFromApi(
+        API_DEFINITIONS.CVS_API_BASE,
+        API_DEFINITIONS.FETCH_PREVIEWS_ENDPOINT,
+        {
+          pathname: "getImageURL",
+          cvId,
+        }
+      );
+      return data.publicUrl;
+    },
+    [fetchFromApi]
+  );
 
   const revalidatePreview = useCallback(
     async (cvLink: string) => {
-      const data = await fetchFromApi(
+      await fetchFromApi(
         API_DEFINITIONS.CVS_API_BASE,
         API_DEFINITIONS.FETCH_PREVIEWS_ENDPOINT,
         {
@@ -27,7 +61,6 @@ export default function CVItem({ cv }: CVCardProps) {
           cvLink,
         }
       );
-      return data;
     },
     [fetchFromApi]
   );
@@ -37,24 +70,41 @@ export default function CVItem({ cv }: CVCardProps) {
   useEffect(() => {
     const fetchData = async () => {
       const revalidateImage = async () => {
-        const data = await revalidatePreview(cv.document_link);
-        if (data?.error == "CV_IS_PRIVATE") {
-          setRealURL(access_denied.src);
-          return;
-        } else if (data?.publicUrl) {
-          setRealURL(data.publicUrl);
-        }
+        await revalidatePreview(cv.document_link);
+        const imageUrl =
+          (await getURL(getIdFromLink(cv.document_link) || "")) ?? "";
+        setRealURL(imageUrl);
       };
 
-      await revalidateImage();
+      const getBlurCv = async () => {
+        const base64 = await getBlur(getGoogleImageUrl(cv.document_link));
+        if (base64 == "CV_IS_PRIVATE") {
+          setRealURL(access_denied.src);
+          return;
+        }
+        setValidCV(true);
+        setBase64Data(base64);
+      };
 
-      interval.current = setInterval(() => {
-        revalidateImage();
-      }, Definitions.FETCH_WAIT_TIME * 1000);
+      await getBlurCv();
+      if (validCV) {
+        await revalidateImage();
+
+        interval.current = setInterval(() => {
+          revalidateImage();
+        }, Definitions.FETCH_WAIT_TIME * 1000);
+      }
     };
 
     fetchData();
-  }, [cv.document_link, revalidatePreview]);
+  }, [
+    cv.document_link,
+    cv.user_id,
+    getBlur,
+    getURL,
+    revalidatePreview,
+    validCV,
+  ]);
 
   useEffect(
     () => () => {
@@ -77,7 +127,7 @@ export default function CVItem({ cv }: CVCardProps) {
           className="w-full rounded-lg p-2"
           src={realURL}
           placeholder="blur"
-          blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(300, 300))}`}
+          blurDataURL={base64Data}
           alt="CV Preview"
           priority
         />
@@ -87,9 +137,9 @@ export default function CVItem({ cv }: CVCardProps) {
             width={500}
             height={500}
             className="w-full rounded-lg p-2"
-            src={`data:image/svg+xml;base64,${toBase64(shimmer(300, 300))}`}
+            src={base64Data}
             placeholder="blur"
-            blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(300, 300))}`}
+            blurDataURL={base64Data}
             alt="CV Preview"
             priority
           />
@@ -98,25 +148,14 @@ export default function CVItem({ cv }: CVCardProps) {
 
       <div className="overlay gradient-blur-backdrop absolute bottom-0 flex h-full w-full rounded-lg backdrop-blur-[0.5px] transition hover:via-transparent hover:backdrop-blur-none">
         <div className="overlay absolute bottom-0 h-1/5 w-full rounded-xl bg-transparent p-6">
-          <div className="absolute bottom-0 left-0 mx-5 mb-2.5">
+          <div className="absolute bottom-0 left-0 right-0 mx-5 mb-2.5">
             <div className="flex flex-wrap items-baseline">
               <div className="mr-2 text-xl font-bold text-neutral-700">
                 {author_obj.display_name}
               </div>
               <p className="text-xs text-neutral-400">{formattedDate}</p>
             </div>
-            <div className="mt-2 flex flex-wrap space-x-2">
-              {cv.cv_categories.map((category, index) => (
-                <Link key={index} href={generateCategoryLink(category)}>
-                  <div
-                    onClick={(e) => e.stopPropagation()}
-                    className="rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
-                  >
-                    #{Categories.category[category]}
-                  </div>
-                </Link>
-              ))}
-            </div>
+            <CategoriesDisplay categories={cv.cv_categories} />
           </div>
         </div>
       </div>

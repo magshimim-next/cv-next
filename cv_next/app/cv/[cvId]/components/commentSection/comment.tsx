@@ -84,12 +84,14 @@ const NewCommentBlock = ({
         rows={2}
         className="mb-1 mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
       />
-      <RxPlus
-        style={{ fontSize: "5vh", cursor: "pointer" }}
-        onClick={async () => {
-          await handleSubmit();
-        }}
-      />
+      <Tooltip id="Reply Icon" message="Reply">
+        <RxPlus
+          style={{ fontSize: "5vh", cursor: "pointer" }}
+          onClick={async () => {
+            await handleSubmit();
+          }}
+        />
+      </Tooltip>
     </div>
   ) : null;
 };
@@ -104,26 +106,30 @@ const VotingSection = ({
   setLikedCommentAction,
 }: VotingSectionProps) => {
   return userVoted ? (
-    <button>
-      <AiFillLike
-        onClick={() => setLikedCommentAction(false)}
-        size="1.4rem"
-        style={{
-          transform: "translateY(2px)",
-        }}
-      />
-    </button>
+    <Tooltip id="Dislike Icon" message="Dislike">
+      <button>
+        <AiFillLike
+          onClick={() => setLikedCommentAction(false)}
+          size="1.4rem"
+          style={{
+            transform: "translateY(2px)",
+          }}
+        />
+      </button>
+    </Tooltip>
   ) : (
-    <button>
-      <AiTwotoneLike
-        size="1.4rem"
-        color="grey"
-        style={{
-          transform: "translateY(2px)",
-        }}
-        onClick={() => setLikedCommentAction(true)}
-      />
-    </button>
+    <Tooltip id="Like Icon" message="Like">
+      <button>
+        <AiTwotoneLike
+          size="1.4rem"
+          color="grey"
+          style={{
+            transform: "translateY(2px)",
+          }}
+          onClick={() => setLikedCommentAction(true)}
+        />
+      </button>
+    </Tooltip>
   );
 };
 
@@ -257,27 +263,31 @@ const StartNewComment = ({
   setCommentOnCommentStatus,
 }: StartNewCommentProps) => {
   return !commentOnCommentStatus ? (
-    <button className="text-green-500">
-      <FaComment
-        size="1.2rem"
-        style={{
-          marginRight: "0.4rem",
-          transform: "translateY(2px)",
-        }}
-        onClick={() => setCommentOnCommentStatus(!commentOnCommentStatus)}
-      />
-    </button>
+    <Tooltip id="Comment Icon" message="Comment">
+      <button className="text-green-500">
+        <FaComment
+          size="1.2rem"
+          style={{
+            marginRight: "0.4rem",
+            transform: "translateY(2px)",
+          }}
+          onClick={() => setCommentOnCommentStatus(!commentOnCommentStatus)}
+        />
+      </button>
+    </Tooltip>
   ) : (
-    <button className="text-red-500">
-      <HiXMark
-        size="1.2rem"
-        style={{
-          marginRight: "0.4rem",
-          transform: "translateY(2px)",
-        }}
-        onClick={() => setCommentOnCommentStatus(!commentOnCommentStatus)}
-      />
-    </button>
+    <Tooltip id="Cancel Icon" message="Cancel">
+      <button className="text-red-500">
+        <HiXMark
+          size="1.2rem"
+          style={{
+            marginRight: "0.4rem",
+            transform: "translateY(2px)",
+          }}
+          onClick={() => setCommentOnCommentStatus(!commentOnCommentStatus)}
+        />
+      </button>
+    </Tooltip>
   );
 };
 
