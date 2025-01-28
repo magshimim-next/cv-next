@@ -11,13 +11,13 @@ import styles from "./styles.module.css";
 const startsCount = 15;
 
 export default function Page() {
-  const { scrollHeight } = useWindowSize();
+  const { scrollHeight, height } = useWindowSize();
 
   return (
     <>
       <title>Hall of fame</title>
       <ul
-        style={{ height: scrollHeight }}
+        style={{ height: scrollHeight ?? height }}
         className={`${styles.crowns} absolute left-0 top-0 z-[-1] w-full overflow-hidden`}
       >
         {Array.from({ length: startsCount }).map((_, index) => (
