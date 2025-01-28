@@ -54,14 +54,14 @@ const hall: React.FC = () => {
                       className="mr-1 select-none"
                       alt="Profile Picture"
                     />
-                    <h1 className="ml-4 max-w-full overflow-hidden break-words text-left text-sm text-muted-foreground sm:text-base lg:text-xl">
+                    <h1 className="ml-4 max-w-full overflow-hidden break-words text-left text-base text-muted-foreground sm:text-lg lg:text-xl">
                       {contributor.name}
                     </h1>
                   </div>
-                  <h4 className="mt-4 select-none text-sm text-muted-foreground">
+                  <h4 className="mb-1 mt-4 select-none text-sm text-muted-foreground ">
                     {contributor.title}
                   </h4>
-                  <h3 className="select-none text-muted-foreground">
+                  <h3 className="mb-1 select-none text-base text-muted-foreground">
                     {contributor.contribution}
                   </h3>
                   <div className="relative flex w-full items-center justify-end">
