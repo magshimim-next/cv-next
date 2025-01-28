@@ -57,7 +57,7 @@ const Footer: React.FC = () => {
           src="/images/logo.png"
         />
       </div>
-      <div className="mb-2 flex justify-center">
+      <div className="mb-2 flex justify-center text-center">
         <p>
           &copy; {new Date().getFullYear()} Magshimim Next. All rights reserved.
         </p>
