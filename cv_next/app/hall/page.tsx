@@ -39,7 +39,7 @@ const hall: React.FC = () => {
               {contributors.map((contributor) => (
                 <div
                   key={contributor.name}
-                  className={`${styles.card} relative m-[1vh] flex min-h-[25vh] w-[25vh] flex-col justify-between rounded-lg bg-primary-foreground p-4 text-center`}
+                  className={`${styles.card} relative m-[1vh] flex min-h-[25vh] w-[35vh] flex-col justify-between rounded-lg bg-primary-foreground p-4 text-center`}
                 >
                   <div
                     className={`${styles["name-image"]} relative flex w-full items-center`}
@@ -54,7 +54,7 @@ const hall: React.FC = () => {
                       className="mr-1 select-none"
                       alt="Profile Picture"
                     />
-                    <h1 className="ml-4 text-left text-muted-foreground lg:text-xl">
+                    <h1 className="ml-4 max-w-full overflow-hidden break-words text-left text-sm text-muted-foreground sm:text-base lg:text-xl">
                       {contributor.name}
                     </h1>
                   </div>
