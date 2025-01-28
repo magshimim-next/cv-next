@@ -71,7 +71,7 @@ const Footer: React.FC = () => {
         <div className="flex justify-center rounded-md text-center text-xs opacity-50 hover:shadow-xl sm:text-left">
           <span className="mb-2 text-xs opacity-75">
             {`Want to see more amazing people? Go to our `}
-            <Link href="/your-page" className="text-blue-500 hover:underline">
+            <Link href="/hall" className="text-blue-500 hover:underline">
               &nbsp;Hall of Fame
             </Link>
           </span>
