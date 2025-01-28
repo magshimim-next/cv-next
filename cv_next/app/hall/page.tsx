@@ -21,25 +21,25 @@ const hall: React.FC = () => {
       </ul>
       <div className="relative mx-auto h-full w-[700px] max-w-full xl:w-[1400px]">
         <ScrollToTop />
-        <div className="select-none p-5 text-center">
+        <div className="select-none text-center">
           <h1
-            className={`${styles["hall-title"]} mb-5 inline-flex items-center pt-3`}
+            className={`${styles["hall-title"]} mb-5 inline-flex items-center`}
           >
             HALL OF FAME
           </h1>
           <h3 className="pb8 font-bold lg:text-lg">
-            Awesome People Who Contributed to the Project{" "}
+            Awesome People Who Contributed to the Project
           </h3>
           <h3 className="pb-8 text-base font-light text-muted-foreground lg:text-lg">
             Want to also be in this list? Contact us in the community chat and
             win eternal glory!
           </h3>
           <ul>
-            <div className="flex max-h-[80vh] w-full flex-row-reverse flex-wrap justify-center self-center overflow-y-auto overflow-x-hidden xl:flex">
+            <div className="flex h-auto w-full flex-row-reverse flex-wrap justify-center self-center xl:flex">
               {contributors.map((contributor) => (
                 <div
                   key={contributor.name}
-                  className={`${styles.card} relative m-[1vh] flex h-[25vh] w-[25vh] flex-col justify-between rounded-lg bg-primary-foreground p-4 text-center`}
+                  className={`${styles.card} relative m-[1vh] flex min-h-[25vh] w-[25vh] flex-col justify-between rounded-lg bg-primary-foreground p-4 text-center`}
                 >
                   <div
                     className={`${styles["name-image"]} relative flex w-full items-center`}
@@ -58,13 +58,13 @@ const hall: React.FC = () => {
                       {contributor.name}
                     </h1>
                   </div>
-                  <h4 className="mt-4 select-none text-muted-foreground">
+                  <h4 className="mt-4 select-none text-sm text-muted-foreground">
                     {contributor.title}
                   </h4>
                   <h3 className="select-none text-muted-foreground">
                     {contributor.contribution}
                   </h3>
-                  <div className="relative flex w-full items-center justify-end overflow-visible">
+                  <div className="relative flex w-full items-center justify-end">
                     {contributor.linkedIn && (
                       <a href={contributor.linkedIn}>
                         <FontAwesomeIcon
