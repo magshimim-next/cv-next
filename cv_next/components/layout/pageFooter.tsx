@@ -62,14 +62,14 @@ const Footer: React.FC = () => {
           &copy; {new Date().getFullYear()} Magshimim Next. All rights reserved.
         </p>
       </div>
-      <div className="mt-1 shadow-md">
-        <div className="mb-2 flex justify-center">
-          <div className="mb-2 flex h-fit max-w-fit items-center justify-center rounded-md px-5 text-center text-xs opacity-50 hover:shadow-xl sm:text-left">
+      <div className="mt-1 rounded-md opacity-50 shadow-md">
+        <div className="mb-1 flex justify-center">
+          <div className="mb-1 flex h-fit max-w-fit items-center justify-center px-5 text-center text-xs hover:shadow-xl sm:text-left">
             {`Credit to our team: ${Credits.slice(0, -1).join(", ")} and ${Credits.slice(-1)}`}
           </div>
         </div>
-        <div className="flex justify-center rounded-md text-center text-xs opacity-50 hover:shadow-xl sm:text-left">
-          <span className="mb-2 text-xs opacity-75">
+        <div className="flex justify-center text-center text-xs hover:shadow-xl sm:text-left">
+          <span className="mb-2 text-xs ">
             {`Want to see more amazing people? Go to our `}
             <Link href="/hall" className="text-blue-500 hover:underline">
               &nbsp;Hall of Fame
