@@ -99,7 +99,7 @@ export const External_Credits = [
     avatar_url:
       "https://media.licdn.com/dms/image/v2/C4D03AQHAcHq94s1hnw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1646571585264?e=1740614400&v=beta&t=V6Dvr0Yh4tLkkjz4cvLYrstcuQse_cCOTki6pJIci8c",
     contribution:
-      "Insufficient Verification of Data Authenticity & CSRF Account Takeover",
+      "Insufficient Verification of Data Authenticity & CSRF Account Takeover.",
     linkedIn: "https://www.linkedin.com/in/theresearcher/",
     gitHub: "",
   },
