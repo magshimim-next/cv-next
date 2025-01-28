@@ -100,14 +100,17 @@ export const External_Credits = [
     contribution:
       "Insufficient Verification of Data Authenticity & CSRF Account Takeover",
     linkedIn: "https://www.linkedin.com/in/theresearcher/",
-    gitHub: "example.com",
+    gitHub: "",
   },
-  { name: "Youval Daizi", contribution: "Home button logged out users" },
+  {
+    name: "Youval Daizi",
+    contribution: "Home button caused users to log out.",
+  },
   {
     name: "Harel Kristal",
     title: "Penetration tester",
     contribution:
-      "Login and Signout were visible regardless of state & Developer's Data Leak",
+      "Login and Signout were always visible & Developer's data leak.",
     linkedIn: "https://www.linkedin.com/in/harel-kristal/",
   },
   // Add more contributors as needed
