@@ -77,25 +77,29 @@ export const Team_Credits = [
   "Alon Green",
   "Yarden Perets",
   "Omri Anidgar",
+  "Shoham Yosef Bitton",
 ];
 
 export const External_Credits = [
   {
     name: "Adam Abramov",
-    title: "Reverse Engineer",
+    title: "Tech Lead Reverse Engineer",
     avatar_url:
       "https://media.licdn.com/dms/image/v2/C4D03AQHAcHq94s1hnw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1646571585264?e=1740614400&v=beta&t=V6Dvr0Yh4tLkkjz4cvLYrstcuQse_cCOTki6pJIci8c",
     contribution:
-      "Insufficient Verification of Data Authenticity & CSRF Account Takeover",
+      "Insufficient Verification of Data Authenticity & CSRF Account Takeover.",
     linkedIn: "https://www.linkedin.com/in/theresearcher/",
-    gitHub: "example.com",
+    gitHub: "",
   },
-  { name: "Youval Daizi", contribution: "Home button logged out users" },
+  {
+    name: "Youval Daizi",
+    contribution: "Home button caused users to log out.",
+  },
   {
     name: "Harel Kristal",
-    title: "Penetration tester",
+    title: "Penetration Tester",
     contribution:
-      "Login and Signout were visible regardless of state & Developer's Data Leak",
+      "Login and Signout were always visible & Developer's data leak.",
     linkedIn: "https://www.linkedin.com/in/harel-kristal/",
   },
   // Add more contributors as needed
