@@ -43,7 +43,7 @@ export const checkUploadCV = async ({
   const transformedURL = transformGoogleViewOnlyUrl(cvData.link);
 
   if (transformedURL == "") {
-    logger.error("Couldn't transform the link", cvData.link);
+    logger.error("Couldn't transform the link %s", cvData.link);
     return "Regex invalid!";
   }
 
@@ -52,13 +52,13 @@ export const checkUploadCV = async ({
   });
 
   if (res.status !== 200) {
-    logger.error("Couldn't Find The CV", cvData.link);
+    logger.error("Couldn't Find The CV %s", cvData.link);
     return "Invalid URL for CV";
   }
 
   const cookieHeader = res.headers.get("set-cookie");
   if (!cookieHeader || !cookieHeader.includes("COMPASS")) {
-    logger.error("COMPASS cookie not found", cvData.link);
+    logger.error("COMPASS cookie not found %s", cvData.link);
     return "CV File is Private";
   }
 

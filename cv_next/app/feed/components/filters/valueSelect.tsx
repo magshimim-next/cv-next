@@ -10,6 +10,7 @@ export const DropdownInput = ({
   isApplyOptionVisible,
   noneText,
   selected,
+  exclude,
 }: {
   placeHolder: string;
   valueIds: number[];
@@ -20,6 +21,7 @@ export const DropdownInput = ({
   isApplyOptionVisible?: boolean;
   noneText: "all" | "none";
   selected?: number[] | null;
+  exclude?: number[];
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<number[]>(
@@ -39,20 +41,20 @@ export const DropdownInput = ({
   );
 
   const changeIsMenuOpen = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setIsMenuOpen((prev) => !prev);
   };
 
   const handleCheckboxChange = (categoryId: number) => {
+    if (JSON.stringify(valueId) !== JSON.stringify(selectedCategories)) {
+      setSelectedCategories(valueId || []);
+    }
     setSelectedCategories((prevSelectedIds) => {
       if (prevSelectedIds.includes(categoryId)) {
-        return prevSelectedIds.filter(
-          (selectedId) => selectedId !== categoryId
-        );
+        return prevSelectedIds.filter((id) => id !== categoryId);
       } else {
         return [...prevSelectedIds, categoryId];
       }
     });
-    setIsMenuOpen(true);
   };
 
   const handleAllSelection = () => {
@@ -68,9 +70,11 @@ export const DropdownInput = ({
   };
 
   useEffect(() => {
-    onChange(selectedCategories.length ? selectedCategories : null);
+    if (JSON.stringify(selectedCategories) !== JSON.stringify(valueId)) {
+      onChange(selectedCategories.length ? selectedCategories : null);
+    }
     setSelectTitle(selectedCategories.map(getValueById).join(", "));
-  }, [selectedCategories, onChange, setSelectTitle, getValueById]);
+  }, [selectedCategories, valueId, getValueById, onChange]);
 
   return (
     <>
@@ -92,24 +96,26 @@ export const DropdownInput = ({
           >
             {noneText}
           </div>
-          {valueIds.map((possibleValueId) => (
-            <label
-              key={possibleValueId}
-              className="flex h-8 w-full items-center justify-between bg-white text-black hover:bg-slate-200"
-              style={{ paddingLeft: "20px", paddingRight: "20px" }}
-              htmlFor={`checkbox-${possibleValueId}`}
-            >
-              <input
-                id={`checkbox-${possibleValueId}`}
-                type="checkbox"
-                checked={selectedCategories.includes(possibleValueId)}
-                onChange={() => {
-                  handleCheckboxChange(possibleValueId);
-                }}
-              />
-              {`${getValueById(possibleValueId)}`}
-            </label>
-          ))}
+          {valueIds
+            .filter((item) => !exclude?.includes(item))
+            .map((possibleValueId) => (
+              <label
+                key={possibleValueId}
+                className="flex h-8 w-full items-center justify-between bg-white text-black hover:bg-slate-200"
+                style={{ paddingLeft: "20px", paddingRight: "20px" }}
+                htmlFor={`checkbox-${possibleValueId}`}
+              >
+                <input
+                  id={`checkbox-${possibleValueId}`}
+                  type="checkbox"
+                  checked={selectedCategories.includes(possibleValueId)}
+                  onChange={() => {
+                    handleCheckboxChange(possibleValueId);
+                  }}
+                />
+                {`${getValueById(possibleValueId)}`}
+              </label>
+            ))}
           {isApplyOptionVisible && (
             <div
               className="flex h-10 w-full items-center justify-center bg-white text-black hover:bg-slate-200"

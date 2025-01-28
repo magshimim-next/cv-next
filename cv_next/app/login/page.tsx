@@ -1,12 +1,12 @@
 "use client";
 import { Suspense } from "react";
-import Login from "./components/login";
+import { LoginLayout } from "./components/loginLayout";
 
 export default function Page() {
   return (
     <main>
       <Suspense fallback={<div>Loading...</div>}>
-        <Login />
+        <LoginLayout />
       </Suspense>
     </main>
   );
