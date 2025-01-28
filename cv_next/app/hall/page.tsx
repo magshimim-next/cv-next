@@ -1,19 +1,24 @@
+"use client";
+
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLinkedinIn, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
 import { External_Credits as contributors } from "@/lib/definitions";
+import useWindowSize from "@/hooks/useWindowSize";
 import styles from "./styles.module.css";
 
 const startsCount = 15;
 
-const hall: React.FC = () => {
+export default function Page() {
+  const { scrollHeight } = useWindowSize();
+
   return (
     <>
       <title>Hall of fame</title>
-      {/* stars background */}
       <ul
-        className={`${styles.crowns} absolute left-0 top-0 z-[-1] h-full w-full overflow-hidden`}
+        style={{ height: scrollHeight }}
+        className={`${styles.crowns} absolute left-0 top-0 z-[-1] w-full overflow-hidden`}
       >
         {Array.from({ length: startsCount }).map((_, index) => (
           <li key={index} className={styles["crowns li"]}></li>
@@ -90,6 +95,4 @@ const hall: React.FC = () => {
       </div>
     </>
   );
-};
-
-export default hall;
+}
