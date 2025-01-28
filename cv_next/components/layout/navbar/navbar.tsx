@@ -5,6 +5,7 @@ import { Upload } from "lucide-react";
 import Image from "next/image";
 import logo from "@/public/images/logo.png";
 import { ModeToggle } from "@/components/layout/navbar/modeToggle";
+import Tooltip from "@/components/ui/tooltip";
 import { PopupToggle } from "./popupToggle";
 
 export default function Navbar() {
@@ -40,8 +41,7 @@ export default function Navbar() {
                   <Image
                     src={logo}
                     alt="Logo"
-                    layout="fill"
-                    objectFit="contain"
+                    className="h-full w-full object-contain"
                   />
                 </div>
                 <span className="text-2xl font-bold leading-none text-white">
@@ -55,10 +55,17 @@ export default function Navbar() {
             <div className="flex items-center space-x-4">
               <div className="z-50 hidden space-x-4 md:flex">
                 <Link className="py-2 text-lg leading-6" href="/upload">
-                  <Upload />
+                  <Tooltip
+                    id="Upload Icon"
+                    message="Upload CV"
+                    styleCSS="whitespace-nowrap"
+                  >
+                    <Upload />
+                  </Tooltip>
                 </Link>
                 <PopupToggle />
               </div>
+
               <button
                 ref={buttonRef}
                 className="text-white focus:outline-none md:hidden"

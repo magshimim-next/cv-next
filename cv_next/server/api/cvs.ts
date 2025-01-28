@@ -47,6 +47,7 @@ export async function getCvById(cvId: string): Promise<CvModel | null> {
  * @param {string} userId - The user ID
  * @param {boolean} filterOutDeleted - Whether to filter out deleted CVs (default true)
  * @return {Promise<CvModel[] | null>} The retrieved CVs or null if an error occurs
+ * The user_id of the retrieved CVs is a json of the user_id, display_name of that user and it's username
  */
 export async function getCvsByUserId(
   userId: string,
@@ -56,7 +57,9 @@ export async function getCvsByUserId(
     const supabase = SupabaseHelper.getSupabaseInstance();
     let query = supabase
       .from(Tables.cvs)
-      .select("*")
+      .select(
+        `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username})`
+      )
       .eq(CvKeys.user_id, userId);
 
     if (filterOutDeleted) {
@@ -82,6 +85,7 @@ export async function getCvsByUserId(
  * @param {boolean} filterOutDeleted - Indicates whether deleted CVs should be filtered out.
  * @param {number} page - The page number for pagination.
  * @return {Promise<CvModel[] | null>} A Promise that resolves with an array of CvModel or null.
+ * The user_id of the retrieved CVs is a json of the user_id, display_name of that user and it's username
  */
 export async function getPaginatedCvs(
   filterOutDeleted: boolean = true,
@@ -97,7 +101,9 @@ export async function getPaginatedCvs(
     const supabase = SupabaseHelper.getSupabaseInstance();
     let query = supabase
       .from(Tables.cvs)
-      .select("*")
+      .select(
+        `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username})`
+      )
       .order(CvKeys.created_at, { ascending: false })
       .eq(CvKeys.deleted, !filterOutDeleted)
       .range(from, to - 1);

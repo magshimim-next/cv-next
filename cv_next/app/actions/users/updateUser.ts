@@ -6,6 +6,7 @@ import {
   setWorkCategories,
   setDisplayName,
   updateUser,
+  setFirstLogin,
 } from "@/server/api/users";
 import { Err } from "@/lib/utils";
 import { logErrorWithTrace } from "@/server/base/logger";
@@ -105,5 +106,22 @@ export const setNewDisplayName = async (
   } else {
     logErrorWithTrace(result);
     return Err("Couldn't update the display name", result.errors);
+  }
+};
+
+/**
+ * Updates the first login status of a user.
+ * @param {boolean} firstLogin - The new first login status
+ * @return {Promise<Result<void, string>>} A Promise with the result of the operation.
+ */
+export const setFirstLoginCurrent = async (
+  firstLogin: boolean
+): Promise<Result<void, string>> => {
+  const result = await setFirstLogin(firstLogin);
+  if (result.ok) {
+    return result;
+  } else {
+    logErrorWithTrace(result);
+    return Err("First Login: Couldn't update", result.errors);
   }
 };

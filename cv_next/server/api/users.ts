@@ -3,6 +3,8 @@ import "server-only";
 import crypto from "crypto";
 import { Ok, Err } from "@/lib/utils";
 import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
+import { checkUsername } from "@/helpers/usernameRegexHelper";
+import logger from "../base/logger";
 import SupabaseHelper from "./supabaseHelper";
 
 export async function getUserById(
@@ -174,6 +176,12 @@ export async function setUserName(
   userId: string,
   newUserName: string
 ): Promise<Result<void, string>> {
+  if (!checkUsername(newUserName)) {
+    return Err(
+      `${setUserName.name} New username should match the requested format`
+    );
+  }
+
   try {
     const { error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.profiles)
@@ -312,9 +320,9 @@ export async function userIsAdmin(): Promise<Result<void, string>> {
 /**
  * check if the username is valid and generate one if it's not
  *
- * @returns {Promise<Result<Boolean, String>} whether the username is valid and was generated or not
+ * @returns {Promise<Result<String, String>} return the username or an error message
  */
-export async function validateUsername(): Promise<Result<Boolean, String>> {
+export async function validateUsername(): Promise<Result<String, String>> {
   const id = await getCurrentId();
 
   if (!id.ok || !id.val) {
@@ -331,13 +339,13 @@ export async function validateUsername(): Promise<Result<Boolean, String>> {
     return Err(validateUsername.name, { postgrestError: error });
   }
 
-  let isGenerated = false;
+  let username = user.username ?? "";
   if (user.username === null || user.username === "") {
     const usernameResult = await generateUsername(user as UserModel);
     if (usernameResult.ok && usernameResult.val) {
       //only update the user object if the username was successfully set
       user.username = usernameResult.val;
-      isGenerated = true;
+      username = usernameResult.val;
 
       const res = await setFirstLogin(true);
       if (!res.ok) {
@@ -346,7 +354,7 @@ export async function validateUsername(): Promise<Result<Boolean, String>> {
     }
   }
 
-  return Ok(isGenerated);
+  return Ok(username);
 }
 
 /**
@@ -401,6 +409,30 @@ export async function setFirstLogin(
     return Ok.EMPTY;
   } catch (err) {
     return Err(setFirstLogin.name, {
+      err: err as Error,
+    });
+  }
+}
+
+export async function isCurrentFirstLogin(): Promise<Result<Boolean, string>> {
+  try {
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
+
+    if (error) {
+      return Err(setFirstLogin.name, { authError: error });
+    } else if (!user) {
+      return Err(setFirstLogin.name, { err: Error("User object is empty") });
+    }
+
+    const metadata = user.user_metadata;
+    logger.info(`isCurrentFirstLogin ${metadata.is_first_login}`);
+    return Ok(metadata.is_first_login);
+  } catch (err) {
+    return Err(isCurrentFirstLogin.name, {
       err: err as Error,
     });
   }

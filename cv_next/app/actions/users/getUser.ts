@@ -1,7 +1,11 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { getUserById, getUserByUsername } from "@/server/api/users";
+import {
+  getUserById,
+  getUserByUsername,
+  isCurrentFirstLogin,
+} from "@/server/api/users";
 import { Err } from "@/lib/utils";
 import logger, { logErrorWithTrace } from "@/server/base/logger";
 import SupabaseHelper from "@/server/api/supabaseHelper";
@@ -44,6 +48,18 @@ export const getUser = async (): Promise<Result<UserModel, string>> => {
     }
   }
   const result = await getUserById(userSession.data.user.id);
+  if (result.ok) {
+    return result;
+  } else {
+    logErrorWithTrace(result);
+    return Err(
+      "An error has occurred while fetching the user data. Please try again later."
+    );
+  }
+};
+
+export const getFirstTimeLogin = async (): Promise<Result<Boolean, string>> => {
+  const result = await isCurrentFirstLogin();
   if (result.ok) {
     return result;
   } else {

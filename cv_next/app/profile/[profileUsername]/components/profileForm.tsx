@@ -11,7 +11,7 @@ import { updateUserAction } from "@/app/actions/users/updateUser";
 import { ProfileKeys } from "@/lib/supabase-definitions";
 
 type FormValues = {
-  username: string;
+  displsy_name: string;
   workCategories: number[];
   workStatus: keyof typeof ProfileKeys.work_status;
 };
@@ -47,14 +47,13 @@ export default function ProfileForm({
   }
 
   const handleOnSubmit: SubmitHandler<FormValues> = async (data) => {
-    const { username, workCategories, workStatus } = data;
+    const { displsy_name, workCategories, workStatus } = data;
     let userDataToUpdate: Partial<UserModel> = {
       id: user.id,
     };
     // Only update if the value has changed
-    if (username !== user.username) {
-      //TODO: username needs to be handled very differently!
-      userDataToUpdate.display_name = username;
+    if (displsy_name !== user.display_name) {
+      userDataToUpdate.display_name = displsy_name;
     }
     if (
       JSON.stringify(workCategories.toSorted()) !==
@@ -92,16 +91,16 @@ export default function ProfileForm({
     <form onSubmit={handleSubmit(handleOnSubmit)}>
       <div className="flex flex-wrap justify-between">
         <label className="font-bold" htmlFor="username">
-          display name:{" "}
+          Display Name:{" "}
         </label>
         <input
           className="w-full"
           id="username"
-          {...register("username", { required: "Username is required" })}
+          {...register("displsy_name", { required: "Username is required" })}
           defaultValue={user.display_name ?? ""}
         />
-        {errors.username && (
-          <FormErrorMessage message={errors.username.message} />
+        {errors.displsy_name && (
+          <FormErrorMessage message={errors.displsy_name.message} />
         )}
       </div>
 
