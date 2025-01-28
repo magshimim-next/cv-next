@@ -46,7 +46,9 @@ export default function Navbar() {
                 <PopupToggle />
               </div>
 
-              <PopupToggle />
+              <div className="flex md:hidden">
+                <PopupToggle />
+              </div>
             </div>
           </nav>
         </div>
