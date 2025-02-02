@@ -5,11 +5,7 @@ import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { useUser } from "@/hooks/useUser";
 import Popup from "./popup";
 
-interface PopupToggleProps {
-  closeHamburger?: () => void;
-}
-
-export function PopupToggle({ closeHamburger }: PopupToggleProps) {
+export function PopupToggle() {
   const { userData } = useUser();
 
   const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
@@ -36,9 +32,6 @@ export function PopupToggle({ closeHamburger }: PopupToggleProps) {
         <Popup
           closeCb={() => {
             setIsProfilePopupOpen(false);
-            if (closeHamburger) {
-              closeHamburger();
-            }
           }}
         ></Popup>
       )}

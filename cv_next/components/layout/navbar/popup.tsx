@@ -18,11 +18,6 @@ const navLinks = [
     req_login: true,
   },
   {
-    route: "Hall of Fame",
-    path: "/hall",
-    req_login: true,
-  },
-  {
     route: "Signout",
     path: "/signout",
     req_login: true,
@@ -41,7 +36,7 @@ const UserDataComponent: React.FC<{
     <div className="mt-10 flex w-full flex-col items-center">
       {userData ? (
         <div className="flex w-full flex-col items-center">
-          <div style={{ marginBottom: "10px" }}>
+          <div className="mb-4">
             <DynamicProfileImage
               isPlaceholder={userData.avatar_url ? false : true}
             >
@@ -50,7 +45,7 @@ const UserDataComponent: React.FC<{
                 src={userData?.avatar_url || ""}
                 width={30}
                 height={30 * 1.4142}
-                className="w-20 rounded-lg p-2"
+                className="w-20"
               ></Image>
             </DynamicProfileImage>
           </div>

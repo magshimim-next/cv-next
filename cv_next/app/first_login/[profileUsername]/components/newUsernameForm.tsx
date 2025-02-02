@@ -88,8 +88,11 @@ export const NewUsernameForm = ({ user }: { user: UserModel }) => {
           {!validUsername && (
             <div className="flex items-center justify-center space-x-4 font-bold text-destructive">
               <Tooltip
-                message="Use at least one alphanumeric (0-9 a-z A-Z) and special characters ( _ .) and should be between 1-20 characters long"
+                message={
+                  "Use at least one alphanumeric (0-9 a-z A-Z)\nSpecial characters ( _ .)\nShould be between 1-20 characters long"
+                }
                 id="firstTime"
+                styleCSS="whitespace-pre"
               >
                 <div className="mr-2">
                   <FaQuestionCircle />
