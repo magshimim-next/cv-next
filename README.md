@@ -5,7 +5,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-black?logo=next.js&logoColor=white)](#)
 [![Google Drive](https://img.shields.io/badge/Google%20Drive-4285F4?logo=googledrive&logoColor=fff)](#)
 [![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?logo=supabase&logoColor=fff)](#)
-[![AWS](https://img.shields.io/badge/AWS%20Amplify-FF9900?&logo=aws-amplify&logoColor=white)](#)
+[![AWS Amplify](https://img.shields.io/badge/AWS%20Amplify-FF9900?&logo=aws-amplify&logoColor=white)](#)
 
 A (not so) simple CV upload and peer review system.
 
