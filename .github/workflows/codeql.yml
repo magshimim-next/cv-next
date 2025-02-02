@@ -3,11 +3,10 @@ name: CodeQL
 on:
   push:
     branches:
-      - develop
       - main
   pull_request:
     branches:
-      - develop
+      - main
   schedule:
     - cron: 34 12 * * 5
 jobs:
