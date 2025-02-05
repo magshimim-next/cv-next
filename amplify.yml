@@ -5,7 +5,6 @@ applications:
       phases:
         preBuild:
           commands:
-            - "echo UPDATED"
             - "npm ci"
         build:
           commands:
