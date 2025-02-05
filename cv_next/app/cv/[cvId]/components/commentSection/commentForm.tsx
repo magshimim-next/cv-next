@@ -23,7 +23,7 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
     // Reset the form after submission and check if the comment is empty
     formRef.current?.reset();
     if ((formData.get(COMMENT_FIELD_NAME) as String).length <= 0) return;
-
+    setText("");
     const userId = await supabase.auth.getUser();
     if (userId.error) {
       router.push(`/${Definitions.LOGIN_REDIRECT}?next=${pathname}`);
