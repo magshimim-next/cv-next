@@ -11,9 +11,26 @@ import CommentsSection from "./components/commentSection/commentsSection";
 import CommentForm from "./components/commentSection/commentForm";
 import CvData from "./components/cvData";
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { cvId: string };
+}): Promise<Metadata> {
+  const { cvId } = params;
+  const decodedCvId = decodeValue(decodeURIComponent(cvId));
+  if (!decodedCvId) {
+    notFound();
+  }
+  const cv = await getCvById(decodedCvId);
+
+  if (cv === null) {
+    notFound();
+  }
+
+  const authorData = JSON.parse(JSON.stringify(cv.user_id));
+
   return {
-    title: "CV Page",
+    title: "CV of " + authorData.display_name,
   };
 }
 
