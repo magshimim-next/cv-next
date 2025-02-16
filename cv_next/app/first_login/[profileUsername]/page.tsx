@@ -1,9 +1,16 @@
 "use server";
 
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import { getUserModel } from "@/app/actions/users/getUser";
 import { NewUsernameForm } from "@/app/first_login/[profileUsername]/components/newUsernameForm";
 import { getCurrentId, isCurrentFirstLogin } from "@/server/api/users";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "First Login",
+  };
+}
 
 export default async function Page({
   params,
