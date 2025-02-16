@@ -42,7 +42,6 @@ export default async function Page({ params }: { params: { cvId: string } }) {
 
   return (
     <div>
-      <title>CV of {authorData.display_name}</title>
       <ScrollToTop />
       <CvData
         cv={cv}
