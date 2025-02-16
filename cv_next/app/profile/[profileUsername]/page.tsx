@@ -2,11 +2,18 @@
 
 import { notFound } from "next/navigation";
 import { unstable_cache, revalidateTag } from "next/cache";
+import { Metadata } from "next";
 import { getUserModel } from "@/app/actions/users/getUser";
 import { getCvsByUserId } from "@/server/api/cvs";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
 import ProfileData from "./components/profileData";
 import ProfileCvs from "./components/profileCvs";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Profile Page",
+  };
+}
 
 export default async function Page({
   params,

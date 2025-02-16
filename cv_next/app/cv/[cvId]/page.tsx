@@ -1,6 +1,7 @@
 "use server";
 
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import { getCvById } from "@/server/api/cvs";
 import { decodeValue } from "@/lib/utils";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
@@ -9,6 +10,12 @@ import { getCurrentId } from "@/server/api/users";
 import CommentsSection from "./components/commentSection/commentsSection";
 import CommentForm from "./components/commentSection/commentForm";
 import CvData from "./components/cvData";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "CV Page",
+  };
+}
 
 export default async function Page({ params }: { params: { cvId: string } }) {
   const { cvId } = params;
@@ -35,6 +42,7 @@ export default async function Page({ params }: { params: { cvId: string } }) {
 
   return (
     <div>
+      <title>CV of {authorData.display_name}</title>
       <ScrollToTop />
       <CvData
         cv={cv}
