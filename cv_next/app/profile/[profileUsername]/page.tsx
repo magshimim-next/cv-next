@@ -9,9 +9,30 @@ import { ScrollToTop } from "@/components/ui/scrollToTop";
 import ProfileData from "./components/profileData";
 import ProfileCvs from "./components/profileCvs";
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { profileUsername: string };
+}): Promise<Metadata> {
+  const { profileUsername } = params;
+  const cleanUsername = decodeURIComponent(profileUsername);
+  const userFetcher = await getUserModel(cleanUsername);
+
+  revalidateTag("user-" + cleanUsername);
+
+  const getCachedUser = unstable_cache(
+    async () => await userFetcher,
+    [cleanUsername],
+    { tags: ["user-" + cleanUsername] }
+  );
+
+  const result = await getCachedUser();
+
+  if (result === null || !result.ok) {
+    notFound();
+  }
   return {
-    title: "Profile Page",
+    title: result.val.display_name,
   };
 }
 
