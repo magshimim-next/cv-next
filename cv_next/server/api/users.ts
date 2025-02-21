@@ -2,9 +2,9 @@ import "server-only";
 
 import crypto from "crypto";
 import { Ok, Err } from "@/lib/utils";
-import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
+import { Tables, ProfileKeys, PermsKeys } from "@/lib/supabase-definitions";
 import { checkUsername } from "@/helpers/usernameRegexHelper";
-import logger from "../base/logger";
+import logger from "@/server/base/logger";
 import SupabaseHelper from "./supabaseHelper";
 
 export async function getUserById(
@@ -384,7 +384,7 @@ export async function setDisplayName(
   }
 }
 
-/*
+/**
  * Set the first login status of the current user.
  *
  * @param {boolean} isFirstLogin - first login status.
@@ -433,6 +433,39 @@ export async function isCurrentFirstLogin(): Promise<Result<Boolean, string>> {
     return Ok(metadata.is_first_login);
   } catch (err) {
     return Err(isCurrentFirstLogin.name, {
+      err: err as Error,
+    });
+  }
+}
+
+/**
+ * Returns all users with their minimal data and permissions.
+ *
+ * @param {string} userId - Requested permission.
+ * @return {Promise<Result<Partial<UserModel>[], string>>} A promise that resolves with an array of partial user models or rejects with an error message.
+ */
+export async function getAllUsers(): Promise<
+  Result<Partial<UserModel>[], string>
+> {
+  try {
+    const supabase = SupabaseHelper.getSupabaseInstance();
+    let query = supabase
+      .from(Tables.profiles_perms)
+      .select(
+        `*, ${PermsKeys.id}(${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
+      );
+
+    if (true) {
+      query = query.eq(PermsKeys.user_type, "active");
+    }
+    const { data: users, error } = await query;
+
+    if (error) {
+      return Err(getAllUsers.name, { postgrestError: error });
+    }
+    return Ok(users as Partial<UserModel>[]);
+  } catch (err) {
+    return Err(getAllUsers.name, {
       err: err as Error,
     });
   }
