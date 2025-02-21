@@ -48,4 +48,6 @@ declare global {
     image: string;
     UILocation: UILocation;
   };
+
+  type UserWithPerms = UserModel & { user_type: string };
 }
