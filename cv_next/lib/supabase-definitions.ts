@@ -4,12 +4,14 @@ export const Tables: {
   profiles: "profiles";
   whitelisted: "whitelisted";
   admins: "admins";
+  profiles_perms: "profiles_perms";
 } = {
   cvs: "cvs",
   comments: "comments",
   profiles: "profiles",
   whitelisted: "whitelisted",
   admins: "admins",
+  profiles_perms: "profiles_perms",
 };
 
 export const CvKeys: {
@@ -43,11 +45,6 @@ export const ProfileKeys: {
     hiring: "hiring";
     nothing: "nothing";
   };
-  user_types: {
-    inactive: "inactive";
-    active: "active";
-    admin: "admin";
-  };
 } = {
   avatar_url: "avatar_url",
   display_name: "display_name",
@@ -58,11 +55,6 @@ export const ProfileKeys: {
     open_to_work: "open to work",
     hiring: "hiring",
     nothing: "nothing",
-  },
-  user_types: {
-    inactive: "inactive",
-    active: "active",
-    admin: "admin",
   },
 };
 
@@ -86,6 +78,24 @@ export const CommentKeys: {
   id: "id",
   resolved: "resolved",
   user_id: "user_id",
+};
+
+export const PermsKeys: {
+  id: "id";
+  user_type: "user_type";
+  user_types: {
+    inactive: "inactive";
+    active: "active";
+    admin: "admin";
+  };
+} = {
+  id: "id",
+  user_type: "user_type",
+  user_types: {
+    inactive: "inactive",
+    active: "active",
+    admin: "admin",
+  },
 };
 
 export const Storage: {
