@@ -83,7 +83,7 @@ export const CommentKeys: {
 export const PermsKeys: {
   id: "id";
   user_type: "user_type";
-  user_types: {
+  user_types_enum: {
     inactive: "inactive";
     active: "active";
     admin: "admin";
@@ -91,7 +91,7 @@ export const PermsKeys: {
 } = {
   id: "id",
   user_type: "user_type",
-  user_types: {
+  user_types_enum: {
     inactive: "inactive",
     active: "active",
     admin: "admin",
