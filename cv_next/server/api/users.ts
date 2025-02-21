@@ -1,6 +1,7 @@
 import "server-only";
 
 import crypto from "crypto";
+import { QueryData } from "@supabase/supabase-js";
 import { Ok, Err } from "@/lib/utils";
 import { Tables, ProfileKeys, PermsKeys } from "@/lib/supabase-definitions";
 import { checkUsername } from "@/helpers/usernameRegexHelper";
@@ -441,29 +442,41 @@ export async function isCurrentFirstLogin(): Promise<Result<Boolean, string>> {
 /**
  * Returns all users with their minimal data and permissions.
  *
- * @param {string} userId - Requested permission.
- * @return {Promise<Result<Partial<UserModel>[], string>>} A promise that resolves with an array of partial user models or rejects with an error message.
+ * @param {string} user_type - Requested permission.
+ * @return {Promise<Result<Partial<UserWithPerms>[], string>>} A promise that resolves with an array of partial user models or rejects with an error message.
  */
-export async function getAllUsers(): Promise<
-  Result<Partial<UserModel>[], string>
-> {
+export async function getAllUsers(
+  user_type?: string
+): Promise<Result<Partial<UserWithPerms>[], string>> {
   try {
     const supabase = SupabaseHelper.getSupabaseInstance();
     let query = supabase
       .from(Tables.profiles_perms)
       .select(
-        `*, ${PermsKeys.id}(${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
+        `*, ${Tables.profiles}(${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
       );
 
-    if (true) {
-      query = query.eq(PermsKeys.user_type, "active");
+    type PermissionsWithUserData = QueryData<typeof query>;
+
+    if (user_type) {
+      query = query.eq(PermsKeys.user_type, user_type);
     }
     const { data: users, error } = await query;
 
     if (error) {
       return Err(getAllUsers.name, { postgrestError: error });
     }
-    return Ok(users as Partial<UserModel>[]);
+    const usersWithPerms: PermissionsWithUserData = users;
+
+    const transformedData = usersWithPerms.map((entry) => ({
+      id: entry.id,
+      username: entry.profiles?.username,
+      avatar_url: entry.profiles?.avatar_url,
+      display_name: entry.profiles?.display_name,
+      user_type: entry.user_type,
+    }));
+
+    return Ok(transformedData as Partial<UserWithPerms>[]);
   } catch (err) {
     return Err(getAllUsers.name, {
       err: err as Error,
