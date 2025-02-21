@@ -454,7 +454,8 @@ export async function getAllUsers(
       .from(Tables.profiles_perms)
       .select(
         `*, ${Tables.profiles}(${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
-      );
+      )
+      .order(PermsKeys.user_type, { ascending: true });
 
     type PermissionsWithUserData = QueryData<typeof query>;
 
