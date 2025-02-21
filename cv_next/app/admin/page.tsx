@@ -1,6 +1,13 @@
 "use server";
 import Image from "next/image";
+import { Metadata } from "next";
 import { getAllUsers } from "@/server/api/users";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Admin Panel",
+  };
+}
 
 export default async function Page() {
   const users = await getAllUsers();
@@ -8,7 +15,7 @@ export default async function Page() {
     return (
       <div className="mx-auto mt-10 ">
         <h1 className="mb-6 text-center text-2xl font-semibold">
-          User Profiles
+          Admin Panel - User Approvals
         </h1>
 
         <div className="w-full rounded-lg shadow-md">
