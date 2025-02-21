@@ -42,9 +42,9 @@ export default async function Page() {
                         <Image
                           src={profile.avatar_url}
                           alt={profile.display_name || ""}
-                          layout="fill"
-                          objectFit="cover"
-                          className="rounded-full border"
+                          width={125}
+                          height={75}
+                          className="h-full w-full rounded-full border object-contain"
                         />
                       </div>
                     </td>
