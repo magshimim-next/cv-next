@@ -16,14 +16,13 @@ export default async function Page() {
             <thead className="bg-gray-100 dark:bg-gray-900">
               <tr className=" text-sm uppercase text-gray-700 dark:text-gray-300">
                 <th className="whitespace-nowrap border p-4">ID</th>
-                <th className="whitespace-nowrap border p-4">Username</th>
                 <th className="whitespace-nowrap border p-4">Display Name</th>
+                <th className="whitespace-nowrap border p-4">Username</th>
                 <th className="whitespace-nowrap border p-4">Avatar</th>
                 <th className="whitespace-nowrap border p-4">User Type</th>
               </tr>
             </thead>
 
-            {/* Table Body */}
             <tbody>
               {users.val.map((profile) => (
                 <tr key={profile.id}>
@@ -31,10 +30,10 @@ export default async function Page() {
                     {profile.id}
                   </td>
                   <td className="whitespace-nowrap border p-4 font-medium">
-                    {profile.username}
-                  </td>
-                  <td className="whitespace-nowrap border p-4">
                     {profile.display_name}
+                  </td>
+                  <td className="whitespace-nowrap border p-4 ">
+                    {profile.username}
                   </td>
                   {profile.avatar_url ? (
                     <td className="border p-4 text-center">
