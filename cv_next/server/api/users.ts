@@ -493,6 +493,13 @@ export async function getAllUsers(
 export const updateUserPerms = async (
   user: Partial<UserWithPerms>
 ): Promise<Result<void, string>> => {
+  const resultAdminCheck = await userIsAdmin();
+  if (!resultAdminCheck.ok) {
+    return Err(updateUserPerms.name, {
+      err: "You are not an admin" as unknown as Error,
+    });
+  }
+
   if (user?.id === undefined || user?.user_type === undefined) {
     return Err(updateUserPerms.name, {
       err: Error("User ID or Permissions aren't undefined"),
