@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PermsKeys } from "@/lib/supabase-definitions";
 import { useError } from "@/providers/error-provider";
 import { Visible_Error_Messages } from "@/lib/definitions";
+import { updatePerms } from "@/app/actions/users/updateUser";
 
 type FormValues = {
   perms: keyof typeof PermsKeys.user_types_enum;
@@ -32,7 +33,16 @@ export const PermsDropDown = ({
       return;
     }
     setNewPerms(data.perms);
-    console.log(data);
+    const resp = await updatePerms(userId, data.perms);
+    if (!resp.ok) {
+      showError(
+        "",
+        resp.errors.postgrestError?.message ||
+          resp.errors.authError?.message ||
+          resp.errors.err?.message ||
+          "Unknown error"
+      );
+    }
   };
 
   return (
