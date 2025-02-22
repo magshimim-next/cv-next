@@ -1,5 +1,6 @@
 "use server";
 import Image from "next/image";
+import Link from "next/link";
 import { PermsDropDown } from "./permsDropDown";
 
 export const ProfilesTable = ({
@@ -30,7 +31,12 @@ export const ProfilesTable = ({
                 {profile.display_name}
               </td>
               <td className="whitespace-nowrap border p-4 ">
-                {profile.username}
+                <Link
+                  className=" hover:underline"
+                  href={`/profile/${profile.username}`}
+                >
+                  {profile.username}
+                </Link>
               </td>
               {profile.avatar_url ? (
                 <td className="border p-4 text-center">
