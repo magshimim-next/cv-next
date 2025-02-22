@@ -7,6 +7,7 @@ import {
   setDisplayName,
   updateUser,
   setFirstLogin,
+  updateUserPerms,
 } from "@/server/api/users";
 import { Err } from "@/lib/utils";
 import { logErrorWithTrace } from "@/server/base/logger";
@@ -123,5 +124,24 @@ export const setFirstLoginCurrent = async (
   } else {
     logErrorWithTrace(result);
     return Err("First Login: Couldn't update", result.errors);
+  }
+};
+
+/**
+ * Updates the type of a user.
+ * @param {string} userId - The ID of the user to update
+ * @param {string} newPerms - The new perms
+ * @return {Promise<Result<void, string>>} A Promise with the result of the operation.
+ */
+export const updatePerms = async (
+  userId: string,
+  newPerms: string
+): Promise<Result<void, string>> => {
+  const result = await updateUserPerms({ id: userId, user_type: newPerms });
+  if (result.ok) {
+    return result;
+  } else {
+    logErrorWithTrace(result);
+    return Err("Couldn't update perms.", result.errors);
   }
 };

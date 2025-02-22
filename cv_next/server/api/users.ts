@@ -487,8 +487,8 @@ export async function getAllUsers(
 
 /**
  * Updates the user_type of a given user id.
- * @param user The user object to update.
- * @returns A promise that resolves with void or rejects with an error message.
+ * @param {Partial<UserWithPerms>} user The user object to update.
+ * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
  */
 export const updateUserPerms = async (
   user: Partial<UserWithPerms>
