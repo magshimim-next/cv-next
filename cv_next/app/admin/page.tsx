@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { Metadata } from "next";
 import { getAllUsers } from "@/server/api/users";
+import { PermsDropDown } from "./components/permsDropDown";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -58,7 +59,7 @@ export default async function Page() {
                     <td />
                   )}
                   <td className="whitespace-nowrap border p-4">
-                    <span
+                    {/* <span
                       className="rounded-full px-3 py-1 text-sm font-medium"
                       style={{
                         backgroundColor:
@@ -70,7 +71,11 @@ export default async function Page() {
                       }}
                     >
                       {profile.user_type}
-                    </span>
+                    </span> */}
+                    <PermsDropDown
+                      userId={profile.id || ""}
+                      currentPerms={profile.user_type || ""}
+                    />
                   </td>
                 </tr>
               ))}
