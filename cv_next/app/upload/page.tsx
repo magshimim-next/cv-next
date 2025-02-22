@@ -47,6 +47,7 @@ export default function Page() {
 
   return (
     <main className="flex flex-col items-center justify-center p-6 py-10">
+      <title>Upload CV</title>
       <h1 className="mb-8 text-3xl font-bold">Upload CV</h1>
       <form
         className="flex w-full max-w-lg flex-col space-y-8"

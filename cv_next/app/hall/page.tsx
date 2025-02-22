@@ -15,7 +15,7 @@ export default function Page() {
 
   return (
     <>
-      <title>Hall of fame</title>
+      <title>Hall of Fame</title>
       <ul
         style={{ height: scrollHeight ? `${scrollHeight}px` : `${height}px` }}
         className={`${styles.crowns} absolute left-0 top-0 z-[-1] w-full overflow-hidden`}

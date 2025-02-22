@@ -1,6 +1,7 @@
 "use server";
 
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import { getCvById } from "@/server/api/cvs";
 import { decodeValue } from "@/lib/utils";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
@@ -9,6 +10,29 @@ import { getCurrentId } from "@/server/api/users";
 import CommentsSection from "./components/commentSection/commentsSection";
 import CommentForm from "./components/commentSection/commentForm";
 import CvData from "./components/cvData";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { cvId: string };
+}): Promise<Metadata> {
+  const { cvId } = params;
+  const decodedCvId = decodeValue(decodeURIComponent(cvId));
+  if (!decodedCvId) {
+    notFound();
+  }
+  const cv = await getCvById(decodedCvId);
+
+  if (cv === null) {
+    notFound();
+  }
+
+  const authorData = JSON.parse(JSON.stringify(cv.user_id));
+
+  return {
+    title: "CV of " + authorData.display_name,
+  };
+}
 
 export default async function Page({ params }: { params: { cvId: string } }) {
   const { cvId } = params;
