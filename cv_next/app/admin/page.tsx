@@ -59,19 +59,6 @@ export default async function Page() {
                     <td />
                   )}
                   <td className="whitespace-nowrap border p-4">
-                    {/* <span
-                      className="rounded-full px-3 py-1 text-sm font-medium"
-                      style={{
-                        backgroundColor:
-                          profile.user_type === "inactive"
-                            ? "#EF4444"
-                            : profile.user_type === "admin"
-                              ? "#F59E0B"
-                              : "#10B981",
-                      }}
-                    >
-                      {profile.user_type}
-                    </span> */}
                     <PermsDropDown
                       userId={profile.id || ""}
                       currentPerms={profile.user_type || ""}
