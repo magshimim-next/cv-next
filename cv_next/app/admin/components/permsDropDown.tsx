@@ -24,7 +24,7 @@ export const PermsDropDown = ({
 
   return (
     <form onChange={handleSubmit(handleOnSubmit)}>
-      <div className="flex flex-wrap justify-between text-center">
+      <div className="flex flex-wrap justify-center text-center">
         <select
           id="perms"
           {...register("perms", { required: "Permission level is required" })}
