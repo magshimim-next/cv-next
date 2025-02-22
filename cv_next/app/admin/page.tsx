@@ -16,7 +16,7 @@ export default async function Page() {
   return (
     <div>
       <ScrollToTop />
-      <div className="mx-auto mt-10 ">
+      <div className="mx-auto mt-4">
         <h1 className="mb-6 text-center text-2xl font-semibold">Admin Panel</h1>
 
         {users.ok && <ProfilesTable profiles={users.val} />}
