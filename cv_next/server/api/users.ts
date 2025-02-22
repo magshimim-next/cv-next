@@ -484,3 +484,33 @@ export async function getAllUsers(
     });
   }
 }
+
+/**
+ * Updates the user_type of a given user id.
+ * @param user The user object to update.
+ * @returns A promise that resolves with void or rejects with an error message.
+ */
+export const updateUserPerms = async (
+  user: Partial<UserWithPerms>
+): Promise<Result<void, string>> => {
+  if (user?.id === undefined || user?.user_type === undefined) {
+    return Err(updateUserPerms.name, {
+      err: Error("User ID or Permissions aren't undefined"),
+    });
+  }
+  const { id, user_type } = user;
+  try {
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.profiles_perms)
+      .update({ user_type })
+      .eq(ProfileKeys.id, id);
+    if (error) {
+      return Err(updateUserPerms.name, { postgrestError: error });
+    }
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(updateUserPerms.name, {
+      err: err as Error,
+    });
+  }
+};
