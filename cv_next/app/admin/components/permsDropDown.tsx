@@ -15,10 +15,13 @@ export const PermsDropDown = ({
   currentPerms,
 }: {
   userId: string;
-  currentPerms: string;
+  currentPerms: keyof typeof PermsKeys.user_types_enum;
 }) => {
-  const [newPerms, setNewPerms] = useState<string>(currentPerms);
-  const { handleSubmit, register } = useForm<FormValues>({ mode: "onChange" });
+  const [newPerms, setNewPerms] =
+    useState<keyof typeof PermsKeys.user_types_enum>(currentPerms);
+  const { handleSubmit, register, reset } = useForm<FormValues>({
+    mode: "onChange",
+  });
   const { showError } = useError();
 
   const handleOnSubmit: SubmitHandler<FormValues> = async (data) => {
@@ -30,6 +33,7 @@ export const PermsDropDown = ({
         Visible_Error_Messages.UpdateAdminPerms.title,
         Visible_Error_Messages.UpdateAdminPerms.description
       );
+      reset({ perms: newPerms });
       return;
     }
     setNewPerms(data.perms);
@@ -50,7 +54,20 @@ export const PermsDropDown = ({
       <div className="flex flex-wrap justify-center text-center">
         <select
           id="perms"
-          {...register("perms", { required: "Permission level is required" })}
+          {...register("perms", {
+            required: "Permission level is required",
+            validate: (value) => {
+              if (value === "admin" || currentPerms === "admin") {
+                showError(
+                  Visible_Error_Messages.UpdateAdminPerms.title,
+                  Visible_Error_Messages.UpdateAdminPerms.description
+                );
+                reset({ perms: newPerms });
+                return false;
+              }
+              return true;
+            },
+          })}
           defaultValue={newPerms}
           className="rounded-full px-3 py-1 text-sm font-medium"
           style={{
