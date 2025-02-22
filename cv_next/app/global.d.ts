@@ -1,7 +1,7 @@
 import { PostgrestError, AuthError } from "@supabase/supabase-js";
 import { UI_Location } from "@/lib/definitions";
 import { Database as DB } from "@/types/database.types";
-
+import { PermsKeys } from "@/lib/supabase-definitions";
 declare global {
   type Database = DB;
   type CvModel = DB["public"]["Tables"]["cvs"]["Row"];
@@ -49,5 +49,5 @@ declare global {
     UILocation: UILocation;
   };
 
-  type UserWithPerms = UserModel & { user_type: string };
+  type UserWithPerms = UserModel & { user_type: PermsKeys.user_types_enum };
 }
