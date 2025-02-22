@@ -21,7 +21,10 @@ export const PermsDropDown = ({
   const { showError } = useError();
 
   const handleOnSubmit: SubmitHandler<FormValues> = async (data) => {
-    if (currentPerms === PermsKeys.user_types_enum.admin) {
+    if (
+      currentPerms === PermsKeys.user_types_enum.admin ||
+      data.perms === PermsKeys.user_types_enum.admin
+    ) {
       showError(
         Visible_Error_Messages.UpdateAdminPerms.title,
         Visible_Error_Messages.UpdateAdminPerms.description
