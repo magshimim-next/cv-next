@@ -525,3 +525,34 @@ export const updateUserPerms = async (
     });
   }
 };
+
+/**
+ * Activates all users.
+ * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ */
+export const activateAllUsers = async (): Promise<Result<void, string>> => {
+  const resultAdminCheck = await userIsAdmin();
+  if (!resultAdminCheck.ok) {
+    logger.error("None admin action detected.");
+    return Err(activateAllUsers.name, {
+      err: "You are not an admin" as unknown as Error,
+    });
+  }
+
+  try {
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.profiles_perms)
+      .update({ user_type: PermsKeys.user_types_enum.active })
+      .eq(PermsKeys.user_type, PermsKeys.user_types_enum.inactive);
+    if (error) {
+      logger.error("Failed to activate all users", error);
+      return Err(activateAllUsers.name, { postgrestError: error });
+    }
+    return Ok.EMPTY;
+  } catch (err) {
+    logger.error("Failed to activate all users", err);
+    return Err(activateAllUsers.name, {
+      err: err as Error,
+    });
+  }
+};
