@@ -465,6 +465,7 @@ export async function getAllUsers(
     const { data: users, error } = await query;
 
     if (error) {
+      logger.error("Failed to fetch all users", error);
       return Err(getAllUsers.name, { postgrestError: error });
     }
     const usersWithPerms: PermissionsWithUserData = users;
@@ -479,6 +480,7 @@ export async function getAllUsers(
 
     return Ok(transformedData as Partial<UserWithPerms>[]);
   } catch (err) {
+    logger.error("Failed to fetch all users", err);
     return Err(getAllUsers.name, {
       err: err as Error,
     });
@@ -495,6 +497,7 @@ export const updateUserPerms = async (
 ): Promise<Result<void, string>> => {
   const resultAdminCheck = await userIsAdmin();
   if (!resultAdminCheck.ok) {
+    logger.error("None admin action detected.");
     return Err(updateUserPerms.name, {
       err: "You are not an admin" as unknown as Error,
     });
@@ -512,6 +515,7 @@ export const updateUserPerms = async (
       .update({ user_type })
       .eq(ProfileKeys.id, id);
     if (error) {
+      logger.error("Failed to activate the user", error);
       return Err(updateUserPerms.name, { postgrestError: error });
     }
     return Ok.EMPTY;
