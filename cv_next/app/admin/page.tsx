@@ -1,7 +1,7 @@
 "use server";
 import { Metadata } from "next";
-import { getAllUsers } from "@/server/api/users";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
+import { getAllUsersPerms } from "@/app/actions/users/getUser";
 import { ProfilesTable } from "./components/profilesTable";
 import { QuickActions } from "./components/quickActions";
 
@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Page() {
-  const users = await getAllUsers();
+  const users = await getAllUsersPerms();
 
   return (
     <div>
