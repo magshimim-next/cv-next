@@ -31,12 +31,16 @@ export const ProfilesTable = ({
                 {profile.display_name}
               </td>
               <td className="whitespace-nowrap border p-4 ">
-                <Link
-                  className=" hover:underline"
-                  href={`/profile/${profile.username}`}
-                >
-                  {profile.username}
-                </Link>
+                {profile.username ? (
+                  <Link
+                    className=" hover:underline"
+                    href={`/profile/${profile.username}`}
+                  >
+                    {profile.username}
+                  </Link>
+                ) : (
+                  <span className="text-gray-400">No username</span>
+                )}
               </td>
               {profile.avatar_url ? (
                 <td className="border p-4 text-center">
