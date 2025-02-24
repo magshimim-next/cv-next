@@ -1,10 +1,11 @@
 import "server-only";
 
 import crypto from "crypto";
+import { QueryData } from "@supabase/supabase-js";
 import { Ok, Err } from "@/lib/utils";
-import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
+import { Tables, ProfileKeys, PermsKeys } from "@/lib/supabase-definitions";
 import { checkUsername } from "@/helpers/usernameRegexHelper";
-import logger from "../base/logger";
+import logger from "@/server/base/logger";
 import SupabaseHelper from "./supabaseHelper";
 
 export async function getUserById(
@@ -384,7 +385,7 @@ export async function setDisplayName(
   }
 }
 
-/*
+/**
  * Set the first login status of the current user.
  *
  * @param {boolean} isFirstLogin - first login status.
@@ -437,3 +438,121 @@ export async function isCurrentFirstLogin(): Promise<Result<Boolean, string>> {
     });
   }
 }
+
+/**
+ * Returns all users with their minimal data and permissions.
+ *
+ * @param {string} user_type - Requested permission.
+ * @return {Promise<Result<Partial<UserWithPerms>[], string>>} A promise that resolves with an array of partial user models or rejects with an error message.
+ */
+export async function getAllUsers(
+  user_type?: string
+): Promise<Result<Partial<UserWithPerms>[], string>> {
+  try {
+    const supabase = SupabaseHelper.getSupabaseInstance();
+    let query = supabase
+      .from(Tables.profiles_perms)
+      .select(
+        `*, ${Tables.profiles}(${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
+      )
+      .order(PermsKeys.user_type, { ascending: true });
+
+    type PermissionsWithUserData = QueryData<typeof query>;
+
+    if (user_type) {
+      query = query.eq(PermsKeys.user_type, user_type);
+    }
+    const { data: users, error } = await query;
+
+    if (error) {
+      logger.error("Failed to fetch all users", error);
+      return Err(getAllUsers.name, { postgrestError: error });
+    }
+    const usersWithPerms: PermissionsWithUserData = users;
+
+    const transformedData = usersWithPerms.map((entry) => ({
+      id: entry.id,
+      username: entry.profiles?.username,
+      avatar_url: entry.profiles?.avatar_url,
+      display_name: entry.profiles?.display_name,
+      user_type: entry.user_type,
+    }));
+
+    return Ok(transformedData as Partial<UserWithPerms>[]);
+  } catch (err) {
+    logger.error("Failed to fetch all users", err);
+    return Err(getAllUsers.name, {
+      err: err as Error,
+    });
+  }
+}
+
+/**
+ * Updates the user_type of a given user id.
+ * @param {Partial<UserWithPerms>} user The user object to update.
+ * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ */
+export const updateUserPerms = async (
+  user: Partial<UserWithPerms>
+): Promise<Result<void, string>> => {
+  const resultAdminCheck = await userIsAdmin();
+  if (!resultAdminCheck.ok) {
+    logger.error("None admin action detected.");
+    return Err(updateUserPerms.name, {
+      err: "You are not an admin" as unknown as Error,
+    });
+  }
+
+  if (user?.id === undefined || user?.user_type === undefined) {
+    return Err(updateUserPerms.name, {
+      err: Error("User ID or Permissions aren't undefined"),
+    });
+  }
+  const { id, user_type } = user;
+  try {
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.profiles_perms)
+      .update({ user_type })
+      .eq(ProfileKeys.id, id);
+    if (error) {
+      logger.error("Failed to activate the user", error);
+      return Err(updateUserPerms.name, { postgrestError: error });
+    }
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(updateUserPerms.name, {
+      err: err as Error,
+    });
+  }
+};
+
+/**
+ * Activates all users.
+ * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ */
+export const activateAllUsers = async (): Promise<Result<void, string>> => {
+  const resultAdminCheck = await userIsAdmin();
+  if (!resultAdminCheck.ok) {
+    logger.error("None admin action detected.");
+    return Err(activateAllUsers.name, {
+      err: "You are not an admin" as unknown as Error,
+    });
+  }
+
+  try {
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.profiles_perms)
+      .update({ user_type: PermsKeys.user_types_enum.active })
+      .eq(PermsKeys.user_type, PermsKeys.user_types_enum.inactive);
+    if (error) {
+      logger.error("Failed to activate all users", error);
+      return Err(activateAllUsers.name, { postgrestError: error });
+    }
+    return Ok.EMPTY;
+  } catch (err) {
+    logger.error("Failed to activate all users", err);
+    return Err(activateAllUsers.name, {
+      err: err as Error,
+    });
+  }
+};
