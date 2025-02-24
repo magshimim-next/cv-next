@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { getAllUsers } from "@/server/api/users";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
 import { ProfilesTable } from "./components/profilesTable";
+import { QuickActions } from "./components/quickActions";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -18,6 +19,7 @@ export default async function Page() {
       <ScrollToTop />
       <div className="mx-auto mt-4">
         <h1 className="mb-6 text-center text-2xl font-semibold">Admin Panel</h1>
+        <QuickActions />
 
         {users.ok && <ProfilesTable profiles={users.val} />}
       </div>
