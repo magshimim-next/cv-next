@@ -47,6 +47,19 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(nextUrl);
   }
 
+  if (request.nextUrl.pathname == "/admin") {
+    const { data: admins, error: errorWhitelist } = await supabase
+      .from(Tables.admins)
+      .select("*")
+      .eq(ProfileKeys.id, activatedUser.user.id)
+      .single();
+    if (admins?.id == null || errorWhitelist) {
+      const nextUrl = new URL(`/not_found`, request.url);
+      return NextResponse.redirect(nextUrl);
+    }
+    return supabaseResponse;
+  }
+
   const { data: whitelisted, error: errorWhitelist } = await supabase
     .from(Tables.whitelisted)
     .select("*")
@@ -71,5 +84,6 @@ export const config = {
     "/upload",
     "/hall",
     "/first_login/:profileUsername*",
+    "/admin",
   ],
 };

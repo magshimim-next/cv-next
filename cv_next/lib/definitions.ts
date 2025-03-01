@@ -135,6 +135,12 @@ export const Visible_Error_Messages: ErrorMessages = {
     title: "Your CV is set to private!",
     description: "Please update your CV settings to make it public again.",
   },
+  UpdateAdminPerms: {
+    keyword: "UpdateAdminPerms",
+    title: "You can't change the permissions of an admin from the website",
+    description:
+      "Please go to the console to change the permissions of an admin.",
+  },
   DefaultError: {
     keyword: "default",
     title: "An Error Occurred",

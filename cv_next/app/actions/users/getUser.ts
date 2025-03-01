@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import {
+  getAllUsers,
   getUserById,
   getUserByUsername,
   isCurrentFirstLogin,
@@ -88,3 +89,19 @@ export async function signInWithSocialProvider(provider: any, nextURL: string) {
     redirect(data.url);
   }
 }
+
+/**
+ * Returns all users with their permission level.
+ * @return {Promise<Result<Partial<UserWithPerms>[], string>>} A Promise with the result of the operation.
+ */
+export const getAllUsersPerms = async (): Promise<
+  Result<Partial<UserWithPerms>[], string>
+> => {
+  const result = await getAllUsers();
+  if (result.ok) {
+    return result;
+  } else {
+    logErrorWithTrace(result);
+    return Err("Couldn't get all users", result.errors);
+  }
+};
