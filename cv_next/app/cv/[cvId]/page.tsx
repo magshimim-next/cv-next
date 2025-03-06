@@ -6,7 +6,7 @@ import { getCvById } from "@/server/api/cvs";
 import { decodeValue } from "@/lib/utils";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
 import { CvPreview } from "@/components/ui/cvPreview";
-import { getCurrentId } from "@/server/api/users";
+import { getCurrentId, userIsAdmin } from "@/server/api/users";
 import CommentsSection from "./components/commentSection/commentsSection";
 import CommentForm from "./components/commentSection/commentForm";
 import CvData from "./components/cvData";
@@ -57,6 +57,8 @@ export default async function Page({ params }: { params: { cvId: string } }) {
   }
   const authorData = JSON.parse(JSON.stringify(cv.user_id));
 
+  const resultAdminCheck = await userIsAdmin();
+
   return (
     <div>
       <ScrollToTop />
@@ -74,7 +76,7 @@ export default async function Page({ params }: { params: { cvId: string } }) {
             <section className="flex h-[85vh] max-h-[85vh] w-[50vh] flex-col self-start overflow-y-auto overflow-x-hidden">
               <CommentForm cv={cv} />
               <div className="flex h-[85vh] max-h-[85vh] w-[100%] flex-col self-start overflow-y-auto overflow-x-hidden">
-                <CommentsSection cv={cv} />
+                <CommentsSection cv={cv} userIsAdmin={resultAdminCheck.ok} />
               </div>
             </section>
           </div>

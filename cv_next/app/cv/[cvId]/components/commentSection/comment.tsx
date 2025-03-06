@@ -184,6 +184,7 @@ interface CommenterActionsProps {
   userId: string;
   setShowAlert: (value: boolean) => void;
   resolvedSection: JSX.Element;
+  userIsAdmin: boolean;
 }
 
 const CommenterActions = ({
@@ -191,8 +192,9 @@ const CommenterActions = ({
   userId,
   setShowAlert,
   resolvedSection,
+  userIsAdmin,
 }: CommenterActionsProps) => {
-  return commenter.id === userId ? (
+  return commenter.id === userId || userIsAdmin ? (
     <>
       <span>
         <>
@@ -299,6 +301,7 @@ interface CommentProps {
   setCommentsOfComments: (
     update: (prev: Map<string, any[]>) => Map<string, any[]>
   ) => void;
+  userIsAdmin: boolean;
 }
 
 export default function Comment({
@@ -307,10 +310,10 @@ export default function Comment({
   childDepth = 0,
   commentsOfComment = [],
   setCommentsOfComments,
+  userIsAdmin,
 }: CommentProps) {
   const [commentOnCommentStatus, setCommentOnCommentStatus] =
     useState<boolean>(false);
-  //const [commentOnComment, setCommentOnComment] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const { mutate } = useSWRConfig();
 
@@ -478,6 +481,7 @@ export default function Comment({
                   setResolvedCommentAction={setResolvedCommentAction}
                 />
               }
+              userIsAdmin={userIsAdmin}
             />
           </div>
         </span>
@@ -497,6 +501,7 @@ export default function Comment({
           childDepth={1}
           commentsOfComment={[]}
           setCommentsOfComments={setCommentsOfComments}
+          userIsAdmin={userIsAdmin}
         />
       ))}
     </article>
