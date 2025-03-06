@@ -7,6 +7,7 @@ import {
 } from "@/server/api/comments";
 import { getCurrentId, userIsAdmin } from "@/server/api/users";
 import logger, { logErrorWithTrace } from "@/server/base/logger";
+import { isUserAuthor } from "@/app/actions/users/getUser";
 
 /**
  * The function will see if the comment can be resolved
@@ -31,9 +32,11 @@ async function validateResolve(
     );
   }
   const resultAdminCheck = await userIsAdmin();
+  const resultAuthorCheck = await isUserAuthor(commentResult.val.document_id);
   if (
     currentIdResult.val != commentResult.val.user_id &&
-    !resultAdminCheck.ok
+    !resultAdminCheck.ok &&
+    !resultAuthorCheck.ok
   ) {
     logger.error(
       `${currentIdResult.val} tried resolving someone elses comment!`

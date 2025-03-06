@@ -3,14 +3,16 @@
 import { redirect } from "next/navigation";
 import {
   getAllUsers,
+  getCurrentId,
   getUserById,
   getUserByUsername,
   isCurrentFirstLogin,
 } from "@/server/api/users";
-import { Err } from "@/lib/utils";
+import { Err, Ok } from "@/lib/utils";
 import logger, { logErrorWithTrace } from "@/server/base/logger";
 import SupabaseHelper from "@/server/api/supabaseHelper";
 import Definitions from "@/lib/definitions";
+import { getCvById } from "@/server/api/cvs";
 
 /**
  * Retrieves user data by user ID.
@@ -104,4 +106,26 @@ export const getAllUsersPerms = async (): Promise<
     logErrorWithTrace(result);
     return Err("Couldn't get all users", result.errors);
   }
+};
+
+/**
+ * Returns if the user is the author of the CV.
+ * @param cvId The CV id we want to check if the user is the author of
+ * @returns {Promise<Result<boolean, string>>} A Promise with the result of the operation or error string.
+ */
+export const isUserAuthor = async (
+  cvId: string
+): Promise<Result<boolean, string>> => {
+  const cv = await getCvById(cvId);
+
+  if (cv === null) {
+    return Err("Couldn't get the requested CV");
+  }
+  const userId = await getCurrentId();
+  if (!userId.ok) {
+    logErrorWithTrace(userId);
+    return Err("Couldn't get the current user");
+  }
+  const authorData = JSON.parse(JSON.stringify(cv.user_id));
+  return Ok(userId.val == authorData.id);
 };
