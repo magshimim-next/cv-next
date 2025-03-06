@@ -76,7 +76,11 @@ export default async function Page({ params }: { params: { cvId: string } }) {
             <section className="flex h-[85vh] max-h-[85vh] w-[50vh] flex-col self-start overflow-y-auto overflow-x-hidden">
               <CommentForm cv={cv} />
               <div className="flex h-[85vh] max-h-[85vh] w-[100%] flex-col self-start overflow-y-auto overflow-x-hidden">
-                <CommentsSection cv={cv} userIsAdmin={resultAdminCheck.ok} />
+                <CommentsSection
+                  cv={cv}
+                  userIsAdmin={resultAdminCheck.ok}
+                  userIsAuthor={userId.val == authorData.id}
+                />
               </div>
             </section>
           </div>

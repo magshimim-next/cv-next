@@ -12,9 +12,11 @@ import Comment from "./comment";
 export default function CommentsSection({
   cv,
   userIsAdmin,
+  userIsAuthor,
 }: {
   cv: CvModel;
   userIsAdmin: boolean;
+  userIsAuthor: boolean;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -77,6 +79,7 @@ export default function CommentsSection({
                 }
                 setCommentsOfComments={setCommentsOfComments}
                 userIsAdmin={userIsAdmin}
+                userIsAuthor={userIsAuthor}
               />
             ) : null
           )

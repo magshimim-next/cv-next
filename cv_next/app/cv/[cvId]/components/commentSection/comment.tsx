@@ -185,6 +185,7 @@ interface CommenterActionsProps {
   setShowAlert: (value: boolean) => void;
   resolvedSection: JSX.Element;
   userIsAdmin: boolean;
+  userIsAuthor: boolean;
 }
 
 const CommenterActions = ({
@@ -193,6 +194,7 @@ const CommenterActions = ({
   setShowAlert,
   resolvedSection,
   userIsAdmin,
+  userIsAuthor,
 }: CommenterActionsProps) => {
   return commenter.id === userId || userIsAdmin ? (
     <>
@@ -215,6 +217,8 @@ const CommenterActions = ({
       <span> </span>
       {resolvedSection}
     </>
+  ) : userIsAuthor ? (
+    <span>{resolvedSection}</span>
   ) : null;
 };
 
@@ -302,6 +306,7 @@ interface CommentProps {
     update: (prev: Map<string, any[]>) => Map<string, any[]>
   ) => void;
   userIsAdmin: boolean;
+  userIsAuthor: boolean;
 }
 
 export default function Comment({
@@ -311,6 +316,7 @@ export default function Comment({
   commentsOfComment = [],
   setCommentsOfComments,
   userIsAdmin,
+  userIsAuthor,
 }: CommentProps) {
   const [commentOnCommentStatus, setCommentOnCommentStatus] =
     useState<boolean>(false);
@@ -482,6 +488,7 @@ export default function Comment({
                 />
               }
               userIsAdmin={userIsAdmin}
+              userIsAuthor={userIsAuthor}
             />
           </div>
         </span>
@@ -502,6 +509,7 @@ export default function Comment({
           commentsOfComment={[]}
           setCommentsOfComments={setCommentsOfComments}
           userIsAdmin={userIsAdmin}
+          userIsAuthor={userIsAuthor}
         />
       ))}
     </article>
