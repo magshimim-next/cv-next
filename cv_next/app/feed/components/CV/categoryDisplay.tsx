@@ -82,7 +82,7 @@ export default function CategoriesDisplay({
             />
           ))}
         </div>
-        {overFlowingCategories.length && (
+        {overFlowingCategories.length !== 0 && (
           <OverflowNumber
             categories={overFlowingCategories}
             onClick={shiftTheCategories}
