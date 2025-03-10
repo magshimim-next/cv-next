@@ -9,11 +9,18 @@ import { fetchCvComments } from "@/app/actions/comments/fetchComments";
 import Definitions from "@/lib/definitions";
 import Comment from "./comment";
 
-export default function CommentsSection({ cv }: { cv: CvModel }) {
+export default function CommentsSection({
+  cv,
+  userIsAdmin,
+  userIsAuthor,
+}: {
+  cv: CvModel;
+  userIsAdmin: boolean;
+  userIsAuthor: boolean;
+}) {
   const pathname = usePathname();
   const router = useRouter();
   const { data: comments } = useSWR(cv.id, fetchCvComments);
-
   const supabase = createClientComponent();
   const [userId, setUserId] = useState<string>("");
   const [commentsOfComments, setCommentsOfComments] = useState<
@@ -71,6 +78,8 @@ export default function CommentsSection({ cv }: { cv: CvModel }) {
                   commentsOfComments.get(comment.id) as Array<any>
                 }
                 setCommentsOfComments={setCommentsOfComments}
+                userIsAdmin={userIsAdmin}
+                userIsAuthor={userIsAuthor}
               />
             ) : null
           )
