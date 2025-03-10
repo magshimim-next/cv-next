@@ -62,13 +62,17 @@ export default function CvData({
           </Link>
         </div>
         <div className="mb-3 flex flex-wrap items-center space-x-2">
-          {cv.cv_categories.map((category, index) => (
-            <CvCategory
-              key={index}
-              categoryId={category}
-              onClick={(e) => e.stopPropagation()}
-            />
-          ))}
+          {cv.cv_categories && (
+            <div className="flex flex-wrap items-center">
+              {cv.cv_categories.map((category, index) => (
+                <CvCategory
+                  key={index}
+                  categoryId={category}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              ))}
+            </div>
+          )}
         </div>
         <p className="text-gray-500 dark:text-gray-400 sm:text-lg">
           {cv.description}

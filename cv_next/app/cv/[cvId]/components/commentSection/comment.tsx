@@ -184,6 +184,8 @@ interface CommenterActionsProps {
   userId: string;
   setShowAlert: (value: boolean) => void;
   resolvedSection: JSX.Element;
+  userIsAdmin: boolean;
+  userIsAuthor: boolean;
 }
 
 const CommenterActions = ({
@@ -191,8 +193,10 @@ const CommenterActions = ({
   userId,
   setShowAlert,
   resolvedSection,
+  userIsAdmin,
+  userIsAuthor,
 }: CommenterActionsProps) => {
-  return commenter.id === userId ? (
+  return commenter.id === userId || userIsAdmin ? (
     <>
       <span>
         <>
@@ -213,6 +217,8 @@ const CommenterActions = ({
       <span> </span>
       {resolvedSection}
     </>
+  ) : userIsAuthor ? (
+    <span>{resolvedSection}</span>
   ) : null;
 };
 
@@ -299,6 +305,8 @@ interface CommentProps {
   setCommentsOfComments: (
     update: (prev: Map<string, any[]>) => Map<string, any[]>
   ) => void;
+  userIsAdmin: boolean;
+  userIsAuthor: boolean;
 }
 
 export default function Comment({
@@ -307,10 +315,11 @@ export default function Comment({
   childDepth = 0,
   commentsOfComment = [],
   setCommentsOfComments,
+  userIsAdmin,
+  userIsAuthor,
 }: CommentProps) {
   const [commentOnCommentStatus, setCommentOnCommentStatus] =
     useState<boolean>(false);
-  //const [commentOnComment, setCommentOnComment] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const { mutate } = useSWRConfig();
 
@@ -478,6 +487,8 @@ export default function Comment({
                   setResolvedCommentAction={setResolvedCommentAction}
                 />
               }
+              userIsAdmin={userIsAdmin}
+              userIsAuthor={userIsAuthor}
             />
           </div>
         </span>
@@ -497,6 +508,8 @@ export default function Comment({
           childDepth={1}
           commentsOfComment={[]}
           setCommentsOfComments={setCommentsOfComments}
+          userIsAdmin={userIsAdmin}
+          userIsAuthor={userIsAuthor}
         />
       ))}
     </article>
