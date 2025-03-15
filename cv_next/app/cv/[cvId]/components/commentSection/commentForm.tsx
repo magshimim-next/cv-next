@@ -23,7 +23,6 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
     // Reset the form after submission and check if the comment is empty
     formRef.current?.reset();
     if ((formData.get(COMMENT_FIELD_NAME) as String).length <= 0) return;
-    setText("");
     const userId = await supabase.auth.getUser();
     if (userId.error) {
       router.push(`/${Definitions.LOGIN_REDIRECT}?next=${pathname}`);
@@ -52,8 +51,12 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
       );
 
       try {
-        await addComment(comment);
+        const result = await addComment(comment);
+        if (result.ok) {
+          setText("");
+        }
         mutate(cv.id);
+        return result.ok;
       } catch (error) {
         // Rollback optimistic update
         mutate(
@@ -62,18 +65,19 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
             currentComments.filter((comment) => comment.id !== comment.id),
           false
         );
+        return false;
       }
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && e.ctrlKey) {
       e.preventDefault();
       setText((prev) => prev + "\n");
     } else if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
       e.preventDefault();
-      formAction();
-      setText("");
+      const res = await formAction();
+      if (res) setText("");
     }
   };
 
