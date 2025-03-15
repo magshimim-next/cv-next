@@ -6,6 +6,7 @@ import logger from "@/server/base/logger";
 import { fetchUserComments } from "@/app/actions/comments/fetchComments";
 import { getCvsFromComments } from "@/app/actions/cvs/fetchCvs";
 import DropdownCover from "@/components/ui/dropdownCover";
+import { userIsAdmin } from "@/server/api/users";
 import CategoryCounter from "./categoryCounter";
 import { ProfilePersonalData } from "./profilePersonalData";
 
@@ -28,9 +29,15 @@ export default async function ProfileData({ user }: { user: UserModel }) {
     revalidateTag("user-" + user.username);
   };
 
+  const resultAdminCheck = await userIsAdmin();
+
   return (
     <div className="flex flex-col items-center">
-      <ProfilePersonalData user={user} revalidationFn={revalidate} />
+      <ProfilePersonalData
+        user={user}
+        revalidationFn={revalidate}
+        isCurrentAdmin={resultAdminCheck.ok}
+      />
       <DropdownCover title="Statistics">
         <div className="col-md-12 mt-2 flex justify-center">
           <CategoryCounter
