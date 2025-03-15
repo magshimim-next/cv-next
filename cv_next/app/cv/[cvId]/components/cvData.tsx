@@ -38,10 +38,8 @@ export default function CvData({
     }
   }
 
-  const showData = validCV ? "md:grid-cols-[70%_30%]" : "";
-
   return (
-    <div className={`grid grid-cols-1 gap-y-4 ${showData} md:gap-x-4`}>
+    <div className={`grid grid-cols-1 gap-y-4 h-max md:gap-x-4`}>
       <article className="mb-3 flex flex-col rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800">
         <div className="mb-3 flex items-center">
           <div className="mr-3">
@@ -62,7 +60,7 @@ export default function CvData({
           </Link>
         </div>
         <div className="mb-3 flex flex-wrap items-center space-x-2">
-          {cv.cv_categories.map((category, index) => (
+          {cv.cv_categories?.map((category, index) => (
             <CvCategory
               key={index}
               categoryId={category}

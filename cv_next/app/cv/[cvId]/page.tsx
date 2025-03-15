@@ -50,7 +50,7 @@ export default async function Page({ params }: { params: { cvId: string } }) {
     redirect: "manual",
   });
   const validCV = resp.status === 200;
-  const fullCV = validCV ? "md:grid-cols-[70%_30%]" : "";
+  const fullCV = validCV ? "lg:grid-cols-[60%_40%]" : "";
   const userId = await getCurrentId();
   if (!userId.ok) {
     notFound();
@@ -60,18 +60,27 @@ export default async function Page({ params }: { params: { cvId: string } }) {
   return (
     <div>
       <ScrollToTop />
-      <CvData
-        cv={cv}
-        validCV={validCV}
-        currentUserIsAuthor={userId.val == authorData.id}
-      />
-      <div className={`grid grid-cols-1 gap-y-4 ${fullCV} md:gap-x-4`}>
+      <div className={`grid grid-cols-1 gap-y-4 ${fullCV} lg:gap-x-4`}>
+        <div className="block lg:hidden">
+          <CvData
+            cv={cv}
+            validCV={validCV}
+            currentUserIsAuthor={userId.val == authorData.id}
+          />
+        </div>
         <section className=" flex-col rounded-lg">
-          {cv ? <CvPreview cv={cv} height={validCV ? 800 : 400} /> : null}
+          {cv ? <CvPreview cv={cv} height={validCV ? 1300 : 400} /> : null}
         </section>
         {validCV && (
-          <div className="flex">
-            <section className="flex h-[85vh] max-h-[85vh] w-[50vh] flex-col self-start overflow-y-auto overflow-x-hidden">
+          <div className="flex flex-col">
+            <div className="hidden lg:block">
+              <CvData
+                cv={cv}
+                validCV={validCV}
+                currentUserIsAuthor={userId.val == authorData.id}
+              />
+            </div>
+            <section className="flex h-[85vh] max-h-[85vh] w-[100%] flex-col self-start overflow-y-auto overflow-x-hidden">
               <CommentForm cv={cv} />
               <div className="flex h-[85vh] max-h-[85vh] w-[100%] flex-col self-start overflow-y-auto overflow-x-hidden">
                 <CommentsSection cv={cv} />
