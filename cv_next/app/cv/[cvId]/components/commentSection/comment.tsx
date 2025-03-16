@@ -20,7 +20,7 @@ import Tooltip from "@/components/ui/tooltip";
 
 interface NewCommentBlockProps {
   commentOnCommentStatus: boolean;
-  addNewCommentClickEvent: (commentData: string) => Promise<void>;
+  addNewCommentClickEvent: (commentData: string) => Promise<boolean>;
   setCommentOnCommentStatus: (status: boolean) => void;
   parentCommenter: string;
 }
@@ -46,8 +46,10 @@ const NewCommentBlock = ({
   }, [commentOnCommentStatus, inputValue, parentCommenter]);
 
   const handleSubmit = async () => {
-    await addNewCommentClickEvent(inputValue);
-    setCommentOnCommentStatus(!commentOnCommentStatus);
+    const addCommentResult = await addNewCommentClickEvent(inputValue);
+    if (addCommentResult) {
+      setCommentOnCommentStatus(!commentOnCommentStatus);
+    }
   };
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -329,7 +331,7 @@ export default function Comment({
   };
 
   const addNewCommentClickEvent = useCallback(
-    async (commentData: string) => {
+    async (commentData: string): Promise<boolean> => {
       const commentToAdd: NewCommentModel = {
         data: commentData,
         document_id: comment.document_id,
@@ -379,7 +381,9 @@ export default function Comment({
             revalidate: true,
           }
         );
+        return true;
       }
+      return false;
     },
     [comment, userId, mutate]
   );
