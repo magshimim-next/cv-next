@@ -2,7 +2,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { PermsDropDown } from "./permsDropDown";
-import { DisplayNameInput } from "./displayNameInput";
 
 export const ProfilesTable = ({
   profiles,
@@ -28,11 +27,8 @@ export const ProfilesTable = ({
               <td className="whitespace-nowrap border p-4 text-gray-700 dark:text-gray-300">
                 {profile.id}
               </td>
-              <td className="whitespace-nowrap border font-medium">
-                <DisplayNameInput
-                  userId={profile.id || ""}
-                  currentName={profile.display_name || ""}
-                />
+              <td className="whitespace-nowrap border p-4 font-medium">
+                {profile.display_name}
               </td>
               <td className="whitespace-nowrap border p-4 ">
                 {profile.username ? (
