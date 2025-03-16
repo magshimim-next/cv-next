@@ -76,6 +76,9 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
       e.preventDefault();
       setText((prev) => prev + "\n");
     } else if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
+      if (text.length > 750) {
+        return;
+      }
       e.preventDefault();
       const res = await formAction();
       if (res) setText("");
