@@ -46,6 +46,9 @@ const NewCommentBlock = ({
   }, [commentOnCommentStatus, inputValue, parentCommenter]);
 
   const handleSubmit = async () => {
+    if (inputValue.length > 750) {
+      return;
+    }
     const addCommentResult = await addNewCommentClickEvent(inputValue);
     if (addCommentResult) {
       setCommentOnCommentStatus(!commentOnCommentStatus);
@@ -63,37 +66,44 @@ const NewCommentBlock = ({
   };
 
   return commentOnCommentStatus ? (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <textarea
-        ref={inputRef}
-        value={inputValue}
-        onChange={(e) => {
-          setInputValue(e.target.value);
+    <div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
-        onFocus={(e) =>
-          e.currentTarget.setSelectionRange(
-            e.currentTarget.value.length,
-            e.currentTarget.value.length
-          )
-        }
-        onKeyDown={handleKeyDown}
-        rows={2}
-        className="mb-1 mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-      />
-      <Tooltip id="Reply Icon" message="Reply">
-        <RxPlus
-          style={{ fontSize: "5vh", cursor: "pointer" }}
-          onClick={async () => {
-            await handleSubmit();
+      >
+        <textarea
+          ref={inputRef}
+          value={inputValue}
+          onChange={(e) => {
+            setInputValue(e.target.value);
           }}
+          onFocus={(e) =>
+            e.currentTarget.setSelectionRange(
+              e.currentTarget.value.length,
+              e.currentTarget.value.length
+            )
+          }
+          onKeyDown={handleKeyDown}
+          rows={2}
+          className="mb-1 mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
         />
-      </Tooltip>
+        <Tooltip id="Reply Icon" message="Reply">
+          <RxPlus
+            style={{ fontSize: "5vh", cursor: "pointer" }}
+            onClick={async () => {
+              await handleSubmit();
+            }}
+          />
+        </Tooltip>
+      </div>
+      <Alert
+        display={inputValue.length > 750 ? "flex" : "none"}
+        message="Your comment can't be over 750 characters long!"
+        color="red"
+      ></Alert>
     </div>
   ) : null;
 };
