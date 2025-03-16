@@ -8,6 +8,7 @@ import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { addComment } from "@/app/actions/comments/addComment";
 import Definitions from "@/lib/definitions";
 import Tooltip from "@/components/ui/tooltip";
+import Alert from "@/components/ui/alert";
 
 const COMMENT_FIELD_NAME = "comment";
 
@@ -117,6 +118,7 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
 
         <button
           type="submit"
+          disabled={text.length > 750}
           className="col-start-2 row-start-2 flex-col items-center rounded-lg bg-slate-50 px-4
                                   py-2.5 hover:bg-gray-300 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800
                                   dark:text-white dark:hover:bg-gray-500/50 dark:focus:ring-gray-900"
@@ -126,6 +128,11 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
           </Tooltip>
         </button>
       </div>
+      <Alert
+        display={text.length > 750 ? "flex" : "none"}
+        message="Your comment can't be over 750 characters long!"
+        color="red"
+      ></Alert>
     </form>
   );
 }
