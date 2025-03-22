@@ -8,6 +8,7 @@ import { useUser } from "@/hooks/useUser";
 import Tooltip from "@/components/ui/tooltip";
 import ProfileForm from "./profileForm";
 import { ProfileDisplay } from "./profileDisplay";
+import EditableProfileImage from "./EditableProfileImage";
 
 export const ProfilePersonalData = ({
   user,
@@ -35,18 +36,22 @@ export const ProfilePersonalData = ({
     >
       <div className="m-auto mb-[10px] flex w-full justify-between">
         <div className="flex w-full justify-center">
-          <DynamicProfileImage
-            isPlaceholder={user.avatar_url ? false : true}
-            className="relative overflow-hidden rounded-full"
-          >
-            <Image
-              alt="profile"
-              src={user.avatar_url || ""}
-              width={90}
-              height={60 * 1.4142}
-              priority={true}
-            ></Image>
-          </DynamicProfileImage>
+          {isCurrentUser && isEditing ? (
+            <EditableProfileImage user={userData ?? user} />
+          ) : (
+            <DynamicProfileImage
+              isPlaceholder={user.avatar_url ? false : true}
+              className="relative overflow-hidden rounded-full"
+            >
+              <Image
+                alt="profile"
+                src={user.avatar_url || ""}
+                width={90}
+                height={60 * 1.4142}
+                priority={true}
+              ></Image>
+            </DynamicProfileImage>
+          )}
         </div>
         {isCurrentUser && (
           <Tooltip id="Edit Icon" message={isEditing ? "Cancel" : "Edit"}>
