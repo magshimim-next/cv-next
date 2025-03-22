@@ -19,11 +19,11 @@ export default function EditableProfileImage({ user }: { user: UserModel }) {
         height={60 * 1.4142}
         priority={true}
       />
-      <div className="absolute bottom-0 left-0 right-0 flex cursor-pointer items-center justify-center bg-black bg-opacity-50 p-1">
-        <Upload
-          className="h-5 w-5 text-white"
-          onClick={() => onProfileClick()}
-        />
+      <div
+        className="absolute bottom-0 left-0 right-0 flex cursor-pointer items-center justify-center bg-black bg-opacity-50 p-1"
+        onClick={() => onProfileClick()}
+      >
+        <Upload className="h-5 w-5 text-white" />
       </div>
     </div>
   );
