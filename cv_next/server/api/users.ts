@@ -448,8 +448,8 @@ export async function isCurrentFirstLogin(): Promise<Result<Boolean, string>> {
 export async function getAllUsers(
   user_type?: string
 ): Promise<Result<Partial<UserWithPerms>[], string>> {
+  const supabase = SupabaseHelper.getSupabaseInstance();
   try {
-    const supabase = SupabaseHelper.getSupabaseInstance();
     let query = supabase
       .from(Tables.profiles_perms)
       .select(
