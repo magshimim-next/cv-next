@@ -18,5 +18,9 @@ export default function Page() {
     };
     signOutAndRedirect();
   }, [mutateUser, router, supabase.auth]);
-  return <></>;
+  return (
+    <>
+      <title>Signout</title>
+    </>
+  );
 }
