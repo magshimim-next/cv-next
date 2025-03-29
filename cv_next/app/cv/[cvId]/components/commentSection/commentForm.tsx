@@ -86,12 +86,14 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    setText(value);
+    if (e.target.value.length <= 750) {
+      const value = e.target.value;
+      setText(value);
 
-    const updatedFormData = new FormData();
-    updatedFormData.set(COMMENT_FIELD_NAME, value);
-    setFormData(updatedFormData);
+      const updatedFormData = new FormData();
+      updatedFormData.set(COMMENT_FIELD_NAME, value);
+      setFormData(updatedFormData);
+    }
   };
 
   return (

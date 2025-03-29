@@ -78,7 +78,9 @@ const NewCommentBlock = ({
           ref={inputRef}
           value={inputValue}
           onChange={(e) => {
-            setInputValue(e.target.value);
+            if (e.target.value.length <= 750) {
+              setInputValue(e.target.value);
+            }
           }}
           onFocus={(e) =>
             e.currentTarget.setSelectionRange(
