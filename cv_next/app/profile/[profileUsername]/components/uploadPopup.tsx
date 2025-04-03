@@ -1,74 +1,9 @@
 "use client";
-//import Image from "next/image";
-import { useRef, useEffect } from "react";
-//import Link from "next/link";
+import { useRef, useEffect, useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
-//import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { useUser } from "@/hooks/useUser";
-// import { NewUsernameForm } from "@/app/first_login/[profileUsername]/components/newUsernameForm";
 import UploadSelector from "./UploadSelector";
-
-/* const navLinks = [
-  {
-    route: "Login",
-    path: "/login",
-    req_login: false,
-  },
-  {
-    route: "Upload",
-    path: "/upload",
-    req_login: true,
-  },
-  {
-    route: "Hall of Fame",
-    path: "/hall",
-    req_login: true,
-  },
-  {
-    route: "Signout",
-    path: "/signout",
-    req_login: true,
-  },
-];
-
-const UserDataComponent: React.FC<{
-  closeCb: () => void;
-}> = ({ closeCb }) => {
-  const { userData } = useUser();
-  return (
-    <div className="mt-10 flex w-full flex-col items-center">
-      {userData ? (
-        <div className="flex w-full flex-col items-center">
-          <div className="mb-4">
-            <DynamicProfileImage
-              isPlaceholder={userData.avatar_url ? false : true}
-            >
-              <Image
-                alt="profile"
-                src={userData?.avatar_url || ""}
-                width={30}
-                height={30 * 1.4142}
-                className="w-20"
-              ></Image>
-            </DynamicProfileImage>
-          </div>
-
-          <Link
-            className="text-lg font-medium hover:underline"
-            href={`/profile/${userData?.username}`}
-            onClick={closeCb}
-          >
-            {userData.display_name || userData.username}
-          </Link>
-        </div>
-      ) : (
-        <div style={{ marginBottom: "10px" }}>
-          <DynamicProfileImage isPlaceholder={true} />
-        </div>
-      )}
-    </div>
-  );
-}; */
+import ImageCropper from "./ImageCropper";
 
 interface PopupProps {
   closeCb: () => void;
@@ -78,13 +13,47 @@ export default function Popup({ closeCb }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { userData, mutateUser } = useUser();
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [cropperImage, setCropperImage] = useState<string | null>(null);
+
   useEffect(() => {
     if (dialogRef.current) {
       dialogRef.current.show();
     }
   }, []);
 
-  const handleUploadComplete = () => {
+  const handleFileSelect = (file: File | null, imageData: string | null) => {
+    setSelectedFile(file);
+    setCropperImage(imageData);
+  };
+
+  const handleCropComplete = (croppedImage: string) => {
+    setPreview(croppedImage);
+    setCropperImage(null);
+  };
+
+  const handleCropCancel = () => {
+    setCropperImage(null);
+    setSelectedFile(null);
+    setPreview(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedFile || !preview) return;
+
+    setUploading(true);
+
+    const response = await fetch(preview);
+    const blob = await response.blob();
+    const fileToUpload = new File([blob], selectedFile.name, {
+      type: selectedFile.type,
+    });
+
+    // TODO: upload image to bucket using the 'fileToUpload' variable
+
     mutateUser();
     closeCb();
   };
@@ -109,10 +78,21 @@ export default function Popup({ closeCb }: PopupProps) {
         <div className="mt-20 flex w-full flex-col items-center">
           {userData && (
             <div className="mt-10 flex w-full flex-col items-center">
-              <UploadSelector
-                user={userData}
-                onUploadComplete={handleUploadComplete}
-              />
+              {cropperImage ? (
+                <ImageCropper
+                  image={cropperImage}
+                  onCropComplete={handleCropComplete}
+                  onCancel={handleCropCancel}
+                />
+              ) : (
+                <UploadSelector
+                  user={userData}
+                  preview={preview}
+                  uploading={uploading}
+                  onFileSelect={handleFileSelect}
+                  onSubmit={handleSubmit}
+                />
+              )}
             </div>
           )}
         </div>

@@ -1,52 +1,36 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import { RiImageAddFill } from "react-icons/ri";
 
 interface UploadSelectorProps {
   user: any;
-  onUploadComplete?: () => void;
+  preview: string | null;
+  uploading: boolean;
+  onFileSelect: (file: File | null, imageData: string | null) => void;
+  onSubmit: (e: React.FormEvent) => void;
 }
 
 export default function UploadSelector({
-  user,
-  onUploadComplete,
+  preview,
+  uploading,
+  onFileSelect,
+  onSubmit,
 }: UploadSelectorProps) {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
-    setSelectedFile(file);
 
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreview(reader.result as string);
+        onFileSelect(file, reader.result as string);
       };
       reader.readAsDataURL(file);
     } else {
-      setPreview(null);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedFile) return;
-
-    setUploading(true);
-
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-    formData.append("userId", user.id);
-
-    //TODO: upload image to bucket
-
-    if (onUploadComplete) {
-      onUploadComplete();
+      onFileSelect(null, null);
     }
   };
 
@@ -57,12 +41,11 @@ export default function UploadSelector({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0] || null;
-    setSelectedFile(file);
 
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreview(reader.result as string);
+        onFileSelect(file, reader.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -74,7 +57,7 @@ export default function UploadSelector({
         Select Your profile picture
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={onSubmit} className="space-y-4">
         <div
           className="cursor-pointer rounded-lg border-2 border-dashed border-gray-300 p-6 text-center transition-colors hover:bg-gray-50"
           onDragOver={handleDragOver}
@@ -112,14 +95,14 @@ export default function UploadSelector({
 
         <button
           type="submit"
-          disabled={!selectedFile || uploading}
+          disabled={!preview || uploading}
           className={`w-full rounded-md px-4 py-2 font-medium text-white ${
-            !selectedFile || uploading
+            !preview || uploading
               ? "cursor-not-allowed bg-gray-400"
               : "bg-blue-600 hover:bg-blue-700"
           } transition-colors`}
         >
-          {uploading ? "Uploading..." : "Select Picture"}
+          {uploading ? "Uploading..." : "Upload"}
         </button>
       </form>
     </div>
