@@ -1,6 +1,7 @@
 import "server-only";
 
 import crypto from "crypto";
+import { decode } from "base64-arraybuffer";
 import { Ok, Err } from "@/lib/utils";
 import { Tables, ProfileKeys } from "@/lib/supabase-definitions";
 import { checkUsername } from "@/helpers/usernameRegexHelper";
@@ -433,6 +434,84 @@ export async function isCurrentFirstLogin(): Promise<Result<Boolean, string>> {
     return Ok(metadata.is_first_login);
   } catch (err) {
     return Err(isCurrentFirstLogin.name, {
+      err: err as Error,
+    });
+  }
+}
+
+/**
+ * Upload the new user profile to a bucket.
+ *
+ * @param {string} userId - The ID of the user to update
+ * @param {string} fileToUpload - new user profile image
+ * @return {Promise<Result<string, string>>} the bucket upload image url
+ */
+export async function uploadProfilePic(
+  fileToUpload: string
+): Promise<Result<string, string>> {
+  const id = await getCurrentId();
+  if (!id.ok || !id.val) {
+    return Err(uploadProfilePic.name, { err: Error("No user was connected!") });
+  }
+
+  try {
+    const { data, error } = await SupabaseHelper.getSupabaseInstance()
+      .storage.from("avatars")
+      .upload(
+        `public/${id.val}D${new Date().toISOString()}.png`,
+        decode(fileToUpload),
+        {
+          cacheControl: "3600",
+          upsert: false,
+        }
+      );
+
+    logger.info(`Image uploaded to: ${data?.path}`);
+    if (data?.path) {
+      return Ok(data.path);
+    }
+
+    if (error) {
+      return Err(uploadProfilePic.name, { err: error });
+    }
+    return Err(uploadProfilePic.name, { err: Error("No image found") });
+  } catch (err) {
+    return Err(uploadProfilePic.name, {
+      err: err as Error,
+    });
+  }
+}
+
+/**
+ * Updates the url pic of the user.
+ * @param {string} newUrl - The new url pic
+ * @return {Promise<Result<void, string>>} Was the update successful?
+ */
+export async function setProfilePath(
+  newUrl: string
+): Promise<Result<void, string>> {
+  const id = await getCurrentId();
+  if (!id.ok || !id.val) {
+    return Err(setProfilePath.name, { err: Error("No user was connected!") });
+  }
+
+  const { data } = await SupabaseHelper.getSupabaseInstance()
+    .storage.from("avatars")
+    .getPublicUrl(newUrl);
+
+  try {
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.profiles)
+      .update({ avatar_url: data.publicUrl })
+      .eq(ProfileKeys.id, id.val);
+
+    if (error) {
+      return Err(setProfilePath.name, { postgrestError: error });
+    }
+
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(setProfilePath.name, {
       err: err as Error,
     });
   }

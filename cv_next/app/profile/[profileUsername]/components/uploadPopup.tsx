@@ -2,6 +2,12 @@
 import { useRef, useEffect, useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
 import { useUser } from "@/hooks/useUser";
+import {
+  setCurrentProfilePath,
+  uploadProfilePicture,
+} from "@/app/actions/users/updateUser";
+import { useError } from "@/providers/error-provider";
+import { Visible_Error_Messages } from "@/lib/definitions";
 import UploadSelector from "./UploadSelector";
 import ImageCropper from "./ImageCropper";
 
@@ -17,6 +23,8 @@ export default function Popup({ closeCb }: PopupProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [cropperImage, setCropperImage] = useState<string | null>(null);
+
+  const { showError } = useError();
 
   useEffect(() => {
     if (dialogRef.current) {
@@ -40,22 +48,42 @@ export default function Popup({ closeCb }: PopupProps) {
     setPreview(null);
   };
 
+  function uploadFailed() {
+    setUploading(false);
+    showError(
+      Visible_Error_Messages.UploadFailed.title,
+      Visible_Error_Messages.UploadFailed.description
+    );
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedFile || !preview) return;
 
     setUploading(true);
 
-    const response = await fetch(preview);
-    const blob = await response.blob();
-    const fileToUpload = new File([blob], selectedFile.name, {
-      type: selectedFile.type,
-    });
+    try {
+      // Extract base64 data from the data URL
+      const base64Data = preview.split(",")[1];
 
-    // TODO: upload image to bucket using the 'fileToUpload' variable
+      const isValid = await uploadProfilePicture(base64Data);
+      if (!isValid.ok) {
+        uploadFailed();
+        return;
+      }
 
-    mutateUser();
-    closeCb();
+      const newProfilePath = isValid.val;
+      const res = await setCurrentProfilePath(newProfilePath);
+      if (!res.ok) {
+        uploadFailed();
+        return;
+      }
+
+      await mutateUser();
+      closeCb();
+    } catch (error) {
+      uploadFailed();
+    }
   };
 
   return (

@@ -45,7 +45,7 @@ export const ProfilePersonalData = ({
             >
               <Image
                 alt="profile"
-                src={user.avatar_url || ""}
+                src={userData?.avatar_url || ""}
                 width={90}
                 height={60 * 1.4142}
                 priority={true}

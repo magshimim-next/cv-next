@@ -7,6 +7,8 @@ import {
   setDisplayName,
   updateUser,
   setFirstLogin,
+  uploadProfilePic,
+  setProfilePath,
 } from "@/server/api/users";
 import { Err } from "@/lib/utils";
 import { logErrorWithTrace } from "@/server/base/logger";
@@ -123,5 +125,40 @@ export const setFirstLoginCurrent = async (
   } else {
     logErrorWithTrace(result);
     return Err("First Login: Couldn't update", result.errors);
+  }
+};
+
+/**
+ * Upload the new user profile to a bucket.
+ *
+ * @param {string} fileToUpload - new user profile image
+ * @return {Promise<Result<void, string>>} the bucket upload image url
+ */
+export const uploadProfilePicture = async (
+  fileToUpload: string
+): Promise<Result<string, string>> => {
+  const result = await uploadProfilePic(fileToUpload);
+  if (result.ok) {
+    return result;
+  } else {
+    logErrorWithTrace(result);
+    return Err("Couldn't upload the profile pic", result.errors);
+  }
+};
+
+/**
+ * Updates the url pic of the user.
+ * @param {string} newUrl - The new url pic
+ * @return {Promise<Result<void, string>>} Was the update successful?
+ */
+export const setCurrentProfilePath = async (
+  newUrl: string
+): Promise<Result<void, string>> => {
+  const result = await setProfilePath(newUrl);
+  if (result.ok) {
+    return result;
+  } else {
+    logErrorWithTrace(result);
+    return Err("Profile Path: Couldn't update", result.errors);
   }
 };
