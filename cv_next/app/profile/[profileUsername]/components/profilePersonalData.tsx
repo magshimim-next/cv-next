@@ -13,21 +13,23 @@ import EditableProfileImage from "./EditableProfileImage";
 export const ProfilePersonalData = ({
   user,
   revalidationFn,
+  isCurrentAdmin,
 }: {
   user: UserModel;
   revalidationFn: () => void;
+  isCurrentAdmin: boolean;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const { userData } = useUser();
   const [isCurrentUser, setIsCurrentUser] = useState(false);
 
   useEffect(() => {
-    if (userData && user.id === userData.id) {
+    if ((userData && user.id === userData.id) || isCurrentAdmin) {
       setIsCurrentUser(true);
     } else {
       setIsCurrentUser(false);
     }
-  }, [user.id, userData]);
+  }, [isCurrentAdmin, user.id, userData]);
 
   return (
     <div
@@ -67,12 +69,12 @@ export const ProfilePersonalData = ({
       <div className="m-auto w-full">
         {isCurrentUser && isEditing ? (
           <ProfileForm
-            user={userData ?? user}
+            user={user}
             revalidationFn={revalidationFn}
             exitEditMode={() => setIsEditing(false)}
           />
         ) : (
-          <ProfileDisplay user={isCurrentUser ? (userData ?? user) : user} />
+          <ProfileDisplay user={user} />
         )}
       </div>
     </div>

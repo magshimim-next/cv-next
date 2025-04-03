@@ -1,184 +1,227 @@
-.hall-title{
-    /* making this type of gradient is apparently impossible in tailwind  */
-    background-image: repeating-linear-gradient(to right, #a2682a 0%, #be8c3c 8%, #be8c3c 18%, #d3b15f 27%, #faf0a0 35%, #ffffc2 40%, #faf0a0 50%, #d3b15f 58%, #be8c3c 67%, #b17b32 77%, #bb8332 83%, #d4a245 88%, #e1b453 93%, #a4692a 100%);
-    background-size: 150%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 300;
-    filter: drop-shadow(0 0 1px rgba(255, 200, 0, .3));
-    font-size: xxx-large;
+.hall-title {
+  /* making this type of gradient is apparently impossible in tailwind  */
+  background-image: repeating-linear-gradient(
+    to right,
+    #a2682a 0%,
+    #be8c3c 8%,
+    #be8c3c 18%,
+    #d3b15f 27%,
+    #faf0a0 35%,
+    #ffffc2 40%,
+    #faf0a0 50%,
+    #d3b15f 58%,
+    #be8c3c 67%,
+    #b17b32 77%,
+    #bb8332 83%,
+    #d4a245 88%,
+    #e1b453 93%,
+    #a4692a 100%
+  );
+  background-size: 150%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 300;
+  filter: drop-shadow(0 0 1px rgba(255, 200, 0, 0.3));
+  font-size: xxx-large;
+}
+
+/* contributors cards */
+.name-image img {
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  margin-right: 3px;
+}
+
+.name-image img,
+.name-image::after {
+  transition: transform 0.3s ease; /* smooth scaling transition */
+}
+.name-image:hover::after {
+  transform: translateX(-2.4vh) translateY(-2.8vh) rotate(-30deg) scale(1.1);
+}
+.name-image:hover img {
+  transform: scale(1.1);
+}
+.name-image::after {
+  content: "";
+  position: absolute;
+  height: 5vh;
+  width: 5vh;
+  background-image: url("https://pngfre.com/wp-content/uploads/Gold-Crown-31.png");
+  background-size: cover;
+  transform: translateX(-2.2vh) translateY(-2.6vh) rotate(-30deg);
+  z-index: 10;
+}
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.card::after,
+.card::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-image: conic-gradient(
+    from var(--angle),
+    #daa520,
+    #ffd700,
+    #cfb53b,
+    #d4af37,
+    #ffdf00
+  );
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  z-index: -1;
+  padding: 3px;
+  border-radius: 10px;
+  animation: 3s spin linear infinite;
+}
+.card::before {
+  filter: blur(0.4rem);
+  opacity: 1;
+}
+/* spin animation for the animated border effect on the cards */
+@keyframes spin {
+  from {
+    --angle: 0deg;
   }
-  
-  /* contributors cards */
-  .name-image img{
-    user-drag: none;
-    -webkit-user-drag: none;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    margin-right: 3px;
+  to {
+    --angle: 360deg;
   }
-  
-  .name-image img, .name-image::after {
-    transition: transform 0.3s ease; /* smooth scaling transition */
+}
+
+/* stars in background animation (cannot be done in tailwind.) */
+.crown-img {
+  transform: translateX(2.5vh) translateY(-3vh) rotate(-30deg);
+}
+.crowns {
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+}
+.crowns li {
+  position: absolute;
+  display: block;
+  list-style: none;
+  width: 20px;
+  background: url(https://static.vecteezy.com/system/resources/previews/023/258/446/non_2x/a-star-with-transparent-background-sticker-illustration-free-png.png)
+    no-repeat center bottom/cover;
+  animation: animate 30s linear infinite;
+  bottom: -10%;
+  filter: drop-shadow(2px 4px 10px gold);
+}
+.crowns li:nth-child(1) {
+  left: 5%;
+  width: 80px;
+  height: 80px;
+  animation-delay: 0s;
+}
+.crowns li:nth-child(2) {
+  left: 7%;
+  width: 100px;
+  height: 100px;
+  animation-delay: 3s;
+}
+.crowns li:nth-child(3) {
+  left: 15%;
+  width: 60px;
+  height: 60px;
+  animation-delay: 2s;
+}
+.crowns li:nth-child(4) {
+  left: 21%;
+  width: 30px;
+  height: 30px;
+  animation-delay: 6s;
+}
+.crowns li:nth-child(5) {
+  left: 28%;
+  width: 100px;
+  height: 100px;
+  animation-delay: 0s;
+}
+.crowns li:nth-child(6) {
+  left: 30%;
+  width: 60px;
+  height: 60px;
+  animation-delay: 1s;
+}
+.crowns li:nth-child(7) {
+  left: 34%;
+  width: 700px;
+  height: 70px;
+  animation-delay: 1s;
+}
+.crowns li:nth-child(8) {
+  left: 72%;
+  width: 50px;
+  height: 50px;
+  animation-delay: 2s;
+}
+.crowns li:nth-child(9) {
+  left: 65%;
+  width: 20px;
+  height: 20px;
+  animation-delay: 5s;
+}
+.crowns li:nth-child(10) {
+  left: 80%;
+  width: 70px;
+  height: 70px;
+  animation-delay: 3s;
+}
+.crowns li:nth-child(11) {
+  left: 51%;
+  width: 90px;
+  height: 90px;
+  animation-delay: 0s;
+}
+.crowns li:nth-child(12) {
+  left: 77%;
+  width: 80px;
+  height: 80px;
+  animation-delay: 4s;
+}
+.crowns li:nth-child(13) {
+  left: 83%;
+  width: 80px;
+  height: 80px;
+  animation-delay: 3s;
+}
+.crowns li:nth-child(14) {
+  left: 91%;
+  width: 60px;
+  height: 60px;
+  animation-delay: 1s;
+}
+.crowns li:nth-child(15) {
+  left: 100%;
+  width: 40px;
+  height: 40px;
+  animation-delay: 3s;
+}
+@keyframes animate {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+    border-radius: 0;
   }
-  .name-image:hover::after {
-    transform: translateX(-2.4vh) translateY(-2.8vh) rotate(-30deg) scale(1.1);
-  }
-  .name-image:hover img {
-    transform: scale(1.1);
-  }
-  .name-image::after{
-    content: '';
-    position: absolute;
-    height: 5vh;
-    width: 5vh;
-    background-image: url('https://pngfre.com/wp-content/uploads/Gold-Crown-31.png');
-    background-size: cover;
-    transform: translateX(-2.2vh) translateY(-2.6vh) rotate(-30deg);
-    z-index: 10;
-  }
-  @property --angle {
-    syntax: "<angle>";
-    initial-value: 0deg;
-    inherits: false;
-  }
-  .card::after, .card::before{
-    content: '';
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    background-image: conic-gradient(from var(--angle), #DAA520	, #FFD700	, #CFB53B	, #D4AF37,#FFDF00	);
-    top: 50%;
-    left: 50%;
-    translate: -50% -50%;
-    z-index: -1;
-    padding: 3px;
-    border-radius: 10px;
-    animation: 3s spin linear infinite; 
-  }
-  .card::before{
-    filter: blur(.4rem);
+  90% {
     opacity: 1;
   }
-  /* spin animation for the animated border effect on the cards */
-  @keyframes spin{
-    from{
-      --angle: 0deg;
-    }
-    to{
-      --angle: 360deg;
-    }
+  100% {
+    transform: translateY(-2000px) rotate(720deg);
+    opacity: 0;
+    border-radius: 50%;
   }
-  
-  /* stars in background animation (cannot be done in tailwind.) */
-  .crown-img{
-    transform: translateX(2.5vh) translateY(-3vh) rotate(-30deg);
-  }
-  .crowns{
-    z-index: -1;
-    position: absolute;
-    top: 0;
-    left: 0;
-    overflow: hidden;
-  }
-  .crowns li{
-    position: absolute;
-    display: block;
-    list-style: none;
-    width: 20px;
-    /* background: #D4AF37; */
-    background: url(https://static.vecteezy.com/system/resources/previews/023/258/446/non_2x/a-star-with-transparent-background-sticker-illustration-free-png.png) no-repeat center bottom/cover;
-    animation: animate 25s linear infinite;
-    bottom: -10%;
-    filter: drop-shadow(2px 4px 10px gold);
-  }
-  .crowns li:nth-child(1){
-    left: 5%;
-    width: 80px;
-    height: 80px;
-    animation-delay: 0s;
-  }.crowns li:nth-child(2){
-    left: 7%;
-    width: 100px;
-    height: 100px;
-    animation-delay: 3s;
-  }.crowns li:nth-child(3){
-    left: 15%;
-    width: 60px;
-    height: 60px;
-    animation-delay: 2s;
-  }.crowns li:nth-child(4){
-    left: 21%;
-    width: 30px;
-    height: 30px;
-    animation-delay: 6s;
-  }.crowns li:nth-child(5){
-    left: 28%;
-    width: 100px;
-    height: 100px;
-    animation-delay: 0s;
-  }.crowns li:nth-child(6){
-    left: 30%;
-    width: 60px;
-    height: 60px;
-    animation-delay: 1s;
-  }.crowns li:nth-child(7){
-    left: 34%;
-    width: 700px;
-    height: 70px;
-    animation-delay: 1s;
-  }.crowns li:nth-child(8){
-    left: 72%;
-    width: 50px;
-    height: 50px;
-    animation-delay: 2s;
-  }.crowns li:nth-child(9){
-    left: 65%;
-    width: 20px;
-    height: 20px;
-    animation-delay: 5s;
-  }.crowns li:nth-child(10){
-    left: 80%;
-    width: 70px;
-    height: 70px;
-    animation-delay: 3s;
-  }.crowns li:nth-child(11){
-    left: 51%;
-    width: 90px;
-    height: 90px;
-    animation-delay: 0s;
-  }.crowns li:nth-child(12){
-    left: 77%;
-    width: 80px;
-    height: 80px;
-    animation-delay: 4s;
-  }.crowns li:nth-child(13){
-    left: 83%;
-    width: 80px;
-    height: 80px;
-    animation-delay: 3s;
-  }.crowns li:nth-child(14){
-    left: 91%;
-    width: 60px;
-    height: 60px;
-    animation-delay: 1s;
-  }.crowns li:nth-child(15){
-    left: 100%;
-    width: 40px;
-    height: 40px;
-    animation-delay: 3s;
-  }
-  @keyframes animate {
-    0% {
-      transform: translateY(0) rotate(0deg);
-      opacity: 1;
-      border-radius: 0;
-    }
-    100% {
-        transform: translateY(-1000px) rotate(720deg);
-        opacity: 0;
-        border-radius: 50%;
-    }
-  }
+}
