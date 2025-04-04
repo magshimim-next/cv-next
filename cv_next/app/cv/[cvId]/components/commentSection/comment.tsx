@@ -17,6 +17,7 @@ import { setResolved } from "@/app/actions/comments/setResolved";
 import { deleteComment } from "@/app/actions/comments/deleteComment";
 import Alert from "@/components/ui/alert";
 import Tooltip from "@/components/ui/tooltip";
+import Definitions from "@/lib/definitions";
 
 interface NewCommentBlockProps {
   commentOnCommentStatus: boolean;
@@ -46,7 +47,7 @@ const NewCommentBlock = ({
   }, [commentOnCommentStatus, inputValue, parentCommenter]);
 
   const handleSubmit = async () => {
-    if (inputValue.length > 750) {
+    if (inputValue.length > Definitions.MAX_COMMENT_SIZE) {
       return;
     }
     const addCommentResult = await addNewCommentClickEvent(inputValue);
@@ -78,7 +79,7 @@ const NewCommentBlock = ({
           ref={inputRef}
           value={inputValue}
           onChange={(e) => {
-            if (e.target.value.length <= 750) {
+            if (e.target.value.length <= Definitions.MAX_COMMENT_SIZE) {
               setInputValue(e.target.value);
             }
           }}
@@ -102,8 +103,10 @@ const NewCommentBlock = ({
         </Tooltip>
       </div>
       <Alert
-        display={inputValue.length > 750 ? "flex" : "none"}
-        message="Your comment can't be over 750 characters long!"
+        display={
+          inputValue.length > Definitions.MAX_COMMENT_SIZE ? "flex" : "none"
+        }
+        message={`Your comment can't be over ${Definitions.MAX_COMMENT_SIZE} characters long!`}
         color="red"
       ></Alert>
     </div>
