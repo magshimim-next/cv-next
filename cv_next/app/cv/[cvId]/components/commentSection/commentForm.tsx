@@ -76,7 +76,7 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
       e.preventDefault();
       setText((prev) => prev + "\n");
     } else if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
-      if (text.length > 750) {
+      if (text.length > Definitions.MAX_COMMENT_SIZE) {
         return;
       }
       e.preventDefault();
@@ -86,7 +86,7 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (e.target.value.length <= 750) {
+    if (e.target.value.length <= Definitions.MAX_COMMENT_SIZE) {
       const value = e.target.value;
       setText(value);
 
@@ -123,7 +123,7 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
 
         <button
           type="submit"
-          disabled={text.length > 750}
+          disabled={text.length > Definitions.MAX_COMMENT_SIZE}
           className="col-start-2 row-start-2 flex-col items-center rounded-lg bg-slate-50 px-4
                                   py-2.5 hover:bg-gray-300 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800
                                   dark:text-white dark:hover:bg-gray-500/50 dark:focus:ring-gray-900"
@@ -134,8 +134,8 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
         </button>
       </div>
       <Alert
-        display={text.length > 750 ? "flex" : "none"}
-        message="Your comment can't be over 750 characters long!"
+        display={text.length > Definitions.MAX_COMMENT_SIZE ? "flex" : "none"}
+        message={`Your comment can't be over ${Definitions.MAX_COMMENT_SIZE} characters long!`}
         color="red"
       ></Alert>
     </form>
