@@ -1,0 +1,23 @@
+name: Run Tests on PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Install dependencies
+        run: |
+          cd ./cv_next 
+          npm install  
+
+      - name: Run tests
+        run: |
+          cd ./cv_next
+          npm test 
