@@ -13,6 +13,7 @@ export default class Definitions {
   public static readonly FETCH_WAIT_TIME = 120;
   public static readonly MAX_CHAR_NAME = 70;
   public static readonly MIN_CHAR_NAME = 1;
+  public static readonly MAX_COMMENT_SIZE = 750;
   public static readonly COMMENTS_REVALIDATE_TIME_IN_SECONDS = 0;
   public static readonly AUTH_CALLBACK_REDIRECT = "/auth/callback";
   public static readonly FIRST_LOGIN_REDIRECT = "first_login";

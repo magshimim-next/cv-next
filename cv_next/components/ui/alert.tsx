@@ -2,8 +2,6 @@
 import { ImCheckmark, ImCross } from "react-icons/im";
 import { IconContext } from "react-icons";
 
-import React from "react";
-
 export default function Alert({
   message,
   color,
@@ -13,7 +11,7 @@ export default function Alert({
   message: string;
   color: string;
   display: string;
-  onClick: (type: boolean) => void;
+  onClick?: (type: boolean) => void;
 }) {
   const alertClassProvider = (color: string) => {
     switch (color) {
@@ -38,14 +36,18 @@ export default function Alert({
         {message}
       </span>
       <IconContext.Provider value={{ size: "1.8rem", color: "#34eb86" }}>
-        <div style={{ margin: "0.5rem", cursor: "pointer" }}>
-          <ImCheckmark onClick={() => onClick(true)}></ImCheckmark>
-        </div>
+        {onClick && (
+          <div style={{ margin: "0.5rem", cursor: "pointer" }}>
+            <ImCheckmark onClick={() => onClick(true)}></ImCheckmark>
+          </div>
+        )}
       </IconContext.Provider>
       <IconContext.Provider value={{ size: "1.5rem", color: "red" }}>
-        <div style={{ margin: "0.5rem", cursor: "pointer" }}>
-          <ImCross onClick={() => onClick(false)}></ImCross>
-        </div>
+        {onClick && (
+          <div style={{ margin: "0.5rem", cursor: "pointer" }}>
+            <ImCross onClick={() => onClick(false)}></ImCross>
+          </div>
+        )}
       </IconContext.Provider>
     </div>
   );
