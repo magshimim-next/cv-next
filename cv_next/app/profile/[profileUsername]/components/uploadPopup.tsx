@@ -54,6 +54,7 @@ export default function Popup({ closeCb }: PopupProps) {
       Visible_Error_Messages.UploadFailed.title,
       Visible_Error_Messages.UploadFailed.description
     );
+    closeCb();
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
