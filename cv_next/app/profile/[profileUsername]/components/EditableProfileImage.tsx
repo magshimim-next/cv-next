@@ -2,17 +2,13 @@
 import Image from "next/image";
 import { Upload } from "lucide-react";
 import { useState } from "react";
-//import { useError } from "@/providers/error-provider";
 import Popup from "./uploadPopup";
 
 export default function EditableProfileImage({ user }: { user: UserModel }) {
-  //const { showError } = useError();
-
   const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
 
   async function onProfileClick() {
     setIsProfilePopupOpen(!isProfilePopupOpen);
-    //showError("Test", user.avatar_url!);
   }
 
   return (

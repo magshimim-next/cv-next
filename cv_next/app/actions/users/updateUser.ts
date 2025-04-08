@@ -131,7 +131,6 @@ export const setFirstLoginCurrent = async (
 };
 
 /**
-<<<<<<< HEAD
  * Upload the new user profile to a bucket.
  *
  * @param {string} fileToUpload - new user profile image
