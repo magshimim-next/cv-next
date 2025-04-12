@@ -19,8 +19,11 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
   const supabase = createClientComponent();
   const [formData, setFormData] = useState(new FormData());
   const [text, setText] = useState("");
+  const [showError, setShowError] = useState(false);
 
   const formAction = async () => {
+    setShowError(false);
+
     // Reset the form after submission and check if the comment is empty
     formRef.current?.reset();
     if ((formData.get(COMMENT_FIELD_NAME) as String).length <= 0) return;
@@ -86,13 +89,16 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (e.target.value.length <= Definitions.MAX_COMMENT_SIZE) {
+    if (e.target.value.length < Definitions.MAX_COMMENT_SIZE + 1) {
       const value = e.target.value;
       setText(value);
 
       const updatedFormData = new FormData();
       updatedFormData.set(COMMENT_FIELD_NAME, value);
       setFormData(updatedFormData);
+      setShowError(false);
+    } else {
+      setShowError(true);
     }
   };
 
@@ -134,7 +140,7 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
         </button>
       </div>
       <Alert
-        display={text.length > Definitions.MAX_COMMENT_SIZE ? "flex" : "none"}
+        display={showError ? "flex" : "none"}
         message={`Your comment can't be over ${Definitions.MAX_COMMENT_SIZE} characters long!`}
         color="red"
       ></Alert>

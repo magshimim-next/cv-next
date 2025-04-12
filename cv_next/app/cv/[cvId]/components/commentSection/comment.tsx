@@ -34,6 +34,7 @@ const NewCommentBlock = ({
 }: NewCommentBlockProps) => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [inputValue, setInputValue] = useState(`@${parentCommenter} `);
+  const [showError, setShowError] = useState(false);
 
   useEffect(() => {
     if (commentOnCommentStatus && inputRef.current) {
@@ -58,6 +59,9 @@ const NewCommentBlock = ({
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.ctrlKey && !e.shiftKey) {
+      if (inputValue.length > Definitions.MAX_COMMENT_SIZE) {
+        return;
+      }
       e.preventDefault();
       await handleSubmit();
     } else if (e.key === "Enter" && e.ctrlKey) {
@@ -79,8 +83,11 @@ const NewCommentBlock = ({
           ref={inputRef}
           value={inputValue}
           onChange={(e) => {
-            if (e.target.value.length <= Definitions.MAX_COMMENT_SIZE) {
+            if (e.target.value.length < Definitions.MAX_COMMENT_SIZE + 1) {
               setInputValue(e.target.value);
+              setShowError(false);
+            } else {
+              setShowError(true);
             }
           }}
           onFocus={(e) =>
@@ -103,9 +110,7 @@ const NewCommentBlock = ({
         </Tooltip>
       </div>
       <Alert
-        display={
-          inputValue.length > Definitions.MAX_COMMENT_SIZE ? "flex" : "none"
-        }
+        display={showError ? "flex" : "none"}
         message={`Your comment can't be over ${Definitions.MAX_COMMENT_SIZE} characters long!`}
         color="red"
       ></Alert>
