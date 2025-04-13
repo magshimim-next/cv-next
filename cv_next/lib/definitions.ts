@@ -43,7 +43,6 @@ export class Link_Definitions {
 
 export const heroHeader: PageHeader = {
   header: `NEXT`,
-  image: `/images/logo.png`,
   subheader: `Improve the Magshimim Next Community's resumes.`,
   explanation: `As a community, we can help each other secure jobs by enhancing our members' resumes. This website is a platform to upload resumes, allow others to review them, and make them better.
 We expect all interactions to be respectful and constructive, with no tolerance for abuse, hateful comments, or any form of inappropriate behavior.`,

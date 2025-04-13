@@ -1,10 +1,9 @@
 "use client";
 import Link from "next/link";
 import { Upload } from "lucide-react";
-import Image from "next/image";
-import logo from "@/public/images/logo.png";
 import { ModeToggle } from "@/components/layout/navbar/modeToggle";
 import Tooltip from "@/components/ui/tooltip";
+import DynamicLogo from "@/components/ui/DynamicLogo";
 import { PopupToggle } from "./popupToggle";
 
 export default function Navbar() {
@@ -18,10 +17,11 @@ export default function Navbar() {
             <div className="flex items-center">
               <Link href="/" className="flex items-center">
                 <div className="relative mr-1 h-10 w-[60px]">
-                  <Image
-                    src={logo}
-                    alt="Logo"
+                  <DynamicLogo
+                    width={70}
+                    height={70}
                     className="h-full w-full object-contain"
+                    alt="Logo"
                   />
                 </div>
                 <span className="text-2xl font-bold leading-none text-white">

@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Team_Credits as Credits } from "@/lib/definitions";
+import DynamicLogo from "@/components/ui/DynamicLogo";
 
 const Footer: React.FC = () => {
   return (
@@ -49,13 +49,7 @@ const Footer: React.FC = () => {
       </div>
 
       <div className="mb-2 mt-3 flex justify-center">
-        <Image
-          alt="Footer image"
-          loading="lazy"
-          width="125"
-          height="75"
-          src="/images/logo.png"
-        />
+        <DynamicLogo width={125} height={75} alt="Footer image" />
       </div>
       <div className="mb-2 flex justify-center text-center">
         <p>
