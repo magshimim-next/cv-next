@@ -72,34 +72,42 @@ const NewCommentBlock = ({
 
   return commentOnCommentStatus ? (
     <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <textarea
-          ref={inputRef}
-          value={inputValue}
-          onChange={(e) => {
-            if (e.target.value.length < Definitions.MAX_COMMENT_SIZE + 1) {
-              setInputValue(e.target.value);
-              setShowError(false);
-            } else {
-              setShowError(true);
+      <div className="flex items-end justify-between gap-2">
+        <div className="flex w-full flex-col">
+          <textarea
+            ref={inputRef}
+            value={inputValue}
+            onChange={(e) => {
+              if (e.target.value.length < Definitions.MAX_COMMENT_SIZE + 1) {
+                setInputValue(e.target.value);
+                setShowError(false);
+              } else {
+                setShowError(true);
+              }
+            }}
+            onFocus={(e) =>
+              e.currentTarget.setSelectionRange(
+                e.currentTarget.value.length,
+                e.currentTarget.value.length
+              )
             }
-          }}
-          onFocus={(e) =>
-            e.currentTarget.setSelectionRange(
-              e.currentTarget.value.length,
-              e.currentTarget.value.length
-            )
-          }
-          onKeyDown={handleKeyDown}
-          rows={2}
-          className="mb-1 mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-        />
+            onKeyDown={handleKeyDown}
+            rows={2}
+            className="mb-1 mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+          />
+          <div className="px-1 text-right text-sm">
+            <span
+              className={`${
+                inputValue.length >= Definitions.MAX_COMMENT_SIZE
+                  ? "text-red-500"
+                  : "text-gray-500"
+              }`}
+            >
+              {inputValue.length} / {Definitions.MAX_COMMENT_SIZE} characters
+            </span>
+          </div>
+        </div>
+
         <Tooltip id="Reply Icon" message="Reply">
           <RxPlus
             style={{ fontSize: "5vh", cursor: "pointer" }}
@@ -109,6 +117,7 @@ const NewCommentBlock = ({
           />
         </Tooltip>
       </div>
+
       <Alert
         display={showError ? "flex" : "none"}
         message={`Your comment can't be over ${Definitions.MAX_COMMENT_SIZE} characters long!`}
