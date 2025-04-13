@@ -135,12 +135,10 @@ export default function Page() {
                   />
 
                   <div className="mt-1 flex justify-between text-sm">
-                    {errors.description && (
-                      <p className="text-red-500">
-                        {errors.description.message}
-                      </p>
-                    )}
-                    <span className={`${charCountColor}`}>
+                    <div className="text-red-500">
+                      {errors.description?.message || <span>&nbsp;</span>}
+                    </div>
+                    <span className={charCountColor}>
                       {currentLength} / {Definitions.MAX_DESCRIPTION_SIZE}{" "}
                       characters
                     </span>
