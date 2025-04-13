@@ -105,34 +105,44 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
   return (
     <form className="mb-2" ref={formRef} action={formAction}>
       <div
-        className="grid grid-cols-[90%_10%] rounded-lg rounded-t-lg border border-gray-200 bg-white py-2
-                            pl-4 pr-2 dark:border-gray-700 dark:bg-gray-800"
+        className="grid grid-cols-[1fr_auto] items-end gap-x-2 rounded-lg border border-gray-200
+             bg-white p-2 dark:border-gray-700 dark:bg-gray-800"
       >
-        <label htmlFor={COMMENT_FIELD_NAME} className="sr-only">
-          Your comment
-        </label>
-        <textarea
-          id={COMMENT_FIELD_NAME}
-          name={COMMENT_FIELD_NAME}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          value={text}
-          rows={5}
-          className={`
-    row-span-2 mt-2 min-h-[2.5rem] w-full resize-none flex-col overflow-auto
-    border-0 px-0 text-sm leading-5 text-gray-900
-    focus:outline-none focus:ring-0 dark:bg-gray-800
-    dark:text-white dark:placeholder-gray-400
-  `}
-          placeholder="Write a comment..."
-        />
+        <div className="flex w-full flex-col">
+          <label htmlFor={COMMENT_FIELD_NAME} className="sr-only">
+            Your comment
+          </label>
+          <textarea
+            id={COMMENT_FIELD_NAME}
+            name={COMMENT_FIELD_NAME}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            value={text}
+            rows={5}
+            className="mt-2 w-full resize-none border-0 text-sm leading-5 text-gray-900 
+                 focus:outline-none focus:ring-0 dark:bg-gray-800 dark:text-white 
+                 dark:placeholder-gray-400"
+            placeholder="Write a comment..."
+          />
+          <div className="mt-1 text-right text-sm text-gray-500">
+            <span
+              className={`${
+                text.length >= Definitions.MAX_COMMENT_SIZE
+                  ? "text-red-500"
+                  : "text-gray-500"
+              }`}
+            >
+              {text.length} / {Definitions.MAX_COMMENT_SIZE} characters
+            </span>
+          </div>
+        </div>
 
         <button
           type="submit"
           disabled={text.length > Definitions.MAX_COMMENT_SIZE}
-          className="col-start-2 row-start-2 flex-col items-center rounded-lg bg-slate-50 px-4
-                                  py-2.5 hover:bg-gray-300 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800
-                                  dark:text-white dark:hover:bg-gray-500/50 dark:focus:ring-gray-900"
+          className="flex h-fit items-center justify-center rounded-lg bg-slate-50 px-4 py-2.5
+               hover:bg-gray-300 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800
+               dark:text-white dark:hover:bg-gray-500/50 dark:focus:ring-gray-900"
         >
           <Tooltip id="Comment Icon" message="send">
             <RxPaperPlane />
