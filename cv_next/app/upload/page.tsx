@@ -111,7 +111,7 @@ export default function Page() {
               required: "Description is required",
               maxLength: {
                 value: Definitions.MAX_DESCRIPTION_SIZE,
-                message: `Description must not exceed 500 ${Definitions.MAX_DESCRIPTION_SIZE} characters`,
+                message: `Description must not exceed ${Definitions.MAX_DESCRIPTION_SIZE} characters`,
               },
               minLength: {
                 value: 1,
