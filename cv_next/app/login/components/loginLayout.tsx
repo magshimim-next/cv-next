@@ -1,9 +1,9 @@
 "use client";
-import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { Visible_Error_Messages, heroHeader } from "@/lib/definitions";
 import { useError } from "@/providers/error-provider";
+import DynamicLogo from "@/components/ui/DynamicLogo";
 import Login from "./login";
 
 export const LoginLayout = () => {
@@ -33,18 +33,14 @@ export const LoginLayout = () => {
         <div className="flex flex-1 flex-col items-center gap-4 text-center lg:gap-8">
           <div className="flex flex-col items-center justify-center space-y-4">
             <h1 className="flex select-none items-center justify-center text-4xl font-bold lg:text-7xl">
-              {heroHeader.image && (
-                <div className="mr-4 flex-shrink-0">
-                  <Image
-                    src={heroHeader.image}
-                    width={125}
-                    height={75}
-                    alt="Header image"
-                    className="object-cover"
-                    draggable="false"
-                  />
-                </div>
-              )}
+              <div className="mr-4 flex-shrink-0">
+                <DynamicLogo
+                  width={125}
+                  height={75}
+                  alt="Header image"
+                  className="object-cover"
+                />
+              </div>
               {heroHeader.header}
             </h1>
             <h2 className="text-xl font-light text-muted-foreground lg:text-3xl">
