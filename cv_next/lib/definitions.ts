@@ -19,6 +19,7 @@ export default class Definitions {
   public static readonly FIRST_LOGIN_REDIRECT = "first_login";
   public static readonly LOGIN_REDIRECT = "login";
   public static readonly AUTH_DEFAULT_REDIRECT = "/";
+  public static readonly GITHUB_REPO = "magshimim-next/cv-next";
 }
 
 export class API_DEFINITIONS {
