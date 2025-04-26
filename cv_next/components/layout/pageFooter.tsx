@@ -106,7 +106,7 @@ const Footer: React.FC = () => {
               href={`https://github.com/${Definitions.GITHUB_REPO}/releases/tag/${version}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="mx-auto flex items-center text-muted-foreground hover:animate-pulse hover:text-black dark:hover:text-white"
+              className="mx-auto flex items-center  hover:animate-pulse hover:text-black dark:hover:text-white"
             >
               <FaCodeBranch className="text-base" />
               <span className="flex items-center rounded px-0.5 py-0.5  transition-all">
