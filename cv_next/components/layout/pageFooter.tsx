@@ -86,13 +86,13 @@ const Footer: React.FC = () => {
           &copy; {new Date().getFullYear()} Magshimim Next. All rights reserved.
         </p>
       </div>
-      <div className="mt-1 rounded-md opacity-50 shadow-md">
+      <div className="mt-1 rounded-md opacity-50 shadow-md hover:shadow-xl">
         <div className="mb-1 flex justify-center">
-          <div className="mb-1 flex h-fit max-w-fit items-center justify-center px-5 text-center text-xs hover:shadow-xl sm:text-left">
+          <div className="mb-1 flex h-fit max-w-fit items-center justify-center px-5 text-center text-xs  sm:text-left">
             {`Credit to our team: ${Credits.slice(0, -1).join(", ")} and ${Credits.slice(-1)}`}
           </div>
         </div>
-        <div className="flex justify-center text-center text-xs hover:shadow-xl sm:text-left">
+        <div className="flex justify-center text-center text-xs sm:text-left">
           <span className="mb-2 text-xs ">
             {`Want to see more amazing people? Go to our `}
             <Link href="/hall" className="text-blue-500 hover:underline">
@@ -100,22 +100,22 @@ const Footer: React.FC = () => {
             </Link>
           </span>
         </div>
+        {version && (
+          <div className="flex w-full items-center justify-center ">
+            <a
+              href={`https://github.com/${Definitions.GITHUB_REPO}/releases/tag/${version}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mx-auto flex items-center text-muted-foreground hover:animate-pulse hover:text-black dark:hover:text-white"
+            >
+              <FaCodeBranch className="text-base" />
+              <span className="flex items-center rounded px-0.5 py-0.5  transition-all">
+                {version}
+              </span>
+            </a>
+          </div>
+        )}
       </div>
-      {version && (
-        <div className="flex w-full items-center justify-center">
-          <a
-            href={`https://github.com/${Definitions.GITHUB_REPO}/releases/tag/${version}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mx-auto flex items-center text-muted-foreground hover:animate-pulse hover:text-black dark:hover:text-white"
-          >
-            <FaCodeBranch className="text-base" />
-            <span className="flex items-center rounded px-0.5 py-0.5  transition-all">
-              {version}
-            </span>
-          </a>
-        </div>
-      )}
     </footer>
   );
 };
