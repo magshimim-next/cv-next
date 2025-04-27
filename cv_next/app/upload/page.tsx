@@ -120,7 +120,12 @@ export default function Page() {
             render={({ field }) => (
               <div>
                 <InputTextArea
-                  onChange={field.onChange}
+                  onChange={(newValue: string) => {
+                    // One over the actual limit, to show the error message
+                    if (newValue.length <= 501) {
+                      field.onChange(newValue);
+                    }
+                  }}
                   value={field.value}
                   placeHolder="Enter a brief description (1-500 chars)"
                 />

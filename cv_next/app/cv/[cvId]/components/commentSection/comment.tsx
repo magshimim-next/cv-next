@@ -17,10 +17,11 @@ import { setResolved } from "@/app/actions/comments/setResolved";
 import { deleteComment } from "@/app/actions/comments/deleteComment";
 import Alert from "@/components/ui/alert";
 import Tooltip from "@/components/ui/tooltip";
+import Definitions from "@/lib/definitions";
 
 interface NewCommentBlockProps {
   commentOnCommentStatus: boolean;
-  addNewCommentClickEvent: (commentData: string) => Promise<void>;
+  addNewCommentClickEvent: (commentData: string) => Promise<boolean>;
   setCommentOnCommentStatus: (status: boolean) => void;
   parentCommenter: string;
 }
@@ -33,6 +34,7 @@ const NewCommentBlock = ({
 }: NewCommentBlockProps) => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [inputValue, setInputValue] = useState(`@${parentCommenter} `);
+  const [showError, setShowError] = useState(false);
 
   useEffect(() => {
     if (commentOnCommentStatus && inputRef.current) {
@@ -46,12 +48,20 @@ const NewCommentBlock = ({
   }, [commentOnCommentStatus, inputValue, parentCommenter]);
 
   const handleSubmit = async () => {
-    await addNewCommentClickEvent(inputValue);
-    setCommentOnCommentStatus(!commentOnCommentStatus);
+    if (inputValue.length > Definitions.MAX_COMMENT_SIZE) {
+      return;
+    }
+    const addCommentResult = await addNewCommentClickEvent(inputValue);
+    if (addCommentResult) {
+      setCommentOnCommentStatus(!commentOnCommentStatus);
+    }
   };
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.ctrlKey && !e.shiftKey) {
+      if (inputValue.length > Definitions.MAX_COMMENT_SIZE) {
+        return;
+      }
       e.preventDefault();
       await handleSubmit();
     } else if (e.key === "Enter" && e.ctrlKey) {
@@ -61,37 +71,49 @@ const NewCommentBlock = ({
   };
 
   return commentOnCommentStatus ? (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <textarea
-        ref={inputRef}
-        value={inputValue}
-        onChange={(e) => {
-          setInputValue(e.target.value);
+    <div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
-        onFocus={(e) =>
-          e.currentTarget.setSelectionRange(
-            e.currentTarget.value.length,
-            e.currentTarget.value.length
-          )
-        }
-        onKeyDown={handleKeyDown}
-        rows={2}
-        className="mb-1 mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-      />
-      <Tooltip id="Reply Icon" message="Reply">
-        <RxPlus
-          style={{ fontSize: "5vh", cursor: "pointer" }}
-          onClick={async () => {
-            await handleSubmit();
+      >
+        <textarea
+          ref={inputRef}
+          value={inputValue}
+          onChange={(e) => {
+            if (e.target.value.length < Definitions.MAX_COMMENT_SIZE + 1) {
+              setInputValue(e.target.value);
+              setShowError(false);
+            } else {
+              setShowError(true);
+            }
           }}
+          onFocus={(e) =>
+            e.currentTarget.setSelectionRange(
+              e.currentTarget.value.length,
+              e.currentTarget.value.length
+            )
+          }
+          onKeyDown={handleKeyDown}
+          rows={2}
+          className="mb-1 mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
         />
-      </Tooltip>
+        <Tooltip id="Reply Icon" message="Reply">
+          <RxPlus
+            style={{ fontSize: "5vh", cursor: "pointer" }}
+            onClick={async () => {
+              await handleSubmit();
+            }}
+          />
+        </Tooltip>
+      </div>
+      <Alert
+        display={showError ? "flex" : "none"}
+        message={`Your comment can't be over ${Definitions.MAX_COMMENT_SIZE} characters long!`}
+        color="red"
+      ></Alert>
     </div>
   ) : null;
 };
@@ -329,7 +351,7 @@ export default function Comment({
   };
 
   const addNewCommentClickEvent = useCallback(
-    async (commentData: string) => {
+    async (commentData: string): Promise<boolean> => {
       const commentToAdd: NewCommentModel = {
         data: commentData,
         document_id: comment.document_id,
@@ -379,7 +401,9 @@ export default function Comment({
             revalidate: true,
           }
         );
+        return true;
       }
+      return false;
     },
     [comment, userId, mutate]
   );

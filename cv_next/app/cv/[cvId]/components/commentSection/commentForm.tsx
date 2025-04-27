@@ -8,6 +8,7 @@ import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { addComment } from "@/app/actions/comments/addComment";
 import Definitions from "@/lib/definitions";
 import Tooltip from "@/components/ui/tooltip";
+import Alert from "@/components/ui/alert";
 
 const COMMENT_FIELD_NAME = "comment";
 
@@ -18,12 +19,14 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
   const supabase = createClientComponent();
   const [formData, setFormData] = useState(new FormData());
   const [text, setText] = useState("");
+  const [showError, setShowError] = useState(false);
 
   const formAction = async () => {
+    setShowError(false);
+
     // Reset the form after submission and check if the comment is empty
     formRef.current?.reset();
     if ((formData.get(COMMENT_FIELD_NAME) as String).length <= 0) return;
-    setText("");
     const userId = await supabase.auth.getUser();
     if (userId.error) {
       router.push(`/${Definitions.LOGIN_REDIRECT}?next=${pathname}`);
@@ -52,8 +55,12 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
       );
 
       try {
-        await addComment(comment);
+        const result = await addComment(comment);
+        if (result.ok) {
+          setText("");
+        }
         mutate(cv.id);
+        return result.ok;
       } catch (error) {
         // Rollback optimistic update
         mutate(
@@ -62,28 +69,37 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
             currentComments.filter((comment) => comment.id !== comment.id),
           false
         );
+        return false;
       }
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && e.ctrlKey) {
       e.preventDefault();
       setText((prev) => prev + "\n");
     } else if (e.key === "Enter" && !e.shiftKey && !e.ctrlKey) {
+      if (text.length > Definitions.MAX_COMMENT_SIZE) {
+        return;
+      }
       e.preventDefault();
-      formAction();
-      setText("");
+      const res = await formAction();
+      if (res) setText("");
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    setText(value);
+    if (e.target.value.length < Definitions.MAX_COMMENT_SIZE + 1) {
+      const value = e.target.value;
+      setText(value);
 
-    const updatedFormData = new FormData();
-    updatedFormData.set(COMMENT_FIELD_NAME, value);
-    setFormData(updatedFormData);
+      const updatedFormData = new FormData();
+      updatedFormData.set(COMMENT_FIELD_NAME, value);
+      setFormData(updatedFormData);
+      setShowError(false);
+    } else {
+      setShowError(true);
+    }
   };
 
   return (
@@ -113,6 +129,7 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
 
         <button
           type="submit"
+          disabled={text.length > Definitions.MAX_COMMENT_SIZE}
           className="col-start-2 row-start-2 flex-col items-center rounded-lg bg-slate-50 px-4
                                   py-2.5 hover:bg-gray-300 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800
                                   dark:text-white dark:hover:bg-gray-500/50 dark:focus:ring-gray-900"
@@ -122,6 +139,11 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
           </Tooltip>
         </button>
       </div>
+      <Alert
+        display={showError ? "flex" : "none"}
+        message={`Your comment can't be over ${Definitions.MAX_COMMENT_SIZE} characters long!`}
+        color="red"
+      ></Alert>
     </form>
   );
 }
