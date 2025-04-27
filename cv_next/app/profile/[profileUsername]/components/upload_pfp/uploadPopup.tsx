@@ -15,7 +15,7 @@ interface PopupProps {
   closeCb: () => void;
 }
 
-export default function Popup({ closeCb }: PopupProps) {
+export default function PfpUploadPopup({ closeCb }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { userData, mutateUser } = useUser();
 

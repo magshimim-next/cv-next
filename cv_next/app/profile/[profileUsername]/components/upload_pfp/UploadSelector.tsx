@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { RiImageAddFill } from "react-icons/ri";
 
@@ -19,11 +19,23 @@ export default function UploadSelector({
   onSubmit,
 }: UploadSelectorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const isImageFile = (file: File): boolean => {
+    return file.type.startsWith("image/");
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
+    setError(null);
 
     if (file) {
+      if (!isImageFile(file)) {
+        setError("Please select an image file (JPEG, PNG, etc.)");
+        onFileSelect(null, null);
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         onFileSelect(file, reader.result as string);
@@ -41,8 +53,14 @@ export default function UploadSelector({
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0] || null;
+    setError(null);
 
     if (file) {
+      if (!isImageFile(file)) {
+        setError("Please select an image file (JPEG, PNG, etc.)");
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         onFileSelect(file, reader.result as string);
@@ -92,6 +110,10 @@ export default function UploadSelector({
             ref={fileInputRef}
           />
         </div>
+
+        {error && (
+          <div className="mt-2 text-center text-sm text-red-500">{error}</div>
+        )}
 
         <button
           type="submit"

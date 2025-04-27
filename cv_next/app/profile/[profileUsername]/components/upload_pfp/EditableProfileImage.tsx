@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { Upload } from "lucide-react";
 import { useState } from "react";
-import Popup from "./uploadPopup";
+import PfpUploadPopup from "./uploadPopup";
 
 export default function EditableProfileImage({ user }: { user: UserModel }) {
   const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
@@ -29,7 +29,7 @@ export default function EditableProfileImage({ user }: { user: UserModel }) {
 
       {isProfilePopupOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <Popup
+          <PfpUploadPopup
             closeCb={() => {
               setIsProfilePopupOpen(false);
             }}

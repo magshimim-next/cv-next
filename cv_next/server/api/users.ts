@@ -441,7 +441,6 @@ export async function isCurrentFirstLogin(): Promise<Result<Boolean, string>> {
 }
 
 /**
-<<<<<<< HEAD
  * Upload the new user profile to a bucket.
  *
  * @param {string} userId - The ID of the user to update
