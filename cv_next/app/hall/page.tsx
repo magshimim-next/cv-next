@@ -41,7 +41,7 @@ export default function Page() {
           <h3 className="pb-8 text-base font-light text-muted-foreground lg:text-lg">
             Want to join us and help? Reach out to us in the community chat!
           </h3>
-          <ul>
+          <ul className="mb-8">
             <div className="flex h-auto w-full flex-row-reverse flex-wrap justify-center gap-3 self-center xl:flex">
               {Team_Credits.map((contributor) => (
                 <div
