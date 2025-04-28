@@ -8,11 +8,10 @@ const FloatingStars = ({ starCount = 15 }) => {
     setIsLoaded(true);
   }, []);
 
-  // Generate stars with randomized properties
   const stars = useMemo(() => {
     return Array.from({ length: starCount }).map((_, index) => ({
       id: index,
-      left: `${Math.random() * 100}%`,
+      left: `${Math.random() * 90}%`,
       size: Math.floor(Math.random() * 70) + 30,
       delay: 2 + Math.random() * 12,
       duration: Math.random() * 10 + 15,
