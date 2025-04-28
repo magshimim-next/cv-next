@@ -10,8 +10,7 @@ import {
 } from "@/lib/definitions";
 import useWindowSize from "@/hooks/useWindowSize";
 import styles from "./styles.module.css";
-
-const startsCount = 15;
+import FloatingStars from "./stars";
 
 export default function Page() {
   const { scrollHeight, height } = useWindowSize();
@@ -21,11 +20,9 @@ export default function Page() {
       <title>Hall of Fame</title>
       <ul
         style={{ height: scrollHeight ? `${scrollHeight}px` : `${height}px` }}
-        className={`${styles.crowns} absolute left-0 top-0 z-[-1] w-full overflow-hidden`}
+        className={styles.starsContainer}
       >
-        {Array.from({ length: startsCount }).map((_, index) => (
-          <li key={index} className={styles["crowns li"]}></li>
-        ))}
+        <FloatingStars />
       </ul>
       <div className="relative mx-auto h-full w-[700px] max-w-full xl:w-[1400px]">
         <ScrollToTop />
