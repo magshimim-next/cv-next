@@ -1,9 +1,9 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { FaCodeBranch } from "react-icons/fa";
 import Definitions, { Team_Credits as Credits } from "@/lib/definitions";
+import DynamicLogo from "@/components/ui/DynamicLogo";
 
 function useGithubVersion(repo = Definitions.GITHUB_REPO) {
   const [version, setVersion] = useState<string | null>(null);
@@ -73,13 +73,7 @@ const Footer: React.FC = () => {
       </div>
 
       <div className="mb-2 mt-3 flex justify-center">
-        <Image
-          alt="Footer image"
-          loading="lazy"
-          width="125"
-          height="75"
-          src="/images/logo.png"
-        />
+        <DynamicLogo width={125} height={75} alt="Footer image" />
       </div>
       <div className="mb-2 flex justify-center text-center">
         <p>

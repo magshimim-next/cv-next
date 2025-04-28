@@ -34,7 +34,6 @@ declare global {
     header: string;
     subheader: string;
     explanation?: string;
-    image: string;
   };
 
   type NewCvModel = Omit<
