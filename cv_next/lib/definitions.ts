@@ -120,6 +120,12 @@ export const Visible_Error_Messages: ErrorMessages = {
     title: "Inactive User",
     description: "That page requires that you get approved by the moderators.",
   },
+  UploadFailed: {
+    keyword: "UploadFailed",
+    title: "Upload Failed",
+    description:
+      "An error occurred while uploading your new proifle picture. Please try again.",
+  },
   DuplicateUsername: {
     keyword: "DuplicateUsername",
     title: "Duplicate Username",
