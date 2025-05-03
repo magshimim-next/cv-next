@@ -7,6 +7,7 @@ import SupabaseHelper from "@/server/api/supabaseHelper";
 import { compareHashes } from "@/helpers/blobHelper";
 import logger from "@/server/base/logger";
 import { Storage } from "@/lib/supabase-definitions";
+import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 
 const blobDataMap = new Map<string, Blob>();
 
@@ -29,6 +30,12 @@ async function revalidatePreviewHandler(data: {
   cvLink: string;
 }): Promise<NextResponse> {
   const cvLink = data.cvLink;
+
+  if (!validateGoogleViewOnlyUrl(cvLink)) {
+    logger.error(cvLink, "URL didn't match regex: ");
+    return NextResponse.json({ message: "Invalid URL" }, { status: 500 });
+  }
+
   const docsID = getIdFromLink(cvLink);
   const fileName = docsID + ".png";
   const fetchDocsResponse = await fetch(getGoogleImageUrl(cvLink), {
