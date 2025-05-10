@@ -1,7 +1,32 @@
+"use client";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { FaCodeBranch } from "react-icons/fa";
+import Definitions from "@/lib/definitions";
 import DynamicLogo from "@/components/ui/DynamicLogo";
 
+function useGithubVersion(repo = Definitions.GITHUB_REPO) {
+  const [version, setVersion] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(`https://api.github.com/repos/${repo}/releases/latest`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.tag_name) {
+          setVersion(data.tag_name);
+        }
+      })
+      .catch(() => {
+        return null;
+      });
+  }, [repo]);
+
+  return version;
+}
+
 const Footer: React.FC = () => {
+  const version = useGithubVersion();
+
   return (
     <footer className="inset-x-0 bottom-0 mt-auto w-full p-4 font-light text-primary">
       <div className="container flex items-center justify-center">
@@ -64,6 +89,21 @@ const Footer: React.FC = () => {
             </Link>
           </span>
         </div>
+        {version && (
+          <div className="flex w-full items-center justify-center ">
+            <a
+              href={`https://github.com/${Definitions.GITHUB_REPO}/releases/tag/${version}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mx-auto flex items-center  hover:animate-pulse hover:text-black dark:hover:text-white"
+            >
+              <FaCodeBranch className="text-base" />
+              <span className="flex items-center rounded px-0.5 py-0.5  transition-all">
+                {version}
+              </span>
+            </a>
+          </div>
+        )}
       </div>
     </footer>
   );

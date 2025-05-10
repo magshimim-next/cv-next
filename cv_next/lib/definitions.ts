@@ -19,6 +19,7 @@ export default class Definitions {
   public static readonly FIRST_LOGIN_REDIRECT = "first_login";
   public static readonly LOGIN_REDIRECT = "login";
   public static readonly AUTH_DEFAULT_REDIRECT = "/";
+  public static readonly GITHUB_REPO = "magshimim-next/cv-next";
 }
 
 export class API_DEFINITIONS {
@@ -203,6 +204,12 @@ export const Visible_Error_Messages: ErrorMessages = {
     keyword: "InactiveUser",
     title: "Inactive User",
     description: "That page requires that you get approved by the moderators.",
+  },
+  UploadFailed: {
+    keyword: "UploadFailed",
+    title: "Upload Failed",
+    description:
+      "An error occurred while uploading your new proifle picture. Please try again.",
   },
   DuplicateUsername: {
     keyword: "DuplicateUsername",
