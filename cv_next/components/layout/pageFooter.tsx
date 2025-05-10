@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { FaCodeBranch } from "react-icons/fa";
-import Definitions, { Team_Credits as Credits } from "@/lib/definitions";
+import Definitions from "@/lib/definitions";
 import DynamicLogo from "@/components/ui/DynamicLogo";
 
 function useGithubVersion(repo = Definitions.GITHUB_REPO) {
@@ -80,22 +80,17 @@ const Footer: React.FC = () => {
           &copy; {new Date().getFullYear()} Magshimim Next. All rights reserved.
         </p>
       </div>
-      <div className="mt-1 rounded-md opacity-50 shadow-md hover:shadow-xl">
-        <div className="mb-1 flex justify-center">
-          <div className="mb-1 flex h-fit max-w-fit items-center justify-center px-5 text-center text-xs  sm:text-left">
-            {`Credit to our team: ${Credits.slice(0, -1).join(", ")} and ${Credits.slice(-1)}`}
-          </div>
-        </div>
+      <div className="mt-1 rounded-md">
         <div className="flex justify-center text-center text-xs sm:text-left">
           <span className="mb-2 text-xs ">
-            {`Want to see more amazing people? Go to our `}
+            {`Want to see some amazing people? Go to our `}
             <Link href="/hall" className="text-blue-500 hover:underline">
-              &nbsp;Hall of Fame
+              Hall of Fame
             </Link>
           </span>
         </div>
         {version && (
-          <div className="flex w-full items-center justify-center ">
+          <div className="flex w-full items-center justify-center">
             <a
               href={`https://github.com/${Definitions.GITHUB_REPO}/releases/tag/${version}`}
               target="_blank"
