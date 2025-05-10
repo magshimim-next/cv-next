@@ -80,17 +80,17 @@ const Footer: React.FC = () => {
           &copy; {new Date().getFullYear()} Magshimim Next. All rights reserved.
         </p>
       </div>
-      <div className="mt-1 rounded-md opacity-50 shadow-md">
-        <div className="flex justify-center text-center text-xs hover:shadow-xl sm:text-left">
+      <div className="mt-1 rounded-md">
+        <div className="flex justify-center text-center text-xs sm:text-left">
           <span className="mb-2 text-xs ">
             {`Want to see some amazing people? Go to our `}
             <Link href="/hall" className="text-blue-500 hover:underline">
-              &nbsp;Hall of Fame
+              Hall of Fame
             </Link>
           </span>
         </div>
         {version && (
-          <div className="flex w-full items-center justify-center ">
+          <div className="flex w-full items-center justify-center">
             <a
               href={`https://github.com/${Definitions.GITHUB_REPO}/releases/tag/${version}`}
               target="_blank"
