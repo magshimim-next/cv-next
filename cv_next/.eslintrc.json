@@ -5,7 +5,8 @@
     "plugin:react-hooks/recommended",
     "plugin:import/typescript",
     "plugin:import/recommended",
-    "plugin:jsdoc/recommended"
+    "plugin:jsdoc/recommended",
+    "plugin:prettier/recommended"
   ],
   "plugins": [
     "prettier",
