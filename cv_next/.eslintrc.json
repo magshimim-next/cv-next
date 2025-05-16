@@ -4,14 +4,17 @@
     "next/core-web-vitals",
     "plugin:react-hooks/recommended",
     "plugin:import/typescript",
-    "plugin:import/recommended"
+    "plugin:import/recommended",
+    "plugin:jsdoc/recommended"
   ],
   "plugins": [
     "prettier",
     "unused-imports",
     "import",
     "eslint-plugin-import-helpers",
-    "no-relative-import-paths"
+    "no-relative-import-paths",
+    "@typescript-eslint",
+    "jsdoc"
   ],
   "rules": {
     "@next/next/no-html-link-for-pages": "off",
@@ -57,7 +60,51 @@
       "warn",
       { "allowSameFolder": true, "rootDir": "cv_next/", "prefix": "@" }
     ],
-    "no-inline-comments": "warn"
+    "no-inline-comments": "warn",
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": [
+          "class",
+          "interface",
+          "typeAlias",
+          "enum",
+          "typeParameter"
+        ],
+        "format": ["PascalCase"]
+      },
+      {
+        "selector": "function",
+        "format": ["PascalCase", "camelCase"],
+        "filter": {
+          "regex": "^[A-Z]",
+          "match": true
+        }
+      },
+      {
+        "selector": ["variable", "parameter", "function", "method", "property"],
+        "format": ["camelCase"],
+        // Allow `__dirname` and other double-underscored variables
+        "leadingUnderscore": "allow"
+      },
+      {
+        "selector": ["enumMember", "variable"],
+        "modifiers": ["const", "global"],
+        "format": ["UPPER_CASE"]
+      }
+    ],
+    "jsdoc/require-jsdoc": [
+      "warn",
+      {
+        "require": {
+          "FunctionDeclaration": true,
+          "MethodDefinition": true,
+          "ClassDeclaration": false,
+          "ArrowFunctionExpression": false,
+          "FunctionExpression": false
+        }
+      }
+    ]
   },
   "settings": {
     "import/parsers": {
@@ -68,6 +115,9 @@
         "alwaysTryTypes": true,
         "project": "cv_next"
       }
+    },
+    "jsdoc": {
+      "mode": "typescript"
     }
   }
 }
