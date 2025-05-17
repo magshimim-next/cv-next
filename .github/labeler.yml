@@ -2,109 +2,108 @@
 
 #
 # Area Labels
-# 
+#
 
-area/api: 
+area/api:
   - changed-files:
-    - any-glob-to-any-file:
-        - "**/api/**"
+      - any-glob-to-any-file:
+          - "**/api/**"
 
 area/backend:
   - changed-files:
-    - any-glob-to-any-file:
-        - "**/pages/api/**"
+      - any-glob-to-any-file:
+          - "**/pages/api/**"
 
 area/components:
   - changed-files:
-    - any-glob-to-any-file:
-        - "**/components/**"
+      - any-glob-to-any-file:
+          - "**/components/**"
 
 area/build:
   - changed-files:
-    - any-glob-to-any-file:
-      - "**/next.config.js"
-      - "**/package.json"
-      - "**/package-lock.json"
-      - "**/yarn.lock"
-      - "**/Dockerfile"
-      - "**/DockerfileDev"
-      - "**/.eslintrc.js" 
-      - "**/babel.config.js"
-      - "**/webpack.config.js"
+      - any-glob-to-any-file:
+          - "**/next.config.js"
+          - "**/package.json"
+          - "**/package-lock.json"
+          - "**/yarn.lock"
+          - "**/Dockerfile"
+          - "**/DockerfileDev"
+          - "**/.eslintrc.js"
+          - "**/babel.config.js"
+          - "**/webpack.config.js"
 
 area/github:
   - changed-files:
-    - any-glob-to-any-file:
-        - ".github/**"
+      - any-glob-to-any-file:
+          - ".github/**"
 
 area/database:
   - changed-files:
-    - any-glob-to-any-file:
-        - "**/prisma/**"
+      - any-glob-to-any-file:
+          - "**/prisma/**"
 
 area/frontend:
   - changed-files:
-    - any-glob-to-any-file:
-        - "**/pages/**"
-        - "**/components/**"
-        - "**/*.js"
-        - "**/*.jsx"
-        - "**/*.ts"
-        - "**/*.tsx"
+      - any-glob-to-any-file:
+          - "**/pages/**"
+          - "**/components/**"
+          - "**/*.js"
+          - "**/*.jsx"
+          - "**/*.ts"
+          - "**/*.tsx"
 
 area/logging:
   - changed-files:
-    - any-glob-to-any-file:
-        - "**/log/**"
+      - any-glob-to-any-file:
+          - "**/log/**"
 
 area/performance:
   - changed-files:
-    - any-glob-to-any-file:
-        - "**/performance/**"
+      - any-glob-to-any-file:
+          - "**/performance/**"
 
-area/release:  
+area/release:
   - changed-files:
-    - any-glob-to-any-file:
-        - "**/release/**"
+      - any-glob-to-any-file:
+          - "**/release/**"
 
 area/server:
   - changed-files:
-    - any-glob-to-any-file:
-        - "**/server/**"
+      - any-glob-to-any-file:
+          - "**/server/**"
 
 area/security:
   - changed-files:
-    - any-glob-to-any-file:
-        - "**/security/**"
+      - any-glob-to-any-file:
+          - "**/security/**"
 
 area/testing:
   - changed-files:
-    - any-glob-to-any-file:
-        - "**/test/**"
-        - "**/*.test.js"
-        - "**/*.test.jsx"
-        - "**/*.test.ts"
-        - "**/*.test.tsx"
+      - any-glob-to-any-file:
+          - "**/test/**"
+          - "**/*.test.js"
+          - "**/*.test.jsx"
+          - "**/*.test.ts"
+          - "**/*.test.tsx"
 
 area/UI:
   - changed-files:
-    - any-glob-to-any-file:
-        - "**/ui/**"
+      - any-glob-to-any-file:
+          - "**/ui/**"
 
 area/UX:
   - changed-files:
-    - any-glob-to-any-file:
-        - "**/ux/**"
-
+      - any-glob-to-any-file:
+          - "**/ux/**"
 
 kind/documentation:
   - changed-files:
       - any-glob-to-any-file:
-        - docs/**/*
-        - '**/*.md'
-        - mkdocs.yml
-        - NOTICE
-        - LICENSE
+          - docs/**/*
+          - "**/*.md"
+          - mkdocs.yml
+          - NOTICE
+          - LICENSE
 
 kind/feature:
   - title: "feat:"
