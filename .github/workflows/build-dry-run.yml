@@ -1,0 +1,29 @@
+name: Dry Run Build
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: |
+          cd ./cv_next 
+          npm install
+
+      - name: Run build
+        run: |
+          cd ./cv_next
+          npm run build
