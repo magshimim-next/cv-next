@@ -121,5 +121,8 @@
     "jsdoc": {
       "mode": "typescript"
     }
+  },
+  "parserOptions": {
+    "project": "./tsconfig.json"
   }
 }
