@@ -104,3 +104,11 @@ kind/documentation:
           - mkdocs.yml
           - NOTICE
           - LICENSE
+
+kind/feature:
+  - title: "feat:"
+  - title: "feature:"
+
+kind/bugfix:
+  - title: "fix:"
+  - title: "bug:"
