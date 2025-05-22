@@ -97,7 +97,7 @@ NextJS treats everything as a server component by default, so add these when nee
 
 - `use client` - in client components.
 - `use server` - in server components and actions.
-- `import server-only` - in places that can only bbe imported by server components.
+- `import server-only` - in places that can only be imported by server components.
 
 ## Folders Organization
 
