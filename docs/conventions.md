@@ -88,15 +88,6 @@ Classes should be documented above their declaration and include the general pur
 If the class attributes are set using the `constructor`, they can be documented there with the `@param` tag. \
 If an attribute isn't set there, it needs to be documented one line above it with `/** */`.
 
-### Function Calls
-
-If the functions you are calling use ambiguous parameters, or the function's name doesn't really explain what it should get, add the parameter's name as a comment before the value like this:
-
-```ts
-setupSupabase(SUPABASE_URL, /* useAnon= */ true, /* schema= */ "public");
-```
-
-Note that there are some extensions that already do that.
 
 # Files and Folders Structure
 
