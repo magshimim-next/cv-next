@@ -11,16 +11,25 @@ const navLinks = [
     route: "Login",
     path: "/login",
     req_login: false,
+    req_admin: false,
   },
   {
     route: "Upload",
     path: "/upload",
     req_login: true,
+    req_admin: false,
+  },
+  {
+    route: "Admin",
+    path: "/admin",
+    req_login: true,
+    req_admin: true,
   },
   {
     route: "Signout",
     path: "/signout",
     req_login: true,
+    req_admin: false,
   },
 ];
 
@@ -69,7 +78,7 @@ const UserDataComponent: React.FC<{
 
 export default function Popup({ closeCb }: PopupProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const { userData, mutateUser: _mutateUser } = useUser();
+  const { userData, userIsAdmin, mutateUser: _mutateUser } = useUser();
 
   useEffect(() => {
     if (dialogRef.current) {
@@ -95,43 +104,26 @@ export default function Popup({ closeCb }: PopupProps) {
           <IoCloseSharp size={30} />
         </div>
         <ul className="mt-20 flex w-full flex-col items-center">
-          {userData ? (
-            <div className="mt-10 flex w-full flex-col items-center">
-              <UserDataComponent closeCb={closeCb} />
-              {navLinks.map(
-                (link) =>
-                  link.req_login && (
-                    <li key={link.route}>
-                      <Link
-                        className="text-lg font-medium hover:underline"
-                        href={link.path}
-                        onClick={closeCb}
-                      >
-                        {link.route}
-                      </Link>
-                    </li>
-                  )
-              )}
-            </div>
-          ) : (
-            <div className="mt-10 flex w-full flex-col items-center">
-              <UserDataComponent closeCb={closeCb} />
-              {navLinks.map(
-                (link) =>
-                  !link.req_login && (
-                    <li key={link.route}>
-                      <Link
-                        className="text-lg font-medium hover:underline"
-                        href={link.path}
-                        onClick={closeCb}
-                      >
-                        {link.route}
-                      </Link>
-                    </li>
-                  )
-              )}
-            </div>
-          )}
+          <div className="mt-10 flex w-full flex-col items-center">
+            <UserDataComponent closeCb={closeCb} />
+            {navLinks
+              .filter((link) => {
+                if (link.req_admin) return userIsAdmin;
+                if (link.req_login) return userData;
+                return !userData;
+              })
+              .map((link) => (
+                <li key={link.route}>
+                  <Link
+                    className="text-lg font-medium hover:underline"
+                    href={link.path}
+                    onClick={closeCb}
+                  >
+                    {link.route}
+                  </Link>
+                </li>
+              ))}
+          </div>
         </ul>
       </dialog>
     </div>
