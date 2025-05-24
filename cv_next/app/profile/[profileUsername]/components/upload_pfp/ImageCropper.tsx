@@ -1,7 +1,12 @@
 "use client";
 
 import { useRef } from "react";
-import { Cropper, CropperRef, CircleStencil } from "react-advanced-cropper";
+import {
+  Cropper,
+  CropperRef,
+  CircleStencil,
+  ImageRestriction,
+} from "react-advanced-cropper";
 import "react-advanced-cropper/dist/style.css";
 
 interface ImageCropperProps {
@@ -40,8 +45,7 @@ export default function ImageCropper({
               stencilProps={{
                 aspectRatio: 1,
               }}
-              imageRestriction="fitArea"
-              fitMethod="cover"
+              imageRestriction={ImageRestriction.fitArea}
             />
           </div>
         </div>
