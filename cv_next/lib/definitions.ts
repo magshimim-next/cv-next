@@ -65,48 +65,6 @@ export const routes: route[] = [
   },
 ];
 
-export const Team_Credits = [
-  "Ron Peer",
-  "Arad Donenfeld",
-  "Avner Mindelis",
-  "Nevo Sznajder",
-  "Yechiam Weiss",
-  "Adam Liberov",
-  "Denis Granovsky",
-  "Ethan Krimer",
-  "Ilan Yashuk",
-  "Assaf Kabesa",
-  "Alon Green",
-  "Yarden Perets",
-  "Omri Anidgar",
-  "Shoham Yosef Bitton",
-];
-
-export const External_Credits = [
-  {
-    name: "Adam Abramov",
-    title: "Tech Lead Reverse Engineer",
-    avatar_url:
-      "https://media.licdn.com/dms/image/v2/C4D03AQHAcHq94s1hnw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1646571585264?e=1740614400&v=beta&t=V6Dvr0Yh4tLkkjz4cvLYrstcuQse_cCOTki6pJIci8c",
-    contribution:
-      "Insufficient Verification of Data Authenticity & CSRF Account Takeover.",
-    linkedIn: "https://www.linkedin.com/in/theresearcher/",
-    gitHub: "",
-  },
-  {
-    name: "Youval Daizi",
-    contribution: "Home button caused users to log out.",
-  },
-  {
-    name: "Harel Kristal",
-    title: "Penetration Tester",
-    contribution:
-      "Login and Signout were always visible & Developer's data leak.",
-    linkedIn: "https://www.linkedin.com/in/harel-kristal/",
-  },
-  // Add more contributors as needed
-];
-
 type ErrorMessages = {
   [key: string]: {
     keyword: string;

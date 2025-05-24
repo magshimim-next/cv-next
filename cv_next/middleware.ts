@@ -82,7 +82,6 @@ export const config = {
     "/cv/:cvId*",
     "/profile/:profileUsername*",
     "/upload",
-    "/hall",
     "/first_login/:profileUsername*",
     "/admin",
   ],
