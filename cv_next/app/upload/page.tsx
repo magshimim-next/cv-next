@@ -27,6 +27,8 @@ export default function Page() {
   const {
     control,
     handleSubmit,
+    clearErrors,
+    setError,
     formState: { errors, isValid },
   } = useForm<FormValues>({
     mode: "onChange",
@@ -129,7 +131,17 @@ export default function Page() {
               return (
                 <div className="flex flex-col">
                   <InputTextArea
-                    onChange={field.onChange}
+                    onChange={(newValue: string) => {
+                      if (newValue.length <= Definitions.MAX_DESCRIPTION_SIZE) {
+                        field.onChange(newValue);
+                        clearErrors("description");
+                      } else {
+                        setError("description", {
+                          type: "maxLength",
+                          message: `Description must not exceed ${Definitions.MAX_DESCRIPTION_SIZE} characters`,
+                        });
+                      }
+                    }}
                     value={field.value}
                     placeHolder="Enter a brief description (1-500 chars)"
                   />
