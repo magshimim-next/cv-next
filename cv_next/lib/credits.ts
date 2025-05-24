@@ -148,6 +148,8 @@ export const External_Credits = [
   },
   {
     name: "Ilan Yashuk",
+    avatar_url:
+      "https://lh3.googleusercontent.com/a-/ALV-UjVR0nUI62XzA-7fGTz3ENy6xpLKe4u-d5FVU8DkqbxDpHf4YK5Ogw=s48-p",
     title: "",
     contribution: "Worked on initial development of the project.",
     linkedIn: "https://www.linkedin.com/in/ilan-yashuk/",
