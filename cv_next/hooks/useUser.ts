@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import { getUser } from "@/app/actions/users/getUser";
+import { getUser, isUserAdmin } from "@/app/actions/users/getUser";
 
 const getUserClient = async () => {
   const userDataResponse = await getUser();
@@ -10,6 +10,15 @@ const getUserClient = async () => {
     return userDataResponse.val;
   } else {
     throw { message: userDataResponse.where };
+  }
+};
+
+const getUserAdminStatus = async () => {
+  const adminCheckResponse = await isUserAdmin();
+  if (adminCheckResponse.ok) {
+    return true;
+  } else {
+    return false;
   }
 };
 
@@ -42,6 +51,24 @@ export const useUser = () => {
     },
   });
 
+  const {
+    data: userIsAdmin,
+    mutate: mutateAdmin,
+    error: adminError,
+  } = useSWR(data?.id ? "user_admin" : null, getUserAdminStatus, {
+    revalidateOnMount: false,
+    revalidateOnFocus: false,
+  });
+
+  useEffect(() => {
+    if (mounted && !userIsAdmin && !adminError) {
+      mutateAdmin();
+    }
+    if (mounted && userIsAdmin && adminError) {
+      mutateAdmin(undefined, false);
+    }
+  }, [mounted, mutateAdmin, userIsAdmin, adminError]);
+
   const activeUser = data?.id;
   const loading = !data && !error;
   const loginState = activeUser && !error;
@@ -60,6 +87,7 @@ export const useUser = () => {
     loading,
     loginState,
     userData: data,
+    userIsAdmin: userIsAdmin,
     mutateUser: mutate,
   };
 };
