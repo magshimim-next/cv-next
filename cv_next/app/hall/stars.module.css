@@ -1,0 +1,38 @@
+.starsContainer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  display: block;
+  background: url(https://static.vecteezy.com/system/resources/previews/023/258/446/non_2x/a-star-with-transparent-background-sticker-illustration-free-png.png)
+    no-repeat center/contain;
+  filter: drop-shadow(2px 4px 10px gold);
+  animation: floatUpward linear infinite;
+  bottom: -100px;
+  opacity: 0;
+}
+
+@keyframes floatUpward {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.8;
+  }
+  95% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-120vh) rotate(720deg);
+    opacity: 0;
+  }
+}

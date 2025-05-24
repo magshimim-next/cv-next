@@ -13,6 +13,7 @@ import { checkUploadCV } from "@/app/actions/cvs/uploadCv";
 import PopupWrapper from "@/components/ui/popupWrapper";
 import openLink from "@/public/images/openLink.png";
 import { CvPreview } from "@/components/cvPerview";
+import Definitions from "@/lib/definitions";
 
 type FormValues = {
   link: string;
@@ -26,6 +27,8 @@ export default function Page() {
   const {
     control,
     handleSubmit,
+    clearErrors,
+    setError,
     formState: { errors, isValid },
   } = useForm<FormValues>({
     mode: "onChange",
@@ -109,33 +112,52 @@ export default function Page() {
             rules={{
               required: "Description is required",
               maxLength: {
-                value: 500,
-                message: "Description must not exceed 500 characters",
+                value: Definitions.MAX_DESCRIPTION_SIZE,
+                message: `Description must not exceed ${Definitions.MAX_DESCRIPTION_SIZE} characters`,
               },
               minLength: {
                 value: 1,
                 message: "Description must have at least 1 character",
               },
             }}
-            render={({ field }) => (
-              <div>
-                <InputTextArea
-                  onChange={(newValue: string) => {
-                    // One over the actual limit, to show the error message
-                    if (newValue.length <= 501) {
-                      field.onChange(newValue);
-                    }
-                  }}
-                  value={field.value}
-                  placeHolder="Enter a brief description (1-500 chars)"
-                />
-                {errors.description && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.description.message}
-                  </p>
-                )}
-              </div>
-            )}
+            render={({ field }) => {
+              const currentLength = field.value?.length || 0;
+
+              const charCountColor =
+                currentLength >= Definitions.MAX_DESCRIPTION_SIZE
+                  ? "text-red-500"
+                  : "text-gray-500";
+
+              return (
+                <div className="flex flex-col">
+                  <InputTextArea
+                    onChange={(newValue: string) => {
+                      if (newValue.length <= Definitions.MAX_DESCRIPTION_SIZE) {
+                        field.onChange(newValue);
+                        clearErrors("description");
+                      } else {
+                        setError("description", {
+                          type: "maxLength",
+                          message: `Description must not exceed ${Definitions.MAX_DESCRIPTION_SIZE} characters`,
+                        });
+                      }
+                    }}
+                    value={field.value}
+                    placeHolder="Enter a brief description (1-500 chars)"
+                  />
+
+                  <div className="mt-1 flex justify-between text-sm">
+                    <div className="text-red-500">
+                      {errors.description?.message || <span>&nbsp;</span>}
+                    </div>
+                    <span className={charCountColor}>
+                      {currentLength} / {Definitions.MAX_DESCRIPTION_SIZE}{" "}
+                      characters
+                    </span>
+                  </div>
+                </div>
+              );
+            }}
           />
         </div>
 
