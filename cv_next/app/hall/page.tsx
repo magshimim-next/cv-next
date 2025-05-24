@@ -4,10 +4,7 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLinkedinIn, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
-import {
-  External_Credits as contributors,
-  Team_Credits,
-} from "@/lib/definitions";
+import { External_Credits as contributors, Team_Credits } from "@/lib/credits";
 import useWindowSize from "@/hooks/useWindowSize";
 import styles from "./styles.module.css";
 import FloatingStars from "./stars";
