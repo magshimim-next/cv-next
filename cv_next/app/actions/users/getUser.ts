@@ -7,6 +7,7 @@ import {
   getUserById,
   getUserByUsername,
   isCurrentFirstLogin,
+  userIsAdmin,
 } from "@/server/api/users";
 import { Err, Ok } from "@/lib/utils";
 import logger, { logErrorWithTrace } from "@/server/base/logger";
@@ -128,4 +129,18 @@ export const isUserAuthor = async (
   }
   const authorData = JSON.parse(JSON.stringify(cv.user_id));
   return Ok(userId.val == authorData.id);
+};
+
+/**
+ * Checks if the current user is an admin.
+ * @returns {Promise<Result<void, string>>} A promise that resolves to a result which include empty ok if admin, and an error otherwise.
+ */
+export const isUserAdmin = async (): Promise<Result<void, string>> => {
+  const adminCheckResult = await userIsAdmin();
+  if (adminCheckResult.ok) {
+    return Ok(adminCheckResult.val);
+  } else {
+    logErrorWithTrace(adminCheckResult);
+    return Err("Couldn't check if the user is an admin");
+  }
 };
