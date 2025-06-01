@@ -59,3 +59,34 @@ export function getGoogleImageUrl(
 
   return url;
 }
+
+/**
+ * The function will extract export links for Google Docs or Drive files.
+ * @param url - The Google Docs or Drive URL to extract export links from.
+ * @returns PDF and DOCX export urls if the url is valid, otherwise null.
+ */
+export function getExportLinks(
+  url: string
+): { pdfUrl: string; docxUrl: string } | null {
+  const fileId = getIdFromLink(url);
+  if (!fileId) return null;
+
+  const isDocs = url.includes("docs.google.com");
+  const isDrive = url.includes("drive.google.com");
+
+  if (isDocs) {
+    return {
+      pdfUrl: `https://docs.google.com/document/d/${fileId}/export?format=pdf`,
+      docxUrl: `https://docs.google.com/document/d/${fileId}/export?format=docx`,
+    };
+  }
+
+  if (isDrive) {
+    return {
+      pdfUrl: `https://drive.google.com/uc?export=download&id=${fileId}`,
+      docxUrl: `https://drive.google.com/uc?export=download&id=${fileId}`,
+    };
+  }
+
+  return null;
+}
