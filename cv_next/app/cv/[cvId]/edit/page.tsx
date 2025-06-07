@@ -68,11 +68,11 @@ export default function Page({ params }: { params: { cvId: string } }) {
     fetchCV();
   }, [decodedCvId, reset, setValue, showError]);
 
-  const onSubmit = async (data: FormValues) => {
-    console.log("new data", data);
+  const onSubmit = async (_data: FormValues) => {
+    // placeholder for submit logic
   };
 
-  if (!cvData) return <div>Loading...</div>; // or a skeleton
+  if (!cvData) return <div>Loading...</div>;
 
   return (
     <main className="flex flex-col items-center justify-center p-6 py-10">
