@@ -1,5 +1,6 @@
 "use server";
 
+import { Err, Ok } from "@/lib/utils";
 import { getCvById } from "@/server/api/cvs";
 
 export const getCvsFromComments = async (
@@ -22,4 +23,21 @@ export const getCvsFromComments = async (
   }
 
   return Array.from(uniqueCvs);
+};
+
+/**
+ * Retrieves CV data by CV ID.
+ *
+ * @param {string} cvId - The ID of the CV to retrieve
+ * @return {Promise<Result<CvModel, string>>} A promise that resolves to a Result containing the CV data or an error message
+ */
+export const getCvModel = async (
+  cvId: string
+): Promise<Result<CvModel, string>> => {
+  const cv = await getCvById(cvId);
+
+  if (cv === null) {
+    return Err("Couldn't get the requested CV");
+  }
+  return Ok(cv);
 };
