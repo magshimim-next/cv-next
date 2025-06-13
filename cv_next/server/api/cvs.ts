@@ -5,6 +5,7 @@ import { Tables, CvKeys, ProfileKeys } from "@/lib/supabase-definitions";
 import { filterValues } from "@/types/models/filters";
 import Definitions from "@/lib/definitions";
 import logger from "@/server/base/logger";
+import { Err, Ok } from "@/lib/utils";
 import SupabaseHelper from "./supabaseHelper";
 
 /**
@@ -213,4 +214,29 @@ export async function uploadCV(cv: NewCvModel): Promise<null | CvModel> {
     return null;
   }
   return data[0];
+}
+
+/**
+ * Marks a comment as deleted.
+ *
+ * @param {string} cvId - The ID of the CV to be marked as deleted.
+ * @return {Promise<Result<void, string>>} A promise that resolves to a Result object indicating the success or failure of the operation.
+ */
+export async function markCVAsDeleted(
+  cvId: string
+): Promise<Result<void, string>> {
+  try {
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.cvs)
+      .update({ deleted: true })
+      .eq(CvKeys.id, cvId);
+    if (error) {
+      return Err(markCVAsDeleted.name, { postgrestError: error });
+    }
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(markCVAsDeleted.name, {
+      err: err as Error,
+    });
+  }
 }
