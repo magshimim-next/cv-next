@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { InputBox, InputTextArea } from "@/app/feed/components/inputbar";
 import { DropdownInput } from "@/app/feed/components/filters/valueSelect";
 import { Button } from "@/app/feed/components/button";
-import { decodeValue, getAllNumbersFromArr } from "@/lib/utils";
+import { decodeValue, encodeValue, getAllNumbersFromArr } from "@/lib/utils";
 import Categories from "@/types/models/categories";
 import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 import { useError } from "@/providers/error-provider";
@@ -16,7 +16,7 @@ import PopupWrapper from "@/components/ui/popupWrapper";
 import openLink from "@/public/images/openLink.png";
 import { CvPreview } from "@/components/cvPerview";
 import Definitions from "@/lib/definitions";
-import { checkUpdateCV } from "@/app/actions/cvs/uploadCv";
+import { checkUpdateCV, validateUpdate } from "@/app/actions/cvs/uploadCv";
 
 type FormValues = {
   link: string;
@@ -33,7 +33,7 @@ export default function Page({ params }: { params: { cvId: string } }) {
     notFound();
   }
   const { showError } = useError();
-
+  const router = useRouter();
   const {
     control,
     handleSubmit,
@@ -60,6 +60,11 @@ export default function Page({ params }: { params: { cvId: string } }) {
           description: data.val.description || "",
           cvCategories: data.val.cv_categories || [],
         });
+        const canEdit = await validateUpdate(data.val);
+        if (!canEdit.ok) {
+          router.push(`/cv/${encodeValue(data.val.id)}`);
+          return;
+        }
         setCvData(data.val);
       } else {
         showError("CV not found.", "");
@@ -67,7 +72,7 @@ export default function Page({ params }: { params: { cvId: string } }) {
     };
 
     fetchCV();
-  }, [decodedCvId, reset, setValue, showError]);
+  }, [decodedCvId, reset, router, setValue, showError]);
 
   const onSubmit = async (data: FormValues) => {
     if (!cvData) {
