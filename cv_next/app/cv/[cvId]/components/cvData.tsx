@@ -13,11 +13,11 @@ import { encodeValue } from "@/lib/utils";
 export default function CvData({
   cv,
   validCV,
-  currentUserIsAuthor,
+  currentUserIsAuthorOrAdmin: currentUserIsAuthorOrAdmin,
 }: {
   cv: CvModel;
   validCV: boolean;
-  currentUserIsAuthor: boolean;
+  currentUserIsAuthorOrAdmin: boolean;
 }) {
   const uploader = JSON.parse(JSON.stringify(cv.user_id));
   const displayName = uploader.display_name || uploader.username;
@@ -25,11 +25,10 @@ export default function CvData({
   const router = useRouter();
 
   if (!validCV) {
-    if (currentUserIsAuthor) {
+    if (currentUserIsAuthorOrAdmin) {
       showError(
         Visible_Error_Messages.CurrentUserPrivateCV.title,
-        Visible_Error_Messages.CurrentUserPrivateCV.description,
-        () => router.push("/feed")
+        Visible_Error_Messages.CurrentUserPrivateCV.description
       );
     } else {
       showError(
