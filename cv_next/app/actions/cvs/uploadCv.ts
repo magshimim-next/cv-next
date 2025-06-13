@@ -94,9 +94,8 @@ export const checkUpdateCV = async ({
 }: {
   cvData: CvModel;
 }): Promise<string | null> => {
-  // TODO: change to the getUser of #99 after merge
-  const authorId = cvData.user_id as any;
-  cvData.user_id = authorId["id"];
+  const authorObject = cvData.user_id as any;
+  cvData.user_id = authorObject["id"];
 
   const validateError = await validateUpdate(cvData);
   if (!validateError.ok) {
@@ -106,6 +105,17 @@ export const checkUpdateCV = async ({
       "Failed to update CV. Please try again later."
     );
   }
+
+  if (
+    !cvData.document_link?.trim() ||
+    !cvData.description?.trim() ||
+    cvData.cv_categories == undefined ||
+    cvData.cv_categories.length <= 0
+  ) {
+    logger.error("Missing variables!");
+    return "Some variables are missing! Please fill them in.";
+  }
+
   const transformedURL = transformGoogleViewOnlyUrl(cvData.document_link);
 
   if (transformedURL == "") {
@@ -149,16 +159,6 @@ async function validateUpdate(cvData: CvModel): Promise<Result<void, string>> {
     return Err(
       "An error has occurred while deleting the comment. Please try again later."
     );
-  }
-
-  if (
-    !cvData.document_link?.trim() ||
-    !cvData.description?.trim() ||
-    cvData.cv_categories == undefined ||
-    cvData.cv_categories.length <= 0
-  ) {
-    logger.error("Missing variables!");
-    return Err("Some variables are missing! Please fill them in.");
   }
 
   const resultAdminCheck = await userIsAdmin();
