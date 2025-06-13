@@ -73,6 +73,12 @@ export default function Page({ params }: { params: { cvId: string } }) {
     }
   };
 
+  const closeAlerts = () => {
+    setShowDeleteAlert(false);
+    setShowCancelAlert(false);
+    setShowUpdateAlert(false);
+  };
+
   useEffect(() => {
     const fetchCV = async () => {
       const data = await getCvModel(decodedCvId);
@@ -265,7 +271,10 @@ export default function Page({ params }: { params: { cvId: string } }) {
             <Button
               type="button"
               text="Update"
-              onClick={() => setShowUpdateAlert(true)}
+              onClick={() => {
+                closeAlerts();
+                setShowUpdateAlert(true);
+              }}
               isDisabled={!isValid}
             />
           </div>
@@ -277,7 +286,10 @@ export default function Page({ params }: { params: { cvId: string } }) {
                   Cancel without saving
                 </span>
               }
-              onClick={() => setShowCancelAlert(true)}
+              onClick={() => {
+                closeAlerts();
+                setShowCancelAlert(true);
+              }}
             />
           </div>
 
@@ -290,7 +302,10 @@ export default function Page({ params }: { params: { cvId: string } }) {
                 </span>
               }
               className="bg-red-500 px-6 text-white hover:bg-red-600"
-              onClick={() => setShowDeleteAlert(true)}
+              onClick={() => {
+                closeAlerts();
+                setShowDeleteAlert(true);
+              }}
             />
           </div>
           <Alert
