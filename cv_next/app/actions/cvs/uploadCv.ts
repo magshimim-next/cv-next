@@ -148,8 +148,8 @@ export const checkUpdateCV = async ({
 };
 
 /**
- * The function will see if the comment can be deleted
- * @param CvModel The comment model to be deleted
+ * The function will see if the CV can be deleted
+ * @param CvModel The CV model to be deleted
  * @returns A promise of error or null based on if the action can be performed
  */
 export async function validateUpdate(
