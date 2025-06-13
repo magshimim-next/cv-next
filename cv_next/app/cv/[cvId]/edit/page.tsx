@@ -32,6 +32,9 @@ export default function Page({ params }: { params: { cvId: string } }) {
   const decodedCvId = decodeValue(decodeURIComponent(cvId));
   const [cvData, setCvData] = useState<CvModel | null>(null);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [showCancelAlert, setShowCancelAlert] = useState(false);
+  const [showUpdateAlert, setShowUpdateAlert] = useState(false);
+
   const { showError } = useError();
   const router = useRouter();
   const {
@@ -55,7 +58,7 @@ export default function Page({ params }: { params: { cvId: string } }) {
     notFound();
   }
 
-  const onAlertClick = async (type: boolean) => {
+  const onDeleteAlertClick = async (type: boolean) => {
     setShowDeleteAlert(false);
     if (!type) return;
     const deleteResult = await deleteCV(decodedCvId);
@@ -115,7 +118,7 @@ export default function Page({ params }: { params: { cvId: string } }) {
   if (!cvData) return <div>Loading...</div>;
 
   return (
-    <main className="flex flex-col items-center justify-center p-6 py-10">
+    <main className="flex flex-col items-center justify-center p-6 py-5">
       <title>Edit CV</title>
       <h1 className="mb-8 text-3xl font-bold">Edit CV</h1>
       <form
@@ -257,35 +260,69 @@ export default function Page({ params }: { params: { cvId: string } }) {
           )}
         </div>
 
-        <div className="flex justify-center">
-          <Button
-            text="Update"
-            onClick={handleSubmit(onSubmit)}
-            isDisabled={!isValid}
-          />
-        </div>
+        <div className="flex-col justify-center">
+          <div className="mb-3 flex justify-center">
+            <Button
+              type="button"
+              text="Update"
+              onClick={() => setShowUpdateAlert(true)}
+              isDisabled={!isValid}
+            />
+          </div>
+          <div className="mb-3 flex justify-center">
+            <Button
+              type="button"
+              text={
+                <span className="flex items-center gap-2">
+                  Cancel without saving
+                </span>
+              }
+              onClick={() => setShowCancelAlert(true)}
+            />
+          </div>
 
-        <div className="flex justify-center">
-          <Button
-            type="button"
-            text={
-              <span className="flex items-center gap-2">
-                <FiTrash2 /> Delete
-              </span>
-            }
-            className="bg-red-500 px-6 text-white hover:bg-red-600"
-            onClick={() => setShowDeleteAlert(true)}
-          />
+          <div className="mb-3 flex justify-center">
+            <Button
+              type="button"
+              text={
+                <span className="flex items-center gap-2">
+                  <FiTrash2 /> Delete
+                </span>
+              }
+              className="bg-red-500 px-6 text-white hover:bg-red-600"
+              onClick={() => setShowDeleteAlert(true)}
+            />
+          </div>
+          <Alert
+            display={showCancelAlert ? "flex" : "none"}
+            message="You sure you want to leave this CV unchanged?"
+            color="red"
+            onClick={(cancel: boolean) => {
+              setShowCancelAlert(false);
+              if (cancel) {
+                router.push(`/cv/${encodeValue(cvData.id)}`);
+              }
+            }}
+          ></Alert>
+          <Alert
+            display={showDeleteAlert ? "flex" : "none"}
+            message="You sure you want to delete this CV?"
+            color="red"
+            onClick={onDeleteAlertClick}
+          ></Alert>
+          <Alert
+            display={showUpdateAlert ? "flex" : "none"}
+            message="You sure you want to update this CV?"
+            color="green"
+            onClick={(update: boolean) => {
+              setShowUpdateAlert(false);
+              if (update) {
+                handleSubmit(onSubmit)();
+              }
+            }}
+          ></Alert>
         </div>
       </form>
-      <div className="mt-5">
-        <Alert
-          display={showDeleteAlert ? "flex" : "none"}
-          message="You sure you want to delete this CV?"
-          color="red"
-          onClick={onAlertClick}
-        ></Alert>
-      </div>
     </main>
   );
 }
