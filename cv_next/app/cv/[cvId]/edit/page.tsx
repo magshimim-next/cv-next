@@ -16,6 +16,7 @@ import PopupWrapper from "@/components/ui/popupWrapper";
 import openLink from "@/public/images/openLink.png";
 import { CvPreview } from "@/components/cvPerview";
 import Definitions from "@/lib/definitions";
+import { checkUpdateCV } from "@/app/actions/cvs/uploadCv";
 
 type FormValues = {
   link: string;
@@ -68,8 +69,23 @@ export default function Page({ params }: { params: { cvId: string } }) {
     fetchCV();
   }, [decodedCvId, reset, setValue, showError]);
 
-  const onSubmit = async (_data: FormValues) => {
-    // placeholder for submit logic
+  const onSubmit = async (data: FormValues) => {
+    if (!cvData) {
+      showError("CV data not loaded.", "");
+      return;
+    }
+    const updatedCV: CvModel = cvData;
+    updatedCV.document_link = data.link;
+    updatedCV.description = data.description;
+    updatedCV.cv_categories = data.cvCategories;
+    const updateResp = await checkUpdateCV({
+      cvData: updatedCV,
+    });
+    if (updateResp) {
+      showError(updateResp, "");
+    } else {
+      setCvData(updatedCV);
+    }
   };
 
   if (!cvData) return <div>Loading...</div>;
@@ -82,7 +98,6 @@ export default function Page({ params }: { params: { cvId: string } }) {
         className="flex w-full max-w-lg flex-col space-y-8"
         onSubmit={handleSubmit(onSubmit)}
       >
-        {/* Link */}
         <div className="flex flex-col">
           <label className="mb-2 text-lg font-medium">Link</label>
           <Controller
@@ -131,7 +146,6 @@ export default function Page({ params }: { params: { cvId: string } }) {
           />
         </div>
 
-        {/* Description */}
         <div className="flex flex-col">
           <label className="mb-2 text-lg font-medium">Description</label>
           <Controller
