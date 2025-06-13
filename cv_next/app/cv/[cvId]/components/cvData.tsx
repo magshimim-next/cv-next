@@ -9,6 +9,7 @@ import { useError } from "@/providers/error-provider";
 import { Visible_Error_Messages } from "@/lib/definitions";
 import { CvCategory } from "@/components/ui/cvCategory";
 import { encodeValue } from "@/lib/utils";
+import Tooltip from "@/components/ui/tooltip";
 
 export default function CvData({
   cv,
@@ -45,13 +46,15 @@ export default function CvData({
     <div className={`grid grid-cols-1 gap-y-4 ${showData} md:gap-x-4`}>
       <article className="relative mb-3 flex flex-col rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800">
         {currentUserIsAuthorOrAdmin && (
-          <button
-            className="absolute right-4 top-4 rounded-full p-2 transition hover:bg-gray-100 dark:hover:bg-theme-700"
-            title="Edit CV"
-            onClick={() => router.push(`/cv/${encodeValue(cv.id)}/edit`)}
-          >
-            <FiSettings size={22} />
-          </button>
+          <div className="absolute right-4 top-4 rounded-full p-2 transition hover:bg-gray-100 dark:hover:bg-theme-700">
+            <Tooltip id="Settings Icon" message="Edit CV">
+              <FiSettings
+                size={22}
+                style={{ fontSize: "5vh", cursor: "pointer" }}
+                onClick={() => router.push(`/cv/${encodeValue(cv.id)}/edit`)}
+              />
+            </Tooltip>
+          </div>
         )}
         <div className="mb-3 flex items-center">
           <div className="mr-3">
