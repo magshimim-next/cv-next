@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import Image from "next/image";
 import { notFound, useRouter } from "next/navigation";
+import { FiTrash2 } from "react-icons/fi";
 import { InputBox, InputTextArea } from "@/app/feed/components/inputbar";
 import { DropdownInput } from "@/app/feed/components/filters/valueSelect";
 import { Button } from "@/app/feed/components/button";
@@ -15,8 +16,10 @@ import { getCvModel } from "@/app/actions/cvs/fetchCvs";
 import PopupWrapper from "@/components/ui/popupWrapper";
 import openLink from "@/public/images/openLink.png";
 import { CvPreview } from "@/components/cvPerview";
-import Definitions from "@/lib/definitions";
+import Definitions, { Visible_Error_Messages } from "@/lib/definitions";
 import { checkUpdateCV, validateUpdate } from "@/app/actions/cvs/uploadCv";
+import Alert from "@/components/ui/alert";
+import { deleteCV } from "@/app/actions/cvs/deleteCv";
 
 type FormValues = {
   link: string;
@@ -28,10 +31,7 @@ export default function Page({ params }: { params: { cvId: string } }) {
   const { cvId } = params;
   const decodedCvId = decodeValue(decodeURIComponent(cvId));
   const [cvData, setCvData] = useState<CvModel | null>(null);
-
-  if (!decodedCvId) {
-    notFound();
-  }
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const { showError } = useError();
   const router = useRouter();
   const {
@@ -50,6 +50,25 @@ export default function Page({ params }: { params: { cvId: string } }) {
       cvCategories: [],
     },
   });
+
+  if (!decodedCvId) {
+    notFound();
+  }
+
+  const onAlertClick = async (type: boolean) => {
+    setShowDeleteAlert(false);
+    if (!type) return;
+    const deleteResult = await deleteCV(decodedCvId);
+    if (deleteResult.ok) {
+      router.push("/feed");
+    } else {
+      showError(
+        deleteResult.errors.err?.message ||
+          Visible_Error_Messages.DefaultError.title,
+        ""
+      );
+    }
+  };
 
   useEffect(() => {
     const fetchCV = async () => {
@@ -206,7 +225,6 @@ export default function Page({ params }: { params: { cvId: string } }) {
           />
         </div>
 
-        {/* Categories */}
         <div className="flex flex-col">
           <label className="mb-2 text-lg font-medium">Categories</label>
           <Controller
@@ -239,7 +257,6 @@ export default function Page({ params }: { params: { cvId: string } }) {
           )}
         </div>
 
-        {/* Submit */}
         <div className="flex justify-center">
           <Button
             text="Update"
@@ -247,7 +264,28 @@ export default function Page({ params }: { params: { cvId: string } }) {
             isDisabled={!isValid}
           />
         </div>
+
+        <div className="flex justify-center">
+          <Button
+            type="button"
+            text={
+              <span className="flex items-center gap-2">
+                <FiTrash2 /> Delete
+              </span>
+            }
+            className="bg-red-500 px-6 text-white hover:bg-red-600"
+            onClick={() => setShowDeleteAlert(true)}
+          />
+        </div>
       </form>
+      <div className="mt-5">
+        <Alert
+          display={showDeleteAlert ? "flex" : "none"}
+          message="You sure you want to delete this comment?"
+          color="red"
+          onClick={onAlertClick}
+        ></Alert>
+      </div>
     </main>
   );
 }
