@@ -281,7 +281,7 @@ export default function Page({ params }: { params: { cvId: string } }) {
       <div className="mt-5">
         <Alert
           display={showDeleteAlert ? "flex" : "none"}
-          message="You sure you want to delete this comment?"
+          message="You sure you want to delete this CV?"
           color="red"
           onClick={onAlertClick}
         ></Alert>
