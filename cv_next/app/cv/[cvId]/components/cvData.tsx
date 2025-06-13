@@ -44,13 +44,15 @@ export default function CvData({
   return (
     <div className={`grid grid-cols-1 gap-y-4 ${showData} md:gap-x-4`}>
       <article className="relative mb-3 flex flex-col rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800">
-        <button
-          className="absolute right-4 top-4 rounded-full p-2 transition hover:bg-gray-100 dark:hover:bg-theme-700"
-          title="Edit CV"
-          onClick={() => router.push(`/cv/${encodeValue(cv.id)}/edit`)}
-        >
-          <FiSettings size={22} />
-        </button>
+        {currentUserIsAuthorOrAdmin && (
+          <button
+            className="absolute right-4 top-4 rounded-full p-2 transition hover:bg-gray-100 dark:hover:bg-theme-700"
+            title="Edit CV"
+            onClick={() => router.push(`/cv/${encodeValue(cv.id)}/edit`)}
+          >
+            <FiSettings size={22} />
+          </button>
+        )}
         <div className="mb-3 flex items-center">
           <div className="mr-3">
             <DynamicProfileImage
