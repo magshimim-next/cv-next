@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { encodeValue } from "@/lib/utils";
 interface CVCardProps {
   cv: CvModel;
@@ -8,16 +8,16 @@ interface CVCardProps {
 }
 
 export default function CVItemLink({ cv, children }: CVCardProps) {
-  const router = useRouter();
   const encodedId = encodeValue(cv.id);
 
   return (
-    <div
+    <Link
       id={cv.id}
+      href={`/cv/${encodedId}`}
       className="relative h-full w-full max-w-full cursor-pointer overflow-hidden rounded-xl bg-white object-cover shadow-2xl"
-      onClick={() => router.push(`/cv/${encodedId}`)}
+      scroll={false}
     >
       {children}
-    </div>
+    </Link>
   );
 }
