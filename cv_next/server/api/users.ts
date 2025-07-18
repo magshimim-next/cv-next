@@ -506,6 +506,7 @@ export async function getAllUsers(
     if (user_type) {
       query = query.eq(PermsKeys.user_type, user_type);
     }
+
     const { data: users, error } = await query;
 
     if (error) {
