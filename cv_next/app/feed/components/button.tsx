@@ -19,7 +19,9 @@ export const Button = ({
   return (
     <button
       type={type || "submit"}
-      className={`${className} outline-gray-40 flex h-full w-full items-center justify-center whitespace-nowrap bg-white text-black ${isDisabled ? "opacity-25" : "cursor-pointer hover:bg-slate-200"} outline-2 ${menuBorderStyle} box-border rounded-md px-10 py-4`}
+      className={`${className ?? `bg-white text-black ${isDisabled ?? "hover:bg-slate-200"}`} outline-gray-40 flex h-full w-full items-center justify-center whitespace-nowrap 
+      ${isDisabled ? "opacity-25" : "cursor-pointer "} outline-2 
+      ${menuBorderStyle} box-border rounded-md px-10 py-4`}
       onClick={onClick}
       disabled={isDisabled}
     >
