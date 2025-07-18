@@ -503,8 +503,11 @@ export async function getAllUsers(
 
     type PermissionsWithUserData = QueryData<typeof query>;
 
-    if (user_type) {
-      query = query.eq(PermsKeys.user_type, user_type);
+    if (user_type && user_type in PermsKeys.user_types_enum) {
+      query = query.eq(
+        PermsKeys.user_type,
+        user_type as "inactive" | "active" | "admin"
+      );
     }
 
     const { data: users, error } = await query;
