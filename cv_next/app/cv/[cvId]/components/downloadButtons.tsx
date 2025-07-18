@@ -1,3 +1,4 @@
+"use client";
 import { PiFilePdfDuotone } from "react-icons/pi";
 import { TbFileTypeDocx } from "react-icons/tb";
 import { HiOutlineSave } from "react-icons/hi";
