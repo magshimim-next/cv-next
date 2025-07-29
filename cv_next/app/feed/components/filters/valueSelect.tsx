@@ -84,8 +84,7 @@ export const DropdownInput = ({
   useEffect(() => {
     setSelectTitle(selectedCategories.map(getValueById).join(", "));
     // Only update title when selectedCategories changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCategories, getValueById]);
+  }, [selectedCategories, getValueById, setSelectTitle]);
 
   return (
     <>
