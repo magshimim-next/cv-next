@@ -44,7 +44,7 @@ export function getGoogleImageUrl(
 ): string {
   const id = getIdFromLink(link);
   if (!id) {
-    return errorUrl;
+    return ERROR_URL;
   }
 
   let url = GOOGLE_URL + id;
