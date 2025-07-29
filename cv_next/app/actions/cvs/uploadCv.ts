@@ -13,11 +13,16 @@ export interface InputValues {
   cvCategories: number[] | null;
 }
 
-export const uploadCV = async ({
+/**
+ * This function will upload a CV to the server.
+ * @param {{InputValues}} param0 The expected inputs to be sent to the server with the CV.
+ * @returns {Promise<string | null>} The upload page
+ */
+export async function uploadCV({
   cvData,
 }: {
   cvData: InputValues;
-}): Promise<string | null> => {
+}): Promise<string | null> {
   // TODO: change to the getUser of #99 after merge
   const supabase = SupabaseHelper.getSupabaseInstance();
   const connectedUser = await supabase.auth.getUser();
@@ -77,23 +82,28 @@ export const uploadCV = async ({
   } else {
     return "Error uploading";
   }
-};
+}
 
-export const canUserUploadACV = async (userId: string) => {
+/**
+ * The function will check if the user can upload more CVs based on the amount it already uploaded.
+ * @param {string} userId The user ID to check for amount of CVs.
+ * @returns {Promise<boolean>} A promise that resolves to true if the user can upload or false if it already uploaded enough.
+ */
+export async function canUserUploadACV(userId: string): Promise<boolean> {
   const cvsOfUser = await getCvsByUserId(userId);
   return !cvsOfUser || cvsOfUser.length < 5;
-};
+}
 
 /**
  * The function will update a CV if the user is allowed to do so.
  * @param {CvModel} cvData The CV data to be updated
  * @returns {Promise<string | null>} A promise that resolves to an error message if the update fails, or null if it succeeds
  */
-export const updateCV = async ({
+export async function updateCV({
   cvData,
 }: {
   cvData: CvModel;
-}): Promise<string | null> => {
+}): Promise<string | null> {
   const authorObject = cvData.user_id as any;
   cvData.user_id = authorObject["id"];
 
@@ -145,12 +155,12 @@ export const updateCV = async ({
     logger.error(response, "Error updating CV");
     return "Error updating CV";
   }
-};
+}
 
 /**
  * The function will see if the CV can be deleted
- * @param CvModel The CV model to be deleted
- * @returns A promise of error or null based on if the action can be performed
+ * @param {CvModel} cvData The CV model to be deleted
+ * @returns {Promise<Result<void, string>>} A promise of error or null based on if the action can be performed
  */
 export async function validateUpdate(
   cvData: CvModel
