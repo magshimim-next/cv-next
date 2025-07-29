@@ -9,6 +9,12 @@ import { Visible_Error_Messages } from "@/lib/definitions";
 import { CvCategory } from "@/components/ui/cvCategory";
 import DownloadButtons from "./downloadButtons";
 
+/**
+ * This component displays a CV's metadata, including the uploader's information.
+ * @param {{CvModel, boolean, boolean}} param0 The props for the componment these include:
+ * The CV model, if that CV is valid, and if the current user is the author (for different errors)/
+ * @returns {Element} The component with CV data.
+ */
 export default function CvData({
   cv,
   validCV,

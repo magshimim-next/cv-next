@@ -1,11 +1,10 @@
 const GOOGLE_URL = "https://lh5.googleusercontent.com/d/";
-const errorUrl = "/images/error.webp";
+const ERROR_URL = "/images/error.webp";
 
 /**
  * Extracts the ID from a Google Drive share link.
- *
  * @param {string} link - The Google Drive share link from which to extract the ID.
- * @return {string | null} The extracted ID or null if no ID is found.
+ * @returns {string | null} The extracted ID or null if no ID is found.
  */
 export function getIdFromLink(link: string): string | null {
   const idPattern = /\/d\/([a-zA-Z0-9_-]+)/;
@@ -15,7 +14,6 @@ export function getIdFromLink(link: string): string | null {
 
 /**
  * Generates a URL suffix based on the provided width, height, and forceRatio parameters.
- *
  * @param {number} width - The width of the image.
  * @param {number} height - The height of the image.
  * @param {boolean} forceRatio - Indicates if the image should maintain its aspect ratio.
@@ -32,7 +30,6 @@ function generateUrlSuffix(
 
 /**
  * Generates a URL with or without parameters.
- *
  * @param {string} link - The base URL of the image.
  * @param {number} [width] - The width of the image.
  * @param {number} [height] - The height of the image.
@@ -62,8 +59,8 @@ export function getGoogleImageUrl(
 
 /**
  * The function will extract export links for Google Docs or Drive files.
- * @param url - The Google Docs or Drive URL to extract export links from.
- * @returns PDF and DOCX export urls if the url is valid, otherwise null.
+ * @param {string} url - The Google Docs or Drive URL to extract export links from.
+ * @returns {{ pdfUrl: string; docxUrl: string } | null } PDF and DOCX export urls if the url is valid, otherwise null.
  */
 export function getExportLinks(
   url: string

@@ -5,6 +5,11 @@ import { HiOutlineSave } from "react-icons/hi";
 import { getExportLinks } from "@/helpers/imageURLHelper";
 import Tooltip from "@/components/ui/tooltip";
 
+/**
+ * This component renders the docx and pdf downloads buttons for a CV.
+ * @param {{string}} param0 the original CV link.
+ * @returns {Element | null} The component with the download buttons.
+ */
 export default function DownloadButtons({ cvLink }: { cvLink: string }) {
   const exportLinks = getExportLinks(cvLink);
 
