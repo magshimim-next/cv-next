@@ -45,9 +45,7 @@ export const deleteCV = async (cvId: string): Promise<Result<void, string>> => {
  * @param CvModel The CV model to be deleted
  * @returns A promise of error or null based on if the action can be performed
  */
-export async function validateDelete(
-  cvData: CvModel
-): Promise<Result<void, string>> {
+async function validateDelete(cvData: CvModel): Promise<Result<void, string>> {
   const currentIdResult = await getCurrentId();
   if (!currentIdResult.ok) {
     logErrorWithTrace(currentIdResult);
