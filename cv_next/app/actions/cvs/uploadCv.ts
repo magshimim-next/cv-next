@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { uploadCV, getCvsByUserId, updateCV } from "@/server/api/cvs";
+import { uploadNewCV, getCvsByUserId, updateGivenCV } from "@/server/api/cvs";
 import { encodeValue, Err, Ok } from "@/lib/utils";
 import { transformGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 import logger, { logErrorWithTrace } from "@/server/base/logger";
@@ -13,7 +13,7 @@ export interface InputValues {
   cvCategories: number[] | null;
 }
 
-export const checkUploadCV = async ({
+export const uploadCV = async ({
   cvData,
 }: {
   cvData: InputValues;
@@ -70,7 +70,7 @@ export const checkUploadCV = async ({
 
   logger.debug(cvToUpload, "Can upload:");
 
-  const response = await uploadCV(cvToUpload);
+  const response = await uploadNewCV(cvToUpload);
   if (response) {
     logger.debug("Uploaded");
     redirect(`/cv/${encodeValue(response.id)}`);
@@ -89,7 +89,7 @@ export const canUserUploadACV = async (userId: string) => {
  * @param {CvModel} cvData The CV data to be updated
  * @returns {Promise<string | null>} A promise that resolves to an error message if the update fails, or null if it succeeds
  */
-export const checkUpdateCV = async ({
+export const updateCV = async ({
   cvData,
 }: {
   cvData: CvModel;
@@ -138,7 +138,7 @@ export const checkUpdateCV = async ({
 
   logger.debug(cvData, "Can updaate:");
 
-  const response = await updateCV(cvData);
+  const response = await updateGivenCV(cvData);
   if (response) {
     redirect(`/cv/${encodeValue(cvData.id)}`);
   } else {

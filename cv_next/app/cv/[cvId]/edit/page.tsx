@@ -17,7 +17,7 @@ import PopupWrapper from "@/components/ui/popupWrapper";
 import openLink from "@/public/images/openLink.png";
 import { CvPreview } from "@/components/cvPerview";
 import Definitions, { Visible_Error_Messages } from "@/lib/definitions";
-import { checkUpdateCV, validateUpdate } from "@/app/actions/cvs/uploadCv";
+import { updateCV, validateUpdate } from "@/app/actions/cvs/uploadCv";
 import Alert from "@/components/ui/alert";
 import { deleteCV } from "@/app/actions/cvs/deleteCv";
 
@@ -111,7 +111,7 @@ export default function Page({ params }: { params: { cvId: string } }) {
     updatedCV.document_link = data.link;
     updatedCV.description = data.description;
     updatedCV.cv_categories = data.cvCategories;
-    const updateResp = await checkUpdateCV({
+    const updateResp = await updateCV({
       cvData: updatedCV,
     });
     if (updateResp) {

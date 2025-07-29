@@ -179,7 +179,9 @@ async function applyProfileSearchToCvs(
  * @param {CvModel} cv - the CV to be updated
  * @return {Promise<PostgrestError | CvModel>} the error, if any, or the updated data if the update was successful
  */
-export async function updateCV(cv: CvModel): Promise<PostgrestError | CvModel> {
+export async function updateGivenCV(
+  cv: CvModel
+): Promise<PostgrestError | CvModel> {
   try {
     const { data, error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.cvs)
@@ -204,7 +206,7 @@ export async function updateCV(cv: CvModel): Promise<PostgrestError | CvModel> {
  * @param {NewCvModel} cv - the CV to upload
  * @return {Promise<null | CvModel>} null on error, the uploaded object if upload was successful
  */
-export async function uploadCV(cv: NewCvModel): Promise<null | CvModel> {
+export async function uploadNewCV(cv: NewCvModel): Promise<null | CvModel> {
   const { data, error } = await SupabaseHelper.getSupabaseInstance()
     .from("cvs")
     .insert(cv)

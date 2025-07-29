@@ -9,7 +9,7 @@ import { getAllNumbersFromArr } from "@/lib/utils";
 import Categories from "@/types/models/categories";
 import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 import { useError } from "@/providers/error-provider";
-import { checkUploadCV } from "@/app/actions/cvs/uploadCv";
+import { uploadCV } from "@/app/actions/cvs/uploadCv";
 import PopupWrapper from "@/components/ui/popupWrapper";
 import openLink from "@/public/images/openLink.png";
 import { CvPreview } from "@/components/cvPerview";
@@ -40,7 +40,7 @@ export default function Page() {
   });
 
   const onSubmit = async (data: FormValues) => {
-    const uploadResp = await checkUploadCV({
+    const uploadResp = await uploadCV({
       cvData: data,
     });
     if (uploadResp) {
