@@ -16,12 +16,20 @@ export const Button = ({
   type?: "button" | "submit" | "reset";
 }) => {
   const menuBorderStyle = bottomFlat ? "outline-b-0 rounded-b-none" : "";
+  const hoverStyle = !isDisabled ? "hover:bg-slate-200" : "";
+  const stateStyle = isDisabled ? "opacity-25" : "cursor-pointer";
+
   return (
     <button
       type={type || "submit"}
-      className={`${className ?? `bg-white text-black ${isDisabled ?? "hover:bg-slate-200"}`} outline-gray-40 flex h-full w-full items-center justify-center whitespace-nowrap 
-      ${isDisabled ? "opacity-25" : "cursor-pointer "} outline-2 
-      ${menuBorderStyle} box-border rounded-md px-10 py-4`}
+      className={`
+      ${className ?? "bg-white text-black"} 
+      ${hoverStyle} 
+      ${stateStyle} 
+      outline-gray-40 box-border flex h-full w-full items-center justify-center 
+      whitespace-nowrap rounded-md px-10 py-4 outline-2 
+      ${menuBorderStyle}
+    `}
       onClick={onClick}
       disabled={isDisabled}
     >
