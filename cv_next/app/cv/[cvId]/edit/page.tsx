@@ -27,6 +27,11 @@ type FormValues = {
   cvCategories: number[];
 };
 
+/**
+ * This page is the edit page for a CV. This allows changing links, description, categories, etc.
+ * @param {{string}} param0 The cv ID from the URL.
+ * @returns { Element} The edit page.
+ */
 export default function Page({ params }: { params: { cvId: string } }) {
   const { cvId } = params;
   const decodedCvId = decodeValue(decodeURIComponent(cvId));
