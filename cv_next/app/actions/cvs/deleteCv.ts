@@ -12,11 +12,10 @@ export interface InputValues {
 
 /**
  * Deletes a CV by its ID.
- *
  * @param {string} cvId - The ID of the CV to be deleted
- * @return {Promise<Result<void, string>>} A Promise that resolves to a Result object containing no value if successful, or an error message
+ * @returns {Promise<Result<void, string>>} A Promise that resolves to a Result object containing no value if successful, or an error message
  */
-export const deleteCV = async (cvId: string): Promise<Result<void, string>> => {
+export async function deleteCV(cvId: string): Promise<Result<void, string>> {
   const cvResult = await getCvById(cvId);
   if (!cvResult) {
     return Err(
@@ -38,12 +37,13 @@ export const deleteCV = async (cvId: string): Promise<Result<void, string>> => {
       "An error has occurred while deleting the CV. Please try again later."
     );
   }
-};
+}
 
 /**
  * The function will see if the CV can be deleted
- * @param CvModel The CV model to be deleted
- * @returns A promise of error or null based on if the action can be performed
+ * @param {CvModel} CvData The CV model to be deleted
+ * @param cvData
+ * @returns {Promise<Result<void, string>>} A promise of error or null based on if the action can be performed
  */
 async function validateDelete(cvData: CvModel): Promise<Result<void, string>> {
   const currentIdResult = await getCurrentId();
