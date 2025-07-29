@@ -123,6 +123,216 @@ export default function Page({ params }: { params: { cvId: string } }) {
 
   if (!cvData) return <div>Loading...</div>;
 
+  const cvActions = (
+    <div className="flex-col justify-center">
+      <div className="mb-3 flex justify-center">
+        <Button
+          type="button"
+          text="Update"
+          onClick={() => {
+            closeAlerts();
+            setShowUpdateAlert(true);
+          }}
+          isDisabled={!isValid}
+        />
+      </div>
+      <div className="mb-3 flex justify-center">
+        <Button
+          type="button"
+          text={
+            <span className="flex items-center gap-2">
+              Cancel without saving
+            </span>
+          }
+          onClick={() => {
+            closeAlerts();
+            setShowCancelAlert(true);
+          }}
+        />
+      </div>
+
+      <div className="mb-3 flex justify-center">
+        <Button
+          type="button"
+          text={
+            <span className="flex items-center gap-2">
+              <FiTrash2 /> Delete
+            </span>
+          }
+          className="bg-red-500 px-6 text-white hover:bg-red-600"
+          onClick={() => {
+            closeAlerts();
+            setShowDeleteAlert(true);
+          }}
+        />
+      </div>
+      <Alert
+        display={showCancelAlert ? "flex" : "none"}
+        message="You sure you want to leave this CV unchanged?"
+        color="red"
+        onClick={(cancel: boolean) => {
+          setShowCancelAlert(false);
+          if (cancel) {
+            router.push(`/cv/${encodeValue(cvData.id)}`);
+          }
+        }}
+      ></Alert>
+      <Alert
+        display={showDeleteAlert ? "flex" : "none"}
+        message="You sure you want to delete this CV?"
+        color="red"
+        onClick={onDeleteAlertClick}
+      ></Alert>
+      <Alert
+        display={showUpdateAlert ? "flex" : "none"}
+        message="You sure you want to update this CV?"
+        color="green"
+        onClick={(update: boolean) => {
+          setShowUpdateAlert(false);
+          if (update) {
+            handleSubmit(onSubmit)();
+          }
+        }}
+      ></Alert>
+    </div>
+  );
+
+  const linkInput = (
+    <div className="flex flex-col">
+      <label className="mb-2 text-lg font-medium">Link</label>
+      <Controller
+        name="link"
+        control={control}
+        rules={{
+          required: "Link is required",
+          validate: (value) =>
+            validateGoogleViewOnlyUrl(value) ||
+            "Invalid Google Docs link format",
+        }}
+        render={({ field }) => (
+          <div className="flex flex-col">
+            <div className="flex items-center">
+              <InputBox
+                onChange={field.onChange}
+                value={field.value}
+                placeHolder="Enter Google Docs link"
+              />
+              <PopupWrapper
+                clickable={
+                  <div className="ml-2 flex h-12 w-12 items-center justify-center">
+                    <Image
+                      className={`dark:invert ${!validateGoogleViewOnlyUrl(field.value) && "opacity-25"}`}
+                      alt=""
+                      src={openLink}
+                      width={24}
+                      height={24}
+                    />
+                  </div>
+                }
+                disableButton={!validateGoogleViewOnlyUrl(field.value)}
+              >
+                <div className="bg-secondary">
+                  {field.value && <CvPreview document_link={field.value} />}
+                </div>
+              </PopupWrapper>
+            </div>
+            {errors.link && (
+              <p className="mt-1 text-sm text-red-500">{errors.link.message}</p>
+            )}
+          </div>
+        )}
+      />
+    </div>
+  );
+
+  const descriptionInput = (
+    <div className="flex flex-col">
+      <label className="mb-2 text-lg font-medium">Description</label>
+      <Controller
+        name="description"
+        control={control}
+        rules={{
+          required: "Description is required",
+          maxLength: {
+            value: Definitions.MAX_DESCRIPTION_SIZE,
+            message: `Description must not exceed ${Definitions.MAX_DESCRIPTION_SIZE} characters`,
+          },
+          minLength: {
+            value: 1,
+            message: "Description must have at least 1 character",
+          },
+        }}
+        render={({ field }) => {
+          const currentLength = field.value?.length || 0;
+          const charCountColor =
+            currentLength >= Definitions.MAX_DESCRIPTION_SIZE
+              ? "text-red-500"
+              : "text-gray-500";
+
+          return (
+            <div className="flex flex-col">
+              <InputTextArea
+                onChange={(newValue: string) => {
+                  if (newValue.length <= Definitions.MAX_DESCRIPTION_SIZE) {
+                    field.onChange(newValue);
+                    clearErrors("description");
+                  } else {
+                    setError("description", {
+                      type: "maxLength",
+                      message: `Description must not exceed ${Definitions.MAX_DESCRIPTION_SIZE} characters`,
+                    });
+                  }
+                }}
+                value={field.value}
+                placeHolder="Enter a brief description (1–500 chars)"
+              />
+              <div className="mt-1 flex justify-between text-sm">
+                <div className="text-red-500">
+                  {errors.description?.message || <span>&nbsp;</span>}
+                </div>
+                <span className={charCountColor}>
+                  {currentLength} / {Definitions.MAX_DESCRIPTION_SIZE}{" "}
+                  characters
+                </span>
+              </div>
+            </div>
+          );
+        }}
+      />
+    </div>
+  );
+
+  const categoriesInput = (
+    <div className="flex flex-col">
+      <label className="mb-2 text-lg font-medium">Categories</label>
+      <Controller
+        name="cvCategories"
+        control={control}
+        rules={{
+          required: "Please select between 1 and 3 categories",
+          validate: (value) =>
+            (value.length >= 1 && value.length <= 3) || "Select 1–3 categories",
+        }}
+        render={({ field }) => (
+          <DropdownInput
+            onChange={(value) => field.onChange(value || [])}
+            valueIds={getAllNumbersFromArr(Object.keys(Categories.category))}
+            getValueById={(id) => Categories.category[id]}
+            valueId={field.value}
+            noneText="none"
+            placeHolder="Select categories"
+            exclude={[Categories.category.Undefined]}
+          />
+        )}
+      />
+      {errors.cvCategories && (
+        <p className="mt-1 text-sm text-red-500">
+          {errors.cvCategories.message}
+        </p>
+      )}
+    </div>
+  );
+
   return (
     <main className="flex flex-col items-center justify-center p-6 py-5">
       <title>Edit CV</title>
@@ -131,212 +341,13 @@ export default function Page({ params }: { params: { cvId: string } }) {
         className="flex w-full max-w-lg flex-col space-y-8"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="flex flex-col">
-          <label className="mb-2 text-lg font-medium">Link</label>
-          <Controller
-            name="link"
-            control={control}
-            rules={{
-              required: "Link is required",
-              validate: (value) =>
-                validateGoogleViewOnlyUrl(value) ||
-                "Invalid Google Docs link format",
-            }}
-            render={({ field }) => (
-              <div className="flex flex-col">
-                <div className="flex items-center">
-                  <InputBox
-                    onChange={field.onChange}
-                    value={field.value}
-                    placeHolder="Enter Google Docs link"
-                  />
-                  <PopupWrapper
-                    clickable={
-                      <div className="ml-2 flex h-12 w-12 items-center justify-center">
-                        <Image
-                          className={`dark:invert ${!validateGoogleViewOnlyUrl(field.value) && "opacity-25"}`}
-                          alt=""
-                          src={openLink}
-                          width={24}
-                          height={24}
-                        />
-                      </div>
-                    }
-                    disableButton={!validateGoogleViewOnlyUrl(field.value)}
-                  >
-                    <div className="bg-secondary">
-                      {field.value && <CvPreview document_link={field.value} />}
-                    </div>
-                  </PopupWrapper>
-                </div>
-                {errors.link && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.link.message}
-                  </p>
-                )}
-              </div>
-            )}
-          />
-        </div>
+        {linkInput}
 
-        <div className="flex flex-col">
-          <label className="mb-2 text-lg font-medium">Description</label>
-          <Controller
-            name="description"
-            control={control}
-            rules={{
-              required: "Description is required",
-              maxLength: {
-                value: Definitions.MAX_DESCRIPTION_SIZE,
-                message: `Description must not exceed ${Definitions.MAX_DESCRIPTION_SIZE} characters`,
-              },
-              minLength: {
-                value: 1,
-                message: "Description must have at least 1 character",
-              },
-            }}
-            render={({ field }) => {
-              const currentLength = field.value?.length || 0;
-              const charCountColor =
-                currentLength >= Definitions.MAX_DESCRIPTION_SIZE
-                  ? "text-red-500"
-                  : "text-gray-500";
+        {descriptionInput}
 
-              return (
-                <div className="flex flex-col">
-                  <InputTextArea
-                    onChange={(newValue: string) => {
-                      if (newValue.length <= Definitions.MAX_DESCRIPTION_SIZE) {
-                        field.onChange(newValue);
-                        clearErrors("description");
-                      } else {
-                        setError("description", {
-                          type: "maxLength",
-                          message: `Description must not exceed ${Definitions.MAX_DESCRIPTION_SIZE} characters`,
-                        });
-                      }
-                    }}
-                    value={field.value}
-                    placeHolder="Enter a brief description (1–500 chars)"
-                  />
-                  <div className="mt-1 flex justify-between text-sm">
-                    <div className="text-red-500">
-                      {errors.description?.message || <span>&nbsp;</span>}
-                    </div>
-                    <span className={charCountColor}>
-                      {currentLength} / {Definitions.MAX_DESCRIPTION_SIZE}{" "}
-                      characters
-                    </span>
-                  </div>
-                </div>
-              );
-            }}
-          />
-        </div>
+        {categoriesInput}
 
-        <div className="flex flex-col">
-          <label className="mb-2 text-lg font-medium">Categories</label>
-          <Controller
-            name="cvCategories"
-            control={control}
-            rules={{
-              required: "Please select between 1 and 3 categories",
-              validate: (value) =>
-                (value.length >= 1 && value.length <= 3) ||
-                "Select 1–3 categories",
-            }}
-            render={({ field }) => (
-              <DropdownInput
-                onChange={(value) => field.onChange(value || [])}
-                valueIds={getAllNumbersFromArr(
-                  Object.keys(Categories.category)
-                )}
-                getValueById={(id) => Categories.category[id]}
-                valueId={field.value}
-                noneText="none"
-                placeHolder="Select categories"
-                exclude={[Categories.category.Undefined]}
-              />
-            )}
-          />
-          {errors.cvCategories && (
-            <p className="mt-1 text-sm text-red-500">
-              {errors.cvCategories.message}
-            </p>
-          )}
-        </div>
-
-        <div className="flex-col justify-center">
-          <div className="mb-3 flex justify-center">
-            <Button
-              type="button"
-              text="Update"
-              onClick={() => {
-                closeAlerts();
-                setShowUpdateAlert(true);
-              }}
-              isDisabled={!isValid}
-            />
-          </div>
-          <div className="mb-3 flex justify-center">
-            <Button
-              type="button"
-              text={
-                <span className="flex items-center gap-2">
-                  Cancel without saving
-                </span>
-              }
-              onClick={() => {
-                closeAlerts();
-                setShowCancelAlert(true);
-              }}
-            />
-          </div>
-
-          <div className="mb-3 flex justify-center">
-            <Button
-              type="button"
-              text={
-                <span className="flex items-center gap-2">
-                  <FiTrash2 /> Delete
-                </span>
-              }
-              className="bg-red-500 px-6 text-white hover:bg-red-600"
-              onClick={() => {
-                closeAlerts();
-                setShowDeleteAlert(true);
-              }}
-            />
-          </div>
-          <Alert
-            display={showCancelAlert ? "flex" : "none"}
-            message="You sure you want to leave this CV unchanged?"
-            color="red"
-            onClick={(cancel: boolean) => {
-              setShowCancelAlert(false);
-              if (cancel) {
-                router.push(`/cv/${encodeValue(cvData.id)}`);
-              }
-            }}
-          ></Alert>
-          <Alert
-            display={showDeleteAlert ? "flex" : "none"}
-            message="You sure you want to delete this CV?"
-            color="red"
-            onClick={onDeleteAlertClick}
-          ></Alert>
-          <Alert
-            display={showUpdateAlert ? "flex" : "none"}
-            message="You sure you want to update this CV?"
-            color="green"
-            onClick={(update: boolean) => {
-              setShowUpdateAlert(false);
-              if (update) {
-                handleSubmit(onSubmit)();
-              }
-            }}
-          ></Alert>
-        </div>
+        {cvActions}
       </form>
     </main>
   );
