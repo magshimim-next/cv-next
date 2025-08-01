@@ -83,7 +83,7 @@ export async function getCvsByUserId(
  * Retrieves a paginated list of CVs based on the provided page number.
  * @param {boolean} filterOutDeleted - Indicates whether deleted CVs should be filtered out.
  * @param {number} page - The page number for pagination.
- * @param filters
+ * @param {filterValues} filters - The filters apply to CV search.
  * @returns {Promise<CvModel[] | null>} A Promise that resolves with an array of CvModel or null.
  * The user_id of the retrieved CVs is a json of the user_id, display_name of that user and it's username
  */
@@ -134,9 +134,10 @@ export async function getPaginatedCvs(
 }
 
 /**
- *
- * @param profileQuery
- * @param filters
+ * The function applys a search filter that is based on profiles.
+ * @param {any} profileQuery - The existing profiles query that will be modified.
+ * @param {filterValues} filters - The existing filter that will be applied.
+ * @returns {any} The query with the profiles filter applied.
  */
 function applyProfileSearchFilter(profileQuery: any, filters?: filterValues) {
   if (filters?.searchValue) {
@@ -149,9 +150,10 @@ function applyProfileSearchFilter(profileQuery: any, filters?: filterValues) {
 }
 
 /**
- *
- * @param query
- * @param filters
+ * The function applys a search filter that is based on categories.
+ * @param {any} query - The existing query query that will be modified.
+ * @param {filterValues} filters - The existing filter that will be applied.
+ * @returns {any} The query with the categories filter applied.
  */
 function applyCategoryFilter(query: any, filters?: filterValues) {
   if (filters?.categoryIds?.length) {
@@ -162,10 +164,11 @@ function applyCategoryFilter(query: any, filters?: filterValues) {
 }
 
 /**
- *
- * @param query
- * @param profileQuery
- * @param filters
+ * The function applies the profile filter to CV general filter.
+ * @param {any} query The general CVs query.
+ * @param {any} profileQuery The profiles query to apply.
+ * @param {filterValues} filters The current filters that are applied to the search.
+ * @returns {Promise<any>} The query with the profiles search.
  */
 async function applyProfileSearchToCvs(
   query: any,

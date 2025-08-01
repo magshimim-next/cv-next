@@ -41,8 +41,7 @@ export async function deleteCV(cvId: string): Promise<Result<void, string>> {
 
 /**
  * The function will see if the CV can be deleted
- * @param {CvModel} CvData The CV model to be deleted
- * @param cvData
+ * @param {CvModel} cvData The CV model to be deleted
  * @returns {Promise<Result<void, string>>} A promise of error or null based on if the action can be performed
  */
 async function validateDelete(cvData: CvModel): Promise<Result<void, string>> {
