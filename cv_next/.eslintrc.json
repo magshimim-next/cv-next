@@ -133,6 +133,7 @@
           "FunctionExpression": false
         }
       }
-    ]
+    ],
+    "jsdoc/no-undefined-types": "off"
   }
 }
