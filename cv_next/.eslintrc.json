@@ -62,6 +62,16 @@
             "format": ["camelCase", "PascalCase"]
           },
           {
+            "selector": ["variable"],
+            "modifiers": ["const"],
+            "format": ["camelCase"]
+          },
+          {
+            "selector": "function",
+            "format": ["PascalCase", "camelCase"],
+            "filter": { "regex": "^[A-Z]", "match": true }
+          },
+          {
             "selector": ["variable", "parameter", "function", "method"],
             "format": ["camelCase"],
             "leadingUnderscore": "allow"

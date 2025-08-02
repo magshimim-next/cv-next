@@ -2,6 +2,7 @@
 
 import { useForm, Controller } from "react-hook-form";
 import Image from "next/image";
+import { useState } from "react";
 import { InputBox, InputTextArea } from "@/app/feed/components/inputbar";
 import { DropdownInput } from "@/app/feed/components/filters/valueSelect";
 import { Button } from "@/app/feed/components/button";
@@ -14,6 +15,7 @@ import PopupWrapper from "@/components/ui/popupWrapper";
 import openLink from "@/public/images/openLink.png";
 import { CvPreview } from "@/components/cvPerview";
 import Definitions from "@/lib/definitions";
+import { ConfirmCheckbox } from "@/components/ui/ConfirmCheckbox";
 
 type FormValues = {
   link: string;
@@ -21,8 +23,14 @@ type FormValues = {
   cvCategories: number[];
 };
 
+/**
+ *
+ */
 export default function Page() {
   const { showError } = useError();
+  const [isChecked, setIsChecked] = useState(false);
+  const checkboxMessage =
+    "I agree to my CV being publically available to community members."; // You can change this string as needed
 
   const {
     control,
@@ -193,12 +201,18 @@ export default function Page() {
           )}
         </div>
 
+        <ConfirmCheckbox
+          checked={isChecked}
+          onChange={setIsChecked}
+          message={checkboxMessage}
+        />
+
         {/* Submit Button */}
         <div className="flex justify-center">
           <Button
             text="Submit"
             onClick={handleSubmit(onSubmit)}
-            isDisabled={!isValid}
+            isDisabled={!isValid || !isChecked}
           />
         </div>
       </form>
