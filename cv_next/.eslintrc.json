@@ -53,6 +53,15 @@
             "format": ["PascalCase"]
           },
           {
+            "selector": "variable",
+            "modifiers": ["exported"],
+            "format": ["PascalCase"]
+          },
+          {
+            "selector": "variable",
+            "format": ["camelCase", "PascalCase"]
+          },
+          {
             "selector": ["variable"],
             "modifiers": ["const"],
             "format": ["camelCase"]
