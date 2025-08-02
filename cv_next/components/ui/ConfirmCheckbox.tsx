@@ -8,6 +8,11 @@ interface ConfirmCheckboxProps {
   className?: string;
 }
 
+/**
+ * This is a gneric checkbox confirmation component.
+ * @param {ConfirmCheckboxProps} param0 The properties of the checkbox like state, change handler, message, and className.
+ * @returns {React.FC} The checkbox component.
+ */
 export const ConfirmCheckbox: React.FC<ConfirmCheckboxProps> = ({
   checked,
   onChange,
