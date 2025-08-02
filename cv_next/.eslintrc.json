@@ -36,7 +36,7 @@
       "files": ["*.ts", "*.tsx"],
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
-        "project": "./tsconfig.json",
+        "project": ["*/tsconfig.json"],
         "tsconfigRootDir": "."
       },
       "rules": {
@@ -58,14 +58,14 @@
             "filter": { "regex": "^[A-Z]", "match": true }
           },
           {
-            "selector": [
-              "variable",
-              "parameter",
-              "function",
-              "method",
-              "property"
-            ],
+            "selector": ["variable", "parameter", "function", "method"],
+
             "format": ["camelCase"],
+            "leadingUnderscore": "allow"
+          },
+          {
+            "selector": ["objectLiteralProperty"],
+            "format": ["snake_case", "camelCase"],
             "leadingUnderscore": "allow"
           },
           {
@@ -134,6 +134,7 @@
           "FunctionExpression": false
         }
       }
-    ]
+    ],
+    "jsdoc/no-undefined-types": "off"
   }
 }
