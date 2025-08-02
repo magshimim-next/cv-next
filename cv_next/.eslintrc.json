@@ -53,13 +53,16 @@
             "format": ["PascalCase"]
           },
           {
-            "selector": "function",
-            "format": ["PascalCase", "camelCase"],
-            "filter": { "regex": "^[A-Z]", "match": true }
+            "selector": "variable",
+            "modifiers": ["exported"],
+            "format": ["PascalCase"]
+          },
+          {
+            "selector": "variable",
+            "format": ["camelCase", "PascalCase"]
           },
           {
             "selector": ["variable", "parameter", "function", "method"],
-
             "format": ["camelCase"],
             "leadingUnderscore": "allow"
           },
