@@ -24,13 +24,14 @@ type FormValues = {
 };
 
 /**
- *
+ * This page is used to upload a CV.
+ * @returns {Element} The upload page for CVs.
  */
 export default function Page() {
   const { showError } = useError();
   const [isChecked, setIsChecked] = useState(false);
   const checkboxMessage =
-    "I agree to my CV being publically available to community members."; // You can change this string as needed
+    "I agree to my CV being publically available to community members.";
 
   const {
     control,
