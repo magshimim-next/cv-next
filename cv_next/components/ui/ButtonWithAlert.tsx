@@ -1,43 +1,37 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { Button } from "./button";
 import Alert from "./alert";
 
 interface ButtonWithAlertProps {
-  buttonText: React.ReactNode;
+  buttonContent: React.ReactNode;
   buttonClassName?: string;
   isDisabled?: boolean;
   alertMessage: string;
   alertColor?: string;
   onConfirm: () => void;
-  closeSignal?: any;
 }
 
 /**
- *
- * @param root0
- * @param root0.buttonText
- * @param root0.buttonClassName
- * @param root0.isDisabled
- * @param root0.alertMessage
- * @param root0.alertColor
- * @param root0.onConfirm
- * @param root0.closeSignal
+ * The component renders a button that trigger at alert when clicked.
+ * @param {ReactNode} buttonContent The content of the button
+ * @param {string} buttonClassName The classname of the button
+ * @param {boolean} isDisabled Whether the button is disabled
+ * @param {string} alertMessage The message shown in the alert
+ * @param {string} alertColor The color of the alert defaults to red.
+ * @param {() => void} onConfirm The action to perform.
+ * @returns {JSX.Element} A button with an alert dialog.
  */
 export default function ButtonWithAlert({
-  buttonText,
+  buttonContent,
   buttonClassName,
   isDisabled = false,
   alertMessage,
   alertColor = "red",
   onConfirm,
-  closeSignal,
 }: ButtonWithAlertProps) {
   const [showAlert, setShowAlert] = React.useState(false);
-  useEffect(() => {
-    setShowAlert(false);
-  }, [closeSignal]);
   return (
     <div className="flex w-full flex-col items-center">
       <Button
@@ -48,7 +42,7 @@ export default function ButtonWithAlert({
         }}
         disabled={isDisabled}
       >
-        {buttonText}
+        {buttonContent}
       </Button>
       <div className="mt-3 w-full">
         <Alert
