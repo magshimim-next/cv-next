@@ -27,17 +27,6 @@ interface ButtonWithAlertProps {
  * @param {ButtonWithAlertProps} props - The properties for the button with alert.
  * @returns {JSX.Element} A button with an alert dialog.
  */
-
-/**
- *
- * @param root0
- * @param root0.buttonContent
- * @param root0.buttonClassName
- * @param root0.isDisabled
- * @param root0.alertMessage
- * @param root0.alertColor
- * @param root0.onConfirm
- */
 export default function ButtonWithAlert({
   buttonContent,
   buttonClassName,
