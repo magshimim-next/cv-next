@@ -74,7 +74,8 @@ export default function Page({ params }: { params: { cvId: string } }) {
       showError(
         deleteResult.errors.err?.message ||
           Visible_Error_Messages.DefaultError.title,
-        ""
+        "",
+        () => router.push(`/cv/${encodeValue(decodedCvId)}`)
       );
     }
   };
@@ -121,7 +122,9 @@ export default function Page({ params }: { params: { cvId: string } }) {
       cvData: updatedCV,
     });
     if (updateResp) {
-      showError(updateResp, "");
+      showError(updateResp, "", () =>
+        router.push(`/cv/${encodeValue(cvData.id)}`)
+      );
     } else {
       setCvData(updatedCV);
     }
