@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { notFound, useRouter } from "next/navigation";
-import { FiTrash2 } from "react-icons/fi";
 import { decodeValue, encodeValue } from "@/lib/utils";
 import { useError } from "@/providers/error-provider";
 import { getCvModel } from "@/app/actions/cvs/fetchCvs";
@@ -11,10 +10,10 @@ import { Visible_Error_Messages } from "@/lib/definitions";
 import { updateCV } from "@/app/actions/cvs/uploadCv";
 import { deleteCV } from "@/app/actions/cvs/deleteCv";
 import { checkCVModifyPermission } from "@/app/actions/cvs/checkPermission";
-import ButtonWithAlert from "@/components/ui/ButtonWithAlert";
 import { CategoriesInput } from "@/components/ui/CVInput/CategoriesInput";
 import { DescriptionInput } from "@/components/ui/CVInput/DescriptionInput";
 import { LinkInput } from "@/components/ui/CVInput/LinkInput";
+import { CvActions } from "./components/cvEditActions";
 
 type FormValues = {
   link: string;
@@ -55,8 +54,7 @@ export default function Page({ params }: { params: { cvId: string } }) {
     notFound();
   }
 
-  const onDeleteAlertClick = async (type: boolean) => {
-    if (!type) return;
+  const onDeleteAlertClick = async () => {
     const deleteResult = await deleteCV(decodedCvId);
     if (deleteResult.ok) {
       router.push("/feed");
@@ -116,50 +114,6 @@ export default function Page({ params }: { params: { cvId: string } }) {
 
   if (!cvData) return <div>Loading...</div>;
 
-  const cvActions = (
-    <div className="flex-col justify-center">
-      <div className="mb-3 flex justify-center">
-        <ButtonWithAlert
-          buttonContent="Update"
-          isDisabled={!isValid}
-          buttonClassName="outline-gray-40 box-border flex h-full w-full items-center justify-center 
-      whitespace-nowrap rounded-md px-10 py-4 outline-2 
-      "
-          alertMessage="Are you sure you want to update this CV?"
-          alertColor="green"
-          onConfirm={handleSubmit(onSubmit)}
-        />
-      </div>
-      <div className="mb-3 flex justify-center">
-        <ButtonWithAlert
-          buttonContent="Cancel without saving"
-          buttonClassName="outline-gray-40 box-border flex h-full w-full items-center justify-center 
-      whitespace-nowrap rounded-md px-10 py-4 outline-2 
-      "
-          alertMessage="Are you sure you want to leave this CV unchanged?"
-          alertColor="red"
-          onConfirm={() => router.push(`/cv/${encodeValue(cvData.id)}`)}
-        />
-      </div>
-
-      <div className="mb-3 flex justify-center">
-        <ButtonWithAlert
-          buttonContent={
-            <span className="flex items-center gap-2">
-              <FiTrash2 /> Delete
-            </span>
-          }
-          buttonClassName="outline-gray-40 box-border flex h-full w-full items-center justify-center 
-      whitespace-nowrap rounded-md bg-red-500 px-6 
- py-4 text-white outline-2 hover:bg-red-600"
-          alertMessage="Are you sure you want to delete this CV?"
-          alertColor="red"
-          onConfirm={() => onDeleteAlertClick}
-        />
-      </div>
-    </div>
-  );
-
   return (
     <main className="flex flex-col items-center justify-center p-6 py-5">
       <title>Edit CV</title>
@@ -179,7 +133,14 @@ export default function Page({ params }: { params: { cvId: string } }) {
 
         <CategoriesInput control={control} errors={errors} />
 
-        {cvActions}
+        <CvActions
+          isValid={isValid}
+          handleSubmit={handleSubmit}
+          onSubmit={onSubmit}
+          cvId={cvData.id}
+          onDeleteAlertClick={onDeleteAlertClick}
+          router={router}
+        />
       </form>
     </main>
   );
