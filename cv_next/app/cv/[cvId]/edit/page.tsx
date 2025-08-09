@@ -137,7 +137,6 @@ export default function Page({ params }: { params: { cvId: string } }) {
       <div className="mb-3 flex justify-center">
         <ButtonWithAlert
           buttonContent="Cancel without saving"
-          isDisabled={!isValid}
           buttonClassName="outline-gray-40 box-border flex h-full w-full items-center justify-center 
       whitespace-nowrap rounded-md px-10 py-4 outline-2 
       "
@@ -154,7 +153,6 @@ export default function Page({ params }: { params: { cvId: string } }) {
               <FiTrash2 /> Delete
             </span>
           }
-          isDisabled={!isValid}
           buttonClassName="outline-gray-40 box-border flex h-full w-full items-center justify-center 
       whitespace-nowrap rounded-md bg-red-500 px-6 
  py-4 text-white outline-2 hover:bg-red-600"
