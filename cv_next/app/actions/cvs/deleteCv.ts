@@ -1,9 +1,9 @@
 "use server";
 
 import { getCvById, markCVAsDeleted } from "@/server/api/cvs";
-import { Err, Ok } from "@/lib/utils";
-import logger, { logErrorWithTrace } from "@/server/base/logger";
-import { getCurrentId, userIsAdmin } from "@/server/api/users";
+import { Err } from "@/lib/utils";
+import { logErrorWithTrace } from "@/server/base/logger";
+import { checkCVModifyPermission } from "./checkPermission";
 export interface InputValues {
   link: string;
   description: string;
@@ -23,7 +23,7 @@ export async function deleteCV(cvId: string): Promise<Result<void, string>> {
     );
   }
 
-  const validateError = await validateDelete(cvResult);
+  const validateError = await checkCVModifyPermission(cvResult);
   if (!validateError.ok) {
     return validateError;
   }
@@ -37,28 +37,4 @@ export async function deleteCV(cvId: string): Promise<Result<void, string>> {
       "An error has occurred while deleting the CV. Please try again later."
     );
   }
-}
-
-/**
- * The function will see if the CV can be deleted
- * @param {CvModel} cvData The CV model to be deleted
- * @returns {Promise<Result<void, string>>} A promise of error or null based on if the action can be performed
- */
-async function validateDelete(cvData: CvModel): Promise<Result<void, string>> {
-  const currentIdResult = await getCurrentId();
-  if (!currentIdResult.ok) {
-    logErrorWithTrace(currentIdResult);
-    return Err(
-      "An error has occurred while deleting the CV. Please try again later."
-    );
-  }
-
-  const resultAdminCheck = await userIsAdmin();
-  if (currentIdResult.val != cvData.user_id && !resultAdminCheck.ok) {
-    logger.error(`${currentIdResult.val} tried deleting someone elses CV!`);
-    return Err(
-      "An error has occurred while deleting the CV. Please try again later."
-    );
-  }
-  return Ok.EMPTY;
 }

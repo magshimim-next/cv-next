@@ -2,11 +2,11 @@
 
 import { redirect } from "next/navigation";
 import { uploadNewCV, getCvsByUserId, updateGivenCV } from "@/server/api/cvs";
-import { encodeValue, Err, Ok } from "@/lib/utils";
+import { encodeValue } from "@/lib/utils";
 import { transformGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
-import logger, { logErrorWithTrace } from "@/server/base/logger";
+import logger from "@/server/base/logger";
 import SupabaseHelper from "@/server/api/supabaseHelper";
-import { getCurrentId, userIsAdmin } from "@/server/api/users";
+import { checkCVModifyPermission } from "./checkPermission";
 export interface InputValues {
   link: string;
   description: string;
@@ -107,7 +107,7 @@ export async function updateCV({
   const authorObject = cvData.user_id as any;
   cvData.user_id = authorObject["id"];
 
-  const validateError = await validateUpdate(cvData);
+  const validateError = await checkCVModifyPermission(cvData);
   if (!validateError.ok) {
     logger.error(validateError, "Validation error");
     return (
@@ -155,30 +155,4 @@ export async function updateCV({
     logger.error(response, "Error updating CV");
     return "Error updating CV";
   }
-}
-
-/**
- * The function will see if the CV can be deleted
- * @param {CvModel} cvData The CV model to be deleted
- * @returns {Promise<Result<void, string>>} A promise of error or null based on if the action can be performed
- */
-export async function validateUpdate(
-  cvData: CvModel
-): Promise<Result<void, string>> {
-  const currentIdResult = await getCurrentId();
-  if (!currentIdResult.ok) {
-    logErrorWithTrace(currentIdResult);
-    return Err(
-      "An error has occurred while deleting the comment. Please try again later."
-    );
-  }
-
-  const resultAdminCheck = await userIsAdmin();
-  if (currentIdResult.val != cvData.user_id && !resultAdminCheck.ok) {
-    logger.error(`${currentIdResult.val} tried updating someone elses CV!`);
-    return Err(
-      "An error has occurred while updating the CV. Please try again later."
-    );
-  }
-  return Ok.EMPTY;
 }
