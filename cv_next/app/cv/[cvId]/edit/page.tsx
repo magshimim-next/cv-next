@@ -17,9 +17,10 @@ import PopupWrapper from "@/components/ui/popupWrapper";
 import openLink from "@/public/images/openLink.png";
 import { CvPreview } from "@/components/cvPerview";
 import Definitions, { Visible_Error_Messages } from "@/lib/definitions";
-import { updateCV, validateUpdate } from "@/app/actions/cvs/uploadCv";
+import { updateCV } from "@/app/actions/cvs/uploadCv";
 import Alert from "@/components/ui/alert";
 import { deleteCV } from "@/app/actions/cvs/deleteCv";
+import { checkCVModifyPermission } from "@/app/actions/cvs/checkPermission";
 
 type FormValues = {
   link: string;
@@ -93,7 +94,7 @@ export default function Page({ params }: { params: { cvId: string } }) {
           description: data.val.description || "",
           cvCategories: data.val.cv_categories || [],
         });
-        const canEdit = await validateUpdate(data.val);
+        const canEdit = await checkCVModifyPermission(data.val);
         if (!canEdit.ok) {
           router.push(`/cv/${encodeValue(data.val.id)}`);
           return;
