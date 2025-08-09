@@ -1,3 +1,5 @@
+"use server";
+
 import { Err, Ok } from "@/lib/utils";
 import { getCurrentId, userIsAdmin } from "@/server/api/users";
 import logger, { logErrorWithTrace } from "@/server/base/logger";
