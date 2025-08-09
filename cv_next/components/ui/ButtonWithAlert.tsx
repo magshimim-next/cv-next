@@ -4,24 +4,39 @@ import { useState, ReactNode } from "react";
 import { Button } from "./button";
 import Alert from "./alert";
 
+/**
+ * Props for ButtonWithAlert component.
+ */
 interface ButtonWithAlertProps {
+  /** The content of the button */
   buttonContent: ReactNode;
+  /** The classname of the button */
   buttonClassName?: string;
+  /** Whether the button is disabled */
   isDisabled?: boolean;
+  /** The message shown in the alert */
   alertMessage: string;
+  /** The color of the alert (defaults to red) */
   alertColor?: string;
+  /** The action to perform on confirmation */
   onConfirm: () => void;
 }
 
 /**
- * The component renders a button that trigger at alert when clicked.
- * @param {ReactNode} buttonContent The content of the button
- * @param {string} buttonClassName The classname of the button
- * @param {boolean} isDisabled Whether the button is disabled
- * @param {string} alertMessage The message shown in the alert
- * @param {string} alertColor The color of the alert defaults to red.
- * @param {() => void} onConfirm The action to perform.
+ * The component renders a button that triggers an alert when clicked.
+ * @param {ButtonWithAlertProps} props - The properties for the button with alert.
  * @returns {JSX.Element} A button with an alert dialog.
+ */
+
+/**
+ *
+ * @param root0
+ * @param root0.buttonContent
+ * @param root0.buttonClassName
+ * @param root0.isDisabled
+ * @param root0.alertMessage
+ * @param root0.alertColor
+ * @param root0.onConfirm
  */
 export default function ButtonWithAlert({
   buttonContent,
