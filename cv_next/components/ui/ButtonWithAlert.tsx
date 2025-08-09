@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
+import { useState, ReactNode } from "react";
 import { Button } from "./button";
 import Alert from "./alert";
 
 interface ButtonWithAlertProps {
-  buttonContent: React.ReactNode;
+  buttonContent: ReactNode;
   buttonClassName?: string;
   isDisabled?: boolean;
   alertMessage: string;
@@ -31,7 +31,7 @@ export default function ButtonWithAlert({
   alertColor = "red",
   onConfirm,
 }: ButtonWithAlertProps) {
-  const [showAlert, setShowAlert] = React.useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   return (
     <div className="flex w-full flex-col items-center">
       <Button
