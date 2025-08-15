@@ -36,18 +36,6 @@ export default function DownloadButtons({ cvLink }: { cvLink: string }) {
       ) : (
         <>
           <div className="rounded-full hover:bg-gray-100 dark:hover:bg-theme-700">
-            <Tooltip id="DownloadAsPDF" message="Download PDF">
-              <a
-                href={pdfUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center rounded-md px-2 py-1.5 text-sm"
-              >
-                <PiFilePdfDuotone size={25} />
-              </a>
-            </Tooltip>
-          </div>
-          <div className="rounded-full hover:bg-gray-100 dark:hover:bg-theme-700">
             <Tooltip id="DownloadAsDOCX" message="Download DOCX">
               <a
                 href={docxUrl}
@@ -56,6 +44,18 @@ export default function DownloadButtons({ cvLink }: { cvLink: string }) {
                 className="flex items-center rounded-md px-2 py-1.5 text-sm"
               >
                 <TbFileTypeDocx size={22} />
+              </a>
+            </Tooltip>
+          </div>
+          <div className="rounded-full hover:bg-gray-100 dark:hover:bg-theme-700">
+            <Tooltip id="DownloadAsPDF" message="Download PDF">
+              <a
+                href={pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center rounded-md px-2 py-1.5 text-sm"
+              >
+                <PiFilePdfDuotone size={25} />
               </a>
             </Tooltip>
           </div>
