@@ -52,8 +52,8 @@ export default function CvData({
   return (
     <div className={`grid grid-cols-1 gap-y-4 ${showData} md:gap-x-4`}>
       <article className="relative mb-3 flex flex-col rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800">
-        <div className="absolute right-4 top-4 flex items-center gap-2">
-          <div className="flex items-center rounded-full p-2 transition hover:bg-gray-100 dark:hover:bg-theme-700">
+        <div className="absolute right-4 top-4 flex items-center ">
+          <div className="flex items-center p-2 transition ">
             <DownloadButtons cvLink={cv.document_link} />
           </div>
           {canEditCv && (

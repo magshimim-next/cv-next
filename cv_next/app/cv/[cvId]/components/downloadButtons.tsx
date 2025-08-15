@@ -19,40 +19,46 @@ export default function DownloadButtons({ cvLink }: { cvLink: string }) {
   const isSameLink = pdfUrl === docxUrl;
 
   return (
-    <div className="flex gap-2">
+    <div className="flex">
       {isSameLink ? (
-        <Tooltip id="DownloadFromDrive" message="Download">
-          <a
-            href={pdfUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 rounded-md px-3 py-1.5 text-sm"
-          >
-            <HiOutlineSave size={25} />
-          </a>
-        </Tooltip>
-      ) : (
-        <>
-          <Tooltip id="DownloadAsPDF" message="Download PDF">
+        <div className="rounded-full hover:bg-gray-100 dark:hover:bg-theme-700">
+          <Tooltip id="DownloadFromDrive" message="Download">
             <a
               href={pdfUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 rounded-md px-3 py-1.5 text-sm"
+              className="flex items-center gap-1 rounded-md px-2 py-1.5 text-sm"
             >
-              <PiFilePdfDuotone size={25} />
+              <HiOutlineSave size={25} />
             </a>
           </Tooltip>
-          <Tooltip id="DownloadAsDOCX" message="Download DOCX">
-            <a
-              href={docxUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 rounded-md px-3 py-1.5 text-sm"
-            >
-              <TbFileTypeDocx size={22} />
-            </a>
-          </Tooltip>
+        </div>
+      ) : (
+        <>
+          <div className="rounded-full hover:bg-gray-100 dark:hover:bg-theme-700">
+            <Tooltip id="DownloadAsPDF" message="Download PDF">
+              <a
+                href={pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center rounded-md px-2 py-1.5 text-sm"
+              >
+                <PiFilePdfDuotone size={25} />
+              </a>
+            </Tooltip>
+          </div>
+          <div className="rounded-full hover:bg-gray-100 dark:hover:bg-theme-700">
+            <Tooltip id="DownloadAsDOCX" message="Download DOCX">
+              <a
+                href={docxUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center rounded-md px-2 py-1.5 text-sm"
+              >
+                <TbFileTypeDocx size={22} />
+              </a>
+            </Tooltip>
+          </div>
         </>
       )}
     </div>
