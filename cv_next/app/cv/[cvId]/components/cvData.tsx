@@ -10,6 +10,7 @@ import { Visible_Error_Messages } from "@/lib/definitions";
 import { CvCategory } from "@/components/ui/cvCategory";
 import { encodeValue } from "@/lib/utils";
 import Tooltip from "@/components/ui/tooltip";
+import DownloadButtons from "./downloadButtons";
 
 /**
  * This component displays a CV's metadata, including the uploader's information.
@@ -62,23 +63,28 @@ export default function CvData({
             </Tooltip>
           </div>
         )}
-        <div className="mb-3 flex items-center">
-          <div className="mr-3">
-            <DynamicProfileImage
-              isPlaceholder={uploader.avatar_url ? false : true}
-              placeHolderStyle={{ fontSize: "35px" }}
-            >
-              <Image
-                alt="profile"
-                src={uploader.avatar_url || ""}
-                width={40}
-                height={30 * 1.4142}
-              />
-            </DynamicProfileImage>
+        <div className="mb-3 flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="mr-3">
+              <DynamicProfileImage
+                isPlaceholder={!uploader.avatar_url}
+                placeHolderStyle={{ fontSize: "35px" }}
+              >
+                <Image
+                  alt="profile"
+                  src={uploader.avatar_url || ""}
+                  width={40}
+                  height={30 * 1.4142}
+                />
+              </DynamicProfileImage>
+            </div>
+            <Link href={`/profile/${uploader.username}`}>
+              <p className="text-xl font-medium hover:underline">
+                {displayName}
+              </p>
+            </Link>
           </div>
-          <Link href={`/profile/${uploader.username}`}>
-            <p className="text-xl font-medium hover:underline">{displayName}</p>
-          </Link>
+          <DownloadButtons cvLink={cv.document_link} />
         </div>
         <div className="mb-3 flex flex-wrap items-center space-x-2">
           {cv.cv_categories && (
