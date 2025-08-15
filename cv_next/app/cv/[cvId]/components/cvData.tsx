@@ -52,17 +52,22 @@ export default function CvData({
   return (
     <div className={`grid grid-cols-1 gap-y-4 ${showData} md:gap-x-4`}>
       <article className="relative mb-3 flex flex-col rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800">
-        {canEditCv && (
-          <div className="absolute right-4 top-4 rounded-full p-2 transition hover:bg-gray-100 dark:hover:bg-theme-700">
-            <Tooltip id="Settings Icon" message="Edit CV">
-              <FiSettings
-                size={22}
-                style={{ fontSize: "5vh", cursor: "pointer" }}
-                onClick={() => router.push(`/cv/${encodeValue(cv.id)}/edit`)}
-              />
-            </Tooltip>
+        <div className="absolute right-4 top-4 flex items-center gap-2">
+          <div className="flex items-center rounded-full p-2 transition hover:bg-gray-100 dark:hover:bg-theme-700">
+            <DownloadButtons cvLink={cv.document_link} />
           </div>
-        )}
+          {canEditCv && (
+            <div className="flex items-center rounded-full p-2 transition hover:bg-gray-100 dark:hover:bg-theme-700">
+              <Tooltip id="Settings Icon" message="Edit CV">
+                <FiSettings
+                  size={22}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => router.push(`/cv/${encodeValue(cv.id)}/edit`)}
+                />
+              </Tooltip>
+            </div>
+          )}
+        </div>
         <div className="mb-3 flex items-center justify-between">
           <div className="flex items-center">
             <div className="mr-3">
@@ -84,7 +89,6 @@ export default function CvData({
               </p>
             </Link>
           </div>
-          <DownloadButtons cvLink={cv.document_link} />
         </div>
         <div className="mb-3 flex flex-wrap items-center space-x-2">
           {cv.cv_categories && (
