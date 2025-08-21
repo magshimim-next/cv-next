@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useTransition } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Path } from "react-hook-form";
 import { useUser } from "@/hooks/useUser";
 import Categories from "@/types/models/categories";
 import { MultiSelect } from "@/components/ui/multiSelect";
@@ -9,11 +9,16 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { updateUserAction } from "@/app/actions/users/updateUser";
 import { ProfileKeys } from "@/lib/supabase-definitions";
+import { FormInput } from "./formInput";
 
-type FormValues = {
+export type FormValues = {
   displsy_name: string;
   workCategories: number[];
   workStatus: keyof typeof ProfileKeys.work_status;
+  linkedin: string;
+  github: string;
+  gitlab: string;
+  portfolio: string;
 };
 
 export default function ProfileForm({
@@ -29,6 +34,7 @@ export default function ProfileForm({
     register,
     control,
     handleSubmit,
+    setValue,
     setError,
     formState: { errors },
   } = useForm<FormValues>({ mode: "onChange" });
@@ -47,7 +53,7 @@ export default function ProfileForm({
   }
 
   const handleOnSubmit: SubmitHandler<FormValues> = async (data) => {
-    const { displsy_name, workCategories, workStatus } = data;
+    const { displsy_name, workCategories, workStatus , linkedin, github, gitlab, portfolio} = data;
     let userDataToUpdate: Partial<UserModel> = {
       id: user.id,
     };
@@ -63,6 +69,23 @@ export default function ProfileForm({
     }
     if (workStatus !== user.work_status) {
       userDataToUpdate.work_status = workStatus;
+    }
+
+    //todo: sentisize links
+    if(gitlab){
+      userDataToUpdate.gitlab_link = gitlab;
+    }
+
+    if(portfolio){
+      userDataToUpdate.portfolio_link = portfolio;
+    }
+
+    if(github){
+      userDataToUpdate.github_link = github;
+    }
+
+    if(linkedin){
+      userDataToUpdate.linkedin_link = linkedin;
     }
 
     if (Object.keys(userDataToUpdate).length === 1) {
@@ -87,22 +110,22 @@ export default function ProfileForm({
     });
   };
 
+  const clearSocial = async (social: Path<FormValues>) => {
+    setValue(social, "")
+    //alert(social)
+  }
+
   return (
-    <form onSubmit={handleSubmit(handleOnSubmit)}>
-      <div className="flex flex-wrap justify-between">
-        <label className="font-bold" htmlFor="username">
-          Display Name:{" "}
-        </label>
-        <input
-          className="w-full"
-          id="username"
-          {...register("displsy_name", { required: "Username is required" })}
-          defaultValue={user.display_name ?? ""}
-        />
-        {errors.displsy_name && (
-          <FormErrorMessage message={errors.displsy_name.message} />
-        )}
-      </div>
+    <form className="flex flex-col gap-1" onSubmit={handleSubmit(handleOnSubmit)} >
+
+      <FormInput 
+        field="displsy_name"
+        placeholder="displsy name"
+        defaultValue={user.display_name ?? ""}
+        register={register}
+        isRequired={true}
+        hasError={errors.displsy_name && true}
+        errorMsg={errors.displsy_name?.message}/>
 
       <MultiSelect<FormValues>
         name="workCategories"
@@ -115,10 +138,11 @@ export default function ProfileForm({
 
       <div className="flex flex-wrap justify-between">
         <label className="font-bold" htmlFor="workStatus">
-          Work Status
+          Work Status:
         </label>
         <select
           id="workStatus"
+          className="rounded-md bg-accent hover:bg-muted"
           {...register("workStatus", { required: "Work status is required" })}
           defaultValue={user.work_status ?? "nothing"}
         >
@@ -132,6 +156,42 @@ export default function ProfileForm({
           <FormErrorMessage message={errors.workStatus.message} />
         )}
       </div>
+
+      <FormInput 
+        field="linkedin"
+        placeholder="linkedin url"
+        defaultValue={user.linkedin_link ?? ""}
+        register={register}
+        clearFunc={clearSocial}
+        hasError={errors.linkedin && true}
+        errorMsg={errors.linkedin?.message}/>
+
+      <FormInput 
+        field="github"
+        placeholder="github url"
+        defaultValue={user.github_link ?? ""}
+        register={register}
+        clearFunc={clearSocial}
+        hasError={errors.github && true}
+        errorMsg={errors.github?.message}/>
+
+      <FormInput 
+        field="gitlab"
+        placeholder="gitlab url"
+        defaultValue={user.gitlab_link ?? ""}
+        register={register}
+        clearFunc={clearSocial}
+        hasError={errors.gitlab && true}
+        errorMsg={errors.gitlab?.message}/>
+
+      <FormInput 
+        field="portfolio"
+        placeholder="portfolio url"
+        defaultValue={user.portfolio_link ?? ""}
+        register={register}
+        clearFunc={clearSocial}
+        hasError={errors.portfolio && true}
+        errorMsg={errors.portfolio?.message}/>
 
       <div className="mt-2 flex justify-end">
         <button
@@ -147,6 +207,6 @@ export default function ProfileForm({
   );
 }
 
-const FormErrorMessage = ({ message }: { message?: string }) => (
+export const FormErrorMessage = ({ message }: { message?: string }) => (
   <div className="mb-2 text-red-500">{message}</div>
 );

@@ -32,12 +32,15 @@ export default async function ProfileData({ user }: { user: UserModel }) {
   const resultAdminCheck = await userIsAdmin();
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col">
       <ProfilePersonalData
         user={user}
         revalidationFn={revalidate}
         isCurrentAdmin={resultAdminCheck.ok}
       />
+
+      
+      
       <DropdownCover title="Statistics">
         <div className="col-md-12 mt-2 flex justify-center">
           <CategoryCounter

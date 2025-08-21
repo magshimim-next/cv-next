@@ -70,13 +70,14 @@ export const MultiSelect = <T extends FieldValues>({
   };
 
   return (
-    <>
+    <div>
       <div className="flex flex-wrap justify-between">
         <label className="font-bold" htmlFor={name}>
           {label}
         </label>
         <select
           value=""
+          className="rounded-md bg-accent hover:bg-muted"
           onChange={(event) => handleChange(parseInt(event.target.value))}
         >
           <option value="">{selectLabel ?? "Choose values"}</option>
@@ -89,7 +90,7 @@ export const MultiSelect = <T extends FieldValues>({
             ))}
         </select>
       </div>
-      <div className="max-h-16 w-full overflow-y-scroll bg-theme-700">
+      <div className="max-h-16 w-full overflow-y-scroll bg-accent hover:bg-muted mt-1 rounded-md p-1">
         {field?.value?.length
           ? field?.value.map((value: any, idx: number) => (
               <a
@@ -112,6 +113,6 @@ export const MultiSelect = <T extends FieldValues>({
           {fieldState.error.message}
         </div>
       )}
-    </>
+    </div>
   );
 };

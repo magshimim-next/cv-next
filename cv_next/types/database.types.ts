@@ -138,6 +138,10 @@ export type Database = {
           avatar_url: string | null;
           display_name: string | null;
           id: string;
+          linkedin_link: string | null;
+          github_link: string | null;
+          gitlab_link: string | null;
+          portfolio_link: string | null;
           updated_at: string | null;
           username: string | null;
           work_status: Database["public"]["Enums"]["work_status"];
@@ -147,6 +151,10 @@ export type Database = {
           avatar_url?: string | null;
           display_name?: string | null;
           id?: string;
+          linkedin_link?: string | null;
+          github_link?: string | null;
+          gitlab_link?: string | null;
+          portfolio_link?: string | null;
           updated_at?: string | null;
           username?: string | null;
           work_status?: Database["public"]["Enums"]["work_status"];
@@ -156,6 +164,10 @@ export type Database = {
           avatar_url?: string | null;
           display_name?: string | null;
           id?: string;
+          linkedin_link?: string | null;
+          github_link?: string | null;
+          gitlab_link?: string | null;
+          portfolio_link?: string | null;
           updated_at?: string | null;
           username?: string | null;
           work_status?: Database["public"]["Enums"]["work_status"];
