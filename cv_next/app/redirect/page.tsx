@@ -2,15 +2,14 @@
 
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import warning from "@/public/images/warning_red_dark.png";
 import { Button } from "@/components/ui/button";
 import { sanitizeLink } from "@/helpers/cvLinkRegexHelper";
-
 /**
- * Redirects the user to a different page based on the "to" query parameter.
- * @returns A React component that handles the redirection.
+ *
  */
-export default function RedirectPage() {
+function RedirectContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const toParam = searchParams.get("to") ?? undefined;
@@ -49,5 +48,17 @@ export default function RedirectPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * Redirects the user to a different page based on the "to" query parameter.
+ * @returns A React component that handles the redirection.
+ */
+export default function RedirectPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RedirectContent />
+    </Suspense>
   );
 }
