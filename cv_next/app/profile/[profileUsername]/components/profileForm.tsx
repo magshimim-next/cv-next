@@ -12,7 +12,7 @@ import { ProfileKeys } from "@/lib/supabase-definitions";
 import { FormInput } from "./formInput";
 
 export type FormValues = {
-  displsy_name: string;
+  display_name: string;
   workCategories: number[];
   workStatus: keyof typeof ProfileKeys.work_status;
   linkedin: string;
@@ -53,7 +53,7 @@ export default function ProfileForm({
   }
 
   const handleOnSubmit: SubmitHandler<FormValues> = async (data) => {
-    const { displsy_name, workCategories, workStatus , linkedin, github, gitlab, portfolio} = data;
+    const { display_name: displsy_name, workCategories, workStatus , linkedin, github, gitlab, portfolio} = data;
     let userDataToUpdate: Partial<UserModel> = {
       id: user.id,
     };
@@ -71,21 +71,46 @@ export default function ProfileForm({
       userDataToUpdate.work_status = workStatus;
     }
 
-    //todo: sentisize links
-    if(gitlab){
-      userDataToUpdate.gitlab_link = gitlab;
+    const sanitizeLink = (value?: string) => {
+      if (!value) return null;
+      const input = value.trim();
+      if (!input) return null;
+
+      // disallow dangerous schemes
+      if (/^(javascript|data|vbscript):/i.test(input)) return null;
+
+      // add https:// if missing a scheme
+      const withScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(input)
+      ? input
+      : `https://${input.replace(/^\/+/, "")}`;
+
+      try {
+      const url = new URL(withScheme);
+      url.hostname = url.hostname.toLowerCase();
+      return url.toString();
+      } catch {
+      return null;
+      }
+    };
+
+    const sanitizedGitlab = sanitizeLink(gitlab);
+    if (sanitizedGitlab) {
+      userDataToUpdate.gitlab_link = sanitizedGitlab;
     }
 
-    if(portfolio){
-      userDataToUpdate.portfolio_link = portfolio;
+    const sanitizedPortfolio = sanitizeLink(portfolio);
+    if (sanitizedPortfolio) {
+      userDataToUpdate.portfolio_link = sanitizedPortfolio;
     }
 
-    if(github){
-      userDataToUpdate.github_link = github;
+    const sanitizedGithub = sanitizeLink(github);
+    if (sanitizedGithub) {
+      userDataToUpdate.github_link = sanitizedGithub;
     }
 
-    if(linkedin){
-      userDataToUpdate.linkedin_link = linkedin;
+    const sanitizedLinkedin = sanitizeLink(linkedin);
+    if (sanitizedLinkedin) {
+      userDataToUpdate.linkedin_link = sanitizedLinkedin;
     }
 
     if (Object.keys(userDataToUpdate).length === 1) {
@@ -93,6 +118,11 @@ export default function ProfileForm({
       exitEditMode();
       return;
     }
+
+    updateUser(userDataToUpdate);
+  };
+
+  const updateUser = (userDataToUpdate: Partial<UserModel>) => {
     startTransition(async () => {
       const result = await updateUserAction(userDataToUpdate);
       if (result.ok) {
@@ -110,22 +140,47 @@ export default function ProfileForm({
     });
   };
 
+  
+
   const clearSocial = async (social: Path<FormValues>) => {
     setValue(social, "")
-    //alert(social)
+
+    let userDataToUpdate: Partial<UserModel> = {
+      id: user.id,
+    };
+
+    switch(social) {
+      case "linkedin":
+        userDataToUpdate.linkedin_link = null;
+        break;
+      case "github":
+        userDataToUpdate.github_link = null;
+        break;
+      case "gitlab":
+        userDataToUpdate.gitlab_link = null;
+        break;
+      case "portfolio":
+        userDataToUpdate.portfolio_link = null;
+        break;
+      default:
+        setError("root", { message: "Invalid social field" });
+        return;
+    }
+
+    updateUser(userDataToUpdate);
   }
 
   return (
     <form className="flex flex-col gap-1" onSubmit={handleSubmit(handleOnSubmit)} >
 
       <FormInput 
-        field="displsy_name"
-        placeholder="displsy name"
+        field="display_name"
+        placeholder="display name"
         defaultValue={user.display_name ?? ""}
         register={register}
         isRequired={true}
-        hasError={errors.displsy_name && true}
-        errorMsg={errors.displsy_name?.message}/>
+        hasError={errors.display_name && true}
+        errorMsg={errors.display_name?.message}/>
 
       <MultiSelect<FormValues>
         name="workCategories"
