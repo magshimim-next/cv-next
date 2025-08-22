@@ -9,9 +9,15 @@ interface CategoriesDisplayProps {
   categories: number[];
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.categories
+ */
 export default function CategoriesDisplay({
   categories,
 }: CategoriesDisplayProps) {
+  const [isClient, setIsClient] = useState(false);
   const [thisElement, setThisElement] = useState<HTMLDivElement | null>();
 
   const [displayedCategories, setDisplayedCategories] =
@@ -67,6 +73,14 @@ export default function CategoriesDisplay({
     ]);
   };
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <>
       <div
@@ -93,6 +107,12 @@ export default function CategoriesDisplay({
   );
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.categories
+ * @param root0.onClick
+ */
 function OverflowNumber({
   categories,
   onClick,
@@ -116,6 +136,10 @@ function OverflowNumber({
   );
 }
 
+/**
+ *
+ * @param id
+ */
 function getCategoryText(id: number) {
   return `#${Categories.category[id]}`;
 }
