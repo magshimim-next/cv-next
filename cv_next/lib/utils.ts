@@ -3,14 +3,25 @@ import { twMerge } from "tailwind-merge";
 import Categories from "@/types/models/categories";
 import { Link_Definitions } from "./definitions";
 
+/**
+ *
+ * @param {...any} inputs
+ */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/**
+ *
+ */
 export function isBrowser() {
   return typeof window !== "undefined";
 }
 
+/**
+ *
+ * @param value
+ */
 export function decodeValue(value: string | undefined) {
   if (!value) {
     return null;
@@ -30,6 +41,10 @@ export function decodeValue(value: string | undefined) {
  * Encode string, returns base64 value
  * @Params: string
  */
+/**
+ *
+ * @param value
+ */
 export function encodeValue(value: string | undefined) {
   if (!value) {
     return null;
@@ -47,9 +62,8 @@ export function encodeValue(value: string | undefined) {
 
 /**
  * Creates an Ok Result object with the specified value.
- *
  * @param {T} val - the value to be wrapped in the Result object
- * @return {Result<T, never>} the Result object containing the specified value
+ * @returns {Result<T, never>} the Result object containing the specified value
  */
 export function Ok<T>(val: T): Result<T, never> {
   return { ok: true, val };
@@ -61,9 +75,10 @@ export namespace Ok {
 
 /**
  * Creates an Error Result object with the specified error value.
- *
  * @param {E} val - the error value
- * @return {Result<never, E>} the Result object with ok set to false and containing the specified error value
+ * @param where
+ * @param errors
+ * @returns {Result<never, E>} the Result object with ok set to false and containing the specified error value
  */
 export function Err<E>(where: E, errors: ErrorDetails = {}): Result<never, E> {
   return { ok: false, where, errors };
@@ -71,9 +86,8 @@ export function Err<E>(where: E, errors: ErrorDetails = {}): Result<never, E> {
 
 /**
  * Get a valid google docs/drive link and switch to the /preview version to handle permissions better
- *
  * @param {string} link - the original link
- * @return {string} the link as a preview instead of edit or view
+ * @returns {string} the link as a preview instead of edit or view
  */
 export function transformToPreviewLink(link: string): string {
   try {
@@ -89,6 +103,10 @@ export function transformToPreviewLink(link: string): string {
 export const generateCategoryLink = (categoryNumber: number) =>
   `/feed?category=${Categories.category[categoryNumber].toLowerCase()}`;
 
+/**
+ *
+ * @param arr
+ */
 export function getAllNumbersFromArr(arr: string[]) {
   return arr
     .filter((value) => !isNaN(parseInt(value)))
@@ -98,6 +116,10 @@ export function getAllNumbersFromArr(arr: string[]) {
 export const categoryString = (categoryNumber: number) =>
   `${Categories.category[categoryNumber].toLowerCase()}`;
 
+/**
+ *
+ * @param name
+ */
 export function toCategoryNumber(name: string): number {
   let fixedName = name[0].charAt(0).toUpperCase() + name.slice(1);
   return Categories.category[fixedName as keyof typeof Categories.category];
@@ -116,6 +138,21 @@ export function checkRedirect(redirectPath: string): boolean {
       redirectPath.startsWith("/" + prefix)
     )
   );
+}
+
+/**
+ * Capitalizes the first letter of each word in a sentence.
+ * @param {string} sentence - The sentence to capitalize.
+ * @returns {string} The capitalized sentence.
+ */
+export function capitalizeWords(sentence: string) {
+  return sentence
+    .trim()
+    .split(/[\s_]+/)
+    .map((word) =>
+      word.length === 0 ? "" : word.charAt(0).toUpperCase() + word.slice(1)
+    )
+    .join(" ");
 }
 
 export const shimmer = (w: number, h: number) => `

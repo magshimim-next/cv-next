@@ -1,5 +1,6 @@
 import { UseFormRegister, Path } from "react-hook-form";
 import { MdCancel } from "react-icons/md";
+import { capitalizeWords } from "@/lib/utils";
 import { FormErrorMessage, FormValues } from "./profileForm";
 
 export const FormInput = ({
@@ -54,18 +55,3 @@ export const FormInput = ({
     </div>
   );
 };
-
-/**
- * Capitalizes the first letter of each word in a sentence.
- * @param {string} sentence - The sentence to capitalize.
- * @returns {string} The capitalized sentence.
- */
-function capitalizeWords(sentence: string) {
-  return sentence
-    .trim()
-    .split(/[\s_]+/)
-    .map((word) =>
-      word.length === 0 ? "" : word.charAt(0).toUpperCase() + word.slice(1)
-    )
-    .join(" ");
-}

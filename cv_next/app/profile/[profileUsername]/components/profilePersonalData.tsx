@@ -85,14 +85,6 @@ export const ProfilePersonalData = ({
           )}
         </div>
       </div>
-
-      {/* {
-        ((isCurrentAdmin || isCurrentUser) && !isEditing) ? (
-        <div className="fill-available mb-3 w-full rounded-lg border-b
-          border-gray-200 bg-white p-2 text-base dark:bg-theme-800">
-            <SocialLinksDisplay user={user}/> 
-        </div>): undefined
-      } */}
     </>
   );
 };
