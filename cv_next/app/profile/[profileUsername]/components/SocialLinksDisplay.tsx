@@ -1,4 +1,3 @@
-import { url } from "node:inspector/promises";
 import { FaLinkedin, FaGithub, FaExternalLinkAlt } from "react-icons/fa";
 import { FaGitlab } from "react-icons/fa6";
 
@@ -34,8 +33,12 @@ export const SocialLinksDisplay = ({ user }: { user: UserModel }) => {
   );
 };
 
-const urlToRedirect = (link: string) => {
+/**
+ *
+ * @param link
+ */
+function urlToRedirect(link: string) {
   const url = new URL("/redirect", process.env.NEXT_PUBLIC_BASE_URL);
   url.searchParams.set("to", link);
   return url.toString();
-};
+}

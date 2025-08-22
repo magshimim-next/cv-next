@@ -78,7 +78,7 @@ export const ProfilePersonalData = ({
           ) : (
             <>
               <ProfileDisplay user={user} />
-              <SocialLinksDisplay user={user}/> 
+              <SocialLinksDisplay user={user} />
             </>
           )}
         </div>

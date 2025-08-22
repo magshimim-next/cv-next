@@ -1,6 +1,10 @@
 /*
 The function will make sure that the Google URL is a preview and shareable
 */
+/**
+ *
+ * @param link
+ */
 export function transformGoogleViewOnlyUrl(link: string): string {
   if (!validateGoogleViewOnlyUrl(link)) return "";
 
@@ -17,7 +21,11 @@ export function transformGoogleViewOnlyUrl(link: string): string {
 }
 
 //vibe codded parts of it not gonna lie
-export const sanitizeLink = (value?: string) => {
+/**
+ *
+ * @param value
+ */
+export function sanitizeLink(value?: string) {
   if (!value) return null;
   let input = value.trim();
   if (!input) return null;
@@ -70,8 +78,13 @@ export const sanitizeLink = (value?: string) => {
   } catch {
     return null;
   }
-};
+}
 
+/**
+ * Validates if a Google Drive link is a "view only" link.
+ * @param link The link to validate.
+ * @returns True if the link is valid, false otherwise.
+ */
 export function validateGoogleViewOnlyUrl(link: string): boolean {
   const regex =
     /https?:\/\/(?:docs|drive)\.google\.com\/(?:document|file)\/d\/([a-zA-Z0-9_-]+)\/(?:view|preview|edit)(?:\?(?:.*&)?usp=[a-zA-Z0-9_-]+(?:&.*)?)?/;

@@ -29,7 +29,7 @@ export const FormInput = ({
 
       <div className="relative w-full">
         <input
-          className={`peer w-full rounded-md p-1 bg-accent hover:bg-muted ${clearFunc ? "" : "pr-8"}"`}
+          className={`peer w-full rounded-md bg-accent p-1 hover:bg-muted ${clearFunc ? "" : "pr-8"}"`}
           id={field}
           {...(isRequired
             ? { ...register(field, { required: `${placeholder} is required` }) }
@@ -52,10 +52,17 @@ export const FormInput = ({
   );
 };
 
+/**
+ * Capitalizes the first letter of each word in a sentence.
+ * @param sentence The sentence to capitalize.
+ * @returns The capitalized sentence.
+ */
 function capitalizeWords(sentence: string) {
-    return sentence
-        .trim()
-        .split(/[\s_]+/)
-        .map(word => (word.length === 0 ? '' : word.charAt(0).toUpperCase() + word.slice(1)))
-        .join(' ');
+  return sentence
+    .trim()
+    .split(/[\s_]+/)
+    .map((word) =>
+      word.length === 0 ? "" : word.charAt(0).toUpperCase() + word.slice(1)
+    )
+    .join(" ");
 }

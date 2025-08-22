@@ -32,6 +32,16 @@ interface MultiSelectProps<T extends FieldValues> {
  * Multi-Select input component, using react-hook-form.
  *
  * Note: labels should match options in length and order
+ * @param root0
+ * @param root0.name
+ * @param root0.label
+ * @param root0.options
+ * @param root0.labels
+ * @param root0.control
+ * @param root0.validation
+ * @param root0.selectLabel
+ * @param root0.defaultValue
+ * @param root0.customErrorStyle
  */
 export const MultiSelect = <T extends FieldValues>({
   name,
@@ -90,7 +100,7 @@ export const MultiSelect = <T extends FieldValues>({
             ))}
         </select>
       </div>
-      <div className="max-h-16 w-full overflow-y-scroll bg-accent hover:bg-muted mt-1 rounded-md p-1">
+      <div className="mt-1 max-h-16 w-full overflow-y-scroll rounded-md bg-accent p-1 hover:bg-muted">
         {field?.value?.length
           ? field?.value.map((value: any, idx: number) => (
               <a

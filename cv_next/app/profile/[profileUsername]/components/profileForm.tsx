@@ -9,8 +9,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { updateUserAction } from "@/app/actions/users/updateUser";
 import { ProfileKeys } from "@/lib/supabase-definitions";
-import { FormInput } from "./formInput";
 import { sanitizeLink } from "@/helpers/cvLinkRegexHelper";
+import { FormInput } from "./formInput";
 
 export type FormValues = {
   display_name: string;
@@ -22,6 +22,13 @@ export type FormValues = {
   portfolio: string;
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.user
+ * @param root0.revalidationFn
+ * @param root0.exitEditMode
+ */
 export default function ProfileForm({
   user,
   revalidationFn,
@@ -55,7 +62,7 @@ export default function ProfileForm({
 
   const handleOnSubmit: SubmitHandler<FormValues> = async (data) => {
     const {
-      display_name: displsy_name,
+      display_name,
       workCategories,
       workStatus,
       linkedin,
@@ -67,8 +74,8 @@ export default function ProfileForm({
       id: user.id,
     };
     // Only update if the value has changed
-    if (displsy_name !== user.display_name) {
-      userDataToUpdate.display_name = displsy_name;
+    if (display_name !== user.display_name) {
+      userDataToUpdate.display_name = display_name;
     }
     if (
       JSON.stringify(workCategories.toSorted()) !==
