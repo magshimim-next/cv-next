@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { updateUserAction } from "@/app/actions/users/updateUser";
 import { ProfileKeys } from "@/lib/supabase-definitions";
 import { FormInput } from "./formInput";
+import { sanitizeLink } from "@/helpers/cvLinkRegexHelper";
 
 export type FormValues = {
   display_name: string;
@@ -53,7 +54,15 @@ export default function ProfileForm({
   }
 
   const handleOnSubmit: SubmitHandler<FormValues> = async (data) => {
-    const { display_name: displsy_name, workCategories, workStatus , linkedin, github, gitlab, portfolio} = data;
+    const {
+      display_name: displsy_name,
+      workCategories,
+      workStatus,
+      linkedin,
+      github,
+      gitlab,
+      portfolio,
+    } = data;
     let userDataToUpdate: Partial<UserModel> = {
       id: user.id,
     };
@@ -70,28 +79,6 @@ export default function ProfileForm({
     if (workStatus !== user.work_status) {
       userDataToUpdate.work_status = workStatus;
     }
-
-    const sanitizeLink = (value?: string) => {
-      if (!value) return null;
-      const input = value.trim();
-      if (!input) return null;
-
-      // disallow dangerous schemes
-      if (/^(javascript|data|vbscript):/i.test(input)) return null;
-
-      // add https:// if missing a scheme
-      const withScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(input)
-      ? input
-      : `https://${input.replace(/^\/+/, "")}`;
-
-      try {
-      const url = new URL(withScheme);
-      url.hostname = url.hostname.toLowerCase();
-      return url.toString();
-      } catch {
-      return null;
-      }
-    };
 
     const sanitizedGitlab = sanitizeLink(gitlab);
     if (sanitizedGitlab) {
@@ -140,16 +127,14 @@ export default function ProfileForm({
     });
   };
 
-  
-
   const clearSocial = async (social: Path<FormValues>) => {
-    setValue(social, "")
+    setValue(social, "");
 
     let userDataToUpdate: Partial<UserModel> = {
       id: user.id,
     };
 
-    switch(social) {
+    switch (social) {
       case "linkedin":
         userDataToUpdate.linkedin_link = null;
         break;
@@ -168,19 +153,22 @@ export default function ProfileForm({
     }
 
     updateUser(userDataToUpdate);
-  }
+  };
 
   return (
-    <form className="flex flex-col gap-1" onSubmit={handleSubmit(handleOnSubmit)} >
-
-      <FormInput 
+    <form
+      className="flex flex-col gap-1"
+      onSubmit={handleSubmit(handleOnSubmit)}
+    >
+      <FormInput
         field="display_name"
         placeholder="display name"
         defaultValue={user.display_name ?? ""}
         register={register}
         isRequired={true}
         hasError={errors.display_name && true}
-        errorMsg={errors.display_name?.message}/>
+        errorMsg={errors.display_name?.message}
+      />
 
       <MultiSelect<FormValues>
         name="workCategories"
@@ -212,41 +200,45 @@ export default function ProfileForm({
         )}
       </div>
 
-      <FormInput 
+      <FormInput
         field="linkedin"
         placeholder="linkedin url"
         defaultValue={user.linkedin_link ?? ""}
         register={register}
         clearFunc={clearSocial}
         hasError={errors.linkedin && true}
-        errorMsg={errors.linkedin?.message}/>
+        errorMsg={errors.linkedin?.message}
+      />
 
-      <FormInput 
+      <FormInput
         field="github"
         placeholder="github url"
         defaultValue={user.github_link ?? ""}
         register={register}
         clearFunc={clearSocial}
         hasError={errors.github && true}
-        errorMsg={errors.github?.message}/>
+        errorMsg={errors.github?.message}
+      />
 
-      <FormInput 
+      <FormInput
         field="gitlab"
         placeholder="gitlab url"
         defaultValue={user.gitlab_link ?? ""}
         register={register}
         clearFunc={clearSocial}
         hasError={errors.gitlab && true}
-        errorMsg={errors.gitlab?.message}/>
+        errorMsg={errors.gitlab?.message}
+      />
 
-      <FormInput 
+      <FormInput
         field="portfolio"
         placeholder="portfolio url"
         defaultValue={user.portfolio_link ?? ""}
         register={register}
         clearFunc={clearSocial}
         hasError={errors.portfolio && true}
-        errorMsg={errors.portfolio?.message}/>
+        errorMsg={errors.portfolio?.message}
+      />
 
       <div className="mt-2 flex justify-end">
         <button
