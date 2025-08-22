@@ -109,8 +109,9 @@ export default function CategoriesDisplay({
 
 /**
  * The OverflowNumber component displays the number of overflowing categories
- * @param {number[]} categories The array of overflowing category IDs
- * @param {() => void} onClick The function to call when the overflow number is clicked
+ * @param {{categories: number[], onClick: () => void}} props
+ *   - categories: The array of overflowing category IDs
+ *   - onClick: The function to call when the overflow number is clicked
  * @returns {Element} A div displaying the number of overflowing categories with a tooltip
  */
 function OverflowNumber({
