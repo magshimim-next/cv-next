@@ -55,7 +55,7 @@ function RedirectContent() {
 
 /**
  * Redirects the user to a different page based on the "to" query parameter.
- * @returns A React component that handles the redirection.
+ * @returns {JSX.Element} A React component that handles the redirection.
  */
 export default function RedirectPage() {
   return (
