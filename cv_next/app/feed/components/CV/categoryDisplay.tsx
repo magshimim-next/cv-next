@@ -9,9 +9,15 @@ interface CategoriesDisplayProps {
   categories: number[];
 }
 
+/**
+ * This component handles showing multiple categories with overflow handling
+ * @param {CategoriesDisplayProps} categories The categories to show
+ * @returns {Element} A component that displays categories with overflow handling
+ */
 export default function CategoriesDisplay({
   categories,
 }: CategoriesDisplayProps) {
+  const [isClient, setIsClient] = useState(false);
   const [thisElement, setThisElement] = useState<HTMLDivElement | null>();
 
   const [displayedCategories, setDisplayedCategories] =
@@ -67,6 +73,14 @@ export default function CategoriesDisplay({
     ]);
   };
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <>
       <div
@@ -93,6 +107,13 @@ export default function CategoriesDisplay({
   );
 }
 
+/**
+ * The OverflowNumber component displays the number of overflowing categories
+ * @param {{categories: number[], onClick: () => void}} props
+ *   - categories: The array of overflowing category IDs
+ *   - onClick: The function to call when the overflow number is clicked
+ * @returns {Element} A div displaying the number of overflowing categories with a tooltip
+ */
 function OverflowNumber({
   categories,
   onClick,
@@ -116,6 +137,11 @@ function OverflowNumber({
   );
 }
 
+/**
+ * The function will get the category string based on the ID
+ * @param {number} id The ID of the category
+ * @returns {string} The category string with a hashtag prefix
+ */
 function getCategoryText(id: number) {
   return `#${Categories.category[id]}`;
 }
