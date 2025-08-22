@@ -34,8 +34,8 @@ export const SocialLinksDisplay = ({ user }: { user: UserModel }) => {
 };
 
 /**
- *
- * @param link
+ * Generates a URL for redirection.
+ * @param link The link to redirect to.
  */
 function urlToRedirect(link: string) {
   const url = new URL("/redirect", process.env.NEXT_PUBLIC_BASE_URL);

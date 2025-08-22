@@ -23,11 +23,12 @@ export type FormValues = {
 };
 
 /**
- *
- * @param root0
- * @param root0.user
- * @param root0.revalidationFn
- * @param root0.exitEditMode
+ * ProfileForm component displays a form for editing user profile information.
+ * @param {object} param0 - The component props.
+ * @param {UserModel} param0.user - The user object containing profile information.
+ * @param {Function} param0.revalidationFn - The function to revalidate the user data.
+ * @param {Function} param0.exitEditMode - The function to exit edit mode.
+ * @returns {JSX.Element} The ProfileForm component.
  */
 export default function ProfileForm({
   user,

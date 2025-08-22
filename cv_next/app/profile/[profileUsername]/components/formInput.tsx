@@ -54,8 +54,8 @@ export const FormInput = ({
 
 /**
  * Capitalizes the first letter of each word in a sentence.
- * @param sentence The sentence to capitalize.
- * @returns The capitalized sentence.
+ * @param {string} sentence - The sentence to capitalize.
+ * @returns {string} The capitalized sentence.
  */
 function capitalizeWords(sentence: string) {
   return sentence

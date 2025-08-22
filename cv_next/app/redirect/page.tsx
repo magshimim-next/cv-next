@@ -6,8 +6,10 @@ import { Suspense } from "react";
 import warning from "@/public/images/warning_red_dark.png";
 import { Button } from "@/components/ui/button";
 import { sanitizeLink } from "@/helpers/cvLinkRegexHelper";
+
 /**
- *
+ * RedirectContent component displays the content for the redirect page.
+ * @returns {JSX.Element} The redirect content.
  */
 function RedirectContent() {
   const router = useRouter();

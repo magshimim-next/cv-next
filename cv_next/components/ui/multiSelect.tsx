@@ -29,19 +29,17 @@ interface MultiSelectProps<T extends FieldValues> {
 }
 
 /**
- * Multi-Select input component, using react-hook-form.
- *
- * Note: labels should match options in length and order
- * @param root0
- * @param root0.name
- * @param root0.label
- * @param root0.options
- * @param root0.labels
- * @param root0.control
- * @param root0.validation
- * @param root0.selectLabel
- * @param root0.defaultValue
- * @param root0.customErrorStyle
+ * MultiSelect component allows users to select multiple options from a dropdown.
+ * @param {Path<T>} name - The name of the field.
+ * @param {string} label - The label for the select input.
+ * @param {number[]} options - The options for the select input.
+ * @param {string[]} labels - The labels for the options.
+ * @param {Control<T>} control - The react-hook-form control object.
+ * @param {object} validation - The validation rules for the field.
+ * @param {string} selectLabel - The label for the select input when no value is selected.
+ * @param {PathValue<T, Path<T>>} defaultValue - The default value for the field.
+ * @param {string} customErrorStyle - The custom error style for the field.
+ * @returns {JSX.Element} The MultiSelect component.
  */
 export const MultiSelect = <T extends FieldValues>({
   name,

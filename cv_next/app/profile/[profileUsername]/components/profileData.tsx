@@ -11,9 +11,9 @@ import CategoryCounter from "./categoryCounter";
 import { ProfilePersonalData } from "./profilePersonalData";
 
 /**
- *
- * @param root0
- * @param root0.user
+ * ProfileData component displays the profile information and statistics for a user.
+ * @param {UserModel} user - The user object containing profile information.
+ * @returns {JSX.Element} The ProfileData component.
  */
 export default async function ProfileData({ user }: { user: UserModel }) {
   const cvs = await getCvsByUserId(user.id);
