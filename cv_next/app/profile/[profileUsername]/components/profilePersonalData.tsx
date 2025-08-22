@@ -44,16 +44,18 @@ export const ProfilePersonalData = ({
               <EditableProfileImage user={user} />
             ) : (
               <DynamicProfileImage
-                isPlaceholder={user.avatar_url ? false : true}
+                isPlaceholder={!user.avatar_url}
                 className="relative overflow-hidden rounded-full"
               >
-                <Image
-                  alt="profile"
-                  src={user?.avatar_url || ""}
-                  width={90}
-                  height={60 * 1.4142}
-                  priority={true}
-                ></Image>
+                {user.avatar_url && (
+                  <Image
+                    alt="Profile picture"
+                    src={user.avatar_url}
+                    width={90}
+                    height={90}
+                    priority
+                  />
+                )}
               </DynamicProfileImage>
             )}
           </div>

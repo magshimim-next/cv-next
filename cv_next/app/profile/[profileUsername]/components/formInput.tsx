@@ -21,18 +21,21 @@ export const FormInput = ({
   errorMsg?: string;
   isRequired?: boolean;
 }) => {
+  const label = capitalizeWords(field);
+
   return (
     <div className="flex flex-wrap justify-between">
       <label className="font-bold" htmlFor={field}>
-        {capitalizeWords(field)}:{" "}
+        {label}:{" "}
       </label>
 
       <div className="relative w-full">
         <input
-          className={`peer w-full rounded-md bg-accent p-1 hover:bg-muted ${clearFunc ? "" : "pr-8"}"`}
+          className={`peer w-full rounded-md bg-accent p-1 hover:bg-muted ${clearFunc ? "pr-8" : ""}`}
           id={field}
+          aria-invalid={!!hasError}
           {...(isRequired
-            ? { ...register(field, { required: `${placeholder} is required` }) }
+            ? { ...register(field, { required: `${label} is required` }) }
             : { ...register(field) })}
           defaultValue={defaultValue}
           placeholder={placeholder}
