@@ -52,14 +52,19 @@ export function sanitizeLink(value?: string) {
   // Disallow dangerous schemes
   if (/^(javascript|data|vbscript):/i.test(input)) return null;
 
+  //block any localhost even with scheme
+  const localhostMatch = /^localhost(?::\d+)?(?:\/.*)?$/i;
+  if (localhostMatch.test(input)) {
+    return null;
+  }
+
   //checks protocol
   const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(input);
   if (!hasScheme) {
-    // Validate basic domain-like input before prepending
+    // Validate basic domain-like and block local host before adding https
     const domainLike =
       /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}(?::\d+)?(?:\/.*)?$/i;
-    const localhostLike = /^localhost(?::\d+)?(?:\/.*)?$/i;
-    if (!domainLike.test(input) && !localhostLike.test(input)) {
+    if (!domainLike.test(input)) {
       return null;
     }
     input = `https://${input.replace(/^\/+/, "")}`;
@@ -74,12 +79,6 @@ export function sanitizeLink(value?: string) {
   //block any custom ports within the url
   const portMatch = /:(\d+)/.exec(input);
   if (portMatch) {
-    return null;
-  }
-
-  //block any localhost
-  const localhostMatch = /^localhost(?::\d+)?(?:\/.*)?$/i;
-  if (localhostMatch.test(input)) {
     return null;
   }
 
