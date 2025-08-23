@@ -61,7 +61,7 @@ export function sanitizeLink(value?: string) {
   //checks protocol
   const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(input);
   if (!hasScheme) {
-    // Validate basic domain-like and block local host before adding https
+    // Validate basic domain-like unput before prepending
     const domainLike =
       /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}(?::\d+)?(?:\/.*)?$/i;
     if (!domainLike.test(input)) {
