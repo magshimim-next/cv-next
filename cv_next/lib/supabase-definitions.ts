@@ -36,6 +36,10 @@ export const CvKeys: {
 
 export const ProfileKeys: {
   avatar_url: "avatar_url";
+  linkedin_link: "linkedin_link";
+  github_link: "github_link";
+  gitlab_link: "gitlab_link";
+  portfolio_link: "portfolio_link";
   display_name: "display_name";
   updated_at: "updated_at";
   username: "username";
@@ -47,6 +51,10 @@ export const ProfileKeys: {
   };
 } = {
   avatar_url: "avatar_url",
+  linkedin_link: "linkedin_link",
+  github_link: "github_link",
+  gitlab_link: "gitlab_link",
+  portfolio_link: "portfolio_link",
   display_name: "display_name",
   updated_at: "updated_at",
   username: "username",

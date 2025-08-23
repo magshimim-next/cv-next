@@ -84,5 +84,6 @@ export const config = {
     "/upload",
     "/first_login/:profileUsername*",
     "/admin",
+    "/redirect",
   ],
 };

@@ -1,6 +1,9 @@
-/*
-The function will make sure that the Google URL is a preview and shareable
-*/
+/**
+ * Transforms a Google Drive link into a "view only" link.
+ * The function will make sure that the Google URL is a preview and shareable
+ * @param {string} link - The Google Drive link to transform.
+ * @returns {string} The transformed "view only" link.
+ */
 export function transformGoogleViewOnlyUrl(link: string): string {
   if (!validateGoogleViewOnlyUrl(link)) return "";
 
@@ -16,7 +19,89 @@ export function transformGoogleViewOnlyUrl(link: string): string {
   }
 }
 
+//vibe codded parts of it not gonna lie
+/**
+ * Sanitizes a link by removing unwanted characters and ensuring a valid format.
+ * @param {string} value - The link to sanitize.
+ * @returns {string | null} The sanitized link or null if invalid.
+ */
+export function sanitizeLink(value?: string) {
+  if (!value) return null;
+  let input = value.trim();
+  if (!input) return null;
+
+  // decodes
+  if (/%[0-9A-Fa-f]{2}/.test(input)) {
+    try {
+      input = decodeURIComponent(input);
+    } catch {}
+  }
+
+  //removing quotes
+  if (
+    (input.startsWith('"') && input.endsWith('"')) ||
+    (input.startsWith("'") && input.endsWith("'"))
+  ) {
+    input = input.slice(1, -1).trim();
+  }
+
+  // html tags
+  if (/[<>]/.test(input)) return null;
+  if (/\s/.test(input)) return null;
+
+  // Disallow dangerous schemes
+  if (/^(javascript|data|vbscript):/i.test(input)) return null;
+
+  //checks protocol
+  const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(input);
+  if (!hasScheme) {
+    // Validate basic domain-like input before prepending
+    const domainLike =
+      /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}(?::\d+)?(?:\/.*)?$/i;
+    if (!domainLike.test(input)) {
+      return null;
+    }
+    input = `https://${input.replace(/^\/+/, "")}`;
+  }
+
+  // only https
+  const schemeMatch = /^([a-zA-Z][a-zA-Z0-9+.-]*):/.exec(input);
+  if (schemeMatch && !/^https?$/i.test(schemeMatch[1])) {
+    return null;
+  }
+
+  // block any custom ports within the url
+  const portMatch = /:(\d+)/.exec(input);
+  if (portMatch) {
+    return null;
+  }
+
+  try {
+    const url = new URL(input);
+
+    // Block localhost and any IPv4 loopback in 127.0.0.0/8
+    if (
+      /^(?:localhost|127(?:\.(?:25[0-5]|2[0-4]\d|1?\d{1,2})){3})$/i.test(
+        url.hostname
+      )
+    ) {
+      return null;
+    }
+
+    url.hostname = url.hostname.toLowerCase();
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Validates if a Google Drive link is a "view only" link.
+ * @param {string} link - The link to validate.
+ * @returns {boolean} True if the link is valid, false otherwise.
+ */
 export function validateGoogleViewOnlyUrl(link: string): boolean {
-  const regex = /https?:\/\/(?:docs|drive)\.google\.com\/(?:document|file)\/d\/([a-zA-Z0-9_-]+)\/(?:view|preview|edit)(?:\?(?:.*&)?usp=[a-zA-Z0-9_-]+(?:&.*)?)?/;
-  return regex.test(link) 
+  const regex =
+    /https?:\/\/(?:docs|drive)\.google\.com\/(?:document|file)\/d\/([a-zA-Z0-9_-]+)\/(?:view|preview|edit)(?:\?(?:.*&)?usp=[a-zA-Z0-9_-]+(?:&.*)?)?/;
+  return regex.test(link);
 }
