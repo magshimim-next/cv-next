@@ -5,7 +5,7 @@ import CVItemLink from "@/app/feed/components/CV/CVItemLink";
 
 /**
  * The profile's CV carousel component
- * @param {{CvModel[]}} param0 The CVs array
+ * @param {CvModel[]} param0 The CVs array
  * @returns {Element} The profile's CV carousel component
  */
 export default function ProfileCvs({ cvs }: { cvs: CvModel[] }) {
