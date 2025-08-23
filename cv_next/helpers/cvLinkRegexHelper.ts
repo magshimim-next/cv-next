@@ -52,16 +52,10 @@ export function sanitizeLink(value?: string) {
   // Disallow dangerous schemes
   if (/^(javascript|data|vbscript):/i.test(input)) return null;
 
-  //block any localhost even with scheme
-  const localhostMatch = /^localhost(?::\d+)?(?:\/.*)?$/i;
-  if (localhostMatch.test(input)) {
-    return null;
-  }
-
   //checks protocol
   const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(input);
   if (!hasScheme) {
-    // Validate basic domain-like unput before prepending
+    // Validate basic domain-like input before prepending
     const domainLike =
       /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}(?::\d+)?(?:\/.*)?$/i;
     if (!domainLike.test(input)) {
@@ -70,13 +64,13 @@ export function sanitizeLink(value?: string) {
     input = `https://${input.replace(/^\/+/, "")}`;
   }
 
-  //only https
+  // only https
   const schemeMatch = /^([a-zA-Z][a-zA-Z0-9+.-]*):/.exec(input);
   if (schemeMatch && !/^https?$/i.test(schemeMatch[1])) {
     return null;
   }
 
-  //block any custom ports within the url
+  // block any custom ports within the url
   const portMatch = /:(\d+)/.exec(input);
   if (portMatch) {
     return null;
@@ -84,6 +78,16 @@ export function sanitizeLink(value?: string) {
 
   try {
     const url = new URL(input);
+
+    // Block localhost and any IPv4 loopback in 127.0.0.0/8
+    if (
+      /^(?:localhost|127(?:\.(?:25[0-5]|2[0-4]\d|1?\d{1,2})){3})$/i.test(
+        url.hostname
+      )
+    ) {
+      return null;
+    }
+
     url.hostname = url.hostname.toLowerCase();
     return url.toString();
   } catch {
