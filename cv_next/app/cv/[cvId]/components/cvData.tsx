@@ -3,19 +3,29 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { FiSettings } from "react-icons/fi";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { useError } from "@/providers/error-provider";
 import { Visible_Error_Messages } from "@/lib/definitions";
 import { CvCategory } from "@/components/ui/cvCategory";
+import { encodeValue } from "@/lib/utils";
+import Tooltip from "@/components/ui/tooltip";
+import DownloadButtons from "./downloadButtons";
 
+/**
+ * This component displays a CV's metadata, including the uploader's information.
+ * @param {{CvModel, boolean, boolean}} param0 The props for the componment these include:
+ * The CV model, if that CV is valid, and if the current user is the author (for different errors)/
+ * @returns {Element} The component with CV data.
+ */
 export default function CvData({
   cv,
   validCV,
-  currentUserIsAuthor,
+  canEditCv: canEditCv,
 }: {
   cv: CvModel;
   validCV: boolean;
-  currentUserIsAuthor: boolean;
+  canEditCv: boolean;
 }) {
   const uploader = JSON.parse(JSON.stringify(cv.user_id));
   const displayName = uploader.display_name || uploader.username;
@@ -23,11 +33,10 @@ export default function CvData({
   const router = useRouter();
 
   if (!validCV) {
-    if (currentUserIsAuthor) {
+    if (canEditCv) {
       showError(
         Visible_Error_Messages.CurrentUserPrivateCV.title,
-        Visible_Error_Messages.CurrentUserPrivateCV.description,
-        () => router.push("/feed")
+        Visible_Error_Messages.CurrentUserPrivateCV.description
       );
     } else {
       showError(
@@ -42,24 +51,44 @@ export default function CvData({
 
   return (
     <div className={`grid grid-cols-1 gap-y-4 ${showData} md:gap-x-4`}>
-      <article className="mb-3 flex flex-col rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800">
-        <div className="mb-3 flex items-center">
-          <div className="mr-3">
-            <DynamicProfileImage
-              isPlaceholder={uploader.avatar_url ? false : true}
-              placeHolderStyle={{ fontSize: "35px" }}
-            >
-              <Image
-                alt="profile"
-                src={uploader.avatar_url || ""}
-                width={40}
-                height={30 * 1.4142}
-              />
-            </DynamicProfileImage>
+      <article className="relative mb-3 flex flex-col rounded-lg border-b border-gray-200 bg-white p-6 text-base dark:bg-theme-800">
+        <div className="absolute right-4 top-4 flex items-center">
+          <div className="flex items-center p-2 transition ">
+            <DownloadButtons cvLink={cv.document_link} />
           </div>
-          <Link href={`/profile/${uploader.username}`}>
-            <p className="text-xl font-medium hover:underline">{displayName}</p>
-          </Link>
+          {canEditCv && (
+            <div className="flex items-center rounded-full p-2 transition hover:bg-gray-100 dark:hover:bg-theme-700">
+              <Tooltip id="Settings Icon" message="Edit CV">
+                <FiSettings
+                  size={22}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => router.push(`/cv/${encodeValue(cv.id)}/edit`)}
+                />
+              </Tooltip>
+            </div>
+          )}
+        </div>
+        <div className="mb-3 flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="mr-3">
+              <DynamicProfileImage
+                isPlaceholder={!uploader.avatar_url}
+                placeHolderStyle={{ fontSize: "35px" }}
+              >
+                <Image
+                  alt="profile"
+                  src={uploader.avatar_url || ""}
+                  width={40}
+                  height={30 * 1.4142}
+                />
+              </DynamicProfileImage>
+            </div>
+            <Link href={`/profile/${uploader.username}`}>
+              <p className="text-xl font-medium hover:underline">
+                {displayName}
+              </p>
+            </Link>
+          </div>
         </div>
         <div className="mb-3 flex flex-wrap items-center space-x-2">
           {cv.cv_categories && (

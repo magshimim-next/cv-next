@@ -12,6 +12,11 @@ interface CVCardProps {
   cv: CvModel;
 }
 
+/**
+ * The CV card component that display preciew and other info
+ * @param {CVCardProps} param0 The CV object
+ * @returns {Element} The CV card component
+ */
 export default function CVItem({ cv }: CVCardProps) {
   const [realURL, setRealURL] = useState("");
   const fetchFromApi = useApiFetch();
@@ -64,43 +69,34 @@ export default function CVItem({ cv }: CVCardProps) {
     []
   );
 
-  const author_obj = JSON.parse(JSON.stringify(cv.user_id || "Loading..."));
+  const authorObject = JSON.parse(JSON.stringify(cv.user_id || "Loading..."));
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
 
   return (
-    <>
-      {realURL ? (
+    <div className="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow">
+      <div className="aspect-[1/1.414] w-full overflow-hidden rounded-lg bg-gray-100">
         <Image
+          src={
+            realURL.length > 1
+              ? realURL
+              : `data:image/svg+xml;base64,${toBase64(shimmer(300, 300))}`
+          }
           width={500}
           height={500 * 1.4142}
-          className="w-full rounded-lg p-2"
-          src={realURL}
+          alt="CV Preview"
+          className="h-full w-full object-contain object-top p-2"
           placeholder="blur"
           blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(300, 300))}`}
-          alt="CV Preview"
           priority
         />
-      ) : (
-        <div style={{ width: "380px", height: `400px`, overflow: "hidden" }}>
-          <Image
-            width={500}
-            height={500}
-            className="w-full rounded-lg p-2"
-            src={`data:image/svg+xml;base64,${toBase64(shimmer(300, 300))}`}
-            placeholder="blur"
-            blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(300, 300))}`}
-            alt="CV Preview"
-            priority
-          />
-        </div>
-      )}
+      </div>
 
       <div className="overlay gradient-blur-backdrop absolute bottom-0 flex h-full w-full rounded-lg backdrop-blur-[0.5px] transition hover:via-transparent hover:backdrop-blur-none">
         <div className="overlay absolute bottom-0 h-1/5 w-full rounded-xl bg-transparent p-6">
           <div className="absolute bottom-0 left-0 right-0 mx-5 mb-2.5">
             <div className="flex flex-wrap items-baseline">
               <div className="mr-2 text-xl font-bold text-neutral-700">
-                {author_obj.display_name}
+                {authorObject.display_name}
               </div>
               <p className="text-xs text-neutral-400">{formattedDate}</p>
             </div>
@@ -108,6 +104,6 @@ export default function CVItem({ cv }: CVCardProps) {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

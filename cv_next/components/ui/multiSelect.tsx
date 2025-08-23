@@ -29,9 +29,18 @@ interface MultiSelectProps<T extends FieldValues> {
 }
 
 /**
- * Multi-Select input component, using react-hook-form.
- *
- * Note: labels should match options in length and order
+ * MultiSelect component allows users to select multiple options from a dropdown.
+ * @param {object} props - The component props.
+ * @param {Path<T>} props.name - The name of the field.
+ * @param {string} props.label - The label for the select input.
+ * @param {number[]} props.options - The options for the select input.
+ * @param {string[]} props.labels - The labels for the options.
+ * @param {Control<T>} props.control - The react-hook-form control object.
+ * @param {object} props.validation - The validation rules for the field.
+ * @param {string} props.selectLabel - The label for the select input when no value is selected.
+ * @param {PathValue<T, Path<T>>} props.defaultValue - The default value for the field.
+ * @param {string} props.customErrorStyle - The custom error style for the field.
+ * @returns {JSX.Element} The MultiSelect component.
  */
 export const MultiSelect = <T extends FieldValues>({
   name,
@@ -70,13 +79,14 @@ export const MultiSelect = <T extends FieldValues>({
   };
 
   return (
-    <>
+    <div>
       <div className="flex flex-wrap justify-between">
         <label className="font-bold" htmlFor={name}>
           {label}
         </label>
         <select
           value=""
+          className="rounded-md bg-accent hover:bg-muted"
           onChange={(event) => handleChange(parseInt(event.target.value))}
         >
           <option value="">{selectLabel ?? "Choose values"}</option>
@@ -89,7 +99,7 @@ export const MultiSelect = <T extends FieldValues>({
             ))}
         </select>
       </div>
-      <div className="max-h-16 w-full overflow-y-scroll bg-theme-700">
+      <div className="mt-1 max-h-16 w-full overflow-y-scroll rounded-md bg-accent p-1 hover:bg-muted">
         {field?.value?.length
           ? field?.value.map((value: any, idx: number) => (
               <a
@@ -112,6 +122,6 @@ export const MultiSelect = <T extends FieldValues>({
           {fieldState.error.message}
         </div>
       )}
-    </>
+    </div>
   );
 };

@@ -34,7 +34,7 @@ Grab an issue you think you can manage, assign it to yourself, and create a fork
 
 ### Conventions
 
-TODO: add a link to the conventions page that will be created in [#177](https://github.com/magshimim-next/cv-next/issues/177).
+See the full guide [here](./docs/conventions.md)
 
 #### Configure pre-commit
 

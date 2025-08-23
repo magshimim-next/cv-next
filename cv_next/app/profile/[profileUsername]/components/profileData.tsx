@@ -10,6 +10,11 @@ import { userIsAdmin } from "@/server/api/users";
 import CategoryCounter from "./categoryCounter";
 import { ProfilePersonalData } from "./profilePersonalData";
 
+/**
+ * ProfileData component displays the profile information and statistics for a user.
+ * @param {UserModel} user - The user object containing profile information.
+ * @returns {JSX.Element} The ProfileData component.
+ */
 export default async function ProfileData({ user }: { user: UserModel }) {
   const cvs = await getCvsByUserId(user.id);
 
@@ -22,7 +27,7 @@ export default async function ProfileData({ user }: { user: UserModel }) {
     logger.error("Couldn't get CVs by user");
     return <div>Error Fetching user&apos;s CVs</div>;
   }
-  const CVsFromComments = await getCvsFromComments(commentsResult);
+  const cvsFromComments = await getCvsFromComments(commentsResult);
   const revalidate = () => {
     "use server";
 
@@ -32,12 +37,13 @@ export default async function ProfileData({ user }: { user: UserModel }) {
   const resultAdminCheck = await userIsAdmin();
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col">
       <ProfilePersonalData
         user={user}
         revalidationFn={revalidate}
         isCurrentAdmin={resultAdminCheck.ok}
       />
+
       <DropdownCover title="Statistics">
         <div className="col-md-12 mt-2 flex justify-center">
           <CategoryCounter
@@ -48,7 +54,7 @@ export default async function ProfileData({ user }: { user: UserModel }) {
         </div>
         <div className="flex justify-center">
           <CategoryCounter
-            cvs={CVsFromComments}
+            cvs={cvsFromComments}
             title="Most comments are from CVs that are categorized under"
             error={`No CVs found, ${user.display_name || user.username} needs to comment a bit more!`}
           />

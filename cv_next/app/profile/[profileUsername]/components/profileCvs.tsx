@@ -3,6 +3,11 @@ import EmblaCarousel from "@/components/ui/Carousel/carouselStructure";
 import CVItem from "@/app/feed/components/CV/CVItem";
 import CVItemLink from "@/app/feed/components/CV/CVItemLink";
 
+/**
+ * The profile's CV carousel component
+ * @param {CvModel[]} param0 The CVs array
+ * @returns {Element} The profile's CV carousel component
+ */
 export default function ProfileCvs({ cvs }: { cvs: CvModel[] }) {
   const options: EmblaOptionsType = { loop: true };
 
@@ -23,11 +28,7 @@ export default function ProfileCvs({ cvs }: { cvs: CvModel[] }) {
             alignItems: "center",
           }}
         >
-          <div
-            style={{
-              height: 500 * 1.4142,
-            }}
-          >
+          <div className="aspect-[1/1.414] w-full max-w-[500px] overflow-hidden rounded-lg bg-gray-100">
             <CVItemLink key={cv.id} cv={cv}>
               <CVItem cv={cv} />
             </CVItemLink>

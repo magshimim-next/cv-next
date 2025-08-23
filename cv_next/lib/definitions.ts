@@ -40,6 +40,7 @@ export class Link_Definitions {
     "profile",
     "hall",
     "first_login",
+    "redirect",
   ];
 }
 

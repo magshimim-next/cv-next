@@ -45,15 +45,15 @@ export const DropdownInput = ({
   };
 
   const handleCheckboxChange = (categoryId: number) => {
-    if (JSON.stringify(valueId) !== JSON.stringify(selectedCategories)) {
-      setSelectedCategories(valueId || []);
-    }
     setSelectedCategories((prevSelectedIds) => {
+      let updated;
       if (prevSelectedIds.includes(categoryId)) {
-        return prevSelectedIds.filter((id) => id !== categoryId);
+        updated = prevSelectedIds.filter((id) => id !== categoryId);
       } else {
-        return [...prevSelectedIds, categoryId];
+        updated = [...prevSelectedIds, categoryId];
       }
+      onChange(updated.length ? updated : null);
+      return updated;
     });
   };
 
@@ -69,12 +69,22 @@ export const DropdownInput = ({
     }
   };
 
+  // Sync selectedCategories with valueId when valueId changes from parent
   useEffect(() => {
-    if (JSON.stringify(selectedCategories) !== JSON.stringify(valueId)) {
-      onChange(selectedCategories.length ? selectedCategories : null);
+    if (
+      Array.isArray(valueId) &&
+      JSON.stringify(valueId) !== JSON.stringify(selectedCategories)
+    ) {
+      setSelectedCategories(valueId);
     }
+    // Only runs when valueId changes from parent
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [valueId]);
+
+  useEffect(() => {
     setSelectTitle(selectedCategories.map(getValueById).join(", "));
-  }, [selectedCategories, valueId, getValueById, onChange]);
+    // Only update title when selectedCategories changes
+  }, [selectedCategories, getValueById, setSelectTitle]);
 
   return (
     <>

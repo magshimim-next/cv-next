@@ -5,13 +5,13 @@ import { Tables, CvKeys, ProfileKeys } from "@/lib/supabase-definitions";
 import { filterValues } from "@/types/models/filters";
 import Definitions from "@/lib/definitions";
 import logger from "@/server/base/logger";
+import { Err, Ok } from "@/lib/utils";
 import SupabaseHelper from "./supabaseHelper";
 
 /**
  * Retrieves a CV by its ID from the database.
- *
  * @param {string} cvId - The ID of the CV to retrieve
- * @return {Promise<CvModel | null>} The retrieved CV or null if not found
+ * @returns {Promise<CvModel | null>} The retrieved CV or null if not found
  */
 export async function getCvById(cvId: string): Promise<CvModel | null> {
   try {
@@ -43,10 +43,9 @@ export async function getCvById(cvId: string): Promise<CvModel | null> {
 
 /**
  * Retrieves CVs by user ID.
- *
  * @param {string} userId - The user ID
  * @param {boolean} filterOutDeleted - Whether to filter out deleted CVs (default true)
- * @return {Promise<CvModel[] | null>} The retrieved CVs or null if an error occurs
+ * @returns {Promise<CvModel[] | null>} The retrieved CVs or null if an error occurs
  * The user_id of the retrieved CVs is a json of the user_id, display_name of that user and it's username
  */
 export async function getCvsByUserId(
@@ -79,12 +78,13 @@ export async function getCvsByUserId(
     return null;
   }
 }
+
 /**
  * Retrieves a paginated list of CVs based on the provided page number.
- *
  * @param {boolean} filterOutDeleted - Indicates whether deleted CVs should be filtered out.
  * @param {number} page - The page number for pagination.
- * @return {Promise<CvModel[] | null>} A Promise that resolves with an array of CvModel or null.
+ * @param {filterValues} filters - The filters apply to CV search.
+ * @returns {Promise<CvModel[] | null>} A Promise that resolves with an array of CvModel or null.
  * The user_id of the retrieved CVs is a json of the user_id, display_name of that user and it's username
  */
 export async function getPaginatedCvs(
@@ -133,6 +133,12 @@ export async function getPaginatedCvs(
   }
 }
 
+/**
+ * The function applys a search filter that is based on profiles.
+ * @param {any} profileQuery - The existing profiles query that will be modified.
+ * @param {filterValues} filters - The existing filter that will be applied.
+ * @returns {any} The query with the profiles filter applied.
+ */
 function applyProfileSearchFilter(profileQuery: any, filters?: filterValues) {
   if (filters?.searchValue) {
     const searchValue = `%${filters.searchValue}%`;
@@ -143,6 +149,12 @@ function applyProfileSearchFilter(profileQuery: any, filters?: filterValues) {
   return profileQuery;
 }
 
+/**
+ * The function applys a search filter that is based on categories.
+ * @param {any} query - The existing query query that will be modified.
+ * @param {filterValues} filters - The existing filter that will be applied.
+ * @returns {any} The query with the categories filter applied.
+ */
 function applyCategoryFilter(query: any, filters?: filterValues) {
   if (filters?.categoryIds?.length) {
     logger.debug(filters.categoryIds, "category ids");
@@ -151,6 +163,13 @@ function applyCategoryFilter(query: any, filters?: filterValues) {
   return query;
 }
 
+/**
+ * The function applies the profile filter to CV general filter.
+ * @param {any} query The general CVs query.
+ * @param {any} profileQuery The profiles query to apply.
+ * @param {filterValues} filters The current filters that are applied to the search.
+ * @returns {Promise<any>} The query with the profiles search.
+ */
 async function applyProfileSearchToCvs(
   query: any,
   profileQuery: any,
@@ -174,35 +193,36 @@ async function applyProfileSearchToCvs(
 
 /**
  * Updates a CV in the database.
- *
  * @param {CvModel} cv - the CV to be updated
- * @return {Promise<PostgrestError | null>} the error, if any, or null if the update was successful
+ * @returns {Promise<PostgrestError | CvModel>} the error, if any, or the updated data if the update was successful
  */
-export async function updateCV(cv: CvModel): Promise<PostgrestError | null> {
+export async function updateGivenCV(
+  cv: CvModel
+): Promise<PostgrestError | CvModel> {
   try {
-    const { error } = await SupabaseHelper.getSupabaseInstance()
+    const { data, error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.cvs)
       .update(cv)
-      .eq(CvKeys.id, cv.id);
-    if (error) {
+      .eq(CvKeys.id, cv.id)
+      .select();
+
+    if (error || data.length === 0) {
       logger.error(error, "cvs::updateCV");
-      return error;
+      return error as PostgrestError;
     }
-    return null;
+    return data[0] as CvModel;
   } catch (error) {
     logger.error(error, "cvs::updateCV");
-    //TODO: handle error
-    return null;
+    return error as PostgrestError;
   }
 }
 
 /**
  * Uploads a CV to the database.
- *
  * @param {NewCvModel} cv - the CV to upload
- * @return {Promise<null | CvModel>} null on error, the uploaded object if upload was successful
+ * @returns {Promise<null | CvModel>} null on error, the uploaded object if upload was successful
  */
-export async function uploadCV(cv: NewCvModel): Promise<null | CvModel> {
+export async function uploadNewCV(cv: NewCvModel): Promise<null | CvModel> {
   const { data, error } = await SupabaseHelper.getSupabaseInstance()
     .from("cvs")
     .insert(cv)
@@ -212,4 +232,28 @@ export async function uploadCV(cv: NewCvModel): Promise<null | CvModel> {
     return null;
   }
   return data[0];
+}
+
+/**
+ * Marks a comment as deleted.
+ * @param {string} cvId - The ID of the CV to be marked as deleted.
+ * @returns {Promise<Result<void, string>>} A promise that resolves to a Result object indicating the success or failure of the operation.
+ */
+export async function markCVAsDeleted(
+  cvId: string
+): Promise<Result<void, string>> {
+  try {
+    const { error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.cvs)
+      .update({ deleted: true })
+      .eq(CvKeys.id, cvId);
+    if (error) {
+      return Err(markCVAsDeleted.name, { postgrestError: error });
+    }
+    return Ok.EMPTY;
+  } catch (err) {
+    return Err(markCVAsDeleted.name, {
+      err: err as Error,
+    });
+  }
 }

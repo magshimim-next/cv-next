@@ -9,6 +9,11 @@ import { checkUsername } from "@/helpers/usernameRegexHelper";
 import logger from "@/server/base/logger";
 import SupabaseHelper from "./supabaseHelper";
 
+/**
+ * The function will return a user based on its ID.
+ * @param {string} userId The ID of the user to retrieve
+ * @returns {Promise<Result<UserModel, string>>} A promise that resolves to result with user model or error message.
+ */
 export async function getUserById(
   userId: string
 ): Promise<Result<UserModel, string>> {
@@ -48,6 +53,11 @@ export async function getUserById(
   }
 }
 
+/**
+ * The function will return a user based on its username.
+ * @param {string} username The username of the user to retrieve.
+ * @returns {Promise<Result<UserModel, string>>} A promise that resolves to result with user model or error message.
+ */
 export async function getUserByUsername(
   username: string
 ): Promise<Result<UserModel, string>> {
@@ -76,6 +86,11 @@ export async function getUserByUsername(
   }
 }
 
+/**
+ * The function will handle username generation for a given user based on their display name.
+ * @param {UserModel} user The user object that needs a username generated for it.
+ * @returns {Promise<Result<string | undefined, string>>} A promise that resolves to the generated username or an error message.
+ */
 async function generateUsername(
   user: UserModel
 ): Promise<Result<string | undefined, string>> {
@@ -123,6 +138,12 @@ async function generateUsername(
   });
 }
 
+/**
+ * The function will attempt to generate a username based on the provided name.
+ * Generation is done via a hash of the name, timestamp, and a UUID.
+ * @param {string} name The name to attempt generatiing a username for.
+ * @returns {string} The generated username.
+ */
 function generateUsernameAttempt(name: string): string {
   //ensure high entropy by using a random uuid and timestamp
   const timestamp = Math.floor(Date.now() / 1000).toString();
@@ -134,6 +155,11 @@ function generateUsernameAttempt(name: string): string {
   return `${name}.${shortHash}`;
 }
 
+/**
+ * The function will slugify a full name by removing spaces and special characters.
+ * @param {string} fullName The full name to slugify.
+ * @returns {string} The slugified name.
+ */
 function slugifyName(fullName: string): string {
   return fullName
     .split(" ")
@@ -142,9 +168,14 @@ function slugifyName(fullName: string): string {
     .replace(/[^a-zA-Z0-9.]/g, "");
 }
 
-export const updateUser = async (
+/**
+ * The function will update a user in the database.
+ * @param {Partial<UserModel>} user The user object to update.
+ * @returns {Promise<Result<void, string>>} A promise that resolves with void or error message.
+ */
+export async function updateUser(
   user: Partial<UserModel>
-): Promise<Result<void, string>> => {
+): Promise<Result<void, string>> {
   if (user?.id === undefined) {
     return Err(updateUser.name, {
       err: Error("User ID is undefined"),
@@ -165,14 +196,13 @@ export const updateUser = async (
       err: err as Error,
     });
   }
-};
+}
 
 /**
  * Changes the username of a given user.
- *
  * @param {string} userId - The ID of the user to update.
  * @param {string} newUserName - The new username.
- * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
  */
 export async function setUserName(
   userId: string,
@@ -202,10 +232,9 @@ export async function setUserName(
 
 /**
  * Changes the status of a given user.
- *
  * @param {string} userId - The ID of the user to update.
  * @param {string} newWorkStatus - The new status.
- * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
  */
 export async function setWorkStatus(
   userId: string,
@@ -235,10 +264,9 @@ export async function setWorkStatus(
 
 /**
  * Changes the categories of a given user.
- *
  * @param {string} userId - The ID of the user to update.
  * @param {number[] | null | undefined} newWorkCategories - The new categories.
- * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
  */
 export async function setWorkCategories(
   userId: string,
@@ -264,8 +292,7 @@ export async function setWorkCategories(
 
 /**
  * Get current user ID
- *
- * @return {Promise<Result<string, string>>} A promise that resolves with the id or rejects with an error message.
+ * @returns {Promise<Result<string, string>>} A promise that resolves with the id or rejects with an error message.
  */
 export async function getCurrentId(): Promise<Result<string, string>> {
   try {
@@ -287,8 +314,7 @@ export async function getCurrentId(): Promise<Result<string, string>> {
 
 /**
  * Check if the current user is an admin
- *
- * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
  */
 export async function userIsAdmin(): Promise<Result<void, string>> {
   try {
@@ -321,8 +347,7 @@ export async function userIsAdmin(): Promise<Result<void, string>> {
 
 /**
  * check if the username is valid and generate one if it's not
- *
- * @returns {Promise<Result<String, String>} return the username or an error message
+ * @returns {Promise<Result<string, string>>} return the username or an error message
  */
 export async function validateUsername(): Promise<Result<String, String>> {
   const id = await getCurrentId();
@@ -361,10 +386,9 @@ export async function validateUsername(): Promise<Result<String, String>> {
 
 /**
  * Changes the display name of a given user.
- *
  * @param {string} userId - The ID of the user to update.
  * @param {string} newDisplayName - The new display name.
- * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
  */
 export async function setDisplayName(
   userId: string,
@@ -388,9 +412,8 @@ export async function setDisplayName(
 
 /**
  * Set the first login status of the current user.
- *
  * @param {boolean} isFirstLogin - first login status.
- * @return {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
  */
 export async function setFirstLogin(
   isFirstLogin: boolean
@@ -416,6 +439,10 @@ export async function setFirstLogin(
   }
 }
 
+/**
+ * The function will check if the current user is on their first login.
+ * @returns {Promise<Result<boolean, string>>} A promise that resolves with the first login status or rejects with an error message.
+ */
 export async function isCurrentFirstLogin(): Promise<Result<Boolean, string>> {
   try {
     const supabase = await SupabaseHelper.getSupabaseInstance();
@@ -442,10 +469,8 @@ export async function isCurrentFirstLogin(): Promise<Result<Boolean, string>> {
 
 /**
  * Upload the new user profile to a bucket.
- *
- * @param {string} userId - The ID of the user to update
  * @param {string} fileToUpload - new user profile image
- * @return {Promise<Result<string, string>>} the bucket upload image url
+ * @returns {Promise<Result<string, string>>} the bucket upload image url
  */
 export async function uploadProfilePic(
   fileToUpload: string
@@ -483,14 +508,13 @@ export async function uploadProfilePic(
   }
 }
 
-/*
+/**
  * Returns all users with their minimal data and permissions.
- *
- * @param {string} user_type - Requested permission.
- * @return {Promise<Result<Partial<UserWithPerms>[], string>>} A promise that resolves with an array of partial user models or rejects with an error message.
+ * @param {string} userType - Requested permission.
+ * @returns {Promise<Result<Partial<UserWithPerms>[], string>>} A promise that resolves with an array of partial user models or rejects with an error message.
  */
 export async function getAllUsers(
-  user_type?: string
+  userType?: string
 ): Promise<Result<Partial<UserWithPerms>[], string>> {
   const supabase = SupabaseHelper.getSupabaseInstance();
   try {
@@ -503,9 +527,13 @@ export async function getAllUsers(
 
     type PermissionsWithUserData = QueryData<typeof query>;
 
-    if (user_type) {
-      query = query.eq(PermsKeys.user_type, user_type);
+    if (userType && userType in PermsKeys.user_types_enum) {
+      query = query.eq(
+        PermsKeys.user_type,
+        userType as "inactive" | "active" | "admin"
+      );
     }
+
     const { data: users, error } = await query;
 
     if (error) {
@@ -534,7 +562,7 @@ export async function getAllUsers(
 /**
  * Updates the url pic of the user.
  * @param {string} newUrl - The new url pic
- * @return {Promise<Result<void, string>>} Was the update successful?
+ * @returns {Promise<Result<void, string>>} Was the update successful?
  */
 export async function setProfilePath(
   newUrl: string
@@ -566,14 +594,14 @@ export async function setProfilePath(
   }
 }
 
-/*
+/**
  * Updates the user_type of a given user id.
  * @param {Partial<UserWithPerms>} user The user object to update.
  * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
  */
-export const updateUserPerms = async (
+export async function updateUserPerms(
   user: Partial<UserWithPerms>
-): Promise<Result<void, string>> => {
+): Promise<Result<void, string>> {
   const resultAdminCheck = await userIsAdmin();
   if (!resultAdminCheck.ok) {
     logger.error("None admin action detected.");
@@ -587,11 +615,11 @@ export const updateUserPerms = async (
       err: Error("User ID or Permissions aren't undefined"),
     });
   }
-  const { id, user_type } = user;
+  const { id, user_type: userType } = user;
   try {
     const { error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.profiles_perms)
-      .update({ user_type })
+      .update({ user_type: userType })
       .eq(ProfileKeys.id, id);
     if (error) {
       logger.error("Failed to activate the user", error);
@@ -603,13 +631,13 @@ export const updateUserPerms = async (
       err: err as Error,
     });
   }
-};
+}
 
 /**
  * Activates all users.
  * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
  */
-export const activateAllUsers = async (): Promise<Result<void, string>> => {
+export async function activateAllUsers(): Promise<Result<void, string>> {
   const resultAdminCheck = await userIsAdmin();
   if (!resultAdminCheck.ok) {
     logger.error("None admin action detected.");
@@ -634,4 +662,4 @@ export const activateAllUsers = async (): Promise<Result<void, string>> => {
       err: err as Error,
     });
   }
-};
+}
