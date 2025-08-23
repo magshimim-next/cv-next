@@ -4,23 +4,26 @@ import Categories from "@/types/models/categories";
 import { Link_Definitions } from "./definitions";
 
 /**
- *
- * @param {...any} inputs
+ * Combines multiple class names into a single string.
+ * @param {ClassValue[]} inputs The class names to combine.
+ * @returns {string} The combined class names.
  */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 /**
- *
+ * Checks if the code is running in a browser environment.
+ * @returns {boolean} true if the code is running in a browser environment, false otherwise
  */
 export function isBrowser() {
   return typeof window !== "undefined";
 }
 
 /**
- *
- * @param value
+ * Decodes a base64-encoded string.
+ * @param {string | undefined} value
+ * @returns {string | null}
  */
 export function decodeValue(value: string | undefined) {
   if (!value) {
@@ -37,13 +40,10 @@ export function decodeValue(value: string | undefined) {
   return buff.toString("ascii");
 }
 
-/*
- * Encode string, returns base64 value
- * @Params: string
- */
 /**
- *
- * @param value
+ * Encodes a string to base64.
+ * @param {string | undefined} value The string to encode.
+ * @returns {string | null} The base64-encoded string or null if the input is invalid.
  */
 export function encodeValue(value: string | undefined) {
   if (!value) {
@@ -76,8 +76,8 @@ export namespace Ok {
 /**
  * Creates an Error Result object with the specified error value.
  * @param {E} val - the error value
- * @param where
- * @param errors
+ * @param  {E} where - the location of the error
+ * @param {ErrorDetails} errors - additional error details
  * @returns {Result<never, E>} the Result object with ok set to false and containing the specified error value
  */
 export function Err<E>(where: E, errors: ErrorDetails = {}): Result<never, E> {
@@ -100,12 +100,18 @@ export function transformToPreviewLink(link: string): string {
   }
 }
 
+/**
+ * Generates a category link based on the provided category number.
+ * @param {number} categoryNumber - The category number.
+ * @returns {string} The generated category link.
+ */
 export const generateCategoryLink = (categoryNumber: number) =>
   `/feed?category=${Categories.category[categoryNumber].toLowerCase()}`;
 
 /**
- *
- * @param arr
+ * Extracts all numbers from an array of strings.
+ * @param {string[]} arr - The array of strings to extract numbers from.
+ * @returns {number[]} An array of numbers found in the input array.
  */
 export function getAllNumbersFromArr(arr: string[]) {
   return arr
@@ -113,12 +119,18 @@ export function getAllNumbersFromArr(arr: string[]) {
     .map((value) => parseInt(value));
 }
 
+/**
+ * Generates a category string based on the provided category number.
+ * @param {number} categoryNumber - The category number.
+ * @returns {string} The generated category string.
+ */
 export const categoryString = (categoryNumber: number) =>
   `${Categories.category[categoryNumber].toLowerCase()}`;
 
 /**
- *
- * @param name
+ * Converts a category name to its corresponding category number.
+ * @param {string} name - The name of the category.
+ * @returns {number} The category number or -1 if not found.
  */
 export function toCategoryNumber(name: string): number {
   let fixedName = name[0].charAt(0).toUpperCase() + name.slice(1);

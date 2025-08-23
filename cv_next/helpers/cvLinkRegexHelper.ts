@@ -71,6 +71,18 @@ export function sanitizeLink(value?: string) {
     return null;
   }
 
+  //block any custom ports within the url
+  const portMatch = /:(\d+)/.exec(input);
+  if (portMatch) {
+    return null;
+  }
+
+  //block any localhost
+  const localhostMatch = /^localhost(?::\d+)?(?:\/.*)?$/i;
+  if (localhostMatch.test(input)) {
+    return null;
+  }
+
   try {
     const url = new URL(input);
     url.hostname = url.hostname.toLowerCase();
