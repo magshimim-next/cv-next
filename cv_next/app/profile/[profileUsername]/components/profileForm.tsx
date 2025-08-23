@@ -88,25 +88,50 @@ export default function ProfileForm({
       userDataToUpdate.work_status = workStatus;
     }
 
-    const sanitizedGitlab = sanitizeLink(gitlab);
-    if (sanitizedGitlab) {
-      userDataToUpdate.gitlab_link = sanitizedGitlab;
-    }
+    const socialInputCheck = (
+      value: string,
+      existingValue: string | null | undefined,
+      userFieldKey: keyof UserModel,
+      formFieldName: Path<FormValues>
+    ) => {
+      if (value !== existingValue && value.length > 0) {
+        const sanitized = sanitizeLink(value);
+        if (sanitized) {
+          // @ts-ignore -- dynamic key assignment on Partial<UserModel>
+          userDataToUpdate[userFieldKey] = sanitized;
+        } else {
+          setError(formFieldName, {
+            message: `Invalid ${String(formFieldName)} link`,
+          });
+          setValue(formFieldName, "");
+          return false;
+        }
+      }
+      return true;
+    };
 
-    const sanitizedPortfolio = sanitizeLink(portfolio);
-    if (sanitizedPortfolio) {
-      userDataToUpdate.portfolio_link = sanitizedPortfolio;
-    }
-
-    const sanitizedGithub = sanitizeLink(github);
-    if (sanitizedGithub) {
-      userDataToUpdate.github_link = sanitizedGithub;
-    }
-
-    const sanitizedLinkedin = sanitizeLink(linkedin);
-    if (sanitizedLinkedin) {
-      userDataToUpdate.linkedin_link = sanitizedLinkedin;
-    }
+    if (!socialInputCheck(gitlab, user.gitlab_link, "gitlab_link", "gitlab"))
+      return;
+    if (
+      !socialInputCheck(
+        portfolio,
+        user.portfolio_link,
+        "portfolio_link",
+        "portfolio"
+      )
+    )
+      return;
+    if (!socialInputCheck(github, user.github_link, "github_link", "github"))
+      return;
+    if (
+      !socialInputCheck(
+        linkedin,
+        user.linkedin_link,
+        "linkedin_link",
+        "linkedin"
+      )
+    )
+      return;
 
     if (Object.keys(userDataToUpdate).length === 1) {
       // No changes
