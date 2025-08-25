@@ -42,7 +42,7 @@ export const ErrorProvider = ({ children }: { children: ReactNode }) => {
   }, [errorCallback]);
 
   useEffect(() => {
-    if (prevPathname && prevPathname.current !== pathname && errorMsg) {
+    if (prevPathname.current && prevPathname.current !== pathname && errorMsg) {
       clearError();
     }
     prevPathname.current = pathname;
