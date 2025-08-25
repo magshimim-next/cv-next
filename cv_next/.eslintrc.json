@@ -55,7 +55,7 @@
           {
             "selector": "variable",
             "modifiers": ["exported"],
-            "format": ["PascalCase"]
+            "format": ["PascalCase", "camelCase"] //camelCase: functions (mainly hooks)
           },
           {
             "selector": "variable",
@@ -64,7 +64,7 @@
           {
             "selector": ["variable"],
             "modifiers": ["const"],
-            "format": ["camelCase"]
+            "format": ["camelCase", "PascalCase"] //PascalCase: relevant for e.g. React components, Context
           },
           {
             "selector": "function",
@@ -83,7 +83,7 @@
           },
           {
             "selector": ["enumMember", "variable"],
-            "modifiers": ["const", "global"],
+            "modifiers": ["const", "global", "static"],
             "format": ["UPPER_CASE"]
           }
         ]

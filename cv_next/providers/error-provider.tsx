@@ -1,5 +1,14 @@
 "use client";
-import { createContext, useState, useContext, ReactNode } from "react";
+import {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
+import { usePathname } from "next/navigation";
 import PopupWrapper from "@/components/ui/popupWrapper";
 
 interface ErrorContextType {
@@ -16,6 +25,8 @@ export const ErrorProvider = ({ children }: { children: ReactNode }) => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [errorDescription, setErrorDescription] = useState<string | null>(null);
   const [errorCallback, setErrorCallback] = useState<(() => void) | null>(null);
+  const pathname = usePathname();
+  const prevPathname = useRef<string | null>(null);
 
   const showError = (msg: string, desc: string, callback?: () => void) => {
     setErrorMsg(msg);
@@ -23,12 +34,19 @@ export const ErrorProvider = ({ children }: { children: ReactNode }) => {
     setErrorCallback(callback || null);
   };
 
-  const clearError = () => {
+  const clearError = useCallback(() => {
     setErrorMsg(null);
     setErrorDescription(null);
     if (errorCallback) errorCallback();
     setErrorCallback(null);
-  };
+  }, [errorCallback]);
+
+  useEffect(() => {
+    if (prevPathname && prevPathname.current !== pathname && errorMsg) {
+      clearError();
+    }
+    prevPathname.current = pathname;
+  }, [pathname, errorMsg, clearError]);
 
   return (
     <ErrorContext.Provider
