@@ -27,7 +27,8 @@ import { useDebounceCallback } from "@/hooks/useDebounceCallback";
 import CVItem from "./CV/CVItem";
 
 /**
- *
+ * This component handles the main feed of CVs, including fetching, filtering, and pagination.
+ * @returns {Element} The main feed component
  */
 export default function Feed() {
   const searchParams = useSearchParams();

@@ -131,9 +131,7 @@ function OverflowNumber({
   return (
     <>
       <div
-        onClick={(e) => {
-          onClick();
-        }}
+        onClick={onClick}
         className="right-0 flex cursor-pointer items-center justify-center rounded-full bg-gray-700 px-2 py-1 text-sm font-semibold text-white hover:bg-gray-400"
         title={categories.map(getCategoryText).join(", ")}
       >
