@@ -18,7 +18,7 @@ export default function CategoriesDisplay({
   categories,
 }: CategoriesDisplayProps) {
   const [isClient, setIsClient] = useState(false);
-  const [thisElement, setThisElement] = useState<HTMLDivElement | null>();
+  const thisElement = useRef<HTMLDivElement | null>(null);
 
   const [displayedCategories, setDisplayedCategories] =
     useState<number[]>(categories);
@@ -85,7 +85,7 @@ export default function CategoriesDisplay({
     <>
       <div
         className="mt-2 flex flex-row justify-between space-x-2"
-        ref={(el) => setThisElement(el)}
+        ref={thisElement}
       >
         <div className="flex space-x-2">
           {displayedCategories.map((categoryId, index) => (
