@@ -73,6 +73,22 @@ export default function CVItem({ cv }: CVCardProps) {
   const authorObject = JSON.parse(JSON.stringify(cv.user_id || "Loading..."));
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
 
+  const cvMetadataSection = (
+    <div className="overlay gradient-blur-backdrop pointer-events-none absolute bottom-0 flex h-full w-full rounded-lg backdrop-blur-[0.5px] transition hover:via-transparent hover:backdrop-blur-none">
+      <div className="overlay pointer-events-auto absolute bottom-0 h-1/5 w-full rounded-xl bg-transparent p-6">
+        <div className="absolute bottom-0 left-0 right-0 mx-5 mb-2.5">
+          <div className="flex flex-wrap items-baseline">
+            <div className="mr-2 text-xl font-bold text-neutral-700">
+              {authorObject.display_name}
+            </div>
+            <p className="text-xs text-neutral-400">{formattedDate}</p>
+          </div>
+          <CategoriesDisplay categories={cv.cv_categories} />
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="relative h-full w-full max-w-full overflow-hidden rounded-xl bg-white shadow-2xl">
       <div className="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow">
@@ -95,19 +111,7 @@ export default function CVItem({ cv }: CVCardProps) {
           </div>
         </Link>
 
-        <div className="overlay gradient-blur-backdrop pointer-events-none absolute bottom-0 flex h-full w-full rounded-lg backdrop-blur-[0.5px] transition hover:via-transparent hover:backdrop-blur-none">
-          <div className="overlay pointer-events-auto absolute bottom-0 h-1/5 w-full rounded-xl bg-transparent p-6">
-            <div className="absolute bottom-0 left-0 right-0 mx-5 mb-2.5">
-              <div className="flex flex-wrap items-baseline">
-                <div className="mr-2 text-xl font-bold text-neutral-700">
-                  {authorObject.display_name}
-                </div>
-                <p className="text-xs text-neutral-400">{formattedDate}</p>
-              </div>
-              <CategoriesDisplay categories={cv.cv_categories} />
-            </div>
-          </div>
-        </div>
+        {cvMetadataSection}
       </div>
     </div>
   );
