@@ -11,6 +11,10 @@ import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 
 const blobDataMap = new Map<string, Blob>();
 
+/**
+ *
+ * @param req
+ */
 export async function POST(req: NextRequest) {
   const data = await req.json();
   if (data.pathname.endsWith("revalidatePreview")) {
@@ -23,7 +27,9 @@ export async function POST(req: NextRequest) {
  * Revalidate the image a given CV in supabase
  * If the hash of the CV that was saved in the map is similar to the one that just got fetched
  * nothing is done. If something changed, the image is uploaded to supabase again
+ * @param data
  * @param {string} cvLink - The cv link to validate
+ * @param data.cvLink
  * @returns {Promise<NextResponse>} - The response with the public url of the image, or the relevant message
  */
 async function revalidatePreviewHandler(data: {
@@ -43,7 +49,7 @@ async function revalidatePreviewHandler(data: {
     redirect: "manual",
   });
 
-  if (fetchDocsResponse.status === 302) {
+  if (fetchDocsResponse.status === 302 || fetchDocsResponse.status === 404) {
     logger.error("Redirected when asked for usercontent, probably private");
     return NextResponse.json({ message: "CV is private" }, { status: 500 });
   }
