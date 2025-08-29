@@ -1,7 +1,6 @@
 import { EmblaOptionsType } from "embla-carousel";
 import EmblaCarousel from "@/components/ui/Carousel/carouselStructure";
 import CVItem from "@/app/feed/components/CV/CVItem";
-import CVItemLink from "@/app/feed/components/CV/CVItemLink";
 
 /**
  * The profile's CV carousel component
@@ -29,9 +28,7 @@ export default function ProfileCvs({ cvs }: { cvs: CvModel[] }) {
           }}
         >
           <div className="aspect-[1/1.414] w-full max-w-[500px] overflow-hidden rounded-lg bg-gray-100">
-            <CVItemLink key={cv.id} cv={cv}>
-              <CVItem cv={cv} />
-            </CVItemLink>
+            <CVItem key={cv.id} cv={cv} />
           </div>
         </div>
       ))}
