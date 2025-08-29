@@ -12,8 +12,9 @@ import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 const blobDataMap = new Map<string, Blob>();
 
 /**
- *
- * @param req
+ * The POST request handler for the revalidatePreview endpoint.
+ * @param {NextRequest} req The request object that was sent to the server.
+ * @returns {Promise<NextResponse>} The response object with the relevant data or error message.
  */
 export async function POST(req: NextRequest) {
   const data = await req.json();
