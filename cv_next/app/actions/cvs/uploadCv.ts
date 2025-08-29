@@ -53,7 +53,7 @@ export async function uploadCV({
     return "Regex invalid!";
   }
 
-  const res = await fetch(cvData.link, {
+  const res = await fetch(transformedURL, {
     method: "HEAD",
   });
 
