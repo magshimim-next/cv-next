@@ -28,8 +28,7 @@ export async function POST(req: NextRequest) {
  * Revalidate the image a given CV in supabase
  * If the hash of the CV that was saved in the map is similar to the one that just got fetched
  * nothing is done. If something changed, the image is uploaded to supabase again
- * @param data
- * @param {string} cvLink - The cv link to validate
+ * @param {string} data - The link of the CV to revalidate
  * @param data.cvLink
  * @returns {Promise<NextResponse>} - The response with the public url of the image, or the relevant message
  */
