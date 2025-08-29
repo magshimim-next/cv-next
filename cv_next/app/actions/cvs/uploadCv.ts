@@ -133,7 +133,7 @@ export async function updateCV({
     return "Regex invalid!";
   }
 
-  const res = await fetch(cvData.document_link, {
+  const res = await fetch(transformedURL, {
     method: "HEAD",
   });
 
