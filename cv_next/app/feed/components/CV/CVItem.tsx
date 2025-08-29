@@ -7,6 +7,7 @@ import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
 import { encodeValue, shimmer, toBase64 } from "@/lib/utils";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import access_denied from "@/public/images/access_denied.png";
+import { OverlayContainer } from "@/components/ui/OverlayContainer";
 import CategoriesDisplay from "./categoryDisplay";
 
 interface CVCardProps {
@@ -73,46 +74,39 @@ export default function CVItem({ cv }: CVCardProps) {
   const authorObject = JSON.parse(JSON.stringify(cv.user_id || "Loading..."));
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
 
-  const cvMetadataSection = (
-    <div className="overlay gradient-blur-backdrop pointer-events-none absolute bottom-0 flex h-full w-full rounded-lg backdrop-blur-[0.5px] transition hover:via-transparent hover:backdrop-blur-none">
-      <div className="overlay pointer-events-auto absolute bottom-0 h-1/5 w-full rounded-xl bg-transparent p-6">
-        <div className="absolute bottom-0 left-0 right-0 mx-5 mb-2.5">
-          <div className="flex flex-wrap items-baseline">
-            <div className="mr-2 text-xl font-bold text-neutral-700">
-              {authorObject.display_name}
-            </div>
-            <p className="text-xs text-neutral-400">{formattedDate}</p>
-          </div>
-          <CategoriesDisplay categories={cv.cv_categories} />
+  const cvMetadata = (
+    <>
+      <div className="flex flex-wrap items-baseline gap-2">
+        <div className="text-xl font-bold text-neutral-700">
+          {authorObject.display_name}
         </div>
+        <p className="text-xs text-neutral-400">{formattedDate}</p>
       </div>
-    </div>
+      <CategoriesDisplay categories={cv.cv_categories} />
+    </>
   );
 
   return (
-    <div className="relative h-full w-full max-w-full overflow-hidden rounded-xl bg-white shadow-2xl">
-      <div className="flex h-full flex-col overflow-hidden rounded-lg bg-white shadow">
-        <Link id={cv.id} href={`/cv/${encodeValue(cv.id)}`} scroll={false}>
-          <div className="aspect-[1/1.414] w-full overflow-hidden rounded-lg bg-gray-100">
-            <Image
-              src={
-                realURL.length > 1
-                  ? realURL
-                  : `data:image/svg+xml;base64,${toBase64(shimmer(300, 300))}`
-              }
-              width={500}
-              height={500 * 1.4142}
-              alt="CV Preview"
-              className="h-full w-full object-contain object-top p-2"
-              placeholder="blur"
-              blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(300, 300))}`}
-              priority
-            />
-          </div>
-        </Link>
+    <div className="group relative h-full w-full max-w-full overflow-hidden rounded-xl bg-white shadow-2xl">
+      <Link id={cv.id} href={`/cv/${encodeValue(cv.id)}`} scroll={false}>
+        <div className="relative aspect-[1/1.414] w-full overflow-hidden rounded-lg bg-gray-100">
+          <Image
+            src={
+              realURL.length > 1
+                ? realURL
+                : `data:image/svg+xml;base64,${toBase64(shimmer(300, 300))}`
+            }
+            width={500}
+            height={500 * 1.4142}
+            alt="CV Preview"
+            className="h-full w-full object-contain object-top p-2"
+            placeholder="blur"
+            blurDataURL={`data:image/svg+xml;base64,${toBase64(shimmer(300, 300))}`}
+          />
+        </div>
+      </Link>
 
-        {cvMetadataSection}
-      </div>
+      <OverlayContainer>{cvMetadata}</OverlayContainer>
     </div>
   );
 }
