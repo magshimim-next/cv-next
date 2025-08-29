@@ -25,28 +25,38 @@ export const ErrorProvider = ({ children }: { children: ReactNode }) => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [errorDescription, setErrorDescription] = useState<string | null>(null);
   const [errorCallback, setErrorCallback] = useState<(() => void) | null>(null);
+  const [clearState, triggerClear] = useState(false);
   const pathname = usePathname();
   const prevPathname = useRef<string | null>(null);
 
-  const showError = (msg: string, desc: string, callback?: () => void) => {
-    setErrorMsg(msg);
-    setErrorDescription(desc);
-    setErrorCallback(callback || null);
-  };
+  const showError = useCallback(
+    (msg: string, desc: string, callback?: () => void) => {
+      setErrorMsg(msg);
+      setErrorDescription(desc);
+      setErrorCallback(() => callback || null);
+    },
+    []
+  );
 
-  const clearError = useCallback(() => {
-    setErrorMsg(null);
-    setErrorDescription(null);
-    if (errorCallback) errorCallback();
-    setErrorCallback(null);
-  }, [errorCallback]);
+  useEffect(() => {
+    if (clearState) {
+      setErrorMsg(null);
+      setErrorDescription(null);
+      const currentCallback = errorCallback;
+      setErrorCallback(null);
+      triggerClear(false);
+      if (currentCallback) {
+        currentCallback();
+      }
+    }
+  }, [clearState, errorCallback, triggerClear]);
 
   useEffect(() => {
     if (prevPathname.current && prevPathname.current !== pathname && errorMsg) {
-      clearError();
+      triggerClear(true);
     }
     prevPathname.current = pathname;
-  }, [pathname, errorMsg, clearError]);
+  }, [pathname, errorMsg, triggerClear]);
 
   return (
     <ErrorContext.Provider
@@ -54,13 +64,13 @@ export const ErrorProvider = ({ children }: { children: ReactNode }) => {
         errorMsg,
         errorDescription,
         showError,
-        clearError,
+        clearError: () => triggerClear(true),
         errorCallback,
       }}
     >
       {children}
       {errorMsg && (
-        <PopupWrapper onClose={clearError}>
+        <PopupWrapper onClose={() => triggerClear(true)}>
           <div className="flex flex-col items-center justify-center rounded-md border-2 border-primary bg-destructive px-4 py-2 text-primary">
             <div className="text-xl font-bold">{errorMsg}</div>
             {errorDescription && (
