@@ -14,8 +14,7 @@ import PopupWrapper from "@/components/ui/popupWrapper";
 interface ErrorContextType {
   errorMsg: string | null;
   errorDescription: string | null;
-  showError: ReturnType<typeof useCallback> &
-    ((msg: string, desc: string, callback?: () => void) => void);
+  showError: (msg: string, desc: string, callback?: () => void) => void;
   clearError: () => void;
   errorCallback: (() => void) | null;
 }
@@ -36,7 +35,7 @@ export const ErrorProvider = ({ children }: { children: ReactNode }) => {
       setErrorDescription(desc);
       setErrorCallback(() => callback || null);
     },
-    [setErrorMsg, setErrorDescription, setErrorCallback]
+    []
   );
 
   useEffect(() => {
