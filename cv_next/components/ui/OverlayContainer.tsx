@@ -6,7 +6,7 @@ export const OverlayBlur = ({
   hoverBlur?: boolean;
 }) => (
   <div
-    className={`pointer-events-none absolute inset-0 rounded-lg backdrop-blur-[${blur}] ${
+    className={`gradient-blur-backdrop pointer-events-none absolute inset-0 rounded-lg backdrop-blur-[${blur}] ${
       hoverBlur ? "group-hover:backdrop-blur-none" : ""
     } transition`}
   />
