@@ -145,8 +145,8 @@ export async function updateCV({
     logger.error("Couldn't Find The CV %s", cvData.document_link);
     return "Invalid URL for CV";
   }
-
-  logger.debug(cvData, "Can updaate:");
+  cvData.document_link = transformedURL;
+  logger.debug(cvData, "Can update:");
 
   const response = await updateGivenCV(cvData);
   if (response) {
