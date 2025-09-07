@@ -64,7 +64,7 @@
           {
             "selector": ["variable"],
             "modifiers": ["const"],
-            "format": ["camelCase", "PascalCase"] //PascalCase: relevant for e.g. React components, Context
+            "format": ["camelCase", "PascalCase", "UPPER_CASE"] //PascalCase: relevant for e.g. React components, Context
           },
           {
             "selector": "function",

@@ -68,8 +68,12 @@ export function getExportLinks(
   const fileId = getIdFromLink(url);
   if (!fileId) return null;
 
-  const isDocs = url.includes("docs.google.com");
-  const isDrive = url.includes("drive.google.com");
+  const isDocs =
+    url.startsWith("docs.google.com") ||
+    url.startsWith("https://docs.google.com");
+  const isDrive =
+    url.startsWith("drive.google.com") ||
+    url.startsWith("https://drive.google.com");
 
   if (isDocs) {
     return {
