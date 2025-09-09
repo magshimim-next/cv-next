@@ -22,11 +22,14 @@ import {
 import { filterValues } from "@/types/models/filters";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
-import CVItemLink from "@/app/feed/components/CV/CVItemLink";
 import { toCategoryNumber } from "@/lib/utils";
 import { useDebounceCallback } from "@/hooks/useDebounceCallback";
 import CVItem from "./CV/CVItem";
 
+/**
+ * This component handles the main feed of CVs, including fetching, filtering, and pagination.
+ * @returns {Element} The main feed component
+ */
 export default function Feed() {
   const searchParams = useSearchParams();
   const uriCategories = searchParams.get(CATEGORY_PARAM);
@@ -57,9 +60,8 @@ export default function Feed() {
 
   /**
    * Trigger pagination when this element comes into view.
-   *
    * @param {Function} callbackTrigger - A function that triggers pagination when called
-   * @return {JSX.Element} A div element with a ref for triggering pagination
+   * @returns {JSX.Element} A div element with a ref for triggering pagination
    */
   function TriggerPagination({
     callbackTrigger,
@@ -151,15 +153,7 @@ export default function Feed() {
       <FilterPanel defaultFilters={filters} cvs={cvs}></FilterPanel>
       <div className="container mx-auto space-y-8 p-6">
         <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
-          {cvs ? (
-            cvs.map((cv) => (
-              <CVItemLink key={cv.id} cv={cv}>
-                <CVItem cv={cv} />
-              </CVItemLink>
-            ))
-          ) : (
-            <></>
-          )}
+          {cvs ? cvs.map((cv) => <CVItem key={cv.id} cv={cv} />) : <></>}
           <TriggerPagination callbackTrigger={debouncedFetchCvsCallback} />
         </div>
         {!loadMore ? (

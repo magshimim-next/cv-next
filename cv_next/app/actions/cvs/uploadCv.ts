@@ -53,12 +53,12 @@ export async function uploadCV({
     return "Regex invalid!";
   }
 
-  const res = await fetch(cvData.link, {
+  const res = await fetch(transformedURL, {
     method: "HEAD",
   });
 
   if (res.status !== 200) {
-    if (res.status === 302) {
+    if (res.status === 302 || res.status === 404) {
       logger.error("Redirected when asked for usercontent, probably private");
       return "CV File is Private";
     }
@@ -133,20 +133,20 @@ export async function updateCV({
     return "Regex invalid!";
   }
 
-  const res = await fetch(cvData.document_link, {
+  const res = await fetch(transformedURL, {
     method: "HEAD",
   });
 
   if (res.status !== 200) {
-    if (res.status === 302) {
+    if (res.status === 302 || res.status === 404) {
       logger.error("Redirected when asked for usercontent, probably private");
       return "CV File is Private";
     }
     logger.error("Couldn't Find The CV %s", cvData.document_link);
     return "Invalid URL for CV";
   }
-
-  logger.debug(cvData, "Can updaate:");
+  cvData.document_link = transformedURL;
+  logger.debug(cvData, "Can update:");
 
   const response = await updateGivenCV(cvData);
   if (response) {

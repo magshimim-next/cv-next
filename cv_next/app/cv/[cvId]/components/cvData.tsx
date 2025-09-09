@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FiSettings } from "react-icons/fi";
+import { useEffect } from "react";
 import DynamicProfileImage from "@/components/ui/DynamicProfileImage";
 import { useError } from "@/providers/error-provider";
 import { Visible_Error_Messages } from "@/lib/definitions";
@@ -32,20 +33,23 @@ export default function CvData({
   const { showError } = useError();
   const router = useRouter();
 
-  if (!validCV) {
-    if (canEditCv) {
-      showError(
-        Visible_Error_Messages.CurrentUserPrivateCV.title,
-        Visible_Error_Messages.CurrentUserPrivateCV.description
-      );
-    } else {
-      showError(
-        Visible_Error_Messages.PrivateCV.title,
-        Visible_Error_Messages.PrivateCV.description,
-        () => router.push("/feed")
-      );
+  useEffect(() => {
+    if (!validCV) {
+      if (canEditCv) {
+        showError(
+          Visible_Error_Messages.CurrentUserPrivateCV.title,
+          Visible_Error_Messages.CurrentUserPrivateCV.description,
+          () => router.push(`/cv/${encodeValue(cv.id)}/edit`)
+        );
+      } else {
+        showError(
+          Visible_Error_Messages.PrivateCV.title,
+          Visible_Error_Messages.PrivateCV.description,
+          () => router.push("/feed")
+        );
+      }
     }
-  }
+  }, [validCV, canEditCv, showError, router, cv.id]);
 
   const showData = validCV ? "md:grid-cols-[70%_30%]" : "";
 

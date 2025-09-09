@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useWindowSize from "@/hooks/useWindowSize";
 import Categories from "@/types/models/categories";
 import { CvCategory } from "@/components/ui/cvCategory";
@@ -18,7 +18,7 @@ export default function CategoriesDisplay({
   categories,
 }: CategoriesDisplayProps) {
   const [isClient, setIsClient] = useState(false);
-  const [thisElement, setThisElement] = useState<HTMLDivElement | null>();
+  const thisElement = useRef<HTMLDivElement | null>(null);
 
   const [displayedCategories, setDisplayedCategories] =
     useState<number[]>(categories);
@@ -35,14 +35,18 @@ export default function CategoriesDisplay({
   }, [categories]);
 
   useEffect(() => {
-    if (thisElement && thisElement.clientWidth < thisElement.scrollWidth) {
-      const overflowCategory =
-        displayedCategories[displayedCategories.length - 1];
+    if (!thisElement.current) return;
 
+    const { clientWidth, scrollWidth } = thisElement.current;
+
+    if (clientWidth < scrollWidth && displayedCategories.length > 0) {
+      const newDisplayed = [...displayedCategories];
+      const overflowCategory = newDisplayed.pop()!;
+
+      setDisplayedCategories(newDisplayed);
       setOverFlowingCategories([overflowCategory, ...overFlowingCategories]);
-      setDisplayedCategories(displayedCategories.slice(0, -1));
     }
-  }, [thisElement, categories, displayedCategories, overFlowingCategories]);
+  }, [categories, displayedCategories, overFlowingCategories]);
 
   useEffect(() => {
     if (windowSize && savedWidth !== windowSize.width) {
@@ -58,6 +62,13 @@ export default function CategoriesDisplay({
   ]);
 
   const shiftTheCategories = () => {
+    if (
+      overFlowingCategories.length === 0 ||
+      displayedCategories.length === 0
+    ) {
+      return;
+    }
+
     const overflowCategory =
       overFlowingCategories[overFlowingCategories.length - 1];
     const displayedCategory =
@@ -85,15 +96,11 @@ export default function CategoriesDisplay({
     <>
       <div
         className="mt-2 flex flex-row justify-between space-x-2"
-        ref={(el) => setThisElement(el)}
+        ref={thisElement}
       >
         <div className="flex space-x-2">
           {displayedCategories.map((categoryId, index) => (
-            <CvCategory
-              key={index}
-              categoryId={categoryId}
-              onClick={(e) => e.stopPropagation()}
-            />
+            <CvCategory key={index} categoryId={categoryId} />
           ))}
         </div>
         {overFlowingCategories.length !== 0 && (
@@ -124,11 +131,8 @@ function OverflowNumber({
   return (
     <>
       <div
-        onClick={(e) => {
-          e.stopPropagation();
-          onClick();
-        }}
-        className="right-0 flex items-center justify-center rounded-full bg-gray-700 px-2 py-1 text-sm font-semibold text-white hover:bg-gray-400"
+        onClick={onClick}
+        className="right-0 flex cursor-pointer items-center justify-center rounded-full bg-gray-700 px-2 py-1 text-sm font-semibold text-white hover:bg-gray-400"
         title={categories.map(getCategoryText).join(", ")}
       >
         +{categories.length}
