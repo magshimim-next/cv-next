@@ -1,6 +1,6 @@
 # CV Next
 
-![image](./cv_next/public/images/logo.png)
+![image](./public/images/logo.png)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-black?logo=next.js&logoColor=white)](https://nextjs.org/)
 [![Google Drive](https://img.shields.io/badge/Google%20Drive-4285F4?logo=googledrive&logoColor=fff)](https://drive.google.com/)
@@ -13,7 +13,6 @@ A (not so) simple CV upload and peer review system.
 
 ```
 git clone https://github.com/magshimim-next/cv-next.git
-cd cv_next
 npm install
 ```
 

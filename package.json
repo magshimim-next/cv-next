@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "prepare": "cd .. && husky cv_next/.husky",
+    "prepare": "husky .husky",
     "test": "jest --passWithNoTests"
   },
   "husky": {
@@ -18,8 +18,8 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
+      "prettier --write",
+      "eslint --fix"
     ]
   },
   "dependencies": {

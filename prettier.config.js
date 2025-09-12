@@ -4,4 +4,5 @@ module.exports = {
   semi: true,
   quoteProps: "consistent",
   plugins: ["prettier-plugin-tailwindcss"],
+  endOfLine: "auto",
 };

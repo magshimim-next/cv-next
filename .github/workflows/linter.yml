@@ -14,5 +14,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review # Change reporter.
           eslint_flags: "."
-          workdir: "./cv_next"
+          workdir: "."
           filter_mode: diff_context
