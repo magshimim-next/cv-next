@@ -62,10 +62,14 @@ async function revalidatePreviewHandler(data: {
 
   if (isSimilar) {
     logger.debug("Files were similar");
-    const publicUrl = SupabaseHelper.getSupabaseInstance()
-      .storage.from(Storage.cvs)
-      .getPublicUrl(fileName).data.publicUrl;
-    return NextResponse.json({ publicUrl });
+    const { data: previewUrl, error } =
+      await SupabaseHelper.getSupabaseInstance()
+        .storage.from(Storage.cvs)
+        .createSignedUrl(fileName, 100);
+    const signedUrl = previewUrl?.signedUrl;
+
+    if (!error && previewUrl.signedUrl) return NextResponse.json({ signedUrl });
+    logger.error(error, "Failed to get signed URL");
   }
 
   blobDataMap.delete(docsID || "");
@@ -94,9 +98,17 @@ async function revalidatePreviewHandler(data: {
     return NextResponse.json({ message: "RLS error" });
   } else {
     logger.debug(uploadedData, "File uploaded successfully:");
-    const publicUrl = SupabaseHelper.getSupabaseInstance()
-      .storage.from(Storage.cvs)
-      .getPublicUrl(fileName).data.publicUrl;
-    return NextResponse.json({ publicUrl });
+    const { data: previewUrl, error } =
+      await SupabaseHelper.getSupabaseInstance()
+        .storage.from(Storage.cvs)
+        .createSignedUrl(fileName, 100);
+    const signedUrl = previewUrl?.signedUrl;
+
+    if (!error && previewUrl.signedUrl) return NextResponse.json({ signedUrl });
+    logger.error(error, "Failed to get signed URL after upload");
   }
+  return NextResponse.json(
+    { error: "Failed to revalidate preview" },
+    { status: 500 }
+  );
 }
