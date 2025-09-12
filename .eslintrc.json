@@ -36,8 +36,7 @@
       "files": ["*.ts", "*.tsx"],
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
-        "project": ["*/tsconfig.json"],
-        "tsconfigRootDir": "."
+        "project": ["./tsconfig.json"]
       },
       "rules": {
         "@typescript-eslint/naming-convention": [
@@ -91,7 +90,12 @@
     }
   ],
   "rules": {
-    "prettier/prettier": "warn",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
     "@next/next/no-html-link-for-pages": "off",
     "no-unused-vars": "off",
     "unused-imports/no-unused-imports": "error",
@@ -133,7 +137,7 @@
     "import/named": 0,
     "no-relative-import-paths/no-relative-import-paths": [
       "warn",
-      { "allowSameFolder": true, "rootDir": "cv_next/", "prefix": "@" }
+      { "allowSameFolder": true, "prefix": "@" }
     ],
     "no-inline-comments": "warn",
     "jsdoc/require-jsdoc": [

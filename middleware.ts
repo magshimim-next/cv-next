@@ -4,8 +4,8 @@ import type { NextRequest } from "next/server";
 import Definitions, {
   API_DEFINITIONS,
   Visible_Error_Messages,
-} from "./lib/definitions";
-import { ProfileKeys, Tables } from "./lib/supabase-definitions";
+} from "@/lib/definitions";
+import { ProfileKeys, Tables } from "@/lib/supabase-definitions";
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({

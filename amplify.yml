@@ -1,19 +1,18 @@
 version: 1
 applications:
-  - appRoot: cv_next
-    frontend:
-      phases:
-        preBuild:
-          commands:
-            - "npm ci"
-        build:
-          commands:
-            - "npm run build"
-      artifacts:
-        baseDirectory: .next
-        files:
-          - "**/*"
-      cache:
-        paths:
-          - node_modules/**/*
-          - .next/cache/**/*
+  frontend:
+    phases:
+      preBuild:
+        commands:
+          - "npm ci"
+      build:
+        commands:
+          - "npm run build"
+    artifacts:
+      baseDirectory: .next
+      files:
+        - "**/*"
+    cache:
+      paths:
+        - node_modules/**/*
+        - .next/cache/**/*

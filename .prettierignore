@@ -1,0 +1,17 @@
+# Next.js build output
+.next/
+out/
+
+# Node modules / dependency locks
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Generated files
+types/database.types.ts
+next-env.d.ts
+
+# Optional: ignore config or log files you don't want formatted
+.env*
+*.log
