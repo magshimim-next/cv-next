@@ -13,10 +13,11 @@ import CvData from "./components/cvData";
 import { RecommendedCvsSection } from "./components/recommendedCvs";
 
 /**
- *
- * @param root0
- * @param root0.params
- * @param root0.params.cvId
+ * The function handles the tab name generation.
+ * @param {any} root0
+ * @param {any} root0.params
+ * @param {string} root0.params.cvId The CV ID from the url parameters.
+ * @returns {Promise<Metadata>} The metadata object.
  */
 export async function generateMetadata({
   params,
@@ -42,10 +43,10 @@ export async function generateMetadata({
 }
 
 /**
- *
- * @param root0
- * @param root0.params
- * @param root0.params.cvId
+ * This page is the main page for displaying a CV.
+ * @param {any} root0
+ * @param {any} root0.params
+ * @param {string} root0.params.cvId The CV ID from the url parameters.
  */
 export default async function Page({ params }: { params: { cvId: string } }) {
   const { cvId } = params;

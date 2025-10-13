@@ -5,9 +5,9 @@ import { CVClickableCard } from "@/components/ui/CVComponents/cvClickableCard";
 import { getRandomizedCvs } from "@/server/api/cvs";
 
 /**
- *
- * @param root0
- * @param root0.currentCv
+ * This component fetchs and displays recommended CVs based on the current CV.
+ * @param {CvModel} param0 The current CV.
+ * @returns {JSX.Element} The recommended section.
  */
 export async function RecommendedCvsSection({
   currentCv,
@@ -15,11 +15,11 @@ export async function RecommendedCvsSection({
   currentCv: CvModel;
 }) {
   const authorData = JSON.parse(JSON.stringify(currentCv.user_id));
-
   const recommendedRaw = await getRandomizedCvs(true, 5, {
     searchValue: "",
     categoryIds: currentCv.cv_categories,
   });
+
   let recommendedCVs = (recommendedRaw || []).filter(
     (rec: CvModel) => rec.id !== currentCv.id
   );
