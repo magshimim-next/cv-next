@@ -20,7 +20,7 @@ export async function RecommendedCvsSection({
     searchValue: "",
     categoryIds: categories,
   });
-  console.log(recommendedRaw, currentUserId);
+
   let recommendedCVs = (recommendedRaw || []).filter((rec: CvModel) => {
     let authorId: string | undefined;
     if (typeof rec.user_id === "object" && rec.user_id !== null) {
