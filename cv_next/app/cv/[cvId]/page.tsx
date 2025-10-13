@@ -14,8 +14,8 @@ import { RecommendedCvsSection } from "./components/recommendedCvs";
 
 /**
  * The function handles the tab name generation.
- * @param {any} root0
- * @param {any} root0.params
+ * @param {any} root0 The CV ID from the url parameters.
+ * @param {any} root0.params The CV ID from the url parameters.
  * @param {string} root0.params.cvId The CV ID from the url parameters.
  * @returns {Promise<Metadata>} The metadata object.
  */
@@ -44,9 +44,10 @@ export async function generateMetadata({
 
 /**
  * This page is the main page for displaying a CV.
- * @param {any} root0
- * @param {any} root0.params
+ * @param {any} root0 The CV ID from the url parameters.
+ * @param {any} root0.params The CV ID from the url parameters.
  * @param {string} root0.params.cvId The CV ID from the url parameters.
+ * @returns {JSX.Element} The CV page.
  */
 export default async function Page({ params }: { params: { cvId: string } }) {
   const { cvId } = params;

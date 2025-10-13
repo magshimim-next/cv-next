@@ -155,8 +155,8 @@ export async function getRandomizedCvs(
       )
       .eq(CvKeys.deleted, !filterOutDeleted)
       .order("rnd")
-      .limit(amount + 1); // +1 to increase the odds of getting enough while excluding the CV that asked for it.
-
+      // +1 to increase the odds of getting enough while excluding the CV that asked for it.
+      .limit(amount + 1);
     logger.debug(filters, "filters");
 
     query = applyCategoryFilter(query, filters);

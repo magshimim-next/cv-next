@@ -12,8 +12,8 @@ import { RecommendedCvsSection } from "./components/recommendedCvs";
 
 /**
  * The function handles the tab name generation.
- * @param {any} root0
- * @param {any} root0.params
+ * @param {any} root0 The username of the current profile from the url parameters.
+ * @param {any} root0.params The username of the current profile from the url parameters.
  * @param {string} root0.params.profileUsername The username of the current profile from the url parameters.
  * @returns {Promise<Metadata>} The metadata object.
  */
@@ -46,9 +46,10 @@ export async function generateMetadata({
 
 /**
  * This page is the main page for displaying a user's profile.
- * @param {any} root0
- * @param {any} root0.params
+ * @param {any} root0 The username of the current profile from the url parameters.
+ * @param {any} root0.params The username of the current profile from the url parameters.
  * @param {string} root0.params.profileUsername The username of the current profile from the url parameters.
+ * @returns {JSX.Element} The profile page.
  */
 export default async function Page({
   params,
