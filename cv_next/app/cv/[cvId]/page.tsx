@@ -127,10 +127,10 @@ export default async function Page({ params }: { params: { cvId: string } }) {
               >
                 <div
                   className="flex  h-72 min-w-[400px] max-w-md cursor-pointer flex-col
-             items-center  justify-center gap-4 overflow-hidden rounded-2xl  border-gray-200 bg-white bg-white/80 py-6 shadow-lg transition hover:shadow-xl dark:border-gray-700 dark:bg-gray-800"
+             items-center  justify-center gap-4 overflow-hidden rounded-2xl  border-gray-200 bg-white py-6 shadow-lg transition hover:shadow-xl dark:border-gray-700 dark:bg-gray-800"
                 >
                   <div className="flex w-full flex-shrink-0 flex-col items-center justify-center gap-1">
-                    <div className="w-full text-center text-2xl font-bold  ">
+                    <div className="w-full text-center text-2xl font-bold">
                       {typeof recCv.user_id === "object" &&
                       recCv.user_id !== null
                         ? (recCv.user_id as { display_name?: string })
@@ -145,7 +145,7 @@ export default async function Page({ params }: { params: { cvId: string } }) {
                     <CategoriesDisplay categories={recCv.cv_categories} />
                   </div>
                   <div
-                    className="line-clamp-4 w-full flex-grow-0 px-2 text-center text-lg  text-neutral-700 dark:text-white"
+                    className="line-clamp-4 w-full flex-grow-0 px-2 text-center text-lg text-neutral-700 dark:text-white"
                     style={{ height: "4.5em", overflow: "hidden" }}
                   >
                     {recCv.description}
