@@ -154,7 +154,8 @@ export async function getRandomizedCvs(
         `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username})`
       )
       .eq(CvKeys.deleted, !filterOutDeleted)
-      .limit(amount);
+      .order("rnd")
+      .limit(amount + 1); // +1 to increase the odds of getting enough while excluding the CV that asked for it.
 
     logger.debug(filters, "filters");
 

@@ -71,17 +71,18 @@ export default async function Page({ params }: { params: { cvId: string } }) {
     notFound();
   }
   const authorData = JSON.parse(JSON.stringify(cv.user_id));
-
   const resultAdminCheck = await userIsAdmin();
 
-  // Fetch recommended CVs (randomized, same categories, exclude current)
   const recommendedRaw = await getRandomizedCvs(true, 5, {
     searchValue: "",
     categoryIds: cv.cv_categories,
   });
-  const recommendedCVs = (recommendedRaw || []).filter(
+  let recommendedCVs = (recommendedRaw || []).filter(
     (rec: CvModel) => rec.id !== cv.id
   );
+  if (recommendedCVs.length >= 5) {
+    recommendedCVs = recommendedCVs.slice(0, 5);
+  }
 
   return (
     <div>
