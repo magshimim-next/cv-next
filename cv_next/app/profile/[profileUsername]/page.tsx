@@ -74,6 +74,10 @@ export default async function Page({
   }
 
   const cvs = await getCvsByUserId(result.val.id);
+  const recommendedCategories = [
+    ...(result.val.work_status_categories || []),
+    ...new Set(cvs?.flatMap((cv) => cv.cv_categories)),
+  ];
 
   return (
     <div>
@@ -101,7 +105,7 @@ export default async function Page({
         </div>
       )}
       <RecommendedCvsSection
-        categories={result.val.work_status_categories || []}
+        categories={recommendedCategories}
         currentUserId={result.val.id}
       />
     </div>
