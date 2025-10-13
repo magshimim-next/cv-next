@@ -8,7 +8,15 @@ import { getCvsByUserId } from "@/server/api/cvs";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
 import ProfileData from "./components/profileData";
 import ProfileCvs from "./components/profileCvs";
+import { RecommendedCvsSection } from "./components/recommendedCvs";
 
+/**
+ * The function handles the tab name generation.
+ * @param {any} root0
+ * @param {any} root0.params
+ * @param {string} root0.params.profileUsername The username of the current profile from the url parameters.
+ * @returns {Promise<Metadata>} The metadata object.
+ */
 export async function generateMetadata({
   params,
 }: {
@@ -36,6 +44,12 @@ export async function generateMetadata({
   };
 }
 
+/**
+ * This page is the main page for displaying a user's profile.
+ * @param {any} root0
+ * @param {any} root0.params
+ * @param {string} root0.params.profileUsername The username of the current profile from the url parameters.
+ */
 export default async function Page({
   params,
 }: {
@@ -86,6 +100,10 @@ export default async function Page({
           </section>
         </div>
       )}
+      <RecommendedCvsSection
+        categories={result.val.work_status_categories || []}
+        currentUserId={result.val.id}
+      />
     </div>
   );
 }
