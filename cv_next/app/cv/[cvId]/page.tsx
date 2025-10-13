@@ -120,38 +120,36 @@ export default async function Page({ params }: { params: { cvId: string } }) {
           </h3>
           <CarouselStructure options={{ loop: true }}>
             {recommendedCVs.map((recCv: CvModel) => (
-              <Link
-                key={recCv.id}
-                href={`/cv/${encodeValue(recCv.id)}`}
-                className="p-4 no-underline hover:no-underline"
-              >
-                <div
-                  className="flex  h-72 min-w-[400px] max-w-md cursor-pointer flex-col
-             items-center  justify-center gap-4 overflow-hidden rounded-2xl  border-gray-200 bg-white py-6 shadow-lg transition hover:shadow-xl dark:border-gray-700 dark:bg-gray-800"
+              <div className="p-4" key={recCv.id}>
+                <Link
+                  href={`/cv/${encodeValue(recCv.id)}`}
+                  className="block h-full no-underline hover:no-underline"
                 >
-                  <div className="flex w-full flex-shrink-0 flex-col items-center justify-center gap-1">
-                    <div className="w-full text-center text-2xl font-bold">
-                      {typeof recCv.user_id === "object" &&
-                      recCv.user_id !== null
-                        ? (recCv.user_id as { display_name?: string })
-                            .display_name
-                        : String(recCv.user_id)}
+                  <div className="flex h-72 min-w-[400px] max-w-md cursor-pointer flex-col items-center justify-center gap-4 overflow-hidden rounded-2xl border-gray-200 bg-white py-6 shadow-lg transition hover:shadow-xl dark:border-gray-700 dark:bg-gray-800">
+                    <div className="flex w-full flex-shrink-0 flex-col items-center justify-center gap-1">
+                      <div className="w-full text-center text-2xl font-bold">
+                        {typeof recCv.user_id === "object" &&
+                        recCv.user_id !== null
+                          ? (recCv.user_id as { display_name?: string })
+                              .display_name
+                          : String(recCv.user_id)}
+                      </div>
+                      <p className="w-full text-center text-base text-neutral-400">
+                        {new Date(recCv.created_at).toLocaleDateString("en-US")}
+                      </p>
                     </div>
-                    <p className="w-full text-center text-base text-neutral-400">
-                      {new Date(recCv.created_at).toLocaleDateString("en-US")}
-                    </p>
+                    <div className="flex w-full flex-shrink-0 justify-center">
+                      <CategoriesDisplay categories={recCv.cv_categories} />
+                    </div>
+                    <div
+                      className="line-clamp-4 w-full flex-grow-0 px-2 text-center text-lg text-neutral-700 dark:text-white"
+                      style={{ height: "4.5em", overflow: "hidden" }}
+                    >
+                      {recCv.description}
+                    </div>
                   </div>
-                  <div className="flex w-full flex-shrink-0 justify-center">
-                    <CategoriesDisplay categories={recCv.cv_categories} />
-                  </div>
-                  <div
-                    className="line-clamp-4 w-full flex-grow-0 px-2 text-center text-lg text-neutral-700 dark:text-white"
-                    style={{ height: "4.5em", overflow: "hidden" }}
-                  >
-                    {recCv.description}
-                  </div>
-                </div>
-              </Link>
+                </Link>
+              </div>
             ))}
           </CarouselStructure>
         </div>
