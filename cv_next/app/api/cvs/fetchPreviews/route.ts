@@ -46,14 +46,18 @@ async function revalidatePreviewHandler(data: {
     .getPublicUrl(fileName).data.publicUrl;
 
   // We do this check because getPublicUrl doesn't actually verify the file's existence - it just constructs the URL...
-  const supabasePreviewResponse = await fetch(publicUrl, {
-    method: "HEAD",
-    redirect: "follow",
-  });
-
-  if (supabasePreviewResponse.status === 200) {
-    return NextResponse.json({ publicUrl });
+  try {
+    const { status } = await fetch(publicUrl, {
+      method: "HEAD",
+      redirect: "follow",
+    });
+    if (status === 200) {
+      return NextResponse.json({ publicUrl });
+    }
+  } catch (error) {
+    logger.error(error, "Error fetching supabase preview:");
   }
+
   logger.debug("No preview found in supabase, fetching from docs...");
 
   const fetchDocsResponse = await fetch(getGoogleImageUrl(cvLink), {
