@@ -8,6 +8,7 @@ import { compareHashes } from "@/helpers/blobHelper";
 import logger from "@/server/base/logger";
 import { Storage } from "@/lib/supabase-definitions";
 import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
+import { getCVSignedPreview } from "@/server/api/cvs";
 
 const blobDataMap = new Map<string, Blob>();
 
@@ -62,14 +63,11 @@ async function revalidatePreviewHandler(data: {
 
   if (isSimilar) {
     logger.debug("Files were similar");
-    const { data: previewUrl, error } =
-      await SupabaseHelper.getSupabaseInstance()
-        .storage.from(Storage.cvs)
-        .createSignedUrl(fileName, 100);
-    const signedUrl = previewUrl?.signedUrl;
-
-    if (!error && previewUrl.signedUrl) return NextResponse.json({ signedUrl });
-    logger.error(error, "Failed to get signed URL");
+    const signedUrlResp = await getCVSignedPreview(fileName);
+    if (signedUrlResp.ok) {
+      return NextResponse.json({ signedUrl: signedUrlResp.val });
+    }
+    logger.error(signedUrlResp.errors.err, "Failed to get signed URL");
   }
 
   blobDataMap.delete(docsID || "");
@@ -98,14 +96,11 @@ async function revalidatePreviewHandler(data: {
     return NextResponse.json({ message: "RLS error" });
   } else {
     logger.debug(uploadedData, "File uploaded successfully:");
-    const { data: previewUrl, error } =
-      await SupabaseHelper.getSupabaseInstance()
-        .storage.from(Storage.cvs)
-        .createSignedUrl(fileName, 100);
-    const signedUrl = previewUrl?.signedUrl;
-
-    if (!error && previewUrl.signedUrl) return NextResponse.json({ signedUrl });
-    logger.error(error, "Failed to get signed URL after upload");
+    const signedUrlResp = await getCVSignedPreview(fileName);
+    if (signedUrlResp.ok) {
+      return NextResponse.json({ signedUrl: signedUrlResp.val });
+    }
+    logger.error(signedUrlResp.errors.err, "Failed to get signed URL");
   }
   return NextResponse.json(
     { error: "Failed to revalidate preview" },
