@@ -22,8 +22,8 @@ export function isBrowser() {
 
 /**
  * Decodes a base64-encoded string.
- * @param {string | undefined} value
- * @returns {string | null}
+ * @param {string | undefined} value The value to base64 decode
+ * @returns {string | null} The decoded value or none if failed.
  */
 export function decodeValue(value: string | undefined) {
   if (!value) {
@@ -75,7 +75,6 @@ export namespace Ok {
 
 /**
  * Creates an Error Result object with the specified error value.
- * @param {E} val - the error value
  * @param  {E} where - the location of the error
  * @param {ErrorDetails} errors - additional error details
  * @returns {Result<never, E>} the Result object with ok set to false and containing the specified error value
@@ -139,8 +138,8 @@ export function toCategoryNumber(name: string): number {
 
 /**
  * The function will check if the redirectPath provided is within our website
- * @param redirectPath The path the user wants to redirect to
- * @returns true if can redirect to it, false otherwise
+ * @param {string} redirectPath The path the user wants to redirect to
+ * @returns {boolean} true if can redirect to it, false otherwise
  */
 export function checkRedirect(redirectPath: string): boolean {
   return (
