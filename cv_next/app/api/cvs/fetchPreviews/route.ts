@@ -45,6 +45,7 @@ async function revalidatePreviewHandler(data: {
     .storage.from(Storage.cvs)
     .getPublicUrl(fileName).data.publicUrl;
 
+  // We do this check because getPublicUrl doesn't actually verify the file's existence - it just constructs the URL...
   const supabasePreviewResponse = await fetch(publicUrl, {
     method: "HEAD",
     redirect: "follow",
