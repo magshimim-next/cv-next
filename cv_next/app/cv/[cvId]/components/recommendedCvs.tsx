@@ -2,6 +2,7 @@
 
 import CarouselStructure from "@/components/ui/Carousel/carouselStructure";
 import { CVClickableCard } from "@/components/ui/CVComponents/cvClickableCard";
+import Definitions from "@/lib/definitions";
 import { getRandomizedCvs } from "@/server/api/cvs";
 
 /**
@@ -15,10 +16,14 @@ export async function RecommendedCvsSection({
   currentCv: CvModel;
 }) {
   const authorData = JSON.parse(JSON.stringify(currentCv.user_id));
-  const recommendedRaw = await getRandomizedCvs(true, 5, {
-    searchValue: "",
-    categoryIds: currentCv.cv_categories,
-  });
+  const recommendedRaw = await getRandomizedCvs(
+    true,
+    Definitions.DEFAULT_RANDOM_CVS,
+    {
+      searchValue: "",
+      categoryIds: currentCv.cv_categories,
+    }
+  );
 
   let recommendedCVs = (recommendedRaw || []).filter(
     (rec: CvModel) => rec.id !== currentCv.id
