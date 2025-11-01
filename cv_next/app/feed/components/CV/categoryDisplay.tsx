@@ -26,14 +26,12 @@ export default function CategoriesDisplay({
     []
   );
   const [savedWidth, setSavedWidth] = useState<number>();
-  const [isCalculating, setIsCalculating] = useState(false);
 
   const windowSize = useWindowSize();
 
   const resetCategoriesArray = useCallback(() => {
     setDisplayedCategories(categories);
     setOverFlowingCategories([]);
-    setIsCalculating(false);
   }, [categories]);
 
   // Handle overflow calculation
@@ -62,8 +60,6 @@ export default function CategoriesDisplay({
 
         setDisplayedCategories(newDisplayed);
         setOverFlowingCategories([overflowCategory, ...overFlowingCategories]);
-      } else {
-        setIsCalculating(false);
       }
     });
   }, [displayedCategories, overFlowingCategories]);
