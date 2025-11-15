@@ -7,10 +7,10 @@ import { getRandomizedCvs } from "@/server/api/cvs";
 
 /**
  * This component fetchs and displays recommended CVs based on the current CV and or current user ID.
- * @param {filteredCategories} param0 The categories to filter for.
- * @param {currentUserId} param0 The current user ID to exclude their CVs.
- * @param {currentCvId} param0 The current CV ID to exclude it.
- * @param {amountToRecommend} param0 The amount of CVs to recommend.
+ * @param {number[]} filteredCategories The categories to filter for.
+ * @param {currentUserId} currentUserId The current user ID to exclude their CVs.
+ * @param {string} currentCvId The current CV ID to exclude it.
+ * @param {number} amountToRecommend The amount of CVs to recommend.
  * @returns {JSX.Element} The recommended section.
  */
 export async function RecommendedCvsSection({
@@ -20,9 +20,9 @@ export async function RecommendedCvsSection({
   amountToRecommend = Definitions.DEFAULT_RANDOM_CVS,
 }: {
   filteredCategories: number[];
-  amountToRecommend?: number;
-  currentCvId?: string;
   currentUserId?: string;
+  currentCvId?: string;
+  amountToRecommend?: number;
 }) {
   const recommendedRaw = await getRandomizedCvs(true, amountToRecommend, {
     searchValue: "",
