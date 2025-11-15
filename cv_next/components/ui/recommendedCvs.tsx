@@ -30,7 +30,6 @@ export async function RecommendedCvsSection({
   });
 
   let recommendedCVs: CvModel[] = [];
-
   if (currentUserId) {
     recommendedCVs = (recommendedRaw || []).filter((rec: CvModel) => {
       let authorId: string | undefined;
@@ -45,7 +44,7 @@ export async function RecommendedCvsSection({
       recommendedCVs = recommendedCVs.slice(0, 5);
     }
   } else if (currentCvId) {
-    let recommendedCVs = (recommendedRaw || []).filter(
+    recommendedCVs = (recommendedRaw || []).filter(
       (rec: CvModel) => rec.id !== currentCvId
     );
     if (recommendedCVs.length >= 5) {
