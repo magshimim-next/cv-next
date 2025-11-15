@@ -8,7 +8,7 @@ import { getRandomizedCvs } from "@/server/api/cvs";
 /**
  * This component fetchs and displays recommended CVs based on the current CV and or current user ID.
  * @param {number[]} filteredCategories The categories to filter for.
- * @param {currentUserId} currentUserId The current user ID to exclude their CVs.
+ * @param {string} currentUserId The current user ID to exclude their CVs.
  * @param {string} currentCvId The current CV ID to exclude it.
  * @param {number} amountToRecommend The amount of CVs to recommend.
  * @returns {JSX.Element} The recommended section.
