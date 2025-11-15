@@ -6,9 +6,9 @@ import { Metadata } from "next";
 import { getUserModel } from "@/app/actions/users/getUser";
 import { getCvsByUserId } from "@/server/api/cvs";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
+import { RecommendedCvsSection } from "@/components/ui/recommendedCvs";
 import ProfileData from "./components/profileData";
 import ProfileCvs from "./components/profileCvs";
-import { RecommendedCvsSection } from "./components/recommendedCvs";
 
 /**
  * The function handles the tab name generation.
@@ -106,8 +106,9 @@ export default async function Page({
         </div>
       )}
       <RecommendedCvsSection
-        categories={recommendedCategories}
+        filteredCategories={recommendedCategories}
         currentUserId={result.val.id}
+        amountToRecommend={8}
       />
     </div>
   );

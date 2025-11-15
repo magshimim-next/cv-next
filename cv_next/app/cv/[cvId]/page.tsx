@@ -7,10 +7,10 @@ import { decodeValue } from "@/lib/utils";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
 import { CvPreview } from "@/components/ui/cvPreview";
 import { getCurrentId, userIsAdmin } from "@/server/api/users";
+import { RecommendedCvsSection } from "@/components/ui/recommendedCvs";
 import CommentsSection from "./components/commentSection/commentsSection";
 import CommentForm from "./components/commentSection/commentForm";
 import CvData from "./components/cvData";
-import { RecommendedCvsSection } from "./components/recommendedCvs";
 
 /**
  * The function handles the tab name generation.
@@ -101,7 +101,10 @@ export default async function Page({ params }: { params: { cvId: string } }) {
         )}
       </div>
 
-      <RecommendedCvsSection currentCv={cv} />
+      <RecommendedCvsSection
+        filteredCategories={cv.cv_categories}
+        currentCvId={cv.id}
+      />
     </div>
   );
 }
