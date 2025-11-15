@@ -20,8 +20,15 @@ export async function checkCVModifyPermission(
     );
   }
 
+  // Note that in a different PR, there's a function that extracts it more easily
+  const authorId =
+    typeof cvData.user_id === "object" && cvData.user_id !== null
+      ? (cvData.user_id as { id?: string }).id
+      : String(cvData.user_id);
+
   const resultAdminCheck = await userIsAdmin();
-  if (currentIdResult.val != cvData.user_id && !resultAdminCheck.ok) {
+  if (currentIdResult.val != authorId && !resultAdminCheck.ok) {
+    logger.info(`${currentIdResult.val} ${authorId} ${resultAdminCheck.ok}`);
     logger.error(`${currentIdResult.val} tried modifying someone elses CV!`);
     return Err(
       "An error has occurred while modifying the CV. Please try again later."
