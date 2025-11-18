@@ -1,7 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import useWindowSize from "@/hooks/useWindowSize";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import Categories from "@/types/models/categories";
 import { CvCategory } from "@/components/ui/cvCategory";
 
@@ -27,50 +32,66 @@ export default function CategoriesDisplay({
   );
   const [savedWidth, setSavedWidth] = useState<number>();
 
-  const windowSize = useWindowSize();
-
   const resetCategoriesArray = useCallback(() => {
     setDisplayedCategories(categories);
     setOverFlowingCategories([]);
   }, [categories]);
 
   // Handle overflow calculation
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!thisElement.current) return;
 
-    // Use requestAnimationFrame to ensure DOM has been updated
-    requestAnimationFrame(() => {
-      if (!thisElement.current) return;
+    const container = thisElement.current.parentElement;
+    if (!container) return;
 
-      const container = thisElement.current.parentElement;
-      if (!container) return;
+    const { clientWidth: containerWidth } = container;
+    const { scrollWidth } = thisElement.current;
 
-      const { clientWidth: containerWidth } = container;
-      const { scrollWidth } = thisElement.current;
+    const availableWidth =
+      overFlowingCategories.length > 0 ? containerWidth - 60 : containerWidth;
 
-      // Reserve space for the overflow button (approximately 50px)
-      const availableWidth =
-        overFlowingCategories.length > 0 ? containerWidth - 60 : containerWidth;
+    const hasOverflow = scrollWidth > availableWidth;
 
-      const hasOverflow = scrollWidth > availableWidth;
+    if (hasOverflow && displayedCategories.length > 1) {
+      const newDisplayed = [...displayedCategories];
+      const overflowCategory = newDisplayed.pop()!;
 
-      if (hasOverflow && displayedCategories.length > 1) {
-        const newDisplayed = [...displayedCategories];
-        const overflowCategory = newDisplayed.pop()!;
-
-        setDisplayedCategories(newDisplayed);
-        setOverFlowingCategories([overflowCategory, ...overFlowingCategories]);
-      }
-    });
+      setDisplayedCategories(newDisplayed);
+      setOverFlowingCategories([overflowCategory, ...overFlowingCategories]);
+    }
   }, [displayedCategories, overFlowingCategories]);
 
-  // Handle window resize
+  // Handle container resize
   useEffect(() => {
-    if (windowSize && savedWidth !== windowSize.width) {
+    if (!isClient || !thisElement.current) return;
+
+    const container = thisElement.current.parentElement;
+    if (!container) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const newWidth = entry.contentRect.width;
+        setSavedWidth((prev) => {
+          if (prev !== newWidth) {
+            return newWidth;
+          }
+          return prev;
+        });
+      }
+    });
+
+    resizeObserver.observe(container);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [isClient]);
+
+  useEffect(() => {
+    if (savedWidth) {
       resetCategoriesArray();
-      setSavedWidth(windowSize.width);
     }
-  }, [windowSize, savedWidth, resetCategoriesArray]);
+  }, [savedWidth, resetCategoriesArray]);
 
   // Handle category prop changes
   useEffect(() => {
