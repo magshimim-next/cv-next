@@ -124,12 +124,7 @@ export default function Page({ params }: { params: { cvId: string } }) {
       >
         <LinkInput control={control} errors={errors} />
 
-        <DescriptionInput
-          control={control}
-          errors={errors}
-          clearErrors={() => clearErrors}
-          setError={() => setError}
-        />
+        <DescriptionInput control={control} errors={errors} />
 
         <CategoriesInput control={control} errors={errors} />
 

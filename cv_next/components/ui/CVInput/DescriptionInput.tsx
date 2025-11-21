@@ -1,7 +1,9 @@
 "use client";
 import { Controller } from "react-hook-form";
-import { InputTextArea } from "@/app/feed/components/inputbar";
+import { FC } from "react";
 import Definitions from "@/lib/definitions";
+import { Textarea } from "@/components/ui/textarea";
+import { Field, FieldLabel } from "../field";
 
 /**
  * Props for DescriptionInput component.
@@ -11,10 +13,6 @@ interface DescriptionInputProps {
   control: any;
   /** The form errors object */
   errors: any;
-  /** Function to clear errors for a specific field */
-  clearErrors: (name: string) => void;
-  /** Function to set an error for a specific field */
-  setError: (name: string, error: { type: string; message: string }) => void;
 }
 
 /**
@@ -22,15 +20,12 @@ interface DescriptionInputProps {
  * @param {DescriptionInputProps} props - The react hook forms props for the component.
  * @returns {JSX.Element} The component.
  */
-export function DescriptionInput({
+export const DescriptionInput: FC<DescriptionInputProps> = ({
   control,
   errors,
-  clearErrors,
-  setError,
-}: DescriptionInputProps) {
+}) => {
   return (
-    <div className="flex flex-col">
-      <label className="mb-2 text-lg font-medium">Description</label>
+    <>
       <Controller
         name="description"
         control={control}
@@ -46,42 +41,33 @@ export function DescriptionInput({
           },
         }}
         render={({ field }) => {
-          const currentLength = field.value?.length || 0;
-          const charCountColor =
+          const currentLength: number = field.value?.length || 0;
+          const charCountColor: string =
+            errors?.description?.message ||
             currentLength >= Definitions.MAX_DESCRIPTION_SIZE
               ? "text-red-500"
               : "text-gray-500";
 
           return (
-            <div className="flex flex-col">
-              <InputTextArea
-                onChange={(newValue: string) => {
-                  if (newValue.length <= Definitions.MAX_DESCRIPTION_SIZE) {
-                    field.onChange(newValue);
-                    clearErrors("description");
-                  } else {
-                    setError("description", {
-                      type: "maxLength",
-                      message: `Description must not exceed ${Definitions.MAX_DESCRIPTION_SIZE} characters`,
-                    });
-                  }
-                }}
-                value={field.value}
-                placeHolder={`Enter a brief description (1–${Definitions.MAX_DESCRIPTION_SIZE} chars)`}
+            <Field>
+              <FieldLabel htmlFor="description" className="text-lg font-medium">
+                Description
+              </FieldLabel>
+              <Textarea
+                maxLength={Definitions.MAX_DESCRIPTION_SIZE}
+                {...field}
+                id="description"
+                className="h-32 max-h-48 bg-white text-black placeholder:text-gray-400"
+                placeholder={`Enter a brief description (1–${Definitions.MAX_DESCRIPTION_SIZE} chars)`}
               />
-              <div className="mt-1 flex justify-between text-sm">
-                <div className="text-red-500">
-                  {errors.description?.message || <span>&nbsp;</span>}
-                </div>
-                <span className={charCountColor}>
-                  {currentLength} / {Definitions.MAX_DESCRIPTION_SIZE}{" "}
-                  characters
-                </span>
-              </div>
-            </div>
+              <p className={charCountColor}>
+                {errors?.description?.message ||
+                  `${currentLength} / ${Definitions.MAX_DESCRIPTION_SIZE} characters`}
+              </p>
+            </Field>
           );
         }}
       />
-    </div>
+    </>
   );
-}
+};
