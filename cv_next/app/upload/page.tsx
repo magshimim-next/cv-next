@@ -22,15 +22,13 @@ type FormValues = {
  */
 export default function Page() {
   const { showError } = useError();
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState<boolean>(false);
   const checkboxMessage =
-    "I agree to my CV being publically available to community members.";
+    "I agree to my CV being publically available to community members." as const;
 
   const {
     control,
     handleSubmit,
-    clearErrors,
-    setError,
     formState: { errors, isValid },
   } = useForm<FormValues>({
     mode: "onChange",
@@ -59,22 +57,13 @@ export default function Page() {
         onSubmit={handleSubmit(onSubmit)}
       >
         <LinkInput control={control} errors={errors} />
-
-        <DescriptionInput
-          control={control}
-          errors={errors}
-          clearErrors={() => clearErrors}
-          setError={() => setError}
-        />
-
+        <DescriptionInput control={control} errors={errors} />
         <CategoriesInput control={control} errors={errors} />
-
         <ConfirmCheckbox
           checked={isChecked}
           onChange={setIsChecked}
           message={checkboxMessage}
         />
-
         <div className="flex justify-center">
           <Button
             text="Submit"
