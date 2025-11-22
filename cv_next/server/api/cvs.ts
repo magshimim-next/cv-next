@@ -1,7 +1,12 @@
 import "server-only";
 
 import { PostgrestError } from "@supabase/supabase-js";
-import { Tables, CvKeys, ProfileKeys } from "@/lib/supabase-definitions";
+import {
+  Tables,
+  CvKeys,
+  ProfileKeys,
+  Storage,
+} from "@/lib/supabase-definitions";
 import { filterValues } from "@/types/models/filters";
 import Definitions from "@/lib/definitions";
 import logger from "@/server/base/logger";
@@ -302,4 +307,23 @@ export async function markCVAsDeleted(
       err: err as Error,
     });
   }
+}
+
+/**
+ * The function will get the signed preview URL of a given CV.
+ * @param {string} fileName Which preview to get
+ * @returns {Promise<Result<string, string>>} The signed URL or an error message.
+ */
+export async function getCVSignedPreview(
+  fileName: string
+): Promise<Result<string, string>> {
+  const { data: previewUrl, error } = await SupabaseHelper.getSupabaseInstance()
+    .storage.from(Storage.cvs)
+    .createSignedUrl(fileName, Definitions.CV_PREVIEW_EXPIRATION_TIME);
+  const signedUrl = previewUrl?.signedUrl;
+
+  if (!error && signedUrl) return Ok(signedUrl);
+  return Err(getCVSignedPreview.name, {
+    err: error as Error,
+  });
 }
