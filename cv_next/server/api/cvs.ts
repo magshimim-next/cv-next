@@ -273,7 +273,7 @@ export async function getCVSignedPreview(
 ): Promise<Result<string, string>> {
   const { data: previewUrl, error } = await SupabaseHelper.getSupabaseInstance()
     .storage.from(Storage.cvs)
-    .createSignedUrl(fileName, 100);
+    .createSignedUrl(fileName, Definitions.CV_PREVIEW_EXPIRATION_TIME);
   const signedUrl = previewUrl?.signedUrl;
 
   if (!error && signedUrl) return Ok(signedUrl);
