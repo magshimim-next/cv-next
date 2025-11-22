@@ -42,21 +42,10 @@ async function revalidatePreviewHandler(data: {
 
   const docsID = getIdFromLink(cvLink);
   const fileName = docsID + ".png";
-  const publicUrl = SupabaseHelper.getSupabaseInstance()
-    .storage.from(Storage.cvs)
-    .getPublicUrl(fileName).data.publicUrl;
+  const signedUrlResp = await getCVSignedPreview(fileName);
 
-  // We do this check because getPublicUrl doesn't actually verify the file's existence - it just constructs the URL...
-  try {
-    const { status } = await fetch(publicUrl, {
-      method: "HEAD",
-      redirect: "follow",
-    });
-    if (status === 200) {
-      return NextResponse.json({ publicUrl });
-    }
-  } catch (error) {
-    logger.error(error, "Error fetching supabase preview:");
+  if (signedUrlResp.ok) {
+    return NextResponse.json({ signedUrl: signedUrlResp.val });
   }
 
   logger.debug("No preview found in supabase, fetching from docs...");
