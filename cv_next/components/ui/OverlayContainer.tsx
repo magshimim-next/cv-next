@@ -19,7 +19,7 @@ export const OverlayContainer = ({
 }) => (
   <>
     <OverlayBlur blur="1px" />
-    <div className="pointer-events-auto absolute bottom-0 left-0 right-0 z-20 p-6">
+    <div className="p-18 pointer-events-auto absolute bottom-0 left-0 right-0 z-20">
       <div className="rounded-t-xl bg-white/90 p-4 shadow">{children}</div>
     </div>
   </>
