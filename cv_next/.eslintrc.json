@@ -2,7 +2,6 @@
   "extends": [
     "next",
     "next/core-web-vitals",
-    "plugin:react-hooks/recommended",
     "plugin:import/typescript",
     "plugin:import/recommended",
     "plugin:jsdoc/recommended",
