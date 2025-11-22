@@ -1,7 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import useWindowSize from "@/hooks/useWindowSize";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import Categories from "@/types/models/categories";
 import { CvCategory } from "@/components/ui/cvCategory";
 
@@ -27,39 +32,71 @@ export default function CategoriesDisplay({
   );
   const [savedWidth, setSavedWidth] = useState<number>();
 
-  const windowSize = useWindowSize();
-
   const resetCategoriesArray = useCallback(() => {
     setDisplayedCategories(categories);
     setOverFlowingCategories([]);
   }, [categories]);
 
-  useEffect(() => {
+  // Handle overflow calculation
+  useLayoutEffect(() => {
     if (!thisElement.current) return;
 
-    const { clientWidth, scrollWidth } = thisElement.current;
+    const container = thisElement.current.parentElement;
+    if (!container) return;
 
-    if (clientWidth < scrollWidth && displayedCategories.length > 0) {
+    const { clientWidth: containerWidth } = container;
+    const { scrollWidth } = thisElement.current;
+
+    const availableWidth =
+      overFlowingCategories.length > 0 ? containerWidth - 60 : containerWidth;
+
+    const hasOverflow = scrollWidth > availableWidth;
+
+    if (hasOverflow && displayedCategories.length > 1) {
       const newDisplayed = [...displayedCategories];
       const overflowCategory = newDisplayed.pop()!;
 
       setDisplayedCategories(newDisplayed);
       setOverFlowingCategories([overflowCategory, ...overFlowingCategories]);
     }
-  }, [categories, displayedCategories, overFlowingCategories]);
+  }, [displayedCategories, overFlowingCategories]);
+
+  // Handle container resize
+  useEffect(() => {
+    if (!isClient || !thisElement.current) return;
+
+    const container = thisElement.current.parentElement;
+    if (!container) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const newWidth = entry.contentRect.width;
+        setSavedWidth((prev) => {
+          if (prev !== newWidth) {
+            return newWidth;
+          }
+          return prev;
+        });
+      }
+    });
+
+    resizeObserver.observe(container);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [isClient]);
 
   useEffect(() => {
-    if (windowSize && savedWidth !== windowSize.width) {
+    if (savedWidth) {
       resetCategoriesArray();
-      setSavedWidth(windowSize.width);
     }
-  }, [
-    windowSize,
-    displayedCategories,
-    overFlowingCategories,
-    savedWidth,
-    resetCategoriesArray,
-  ]);
+  }, [savedWidth, resetCategoriesArray]);
+
+  // Handle category prop changes
+  useEffect(() => {
+    resetCategoriesArray();
+  }, [categories, resetCategoriesArray]);
 
   const shiftTheCategories = () => {
     if (
@@ -94,20 +131,26 @@ export default function CategoriesDisplay({
 
   return (
     <>
-      <div
-        className="mt-2 flex flex-row justify-between space-x-2"
-        ref={thisElement}
-      >
-        <div className="flex space-x-2">
+      <div className="mt-2 flex flex-row items-center justify-between gap-2 overflow-hidden">
+        <div
+          className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden"
+          ref={thisElement}
+        >
           {displayedCategories.map((categoryId, index) => (
-            <CvCategory key={index} categoryId={categoryId} />
+            <CvCategory
+              key={`${categoryId}-${index}`}
+              categoryId={categoryId}
+              className="rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
+            />
           ))}
         </div>
         {overFlowingCategories.length !== 0 && (
-          <OverflowNumber
-            categories={overFlowingCategories}
-            onClick={shiftTheCategories}
-          />
+          <div className="flex flex-shrink-0 items-center">
+            <OverflowNumber
+              categories={overFlowingCategories}
+              onClick={shiftTheCategories}
+            />
+          </div>
         )}
       </div>
     </>
@@ -129,15 +172,13 @@ function OverflowNumber({
   onClick: () => void;
 }) {
   return (
-    <>
-      <div
-        onClick={onClick}
-        className="right-0 flex cursor-pointer items-center justify-center rounded-full bg-gray-700 px-2 py-1 text-sm font-semibold text-white hover:bg-gray-400"
-        title={categories.map(getCategoryText).join(", ")}
-      >
-        +{categories.length}
-      </div>
-    </>
+    <div
+      onClick={onClick}
+      className="flex h-7 w-12 cursor-pointer items-center justify-center rounded-full bg-gray-700 text-sm font-semibold text-white hover:bg-gray-400"
+      title={categories.map(getCategoryText).join(", ")}
+    >
+      +{categories.length}
+    </div>
   );
 }
 

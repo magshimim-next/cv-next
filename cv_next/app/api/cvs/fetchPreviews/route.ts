@@ -7,6 +7,7 @@ import SupabaseHelper from "@/server/api/supabaseHelper";
 import logger from "@/server/base/logger";
 import { Storage } from "@/lib/supabase-definitions";
 import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
+import { getCVSignedPreview } from "@/server/api/cvs";
 
 /**
  * The POST request handler for the revalidatePreview endpoint.
@@ -95,9 +96,14 @@ async function revalidatePreviewHandler(data: {
     return NextResponse.json({ message: "RLS error" });
   } else {
     logger.debug(uploadedData, "File uploaded successfully:");
-    const publicUrl = SupabaseHelper.getSupabaseInstance()
-      .storage.from(Storage.cvs)
-      .getPublicUrl(fileName).data.publicUrl;
-    return NextResponse.json({ publicUrl });
+    const signedUrlResp = await getCVSignedPreview(fileName);
+    if (signedUrlResp.ok) {
+      return NextResponse.json({ signedUrl: signedUrlResp.val });
+    }
+    logger.error(signedUrlResp.errors.err, "Failed to get signed URL");
   }
+  return NextResponse.json(
+    { error: "Failed to revalidate preview" },
+    { status: 500 }
+  );
 }
