@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { getUser, isUserAdmin } from "@/app/actions/users/getUser";
 
+/**
+ * The function is a call to fetch the current user.
+ * @returns {Promise<UserModel>} The user's data.
+ */
 const getUserClient = async () => {
   const userDataResponse = await getUser();
   if (userDataResponse.ok) {
@@ -13,6 +17,10 @@ const getUserClient = async () => {
   }
 };
 
+/**
+ * The function checks if the current user is an admin.
+ * @returns {<Promise<boolean>>} Whether the user is an admin.
+ */
 const getUserAdminStatus = async () => {
   const adminCheckResponse = await isUserAdmin();
   if (adminCheckResponse.ok) {
@@ -22,6 +30,10 @@ const getUserAdminStatus = async () => {
   }
 };
 
+/**
+ * The custom hook to get the current user data and admin status.
+ * @returns {object} The user data, loading state, login state, admin status and mutate function.
+ */
 export const useUser = () => {
   const [mounted, setMounted] = useState(false);
 
@@ -55,7 +67,7 @@ export const useUser = () => {
     data: userIsAdmin,
     mutate: mutateAdmin,
     error: adminError,
-  } = useSWR(data?.id ? "user_admin" : null, getUserAdminStatus, {
+  } = useSWR("user_admin", getUserAdminStatus, {
     revalidateOnMount: false,
     revalidateOnFocus: false,
   });
