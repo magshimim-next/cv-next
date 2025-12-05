@@ -1,6 +1,6 @@
 "use server";
 
-import { Err, Ok } from "@/lib/utils";
+import { Err, getJointAuthorId, Ok } from "@/lib/utils";
 import { getCurrentId, userIsAdmin } from "@/server/api/users";
 import logger, { logErrorWithTrace } from "@/server/base/logger";
 
@@ -19,12 +19,7 @@ export async function checkCVModifyPermission(
       "An error has occurred while modifying the CV. Please try again later."
     );
   }
-
-  // Note that in a different PR, there's a function that extracts it more easily
-  const authorId =
-    typeof cvData.user_id === "object" && cvData.user_id !== null
-      ? (cvData.user_id as { id?: string }).id
-      : String(cvData.user_id);
+  const authorId = getJointAuthorId(cvData.user_id);
 
   const resultAdminCheck = await userIsAdmin();
   if (currentIdResult.val != authorId && !resultAdminCheck.ok) {
