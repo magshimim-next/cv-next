@@ -38,6 +38,7 @@ export async function RecommendedCvsSection({
     return <></>;
   }
   if (currentUserId) {
+    // TODO: use filtering that is based on name recieved using the DB query.
     recommendedCVs = (recommendedRaw || []).filter((rec: CvModel) => {
       let authorId: string | undefined;
       if (typeof rec.user_id === "object" && rec.user_id !== null) {
