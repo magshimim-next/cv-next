@@ -16,13 +16,10 @@ import Definitions from "@/lib/definitions";
 import { getCvById } from "@/server/api/cvs";
 
 /**
- * Retrieves user data by user ID.
- *
- * @param {string} userId - The ID of the user to retrieve
- * @return {Promise<Result<UserModel, string>>} A promise that resolves to a Result containing the user data or an error message
+ * Retrieves a specific user's data by it's name.
+ * @param {string} username - The username of the user to retrieve
+ * @returns {Promise<Result<UserModel, string>>} A promise that resolves to a Result containing the user data or an error message
  */
-//TODO: delete this and replace any user-related fetches with getUser(),
-// currently this relies on user id received from the browser which is unsafe.
 export const getUserModel = async (
   username: string
 ): Promise<Result<UserModel, string>> => {
@@ -74,6 +71,11 @@ export const getFirstTimeLogin = async (): Promise<Result<Boolean, string>> => {
   }
 };
 
+/**
+ *
+ * @param provider
+ * @param nextURL
+ */
 export async function signInWithSocialProvider(provider: any, nextURL: string) {
   const { data, error } =
     await SupabaseHelper.getSupabaseInstance().auth.signInWithOAuth({
@@ -95,7 +97,7 @@ export async function signInWithSocialProvider(provider: any, nextURL: string) {
 
 /**
  * Returns all users with their permission level.
- * @return {Promise<Result<Partial<UserWithPerms>[], string>>} A Promise with the result of the operation.
+ * @returns {Promise<Result<Partial<UserWithPerms>[], string>>} A Promise with the result of the operation.
  */
 export const getAllUsersPerms = async (): Promise<
   Result<Partial<UserWithPerms>[], string>
