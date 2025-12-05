@@ -9,7 +9,7 @@ import { getRandomizedCvs } from "@/server/api/cvs";
  * This component fetchs and displays recommended CVs based on the current CV and or current user ID.
  * @param {object} param0 The component props.
  * @param {number[]} param0.filteredCategories The categories to filter for.
- * @param {string} param0.currentUsername The viewd username to exclude their CVs.
+ * @param {string} param0.currentUserId The viewd user ID to exclude their CVs.
  * @param {string} param0.currentCvId The current CV ID to exclude it.
  * @param {number} param0.amountToFetch The amount of CVs to attempt and get from the DB.
  * @param {number} param0.amountToRecommend The amount of CVs to actually show and recommend.
@@ -17,28 +17,36 @@ import { getRandomizedCvs } from "@/server/api/cvs";
  */
 export async function RecommendedCvsSection({
   filteredCategories,
-  currentUsername,
+  currentUserId,
   currentCvId,
   amountToFetch = Definitions.DEFAULT_RANDOM_CVS,
   amountToRecommend = Definitions.DEFAULT_RANDOM_CVS,
 }: {
   filteredCategories: number[];
-  currentUsername?: string;
+  currentUserId?: string;
   currentCvId?: string;
   amountToFetch?: number;
   amountToRecommend?: number;
 }) {
   const recommendedRaw = await getRandomizedCvs(true, amountToFetch, {
-    searchValue: currentUsername || "",
+    searchValue: "",
     categoryIds: filteredCategories,
   });
 
   let recommendedCVs: CvModel[] = [];
-  if (!currentUsername && !currentCvId) {
+  if (!currentUserId && !currentCvId) {
     return <></>;
   }
-  if (currentUsername) {
-    recommendedCVs = recommendedRaw || [];
+  if (currentUserId) {
+    recommendedCVs = (recommendedRaw || []).filter((rec: CvModel) => {
+      let authorId: string | undefined;
+      if (typeof rec.user_id === "object" && rec.user_id !== null) {
+        authorId = (rec.user_id as { id?: string }).id;
+      } else {
+        authorId = String(rec.user_id);
+      }
+      return authorId !== currentUserId;
+    });
     if (recommendedCVs.length >= amountToRecommend) {
       recommendedCVs = recommendedCVs.slice(0, amountToRecommend);
     }
