@@ -108,7 +108,7 @@ export default async function Page({
       <RecommendedCvsSection
         filteredCategories={recommendedCategories}
         currentUserId={result.val.id}
-        amountToRecommend={8}
+        amountToFetch={8}
       />
     </div>
   );

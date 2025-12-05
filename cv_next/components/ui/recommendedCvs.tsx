@@ -11,21 +11,24 @@ import { getRandomizedCvs } from "@/server/api/cvs";
  * @param {number[]} param0.filteredCategories The categories to filter for.
  * @param {string} param0.currentUserId The current user ID to exclude their CVs.
  * @param {string} param0.currentCvId The current CV ID to exclude it.
- * @param {number} param0.amountToRecommend The amount of CVs to recommend.
+ * @param {number} param0.amountToFetch The amount of CVs to attempt and get from the DB.
+ * @param {number} param0.amountToRecommend The amount of CVs to actually show and recommend.
  * @returns {JSX.Element} The recommended section.
  */
 export async function RecommendedCvsSection({
   filteredCategories,
   currentUserId,
   currentCvId,
+  amountToFetch = Definitions.DEFAULT_RANDOM_CVS,
   amountToRecommend = Definitions.DEFAULT_RANDOM_CVS,
 }: {
   filteredCategories: number[];
   currentUserId?: string;
   currentCvId?: string;
+  amountToFetch?: number;
   amountToRecommend?: number;
 }) {
-  const recommendedRaw = await getRandomizedCvs(true, amountToRecommend, {
+  const recommendedRaw = await getRandomizedCvs(true, amountToFetch, {
     searchValue: "",
     categoryIds: filteredCategories,
   });
@@ -44,15 +47,15 @@ export async function RecommendedCvsSection({
       }
       return authorId !== currentUserId;
     });
-    if (recommendedCVs.length >= Definitions.DEFAULT_RANDOM_CVS) {
-      recommendedCVs = recommendedCVs.slice(0, Definitions.DEFAULT_RANDOM_CVS);
+    if (recommendedCVs.length >= amountToRecommend) {
+      recommendedCVs = recommendedCVs.slice(0, amountToRecommend);
     }
   } else if (currentCvId) {
     recommendedCVs = (recommendedRaw || []).filter(
       (rec: CvModel) => rec.id !== currentCvId
     );
-    if (recommendedCVs.length >= Definitions.DEFAULT_RANDOM_CVS) {
-      recommendedCVs = recommendedCVs.slice(0, Definitions.DEFAULT_RANDOM_CVS);
+    if (recommendedCVs.length >= amountToRecommend) {
+      recommendedCVs = recommendedCVs.slice(0, amountToRecommend);
     }
   }
 
