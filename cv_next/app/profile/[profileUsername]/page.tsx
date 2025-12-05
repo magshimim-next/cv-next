@@ -107,7 +107,7 @@ export default async function Page({
       )}
       <RecommendedCvsSection
         filteredCategories={recommendedCategories}
-        currentUserId={result.val.id}
+        currentUsername={result.val.username || result.val.display_name || ""}
         amountToFetch={8}
       />
     </div>

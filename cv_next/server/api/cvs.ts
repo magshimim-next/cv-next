@@ -165,6 +165,7 @@ export async function getRandomizedCvs(
     logger.debug(filters, "filters");
 
     query = applyCategoryFilter(query, filters);
+    query = filterOutProfiles(query, filters);
 
     const { data: cvs, error } = await query;
     logger.debug(
@@ -182,6 +183,24 @@ export async function getRandomizedCvs(
     logger.error(error, "getRandomizedCvs");
     return null;
   }
+}
+
+/**
+ * The function applys a search filter that is based on profiles.
+ * @param {any} profileQuery - The existing profiles query that will be modified.
+ * @param {filterValues} filters - The existing filter that will be applied.
+ * @returns {any} The query with the profiles filter applied.
+ */
+function filterOutProfiles(profileQuery: any, filters?: filterValues) {
+  if (filters?.searchValue) {
+    const searchValue = `${filters.searchValue}`;
+
+    profileQuery = profileQuery
+      .not(`user_id.${ProfileKeys.display_name}`, "ilike", searchValue)
+      .not(`user_id.${ProfileKeys.username}`, "ilike", searchValue);
+  }
+
+  return profileQuery;
 }
 
 /**
