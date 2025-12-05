@@ -44,15 +44,15 @@ export async function RecommendedCvsSection({
       }
       return authorId !== currentUserId;
     });
-    if (recommendedCVs.length >= 5) {
-      recommendedCVs = recommendedCVs.slice(0, 5);
+    if (recommendedCVs.length >= Definitions.DEFAULT_RANDOM_CVS) {
+      recommendedCVs = recommendedCVs.slice(0, Definitions.DEFAULT_RANDOM_CVS);
     }
   } else if (currentCvId) {
     recommendedCVs = (recommendedRaw || []).filter(
       (rec: CvModel) => rec.id !== currentCvId
     );
-    if (recommendedCVs.length >= 5) {
-      recommendedCVs = recommendedCVs.slice(0, 5);
+    if (recommendedCVs.length >= Definitions.DEFAULT_RANDOM_CVS) {
+      recommendedCVs = recommendedCVs.slice(0, Definitions.DEFAULT_RANDOM_CVS);
     }
   }
 
