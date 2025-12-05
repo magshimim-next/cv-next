@@ -187,12 +187,12 @@ export const toBase64 = (str: string) =>
     : window.btoa(str);
 
 /**
- * The function will extract the display name from an object that contains user data afte a table join.
+ * The function will extract the id from an object that contains user data afte a table join.
  * @param {string | null} jointIdStr The string the is recieved from queries that use joins to get user's data
- * @returns {string} The display name of the user or the entire object as a string
+ * @returns {string} The id of the user or the entire object as a string
  */
-export function getJointDisplayName(jointIdStr: string | null) {
+export function getJointAuthorId(jointIdStr: string | null) {
   return typeof jointIdStr === "object" && jointIdStr !== null
-    ? (jointIdStr as { display_name?: string }).display_name
+    ? (jointIdStr as { id?: string }).id
     : String(jointIdStr);
 }
