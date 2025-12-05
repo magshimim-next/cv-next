@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import CategoriesDisplay from "@/app/feed/components/CV/categoryDisplay";
 import { encodeValue, getJointDisplayName } from "@/lib/utils";
@@ -12,37 +11,6 @@ import { encodeValue, getJointDisplayName } from "@/lib/utils";
  * @returns {JSX.Element} The clickable card component.
  */
 export function CVClickableCard({ cv }: { cv: CvModel }) {
-  const descRef = useRef<HTMLDivElement>(null);
-  const [truncatedDesc, setTruncatedDesc] = useState(cv.description);
-
-  useEffect(() => {
-    const el = descRef.current;
-    if (!el) return;
-
-    // Reset text first
-    el.textContent = cv.description;
-
-    // Check if it overflows
-    if (el.scrollHeight > el.clientHeight) {
-      // Simple truncation algorithm
-      let text = cv.description;
-      let low = 0;
-      let high = text.length;
-      let mid;
-      while (low < high) {
-        mid = Math.floor((low + high) / 2);
-        el.textContent = text.slice(0, mid) + "…";
-        if (el.scrollHeight > el.clientHeight) {
-          high = mid;
-        } else {
-          low = mid + 1;
-        }
-      }
-      el.textContent = text.slice(0, high - 1) + "…";
-      setTruncatedDesc(el.textContent);
-    }
-  }, [cv.description]);
-
   return (
     <Link
       href={`/cv/${encodeValue(cv.id)}`}
@@ -61,11 +29,14 @@ export function CVClickableCard({ cv }: { cv: CvModel }) {
           <CategoriesDisplay categories={cv.cv_categories} />
         </div>
         <div
-          ref={descRef}
           className="line-clamp-4 w-full flex-grow-0 px-2 text-center text-lg text-neutral-700 dark:text-white"
-          style={{ height: "4.5em", overflow: "hidden" }}
+          style={{
+            overflow: "hidden",
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: "vertical",
+          }}
         >
-          {truncatedDesc}
+          {cv.description}
         </div>
       </div>
     </Link>
