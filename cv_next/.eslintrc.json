@@ -81,7 +81,11 @@
           {
             "selector": ["objectLiteralProperty"],
             "format": ["snake_case", "camelCase", "PascalCase"],
-            "leadingUnderscore": "allow"
+            "leadingUnderscore": "allow",
+            "filter": {
+              "regex": "^[a-z]+(_[a-z]+)*(_Id)?$",
+              "match": true
+            }
           },
           {
             "selector": ["enumMember", "variable"],
