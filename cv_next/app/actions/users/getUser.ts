@@ -72,9 +72,9 @@ export const getFirstTimeLogin = async (): Promise<Result<Boolean, string>> => {
 };
 
 /**
- *
- * @param provider
- * @param nextURL
+ * Signs in a user with a social provider.
+ * @param {any} provider - The social provider to use for sign-in.
+ * @param {string} nextURL - The URL to redirect to after sign-in.
  */
 export async function signInWithSocialProvider(provider: any, nextURL: string) {
   const { data, error } =

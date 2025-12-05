@@ -19,7 +19,7 @@ const getUserClient = async () => {
 
 /**
  * The function checks if the current user is an admin.
- * @returns {<Promise<boolean>>} Whether the user is an admin.
+ * @returns {Promise<boolean>} Whether the user is an admin.
  */
 const getUserAdminStatus = async () => {
   const adminCheckResponse = await isUserAdmin();
