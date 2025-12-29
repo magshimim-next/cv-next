@@ -209,6 +209,7 @@ export function getJointAuthorId(jointIdStr: string | null) {
 
 /**
  * The function will return random values from a given enum.
+ * @template {object} T The enum types
  * @param {T} anEnum The enum object to return random value from
  * @param {number} count How many random values to return
  * @returns {T[keyof T]} An array of random values from the given enum
