@@ -185,3 +185,14 @@ export const toBase64 = (str: string) =>
   typeof window === "undefined"
     ? Buffer.from(str).toString("base64")
     : window.btoa(str);
+
+/**
+ * The function will extract the id from an object that contains user data afte a table join.
+ * @param {string | null} jointIdStr The string the is recieved from queries that use joins to get user's data
+ * @returns {string} The id of the user or the entire object as a string
+ */
+export function getJointAuthorId(jointIdStr: string | null) {
+  return typeof jointIdStr === "object" && jointIdStr !== null
+    ? (jointIdStr as { id?: string }).id
+    : String(jointIdStr);
+}
