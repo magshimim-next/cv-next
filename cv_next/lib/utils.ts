@@ -206,3 +206,27 @@ export function getJointAuthorId(jointIdStr: string | null) {
     ? (jointIdStr as { id?: string }).id
     : String(jointIdStr);
 }
+
+/**
+ * The function will return random values from a given enum.
+ * @param {T} anEnum The enum object to return random value from
+ * @param {number} count How many random values to return
+ * @returns {T[keyof T]} An array of random values from the given enum
+ */
+export function getRandomEnumValues<T extends object>(
+  anEnum: T,
+  count: number
+): T[keyof T][] {
+  const allEntries = Object.values(anEnum);
+  const isNumeric = allEntries.some((v) => typeof v === "number");
+
+  const filteredValues = isNumeric
+    ? allEntries.filter((v) => typeof v === "number")
+    : allEntries;
+
+  const shuffled = [...filteredValues].sort(() => 0.5 - Math.random());
+  return shuffled.slice(
+    0,
+    Math.min(count, filteredValues.length)
+  ) as T[keyof T][];
+}
