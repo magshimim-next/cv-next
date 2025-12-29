@@ -13,6 +13,10 @@ import { getRandomizedCvs } from "@/server/api/cvs";
  * @param {string} param0.currentCvId The current CV ID to exclude it.
  * @param {number} param0.amountToFetch The amount of CVs to attempt and get from the DB.
  * @param {number} param0.amountToRecommend The amount of CVs to actually show and recommend.
+ * @param {string} param0.title A title to shows at the top of the recommended section.
+ *    Defaults to 'Relevant CVs'
+ * @param {string} param0.subtitle A subtitle to show below the main title of the section.
+ *    Defaults to 'Based on the categories of this page'
  * @returns {JSX.Element} The recommended section.
  */
 export async function RecommendedCvsSection({
@@ -21,12 +25,16 @@ export async function RecommendedCvsSection({
   currentCvId,
   amountToFetch = Definitions.DEFAULT_RANDOM_CVS,
   amountToRecommend = Definitions.DEFAULT_RANDOM_CVS,
+  title = "Relevant CVs",
+  subtitle = "Based on the categories of this page",
 }: {
   filteredCategories: number[];
   currentUserId?: string;
   currentCvId?: string;
   amountToFetch?: number;
   amountToRecommend?: number;
+  title?: string;
+  subtitle?: string;
 }) {
   const recommendedRaw = await getRandomizedCvs(true, amountToFetch, {
     searchValue: "",
@@ -64,9 +72,9 @@ export async function RecommendedCvsSection({
     <>
       {recommendedCVs.length > 0 && (
         <div className="bg-gradient mt-8 rounded-xl py-8">
-          <h2 className="mb-4 text-center text-3xl font-bold">Relevant CVs</h2>
+          <h2 className="mb-4 text-center text-3xl font-bold">{`${title}`}</h2>
           <h3 className="mb-4 text-center text-base font-bold text-gray-700 dark:text-gray-300">
-            {`Based on the categories of this page`}
+            {`${subtitle}`}
           </h3>
           <CarouselStructure options={{ loop: true }}>
             {recommendedCVs.map((recCv: CvModel) => (
