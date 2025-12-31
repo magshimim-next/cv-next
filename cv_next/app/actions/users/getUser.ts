@@ -20,6 +20,8 @@ import { getCvById } from "@/server/api/cvs";
  * @param {string} username - The username of the user to retrieve
  * @returns {Promise<Result<UserModel, string>>} A promise that resolves to a Result containing the user data or an error message
  */
+//TODO: delete this and replace any user-related fetches with getUser(),
+// currently this relies on user id received from the browser which is unsafe.
 export const getUserModel = async (
   username: string
 ): Promise<Result<UserModel, string>> => {
