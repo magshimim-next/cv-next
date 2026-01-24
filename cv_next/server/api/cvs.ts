@@ -1,7 +1,12 @@
 import "server-only";
 
 import { PostgrestError } from "@supabase/supabase-js";
-import { Tables, CvKeys, ProfileKeys } from "@/lib/supabase-definitions";
+import {
+  Tables,
+  CvKeys,
+  ProfileKeys,
+  Storage,
+} from "@/lib/supabase-definitions";
 import { filterValues } from "@/types/models/filters";
 import Definitions from "@/lib/definitions";
 import logger from "@/server/base/logger";
@@ -134,6 +139,71 @@ export async function getPaginatedCvs(
 }
 
 /**
+ * Retrieves a randomized list of CVs based on the provided filters.
+ * @param {boolean} filterOutDeleted - Indicates whether deleted CVs should be filtered out.
+ * @param {number} amount - The amount of CVs to return.
+ * @param {filterValues} filters - The filters apply to CV search.
+ * @returns {Promise<CvModel[] | null>} A Promise that resolves with an array of CvModel or null.
+ * The user_id of the retrieved CVs is a json of the user_id, display_name of that user and it's username
+ */
+export async function getRandomizedCvs(
+  filterOutDeleted: boolean = true,
+  amount: number = Definitions.DEFAULT_RANDOM_CVS,
+  filters?: filterValues
+): Promise<CvModel[] | null> {
+  try {
+    const supabase = SupabaseHelper.getSupabaseInstance();
+    let query = supabase
+      .from(Tables.randomized_cvs)
+      .select(
+        `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username})`
+      )
+      .eq(CvKeys.deleted, !filterOutDeleted)
+      .order("rnd")
+      // +1 to increase the odds of getting enough while excluding the CV that asked for it.
+      .limit(amount + 1);
+    logger.debug(filters, "filters");
+
+    query = applyCategoryFilter(query, filters);
+    query = filterOutProfiles(query, filters);
+
+    const { data: cvs, error } = await query;
+    logger.debug(
+      cvs?.map((cv) => cv.cv_categories),
+      "randomized cvs"
+    );
+
+    if (error) {
+      logger.error(error, "getRandomizedCvs");
+      return null;
+    }
+
+    return cvs as CvModel[];
+  } catch (error) {
+    logger.error(error, "getRandomizedCvs");
+    return null;
+  }
+}
+
+/**
+ * The function applys a search filter that is based on profiles.
+ * @param {any} profileQuery - The existing profiles query that will be modified.
+ * @param {filterValues} filters - The existing filter that will be applied.
+ * @returns {any} The query with the profiles filter applied.
+ */
+function filterOutProfiles(profileQuery: any, filters?: filterValues) {
+  if (filters?.searchValue) {
+    const searchValue = `${filters.searchValue}`;
+
+    profileQuery = profileQuery
+      .not(`user_id.${ProfileKeys.display_name}`, "ilike", searchValue)
+      .not(`user_id.${ProfileKeys.username}`, "ilike", searchValue);
+  }
+
+  return profileQuery;
+}
+
+/**
  * The function applys a search filter that is based on profiles.
  * @param {any} profileQuery - The existing profiles query that will be modified.
  * @param {filterValues} filters - The existing filter that will be applied.
@@ -256,4 +326,23 @@ export async function markCVAsDeleted(
       err: err as Error,
     });
   }
+}
+
+/**
+ * The function will get the signed preview URL of a given CV.
+ * @param {string} fileName Which preview to get
+ * @returns {Promise<Result<string, string>>} The signed URL or an error message.
+ */
+export async function getCVSignedPreview(
+  fileName: string
+): Promise<Result<string, string>> {
+  const { data: previewUrl, error } = await SupabaseHelper.getSupabaseInstance()
+    .storage.from(Storage.cvs)
+    .createSignedUrl(fileName, Definitions.CV_PREVIEW_EXPIRATION_TIME);
+  const signedUrl = previewUrl?.signedUrl;
+
+  if (!error && signedUrl) return Ok(signedUrl);
+  return Err(getCVSignedPreview.name, {
+    err: error as Error,
+  });
 }

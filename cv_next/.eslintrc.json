@@ -2,7 +2,6 @@
   "extends": [
     "next",
     "next/core-web-vitals",
-    "plugin:react-hooks/recommended",
     "plugin:import/typescript",
     "plugin:import/recommended",
     "plugin:jsdoc/recommended",
@@ -58,18 +57,21 @@
             "format": ["PascalCase", "camelCase"] //camelCase: functions (mainly hooks)
           },
           {
-            "selector": "variable",
-            "format": ["camelCase", "PascalCase"]
+            "selector": ["variable", "class"],
+            "format": null,
+            "filter": {
+              "regex": "^[A-Z][A-Za-z0-9]*(?:_[A-Z][A-Za-z0-9]*)*$",
+              "match": true
+            }
           },
           {
             "selector": ["variable"],
             "modifiers": ["const"],
-            "format": ["camelCase", "PascalCase", "UPPER_CASE"] //PascalCase: relevant for e.g. React components, Context
+            "format": ["camelCase", "PascalCase", "UPPER_CASE"]
           },
           {
             "selector": "function",
-            "format": ["PascalCase", "camelCase"],
-            "filter": { "regex": "^[A-Z]", "match": true }
+            "format": ["PascalCase", "camelCase"]
           },
           {
             "selector": ["variable", "parameter", "function", "method"],
@@ -78,7 +80,7 @@
           },
           {
             "selector": ["objectLiteralProperty"],
-            "format": ["snake_case", "camelCase"],
+            "format": ["snake_case", "camelCase", "PascalCase"],
             "leadingUnderscore": "allow"
           },
           {

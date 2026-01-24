@@ -1,6 +1,6 @@
 "use server";
 
-import { Err, Ok } from "@/lib/utils";
+import { Err, getJointAuthorId, Ok } from "@/lib/utils";
 import { getCurrentId, userIsAdmin } from "@/server/api/users";
 import logger, { logErrorWithTrace } from "@/server/base/logger";
 
@@ -19,9 +19,11 @@ export async function checkCVModifyPermission(
       "An error has occurred while modifying the CV. Please try again later."
     );
   }
+  const authorId = getJointAuthorId(cvData.user_id);
 
   const resultAdminCheck = await userIsAdmin();
-  if (currentIdResult.val != cvData.user_id && !resultAdminCheck.ok) {
+  if (currentIdResult.val != authorId && !resultAdminCheck.ok) {
+    logger.info(`${currentIdResult.val} ${authorId} ${resultAdminCheck.ok}`);
     logger.error(`${currentIdResult.val} tried modifying someone elses CV!`);
     return Err(
       "An error has occurred while modifying the CV. Please try again later."

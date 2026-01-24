@@ -16,10 +16,9 @@ import Definitions from "@/lib/definitions";
 import { getCvById } from "@/server/api/cvs";
 
 /**
- * Retrieves user data by user ID.
- *
- * @param {string} userId - The ID of the user to retrieve
- * @return {Promise<Result<UserModel, string>>} A promise that resolves to a Result containing the user data or an error message
+ * Retrieves a specific user's data by it's name.
+ * @param {string} username - The username of the user to retrieve
+ * @returns {Promise<Result<UserModel, string>>} A promise that resolves to a Result containing the user data or an error message
  */
 //TODO: delete this and replace any user-related fetches with getUser(),
 // currently this relies on user id received from the browser which is unsafe.
@@ -74,6 +73,11 @@ export const getFirstTimeLogin = async (): Promise<Result<Boolean, string>> => {
   }
 };
 
+/**
+ * Signs in a user with a social provider.
+ * @param {any} provider - The social provider to use for sign-in.
+ * @param {string} nextURL - The URL to redirect to after sign-in.
+ */
 export async function signInWithSocialProvider(provider: any, nextURL: string) {
   const { data, error } =
     await SupabaseHelper.getSupabaseInstance().auth.signInWithOAuth({
@@ -95,7 +99,7 @@ export async function signInWithSocialProvider(provider: any, nextURL: string) {
 
 /**
  * Returns all users with their permission level.
- * @return {Promise<Result<Partial<UserWithPerms>[], string>>} A Promise with the result of the operation.
+ * @returns {Promise<Result<Partial<UserWithPerms>[], string>>} A Promise with the result of the operation.
  */
 export const getAllUsersPerms = async (): Promise<
   Result<Partial<UserWithPerms>[], string>
@@ -139,8 +143,12 @@ export const isUserAdmin = async (): Promise<Result<void, string>> => {
   const adminCheckResult = await userIsAdmin();
   if (adminCheckResult.ok) {
     return Ok(adminCheckResult.val);
-  } else {
+  } else if (
+    !adminCheckResult.errors.err?.message.includes("empty") &&
+    !adminCheckResult.errors.postgrestError?.code.includes("PGRST116")
+  ) {
     logErrorWithTrace(adminCheckResult);
     return Err("Couldn't check if the user is an admin");
   }
+  return Err("User is not an admin");
 };

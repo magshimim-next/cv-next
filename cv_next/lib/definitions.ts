@@ -7,10 +7,12 @@ export default class Definitions {
   public static readonly undefinedIndex = -1;
   public static readonly CVS_PER_PAGE = 6;
   public static readonly PAGINATION_INIT_PAGE_NUMBER = -1;
+  public static readonly DEFAULT_RANDOM_CVS = 5;
   public static readonly MAX_OPERATIONS = 10;
   public static readonly MAX_OPERATIONS_REFILL_PER_SECOND = 2;
   public static readonly CVS_REVALIDATE_TIME_IN_SECONDS = 0;
   public static readonly FETCH_WAIT_TIME = 120;
+  public static readonly CV_PREVIEW_EXPIRATION_TIME = 60 * 30;
   public static readonly MAX_CHAR_NAME = 70;
   public static readonly MIN_CHAR_NAME = 1;
   public static readonly MAX_COMMENT_SIZE = 750;

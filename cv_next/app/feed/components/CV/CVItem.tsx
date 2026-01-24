@@ -47,8 +47,8 @@ export default function CVItem({ cv }: CVCardProps) {
         if (data?.error == "CV_IS_PRIVATE") {
           setRealURL(access_denied.src);
           return;
-        } else if (data?.publicUrl) {
-          setRealURL(data.publicUrl);
+        } else if (data?.signedUrl) {
+          setRealURL(data.signedUrl);
         }
       };
 

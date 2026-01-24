@@ -5,6 +5,7 @@ export const Tables: {
   whitelisted: "whitelisted";
   admins: "admins";
   profiles_perms: "profiles_perms";
+  randomized_cvs: "randomized_cvs";
 } = {
   cvs: "cvs",
   comments: "comments",
@@ -12,6 +13,7 @@ export const Tables: {
   whitelisted: "whitelisted",
   admins: "admins",
   profiles_perms: "profiles_perms",
+  randomized_cvs: "randomized_cvs",
 };
 
 export const CvKeys: {
