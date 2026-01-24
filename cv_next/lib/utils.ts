@@ -132,8 +132,13 @@ export const categoryString = (categoryNumber: number) =>
  * @returns {number} The category number or -1 if not found.
  */
 export function toCategoryNumber(name: string): number {
+  if (!name || typeof name !== "string" || name.length === 0) {
+    return -1;
+  }
   let fixedName = name[0].charAt(0).toUpperCase() + name.slice(1);
-  return Categories.category[fixedName as keyof typeof Categories.category];
+  const categoryNum =
+    Categories.category[fixedName as keyof typeof Categories.category];
+  return typeof categoryNum === "number" ? categoryNum : -1;
 }
 
 /**
