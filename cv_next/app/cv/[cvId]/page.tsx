@@ -7,10 +7,18 @@ import { decodeValue } from "@/lib/utils";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
 import { CvPreview } from "@/components/ui/cvPreview";
 import { getCurrentId, userIsAdmin } from "@/server/api/users";
+import { RecommendedCvsSection } from "@/components/ui/recommendedCvs";
 import CommentsSection from "./components/commentSection/commentsSection";
 import CommentForm from "./components/commentSection/commentForm";
 import CvData from "./components/cvData";
 
+/**
+ * The function handles the tab name generation.
+ * @param {any} root0 The CV ID from the url parameters.
+ * @param {any} root0.params The CV ID from the url parameters.
+ * @param {string} root0.params.cvId The CV ID from the url parameters.
+ * @returns {Promise<Metadata>} The metadata object.
+ */
 export async function generateMetadata({
   params,
 }: {
@@ -34,6 +42,13 @@ export async function generateMetadata({
   };
 }
 
+/**
+ * This page is the main page for displaying a CV.
+ * @param {any} root0 The CV ID from the url parameters.
+ * @param {any} root0.params The CV ID from the url parameters.
+ * @param {string} root0.params.cvId The CV ID from the url parameters.
+ * @returns {JSX.Element} The CV page.
+ */
 export default async function Page({ params }: { params: { cvId: string } }) {
   const { cvId } = params;
   const decodedCvId = decodeValue(decodeURIComponent(cvId));
@@ -56,7 +71,6 @@ export default async function Page({ params }: { params: { cvId: string } }) {
     notFound();
   }
   const authorData = JSON.parse(JSON.stringify(cv.user_id));
-
   const resultAdminCheck = await userIsAdmin();
 
   return (
@@ -86,6 +100,11 @@ export default async function Page({ params }: { params: { cvId: string } }) {
           </div>
         )}
       </div>
+
+      <RecommendedCvsSection
+        filteredCategories={cv.cv_categories}
+        currentCvId={cv.id}
+      />
     </div>
   );
 }

@@ -6,9 +6,17 @@ import { Metadata } from "next";
 import { getUserModel } from "@/app/actions/users/getUser";
 import { getCvsByUserId } from "@/server/api/cvs";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
+import { RecommendedCvsSection } from "@/components/ui/recommendedCvs";
 import ProfileData from "./components/profileData";
 import ProfileCvs from "./components/profileCvs";
 
+/**
+ * The function handles the tab name generation.
+ * @param {any} root0 The username of the current profile from the url parameters.
+ * @param {any} root0.params The username of the current profile from the url parameters.
+ * @param {string} root0.params.profileUsername The username of the current profile from the url parameters.
+ * @returns {Promise<Metadata>} The metadata object.
+ */
 export async function generateMetadata({
   params,
 }: {
@@ -36,6 +44,13 @@ export async function generateMetadata({
   };
 }
 
+/**
+ * This page is the main page for displaying a user's profile.
+ * @param {any} root0 The username of the current profile from the url parameters.
+ * @param {any} root0.params The username of the current profile from the url parameters.
+ * @param {string} root0.params.profileUsername The username of the current profile from the url parameters.
+ * @returns {JSX.Element} The profile page.
+ */
 export default async function Page({
   params,
 }: {
@@ -60,6 +75,10 @@ export default async function Page({
   }
 
   const cvs = await getCvsByUserId(result.val.id);
+  const recommendedCategories = [
+    ...(result.val.work_status_categories || []),
+    ...new Set(cvs?.flatMap((cv) => cv.cv_categories)),
+  ];
 
   return (
     <div>
@@ -86,6 +105,11 @@ export default async function Page({
           </section>
         </div>
       )}
+      <RecommendedCvsSection
+        filteredCategories={recommendedCategories}
+        currentUserId={result.val.id}
+        amountToFetch={8}
+      />
     </div>
   );
 }
