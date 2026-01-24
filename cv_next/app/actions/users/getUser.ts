@@ -143,8 +143,12 @@ export const isUserAdmin = async (): Promise<Result<void, string>> => {
   const adminCheckResult = await userIsAdmin();
   if (adminCheckResult.ok) {
     return Ok(adminCheckResult.val);
-  } else {
+  } else if (
+    !adminCheckResult.errors.err?.message.includes("empty") &&
+    !adminCheckResult.errors.postgrestError?.code.includes("PGRST116")
+  ) {
     logErrorWithTrace(adminCheckResult);
     return Err("Couldn't check if the user is an admin");
   }
+  return Err("User is not an admin");
 };
