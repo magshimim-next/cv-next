@@ -10,14 +10,25 @@ import { InputBox } from "./inputbar";
 export const CATEGORY_PARAM = "category";
 export const DESCRIPTION_PARAM = "description";
 
+/**
+ * This component handles the main filter panel for the feed.
+ * @param {any} root0 The arguments to the component
+ * @param {filterValues} root0.defaultFilters the currently set default filters to apply
+ * @returns {Element} The main filters of the feed
+ */
 export const FilterPanel = ({
   defaultFilters,
 }: {
   defaultFilters: filterValues;
-  cvs: CvModel[];
 }) => {
   const [searchValue, setSearchValue] = useState(defaultFilters.searchValue);
   const [categoryIds, setCategoryId] = useState(defaultFilters.categoryIds);
+
+  // Sync local state with defaultFilters when it changes
+  useEffect(() => {
+    setSearchValue(defaultFilters.searchValue);
+    setCategoryId(defaultFilters.categoryIds);
+  }, [defaultFilters.searchValue, defaultFilters.categoryIds]);
 
   const debouncedSearchValue = useDebounceValue(searchValue);
 
