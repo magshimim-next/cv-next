@@ -101,5 +101,6 @@ export const useUser = () => {
     userData: data,
     userIsAdmin: userIsAdmin,
     mutateUser: mutate,
+    mutateUserIsAdmin: mutateAdmin,
   };
 };
