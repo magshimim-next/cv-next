@@ -6,7 +6,6 @@ import {
   setNewUsername,
   setFirstLoginCurrent,
 } from "@/app/actions/users/updateUser";
-import { getUserModel } from "@/app/actions/users/getUser";
 import { Button } from "@/app/feed/components/button";
 import { InputBox } from "@/app/feed/components/inputbar";
 import { useUser } from "@/hooks/useUser";
@@ -16,22 +15,26 @@ import { Visible_Error_Messages } from "@/lib/definitions";
 import Tooltip from "@/components/ui/tooltip";
 import FirstTimeSignIn from "./firstTimeSignIn";
 
+/**
+ * This component renders a form for users to set their new username when they first login.
+ * @param {object} param0 - The component props.
+ * @param {UserModel} param0.user - The user object containing profile information.
+ * @returns {JSX.Element} The new username component.
+ */
 export const NewUsernameForm = ({ user }: { user: UserModel }) => {
   let profileUsername = user?.username ?? "";
   const [newUsername, setUsername] = useState<string>("");
   const [validUsername, setValidUsername] = useState<boolean>(true);
-  const { mutateUser } = useUser();
+  const { userData, mutateUser } = useUser();
   const router = useRouter();
   const { showError } = useError();
 
+  /**
+   *
+   */
   async function onConfirm() {
-    const res = await getUserModel(profileUsername);
-
-    if (res === null || !res.ok) {
-      return;
-    }
-
-    const isValid = await setNewUsername(res.val.id, newUsername);
+    if (!userData) return;
+    const isValid = await setNewUsername(userData.id, newUsername);
     if (isValid.ok) {
       await setFirstLoginCurrent(false);
       await mutateUser();

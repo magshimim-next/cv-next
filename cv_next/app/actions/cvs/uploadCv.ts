@@ -5,7 +5,7 @@ import { uploadNewCV, getCvsByUserId, updateGivenCV } from "@/server/api/cvs";
 import { encodeValue } from "@/lib/utils";
 import { transformGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 import logger from "@/server/base/logger";
-import SupabaseHelper from "@/server/api/supabaseHelper";
+import { getCurrentId } from "@/server/api/users";
 import { checkCVModifyPermission } from "./checkPermission";
 export interface InputValues {
   link: string;
@@ -23,14 +23,11 @@ export async function uploadCV({
 }: {
   cvData: InputValues;
 }): Promise<string | null> {
-  // TODO: change to the getUser of #99 after merge
-  const supabase = SupabaseHelper.getSupabaseInstance();
-  const connectedUser = await supabase.auth.getUser();
-  if (connectedUser.error || !connectedUser.data.user) {
+  const userId = await getCurrentId();
+  if (!userId.ok) {
     logger.error("Error getting user");
     return "Error getting user.";
   }
-  const userId = connectedUser.data.user.id;
   if (
     !cvData.link?.trim() ||
     !cvData.description?.trim() ||
@@ -41,7 +38,7 @@ export async function uploadCV({
     return "Missing variables!";
   }
 
-  if (!(await canUserUploadACV(userId))) {
+  if (!(await canUserUploadACV(userId.val))) {
     logger.error("The user has at least 5 CVs already");
     return "The user has at least 5 CVs already";
   }
@@ -69,7 +66,7 @@ export async function uploadCV({
   const cvToUpload: NewCvModel = {
     document_link: transformedURL,
     description: cvData.description,
-    user_id: userId,
+    user_id: userId.val,
     cv_categories: cvData.cvCategories,
   };
 

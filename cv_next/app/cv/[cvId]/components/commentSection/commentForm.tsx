@@ -1,25 +1,40 @@
 "use client";
 import { useRouter, usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RxPaperPlane } from "react-icons/rx";
 import { mutate } from "swr";
 
-import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import { addComment } from "@/app/actions/comments/addComment";
 import Definitions from "@/lib/definitions";
 import Tooltip from "@/components/ui/tooltip";
 import Alert from "@/components/ui/alert";
+import { useUser } from "@/hooks/useUser";
 
 const COMMENT_FIELD_NAME = "comment";
 
+/**
+ * This component renders the comment form for a CV.
+ * @param {object} param0 - The component props.
+ * @param {CvModel} param0.cv - The viewed CV object.
+ * @returns {JSX.Element} The comments form component.
+ */
 export default function CommentForm({ cv }: { cv: CvModel }) {
   const pathname = usePathname();
   const router = useRouter();
   const formRef = useRef<HTMLFormElement | null>(null);
-  const supabase = createClientComponent();
   const [formData, setFormData] = useState(new FormData());
+  const [userId, setUserId] = useState<string>("");
   const [text, setText] = useState("");
   const [showError, setShowError] = useState(false);
+  const { userData, loading } = useUser();
+
+  useEffect(() => {
+    if (!loading && !userData) {
+      router.push(`/${Definitions.LOGIN_REDIRECT}?next=${pathname}`);
+    } else {
+      setUserId(userData?.id || "");
+    }
+  }, [loading, userData, pathname, router]);
 
   const formAction = async () => {
     setShowError(false);
@@ -27,50 +42,47 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
     // Reset the form after submission and check if the comment is empty
     formRef.current?.reset();
     if ((formData.get(COMMENT_FIELD_NAME) as String).length <= 0) return;
-    const userId = await supabase.auth.getUser();
-    if (userId.error) {
-      router.push(`/${Definitions.LOGIN_REDIRECT}?next=${pathname}`);
-    } else {
-      const comment: NewCommentModel = {
-        data: formData.get(COMMENT_FIELD_NAME) as string,
-        document_id: cv.id,
-        parent_comment_Id: null,
-        user_id: userId.data.user.id,
-      };
+    if (userId.length <= 0) return;
+    const comment: NewCommentModel = {
+      data: formData.get(COMMENT_FIELD_NAME) as string,
+      document_id: cv.id,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      parent_comment_Id: null,
+      user_id: userId,
+    };
 
+    mutate(
+      cv.id,
+      (currentComments: CommentModel[] = []) => [
+        ...currentComments,
+        {
+          ...comment,
+          id: Date.now().toString(),
+          deleted: false,
+          last_update: new Date().toISOString(),
+          resolved: false,
+          upvotes: [],
+        },
+      ],
+      false
+    );
+
+    try {
+      const result = await addComment(comment);
+      if (result.ok) {
+        setText("");
+      }
+      mutate(cv.id);
+      return result.ok;
+    } catch (error) {
+      // Rollback optimistic update
       mutate(
         cv.id,
-        (currentComments: CommentModel[] = []) => [
-          ...currentComments,
-          {
-            ...comment,
-            id: Date.now().toString(),
-            deleted: false,
-            last_update: new Date().toISOString(),
-            resolved: false,
-            upvotes: [],
-          },
-        ],
+        (currentComments: CommentModel[] = []) =>
+          currentComments.filter((comment) => comment.id !== comment.id),
         false
       );
-
-      try {
-        const result = await addComment(comment);
-        if (result.ok) {
-          setText("");
-        }
-        mutate(cv.id);
-        return result.ok;
-      } catch (error) {
-        // Rollback optimistic update
-        mutate(
-          cv.id,
-          (currentComments: CommentModel[] = []) =>
-            currentComments.filter((comment) => comment.id !== comment.id),
-          false
-        );
-        return false;
-      }
+      return false;
     }
   };
 
