@@ -72,8 +72,8 @@ export default function CVItem({ cv }: CVCardProps) {
   );
 
   const authorObject = JSON.parse(JSON.stringify(cv.user_id || "Loading..."));
-  const formattedDate = new Date(cv.updated_at).toLocaleDateString("en-US");
-  const creationDate = new Date(cv.created_at).toLocaleDateString("en-US");
+  const formattedDate = new Date(cv.updated_at).toLocaleDateString("en-GB");
+  const creationDate = new Date(cv.created_at).toLocaleDateString("en-GB");
   const cvMetadata = (
     <>
       <div className="flex flex-wrap items-baseline gap-2">

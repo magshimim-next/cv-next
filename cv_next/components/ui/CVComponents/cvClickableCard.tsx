@@ -22,7 +22,7 @@ export function CVClickableCard({ cv }: { cv: CvModel }) {
             {getJointDisplayName(cv.user_id)}
           </div>
           <p className="w-full text-center text-base text-neutral-400">
-            {new Date(cv.updated_at).toLocaleDateString("en-US")}
+            {new Date(cv.updated_at).toLocaleDateString("en-GB")}
           </p>
         </div>
         <div className="flex w-full flex-shrink-0 justify-center">
