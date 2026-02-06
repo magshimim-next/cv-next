@@ -32,7 +32,8 @@ export default function CvData({
   const displayName = uploader.display_name || uploader.username;
   const { showError } = useError();
   const router = useRouter();
-
+  const formattedDate = new Date(cv.updated_at).toLocaleDateString("en-GB");
+  const creationDate = new Date(cv.created_at).toLocaleDateString("en-GB");
   useEffect(() => {
     if (!validCV) {
       if (canEditCv) {
@@ -87,11 +88,21 @@ export default function CvData({
                 />
               </DynamicProfileImage>
             </div>
-            <Link href={`/profile/${uploader.username}`}>
-              <p className="text-xl font-medium hover:underline">
-                {displayName}
+            <div className="flex flex-wrap items-baseline gap-2">
+              <Link href={`/profile/${uploader.username}`}>
+                <p className="text-xl font-medium hover:underline">
+                  {displayName}
+                </p>
+              </Link>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {formattedDate}
               </p>
-            </Link>
+              {formattedDate !== creationDate && (
+                <p className="text-[0.65rem] text-gray-500 dark:text-gray-400">
+                  Updated
+                </p>
+              )}
+            </div>
           </div>
         </div>
         <div className="mb-3 flex flex-wrap items-center space-x-2">
