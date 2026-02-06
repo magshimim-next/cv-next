@@ -124,7 +124,7 @@ export type Database = {
           document_link: string
           id?: string
           resolved?: boolean
-          updated_at: string
+          updated_at?: string
           user_id?: string | null
         }
         Update: {
