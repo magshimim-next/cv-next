@@ -109,7 +109,7 @@ export async function getPaginatedCvs(
       .select(
         `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username})`
       )
-      .order(CvKeys.created_at, { ascending: false })
+      .order(CvKeys.updated_at, { ascending: false })
       .eq(CvKeys.deleted, !filterOutDeleted)
       .range(from, to - 1);
     let profileQuery = supabase.from(Tables.profiles).select(ProfileKeys.id);
