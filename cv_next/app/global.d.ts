@@ -38,10 +38,10 @@ declare global {
 
   type NewCvModel = Omit<
     CvModel,
-    "id" | "resolved" | "created_at" | "deleted" | "resolved"
+    "id" | "resolved" | "created_at" | "deleted" | "resolved" | "updated_at"
   >;
   type UILocation = (typeof UI_Location)[keyof typeof UI_Location];
-  type route = {
+  type Route = {
     route: string;
     path: string;
     image: string;
