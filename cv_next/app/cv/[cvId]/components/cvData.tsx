@@ -88,20 +88,22 @@ export default function CvData({
                 />
               </DynamicProfileImage>
             </div>
-            <div className="flex flex-wrap items-baseline gap-2">
+            <div className="flex flex-col items-start justify-center gap-x-2 sm:flex-row sm:items-baseline sm:justify-normal">
               <Link href={`/profile/${uploader.username}`}>
-                <p className="text-xl font-medium hover:underline">
+                <p className="text-left text-xl font-medium hover:underline sm:mb-0 sm:text-left">
                   {displayName}
                 </p>
               </Link>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                {formattedDate}
-              </p>
-              {formattedDate !== creationDate && (
-                <p className="text-[0.65rem] text-gray-500 dark:text-gray-400">
-                  Updated
+              <div className="flex flex-row items-center gap-x-2">
+                <p className="text-left text-xs text-gray-500 dark:text-gray-400 sm:text-left">
+                  {formattedDate}
                 </p>
-              )}
+                {formattedDate !== creationDate && (
+                  <p className="text-left text-[0.65rem] text-gray-500 dark:text-gray-400 sm:text-left">
+                    Updated
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>
