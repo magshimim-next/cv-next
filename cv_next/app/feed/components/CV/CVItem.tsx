@@ -76,14 +76,16 @@ export default function CVItem({ cv }: CVCardProps) {
   const creationDate = new Date(cv.created_at).toLocaleDateString("en-GB");
   const cvMetadata = (
     <>
-      <div className="flex flex-wrap items-baseline gap-2">
+      <div className="flex flex-col gap-x-2 sm:flex-row sm:items-baseline">
         <div className="text-xl font-bold text-neutral-700">
           {authorObject.display_name}
         </div>
-        <p className="text-xs text-neutral-400">{formattedDate}</p>
-        {formattedDate !== creationDate && (
-          <p className="text-[0.65rem] text-neutral-400">Updated</p>
-        )}
+        <div className="flex flex-row items-center gap-x-2">
+          <p className="text-xs text-neutral-400">{formattedDate}</p>
+          {formattedDate !== creationDate && (
+            <p className="text-[0.65rem] text-neutral-400">Updated</p>
+          )}
+        </div>
       </div>
       <CategoriesDisplay categories={cv.cv_categories} />
     </>
