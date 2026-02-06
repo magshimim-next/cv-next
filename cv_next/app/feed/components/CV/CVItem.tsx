@@ -73,7 +73,7 @@ export default function CVItem({ cv }: CVCardProps) {
 
   const authorObject = JSON.parse(JSON.stringify(cv.user_id || "Loading..."));
   const formattedDate = new Date(cv.updated_at).toLocaleDateString("en-US");
-
+  const creationDate = new Date(cv.created_at).toLocaleDateString("en-US");
   const cvMetadata = (
     <>
       <div className="flex flex-wrap items-baseline gap-2">
@@ -81,6 +81,9 @@ export default function CVItem({ cv }: CVCardProps) {
           {authorObject.display_name}
         </div>
         <p className="text-xs text-neutral-400">{formattedDate}</p>
+        {formattedDate !== creationDate && (
+          <p className="text-[0.65rem] text-neutral-400">Updated</p>
+        )}
       </div>
       <CategoriesDisplay categories={cv.cv_categories} />
     </>
