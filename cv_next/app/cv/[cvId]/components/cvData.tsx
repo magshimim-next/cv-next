@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FiSettings } from "react-icons/fi";
 import { useEffect } from "react";
@@ -11,6 +10,7 @@ import { Visible_Error_Messages } from "@/lib/definitions";
 import { CvCategory } from "@/components/ui/cvCategory";
 import { encodeValue } from "@/lib/utils";
 import Tooltip from "@/components/ui/tooltip";
+import { DateWithNotice } from "@/components/ui/CVComponents/DateWithNotice";
 import DownloadButtons from "./downloadButtons";
 
 /**
@@ -88,23 +88,14 @@ export default function CvData({
                 />
               </DynamicProfileImage>
             </div>
-            <div className="flex flex-col items-start justify-center gap-x-2 sm:flex-row sm:items-baseline sm:justify-normal">
-              <Link href={`/profile/${uploader.username}`}>
-                <p className="text-left text-xl font-medium hover:underline sm:mb-0 sm:text-left">
-                  {displayName}
-                </p>
-              </Link>
-              <div className="flex flex-row items-center gap-x-2">
-                <p className="text-left text-xs text-gray-500 dark:text-gray-400 sm:text-left">
-                  {formattedDate}
-                </p>
-                {formattedDate !== creationDate && (
-                  <p className="text-left text-[0.65rem] text-gray-500 dark:text-gray-400 sm:text-left">
-                    Updated
-                  </p>
-                )}
-              </div>
-            </div>
+            <DateWithNotice
+              name={displayName}
+              profileUrl={`/profile/${uploader.username}`}
+              formattedDate={formattedDate}
+              creationDate={creationDate}
+              nameClassName="text-xl font-medium text-left sm:mb-0"
+              dateClassName="text-xs text-gray-500 dark:text-gray-400"
+            />
           </div>
         </div>
         <div className="mb-3 flex flex-wrap items-center space-x-2">
