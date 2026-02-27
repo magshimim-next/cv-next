@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FiSettings } from "react-icons/fi";
 import { useEffect } from "react";
@@ -11,6 +10,7 @@ import { Visible_Error_Messages } from "@/lib/definitions";
 import { CvCategory } from "@/components/ui/cvCategory";
 import { encodeValue } from "@/lib/utils";
 import Tooltip from "@/components/ui/tooltip";
+import { DateWithNotice } from "@/components/ui/CVComponents/DateWithNotice";
 import DownloadButtons from "./downloadButtons";
 
 /**
@@ -32,7 +32,8 @@ export default function CvData({
   const displayName = uploader.display_name || uploader.username;
   const { showError } = useError();
   const router = useRouter();
-
+  const formattedDate = new Date(cv.updated_at).toLocaleDateString("en-GB");
+  const creationDate = new Date(cv.created_at).toLocaleDateString("en-GB");
   useEffect(() => {
     if (!validCV) {
       if (canEditCv) {
@@ -87,11 +88,14 @@ export default function CvData({
                 />
               </DynamicProfileImage>
             </div>
-            <Link href={`/profile/${uploader.username}`}>
-              <p className="text-xl font-medium hover:underline">
-                {displayName}
-              </p>
-            </Link>
+            <DateWithNotice
+              name={displayName}
+              profileUrl={`/profile/${uploader.username}`}
+              formattedDate={formattedDate}
+              creationDate={creationDate}
+              nameClassName="text-xl font-medium text-left sm:mb-0"
+              dateClassName="text-xs text-gray-500 dark:text-gray-400"
+            />
           </div>
         </div>
         <div className="mb-3 flex flex-wrap items-center space-x-2">

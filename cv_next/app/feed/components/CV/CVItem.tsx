@@ -8,6 +8,7 @@ import { encodeValue, shimmer, toBase64 } from "@/lib/utils";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import access_denied from "@/public/images/access_denied.png";
 import { OverlayContainer } from "@/components/ui/OverlayContainer";
+import { DateWithNotice } from "@/components/ui/CVComponents/DateWithNotice";
 import CategoriesDisplay from "./categoryDisplay";
 
 interface CVCardProps {
@@ -72,16 +73,15 @@ export default function CVItem({ cv }: CVCardProps) {
   );
 
   const authorObject = JSON.parse(JSON.stringify(cv.user_id || "Loading..."));
-  const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
-
+  const formattedDate = new Date(cv.updated_at).toLocaleDateString("en-GB");
+  const creationDate = new Date(cv.created_at).toLocaleDateString("en-GB");
   const cvMetadata = (
     <>
-      <div className="flex flex-wrap items-baseline gap-2">
-        <div className="text-xl font-bold text-neutral-700">
-          {authorObject.display_name}
-        </div>
-        <p className="text-xs text-neutral-400">{formattedDate}</p>
-      </div>
+      <DateWithNotice
+        name={authorObject.display_name}
+        formattedDate={formattedDate}
+        creationDate={creationDate}
+      />
       <CategoriesDisplay categories={cv.cv_categories} />
     </>
   );

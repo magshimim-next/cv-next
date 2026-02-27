@@ -19,6 +19,7 @@ export const Tables: {
 export const CvKeys: {
   cv_categories: "cv_categories";
   created_at: "created_at";
+  updated_at: "updated_at";
   deleted: "deleted";
   description: "description";
   document_link: "document_link";
@@ -28,6 +29,7 @@ export const CvKeys: {
 } = {
   cv_categories: "cv_categories",
   created_at: "created_at",
+  updated_at: "updated_at",
   deleted: "deleted",
   description: "description",
   document_link: "document_link",
