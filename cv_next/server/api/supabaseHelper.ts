@@ -15,8 +15,8 @@ export default class SupabaseHelper {
    * because you need the cookies from the request.
    * @return {SupabaseClient} The Supabase server instance
    */
-  public static getSupabaseInstance(): SupabaseClient<Database> {
-    const cookieStore = cookies();
+  public static async getSupabaseInstance(): Promise<SupabaseClient<Database>> {
+    const cookieStore = await cookies();
     return createServerClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

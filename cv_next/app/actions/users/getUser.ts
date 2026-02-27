@@ -37,7 +37,7 @@ export const getUserModel = async (
 };
 
 export const getUser = async (): Promise<Result<UserModel, string>> => {
-  const supabase = SupabaseHelper.getSupabaseInstance();
+  const supabase = await SupabaseHelper.getSupabaseInstance();
   const userSession = await supabase.auth.getUser();
   if (!userSession || userSession.error) {
     //403 = session not found, 400 = session missing
@@ -79,17 +79,17 @@ export const getFirstTimeLogin = async (): Promise<Result<Boolean, string>> => {
  * @param {string} nextURL - The URL to redirect to after sign-in.
  */
 export async function signInWithSocialProvider(provider: any, nextURL: string) {
-  const { data, error } =
-    await SupabaseHelper.getSupabaseInstance().auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo:
-          process.env.NEXT_PUBLIC_BASE_URL +
-          Definitions.AUTH_CALLBACK_REDIRECT +
-          "?next=" +
-          nextURL,
-      },
-    });
+  const supabase = await SupabaseHelper.getSupabaseInstance();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo:
+        process.env.NEXT_PUBLIC_BASE_URL +
+        Definitions.AUTH_CALLBACK_REDIRECT +
+        "?next=" +
+        nextURL,
+    },
+  });
 
   if (error) logger.error(error, "Error signin");
   if (data.url) {

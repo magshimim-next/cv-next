@@ -18,7 +18,8 @@ export async function getUserById(
   userId: string
 ): Promise<Result<UserModel, string>> {
   try {
-    const { data: user, error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { data: user, error } = await supabase
       .from(Tables.profiles)
       .select("*")
       .eq(ProfileKeys.id, userId);
@@ -62,7 +63,8 @@ export async function getUserByUsername(
   username: string
 ): Promise<Result<UserModel, string>> {
   try {
-    const { data: user, error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { data: user, error } = await supabase
       .from(Tables.profiles)
       .select("*")
       .eq(ProfileKeys.username, username);
@@ -105,15 +107,14 @@ async function generateUsername(
   let slugishedName = slugifyName(user.display_name);
   let isUnique = false;
   let attempt = 0;
-
+  const supabase = await SupabaseHelper.getSupabaseInstance();
   while (!isUnique && attempt < 10) {
     username = generateUsernameAttempt(slugishedName);
 
-    const { data: usernames, error } =
-      await SupabaseHelper.getSupabaseInstance()
-        .from(Tables.profiles)
-        .select(`${ProfileKeys.username}`)
-        .eq(ProfileKeys.username, username);
+    const { data: usernames, error } = await supabase
+      .from(Tables.profiles)
+      .select(`${ProfileKeys.username}`)
+      .eq(ProfileKeys.username, username);
 
     if (error) {
       return Err("Error @ " + generateUsername.name + "\n", {
@@ -183,7 +184,8 @@ export async function updateUser(
   }
   const { id } = user;
   try {
-    const { error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { error } = await supabase
       .from(Tables.profiles)
       .update({ ...user })
       .eq(ProfileKeys.id, id);
@@ -215,7 +217,8 @@ export async function setUserName(
   }
 
   try {
-    const { error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { error } = await supabase
       .from(Tables.profiles)
       .update({ username: newUserName })
       .eq(ProfileKeys.id, userId);
@@ -241,7 +244,8 @@ export async function setWorkStatus(
   newWorkStatus: string
 ): Promise<Result<void, string>> {
   try {
-    const { error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { error } = await supabase
       .from(Tables.profiles)
       .update({
         work_status: newWorkStatus as
@@ -273,7 +277,8 @@ export async function setWorkCategories(
   newWorkCategories: number[] | null | undefined
 ): Promise<Result<void, string>> {
   try {
-    const { error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { error } = await supabase
       .from(Tables.profiles)
       .update({
         work_status_categories: newWorkCategories,
@@ -296,8 +301,8 @@ export async function setWorkCategories(
  */
 export async function getCurrentId(): Promise<Result<string, string>> {
   try {
-    const { data: user, error: connectedError } =
-      await SupabaseHelper.getSupabaseInstance().auth.getUser();
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { data: user, error: connectedError } = await supabase.auth.getUser();
     if (connectedError && !user) {
       return Err(getCurrentId.name, { authError: connectedError });
     }
@@ -318,15 +323,15 @@ export async function getCurrentId(): Promise<Result<string, string>> {
  */
 export async function userIsAdmin(): Promise<Result<void, string>> {
   try {
-    const { data: user, error: connectedError } =
-      await SupabaseHelper.getSupabaseInstance().auth.getUser();
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { data: user, error: connectedError } = await supabase.auth.getUser();
     if (connectedError && !user) {
       return Err(userIsAdmin.name, { authError: connectedError });
     }
     if (!user.user) {
       return Err(userIsAdmin.name, { err: Error("User object is empty") });
     }
-    const { data: admin, error } = await SupabaseHelper.getSupabaseInstance()
+    const { data: admin, error } = await supabase
       .from(Tables.admins)
       .select("*")
       .eq(ProfileKeys.id, user.user.id)
@@ -356,7 +361,8 @@ export async function validateUsername(): Promise<Result<String, String>> {
     return Err(validateUsername.name, { err: Error("No user was connected!") });
   }
 
-  const { data: user, error } = await SupabaseHelper.getSupabaseInstance()
+  const supabase = await SupabaseHelper.getSupabaseInstance();
+  const { data: user, error } = await supabase
     .from(Tables.profiles)
     .select("*")
     .eq(ProfileKeys.id, id.val)
@@ -395,7 +401,8 @@ export async function setDisplayName(
   newDisplayName: string
 ): Promise<Result<void, string>> {
   try {
-    const { error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { error } = await supabase
       .from(Tables.profiles)
       .update({ display_name: newDisplayName })
       .eq(ProfileKeys.id, userId);
@@ -424,10 +431,10 @@ export async function setFirstLogin(
   }
 
   try {
-    const { error } =
-      await SupabaseHelper.getSupabaseInstance().auth.updateUser({
-        data: { is_first_login: isFirstLogin },
-      });
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { error } = await supabase.auth.updateUser({
+      data: { is_first_login: isFirstLogin },
+    });
     if (error) {
       return Err(setFirstLogin.name, { authError: error });
     }
@@ -481,8 +488,9 @@ export async function uploadProfilePic(
   }
 
   try {
-    const { data, error } = await SupabaseHelper.getSupabaseInstance()
-      .storage.from("avatars")
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { data, error } = await supabase.storage
+      .from("avatars")
       .upload(
         `public/${id.val}D${new Date().toISOString()}.png`,
         decode(fileToUpload),
@@ -516,7 +524,7 @@ export async function uploadProfilePic(
 export async function getAllUsers(
   userType?: string
 ): Promise<Result<Partial<UserWithPerms>[], string>> {
-  const supabase = SupabaseHelper.getSupabaseInstance();
+  const supabase = await SupabaseHelper.getSupabaseInstance();
   try {
     let query = supabase
       .from(Tables.profiles_perms)
@@ -571,13 +579,11 @@ export async function setProfilePath(
   if (!id.ok || !id.val) {
     return Err(setProfilePath.name, { err: Error("No user was connected!") });
   }
-
-  const { data } = await SupabaseHelper.getSupabaseInstance()
-    .storage.from("avatars")
-    .getPublicUrl(newUrl);
+  const supabase = await SupabaseHelper.getSupabaseInstance();
+  const { data } = await supabase.storage.from("avatars").getPublicUrl(newUrl);
 
   try {
-    const { error } = await SupabaseHelper.getSupabaseInstance()
+    const { error } = await supabase
       .from(Tables.profiles)
       .update({ avatar_url: data.publicUrl })
       .eq(ProfileKeys.id, id.val);
@@ -617,7 +623,8 @@ export async function updateUserPerms(
   }
   const { id, user_type: userType } = user;
   try {
-    const { error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { error } = await supabase
       .from(Tables.profiles_perms)
       .update({ user_type: userType })
       .eq(ProfileKeys.id, id);
@@ -647,7 +654,8 @@ export async function activateAllUsers(): Promise<Result<void, string>> {
   }
 
   try {
-    const { error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { error } = await supabase
       .from(Tables.profiles_perms)
       .update({ user_type: PermsKeys.user_types_enum.active })
       .eq(PermsKeys.user_type, PermsKeys.user_types_enum.inactive);

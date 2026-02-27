@@ -22,7 +22,7 @@ export async function generateMetadata({
 }: {
   params: { profileUsername: string };
 }): Promise<Metadata> {
-  const { profileUsername } = params;
+  const { profileUsername } = await params;
   const cleanUsername = decodeURIComponent(profileUsername);
   const userFetcher = await getUserModel(cleanUsername);
 
@@ -56,7 +56,7 @@ export default async function Page({
 }: {
   params: { profileUsername: string };
 }) {
-  const { profileUsername } = params;
+  const { profileUsername } = await params;
   const cleanUsername = decodeURIComponent(profileUsername);
   const userFetcher = await getUserModel(cleanUsername);
 

@@ -72,14 +72,13 @@ async function revalidatePreviewHandler(data: {
 
   blobDataMap.delete(docsID || "");
   blobDataMap.set(docsID || "", docsBlob);
-
-  const { data: uploadedData, error: uploadError } =
-    await SupabaseHelper.getSupabaseInstance()
-      .storage.from(Storage.cvs)
-      .upload(fileName, docsBlob, {
-        cacheControl: "3600",
-        upsert: true,
-      });
+  const supabase = await SupabaseHelper.getSupabaseInstance();
+  const { data: uploadedData, error: uploadError } = await supabase.storage
+    .from(Storage.cvs)
+    .upload(fileName, docsBlob, {
+      cacheControl: "3600",
+      upsert: true,
+    });
 
   if (
     uploadError &&

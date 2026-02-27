@@ -24,7 +24,7 @@ export async function generateMetadata({
 }: {
   params: { cvId: string };
 }): Promise<Metadata> {
-  const { cvId } = params;
+  const { cvId } = await params;
   const decodedCvId = decodeValue(decodeURIComponent(cvId));
   if (!decodedCvId) {
     notFound();
@@ -50,7 +50,7 @@ export async function generateMetadata({
  * @returns {JSX.Element} The CV page.
  */
 export default async function Page({ params }: { params: { cvId: string } }) {
-  const { cvId } = params;
+  const { cvId } = await params;
   const decodedCvId = decodeValue(decodeURIComponent(cvId));
   if (!decodedCvId) {
     notFound();

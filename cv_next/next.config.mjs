@@ -10,14 +10,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  webpack: (config) => {
-    config.externals.push({
-      "utf-8-validate": "commonjs utf-8-validate",
-      "bufferutil": "commonjs bufferutil",
-      "thread-stream": "commonjs thread-stream",
-    });
-    return config;
-  },
   serverExternalPackages: ["pino", "pino-pretty"],
 };
 
