@@ -17,7 +17,7 @@ export default async function Page({
 }: {
   params: { profileUsername: string };
 }) {
-  const { profileUsername } = params;
+  const { profileUsername } = await params;
   const res = await getUserModel(profileUsername);
   const current = await getCurrentId();
   const isFirstLogin = await isCurrentFirstLogin();

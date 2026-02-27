@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
   let next = searchParams.get("next") || "";
   if (code) {
-    const supabase = SupabaseHelper.getSupabaseInstance();
+    const supabase = await SupabaseHelper.getSupabaseInstance();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       if (checkRedirect(next)) {

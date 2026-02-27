@@ -14,7 +14,8 @@ export async function addCommentToCv(
   comment: NewCommentModel
 ): Promise<Result<CommentModel, string>> {
   try {
-    const { data, error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { data, error } = await supabase
       .from(Tables.comments)
       .insert(comment)
       .select();
@@ -47,7 +48,8 @@ export async function markCommentAsDeleted(
   commentId: string
 ): Promise<Result<void, string>> {
   try {
-    const { error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { error } = await supabase
       .from(Tables.comments)
       .update({ deleted: true })
       .eq(CommentKeys.id, commentId);
@@ -74,7 +76,8 @@ export async function setResolved(
   resolved: boolean
 ): Promise<Result<void, string>> {
   try {
-    const { error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { error } = await supabase
       .from(Tables.comments)
       .update({ resolved })
       .eq(CommentKeys.id, commentId);
@@ -104,7 +107,7 @@ export async function getAllCommentsByCVId(
   filterOutDeleted = true
 ): Promise<Result<CommentModel[], string>> {
   try {
-    const supabase = SupabaseHelper.getSupabaseInstance();
+    const supabase = await SupabaseHelper.getSupabaseInstance();
     let query = supabase
       .from(Tables.comments)
       .select(
@@ -129,7 +132,8 @@ export async function getAllCommentsByCVId(
 }
 
 async function getCommentLikes(commentId: string): Promise<string[]> {
-  const { data } = await SupabaseHelper.getSupabaseInstance()
+  const supabase = await SupabaseHelper.getSupabaseInstance();
+  const { data } = await supabase
     .from(Tables.comments)
     .select(CommentKeys.upvotes)
     .eq(CommentKeys.id, commentId)
@@ -154,7 +158,8 @@ export async function setLiked(
       }
     }
 
-    const { error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { error } = await supabase
       .from(Tables.comments)
       .update({ upvotes: likes })
       .eq(CommentKeys.id, commentId)
@@ -185,7 +190,7 @@ export async function getAllCommentsByUserId(
   filterOutDeleted = true
 ): Promise<Result<CommentModel[], string>> {
   try {
-    const supabase = SupabaseHelper.getSupabaseInstance();
+    const supabase = await SupabaseHelper.getSupabaseInstance();
     let query = supabase
       .from(Tables.comments)
       .select("*")
@@ -216,7 +221,8 @@ export async function getCommentById(
   commentId: string
 ): Promise<Result<CommentModel, string>> {
   try {
-    const { data: comment, error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { data: comment, error } = await supabase
       .from(Tables.comments)
       .select("*")
       .eq(CommentKeys.id, commentId)

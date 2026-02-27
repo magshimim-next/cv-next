@@ -20,7 +20,8 @@ import SupabaseHelper from "./supabaseHelper";
  */
 export async function getCvById(cvId: string): Promise<CvModel | null> {
   try {
-    const { data: cvs, error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { data: cvs, error } = await supabase
       .from(Tables.cvs)
       .select(
         `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
@@ -58,7 +59,7 @@ export async function getCvsByUserId(
   filterOutDeleted = true
 ): Promise<CvModel[] | null> {
   try {
-    const supabase = SupabaseHelper.getSupabaseInstance();
+    const supabase = await SupabaseHelper.getSupabaseInstance();
     let query = supabase
       .from(Tables.cvs)
       .select(
@@ -103,7 +104,7 @@ export async function getPaginatedCvs(
       ? from + Definitions.CVS_PER_PAGE
       : Definitions.CVS_PER_PAGE;
 
-    const supabase = SupabaseHelper.getSupabaseInstance();
+    const supabase = await SupabaseHelper.getSupabaseInstance();
     let query = supabase
       .from(Tables.cvs)
       .select(
@@ -152,7 +153,7 @@ export async function getRandomizedCvs(
   filters?: filterValues
 ): Promise<CvModel[] | null> {
   try {
-    const supabase = SupabaseHelper.getSupabaseInstance();
+    const supabase = await SupabaseHelper.getSupabaseInstance();
     let query = supabase
       .from(Tables.randomized_cvs)
       .select(
@@ -270,7 +271,8 @@ export async function updateGivenCV(
   cv: CvModel
 ): Promise<PostgrestError | CvModel> {
   try {
-    const { data, error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { data, error } = await supabase
       .from(Tables.cvs)
       .update(cv)
       .eq(CvKeys.id, cv.id)
@@ -293,10 +295,8 @@ export async function updateGivenCV(
  * @returns {Promise<null | CvModel>} null on error, the uploaded object if upload was successful
  */
 export async function uploadNewCV(cv: NewCvModel): Promise<null | CvModel> {
-  const { data, error } = await SupabaseHelper.getSupabaseInstance()
-    .from("cvs")
-    .insert(cv)
-    .select();
+  const supabase = await SupabaseHelper.getSupabaseInstance();
+  const { data, error } = await supabase.from("cvs").insert(cv).select();
   if (error) {
     logger.error("Error @ cvs::uploadCV", error);
     return null;
@@ -313,7 +313,8 @@ export async function markCVAsDeleted(
   cvId: string
 ): Promise<Result<void, string>> {
   try {
-    const { error } = await SupabaseHelper.getSupabaseInstance()
+    const supabase = await SupabaseHelper.getSupabaseInstance();
+    const { error } = await supabase
       .from(Tables.cvs)
       .update({ deleted: true })
       .eq(CvKeys.id, cvId);
@@ -336,8 +337,9 @@ export async function markCVAsDeleted(
 export async function getCVSignedPreview(
   fileName: string
 ): Promise<Result<string, string>> {
-  const { data: previewUrl, error } = await SupabaseHelper.getSupabaseInstance()
-    .storage.from(Storage.cvs)
+  const supabase = await SupabaseHelper.getSupabaseInstance();
+  const { data: previewUrl, error } = await supabase.storage
+    .from(Storage.cvs)
     .createSignedUrl(fileName, Definitions.CV_PREVIEW_EXPIRATION_TIME);
   const signedUrl = previewUrl?.signedUrl;
 

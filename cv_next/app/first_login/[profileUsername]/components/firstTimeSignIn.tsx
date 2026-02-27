@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaQuestionCircle } from "react-icons/fa";
 import { createClientComponent } from "@/helpers/supabaseBrowserHelper";
 import Tooltip from "@/components/ui/tooltip";

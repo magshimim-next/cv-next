@@ -167,14 +167,7 @@ export default function Feed() {
             )}
           </div>
         ) : (
-          <div className="z-10 flex justify-center">
-            <ReactLoading
-              type={"spinningBubbles"}
-              color={"#000"}
-              height={"40%"}
-              width={"40%"}
-            />
-          </div>
+          <div className="z-10 flex justify-center"></div>
         )}
       </div>
     </main>
