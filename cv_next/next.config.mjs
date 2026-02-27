@@ -1,6 +1,4 @@
 /** @type {import('next').NextConfig} */
-import withPlaiceholder from "@plaiceholder/next";
-
 const nextConfig = {
   images: {
     domains: ["lh5.googleusercontent.com", "weepggwhsrfmizptbnua.supabase.co"],
@@ -25,4 +23,4 @@ const nextConfig = {
   },
 };
 
-export default withPlaiceholder(nextConfig);
+export default nextConfig;

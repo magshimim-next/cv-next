@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
-import withPlaiceholder from "@plaiceholder/next";
 
 const nextConfig = {
-  basePath: '/dev',
+  basePath: "/dev",
   images: {
     domains: ["lh5.googleusercontent.com", "weepggwhsrfmizptbnua.supabase.co"],
     unoptimized: true,
@@ -19,4 +18,4 @@ const nextConfig = {
   },
 };
 
-export default withPlaiceholder(nextConfig);
+export default nextConfig;
