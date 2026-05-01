@@ -71,8 +71,8 @@ export default function CVItem({ cv }: CVCardProps) {
     []
   );
 
-  const authorObject = JSON.parse(JSON.stringify(cv.user_id || "Loading..."));
-  const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
+  const authorObject = JSON.parse(JSON.stringify(cv.unique_profile_id || "Loading..."));
+  const formattedDate = new Date(cv.updated_at).toLocaleDateString("en-US");
 
   const cvMetadata = (
     <>
@@ -88,7 +88,7 @@ export default function CVItem({ cv }: CVCardProps) {
 
   return (
     <div className="group relative h-full w-full max-w-full overflow-hidden rounded-xl bg-white shadow-2xl">
-      <Link id={cv.id} href={`/cv/${encodeValue(cv.id)}`} scroll={false}>
+      <Link id={cv.unique_cv_id} href={`/cv/${encodeValue(cv.unique_cv_id)}`} scroll={false}>
         <div className="relative aspect-[1/1.414] w-full overflow-hidden rounded-lg bg-gray-100">
           <Image
             src={

@@ -29,7 +29,7 @@ async function validateDelete(
   }
   const resultAdminCheck = await userIsAdmin();
   if (
-    currentIdResult.val != commentResult.val.user_id &&
+    currentIdResult.val != commentResult.val.unique_profile_id &&
     !resultAdminCheck.ok
   ) {
     logger.error(

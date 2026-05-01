@@ -13,7 +13,7 @@ import { ConfirmCheckbox } from "@/components/ui/ConfirmCheckbox";
 type FormValues = {
   link: string;
   description: string;
-  cvCategories: number[];
+  cvCategories: string[];
 };
 
 /**

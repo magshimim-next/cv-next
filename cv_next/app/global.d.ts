@@ -6,7 +6,7 @@ declare global {
   type Database = DB;
   type CvModel = DB["public"]["Tables"]["cvs"]["Row"];
   type PaginatedCvsModel = { page: number; cvs: CvModel[] };
-  type CommentModel = DB["public"]["Tables"]["comments"]["Row"];
+  type CommentModel = DB["public"]["Tables"]["cv_comments"]["Row"];
   type ErrorDetails = {
     postgrestError?: PostgrestError;
     authError?: AuthError;
@@ -21,11 +21,9 @@ declare global {
       };
   type NewCommentModel = Omit<
     CommentModel,
-    | "id"
-    | "created_at"
-    | "last_update"
+    | "unique_cv_comment_id"
+    | "updated_at"
     | "upvotes"
-    | "downvotes"
     | "deleted"
     | "resolved"
   >;
@@ -36,10 +34,7 @@ declare global {
     explanation?: string;
   };
 
-  type NewCvModel = Omit<
-    CvModel,
-    "id" | "resolved" | "created_at" | "deleted" | "resolved"
-  >;
+  type NewCvModel = Omit<CvModel, "unique_cv_id" | "updated_at" | "deleted" | "publishable">;
   type UILocation = (typeof UI_Location)[keyof typeof UI_Location];
   type route = {
     route: string;
@@ -48,5 +43,5 @@ declare global {
     UILocation: UILocation;
   };
 
-  type UserWithPerms = UserModel & { user_type: PermsKeys.user_types_enum };
+  type UserWithPerms = UserModel & { role: keyof typeof PermsKeys.roles_enum };
 }

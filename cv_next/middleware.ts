@@ -5,7 +5,7 @@ import Definitions, {
   API_DEFINITIONS,
   Visible_Error_Messages,
 } from "./lib/definitions";
-import { ProfileKeys, Tables } from "./lib/supabase-definitions";
+import { PermsKeys, ProfileKeys, Tables } from "./lib/supabase-definitions";
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -47,25 +47,22 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(nextUrl);
   }
 
+  const { data: perm, error: permError } = await supabase
+    .from(Tables.profile_perms)
+    .select(PermsKeys.role)
+    .eq(PermsKeys.unique_profile_id, activatedUser.user.id)
+    .single();
+
   if (request.nextUrl.pathname == "/admin") {
-    const { data: admins, error: errorWhitelist } = await supabase
-      .from(Tables.admins)
-      .select("*")
-      .eq(ProfileKeys.id, activatedUser.user.id)
-      .single();
-    if (admins?.id == null || errorWhitelist) {
+    if (!perm || perm.role !== PermsKeys.roles_enum.admin || permError) {
       const nextUrl = new URL(`/not_found`, request.url);
       return NextResponse.redirect(nextUrl);
     }
     return supabaseResponse;
   }
 
-  const { data: whitelisted, error: errorWhitelist } = await supabase
-    .from(Tables.whitelisted)
-    .select("*")
-    .eq(ProfileKeys.id, activatedUser.user.id)
-    .single();
-  if (whitelisted?.id == null || errorWhitelist) {
+  const memberRoles = [PermsKeys.roles_enum.member, PermsKeys.roles_enum.moderator, PermsKeys.roles_enum.admin];
+  if (!perm || permError || !memberRoles.includes(perm.role)) {
     const nextUrl = new URL(
       `/?error=${Visible_Error_Messages.InactiveUser.keyword}`,
       request.url

@@ -7,10 +7,11 @@ import { transformGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 import logger from "@/server/base/logger";
 import { getCurrentId } from "@/server/api/users";
 import { checkCVModifyPermission } from "./checkPermission";
+import Categories from "@/types/models/categories";
 export interface InputValues {
   link: string;
   description: string;
-  cvCategories: number[] | null;
+  cvCategories: string[] | null;
 }
 
 /**
@@ -66,8 +67,8 @@ export async function uploadCV({
   const cvToUpload: NewCvModel = {
     document_link: transformedURL,
     description: cvData.description,
-    user_id: userId.val,
-    cv_categories: cvData.cvCategories,
+    unique_profile_id: userId.val,
+    cv_categories: cvData.cvCategories as Categories.Value[],
   };
 
   logger.debug(cvToUpload, "Can upload:");
@@ -75,7 +76,7 @@ export async function uploadCV({
   const response = await uploadNewCV(cvToUpload);
   if (response) {
     logger.debug("Uploaded");
-    redirect(`/cv/${encodeValue(response.id)}`);
+    redirect(`/cv/${encodeValue(response.unique_cv_id)}`);
   } else {
     return "Error uploading";
   }
@@ -101,8 +102,8 @@ export async function updateCV({
 }: {
   cvData: CvModel;
 }): Promise<string | null> {
-  const authorObject = cvData.user_id as any;
-  cvData.user_id = authorObject["id"];
+  const authorObject = cvData.unique_profile_id as any;
+  cvData.unique_profile_id = authorObject?.unique_profile_id ?? authorObject;
 
   const validateError = await checkCVModifyPermission(cvData);
   if (!validateError.ok) {
@@ -146,8 +147,8 @@ export async function updateCV({
   logger.debug(cvData, "Can update:");
 
   const response = await updateGivenCV(cvData);
-  if (response) {
-    redirect(`/cv/${encodeValue(cvData.id)}`);
+  if ("unique_cv_id" in response) {
+    redirect(`/cv/${encodeValue(cvData.unique_cv_id)}`);
   } else {
     logger.error(response, "Error updating CV");
     return "Error updating CV";

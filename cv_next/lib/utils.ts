@@ -1,6 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import Categories from "@/types/models/categories";
 import { Link_Definitions } from "./definitions";
 
 /**
@@ -104,41 +103,19 @@ export function transformToPreviewLink(link: string): string {
  * @param {number} categoryNumber - The category number.
  * @returns {string} The generated category link.
  */
-export const generateCategoryLink = (categoryNumber: number) =>
-  `/feed?category=${Categories.category[categoryNumber].toLowerCase()}`;
+export const generateCategoryLink = (category: string) =>
+  `/feed?category=${category}`;
 
 /**
- * Extracts all numbers from an array of strings.
- * @param {string[]} arr - The array of strings to extract numbers from.
- * @returns {number[]} An array of numbers found in the input array.
+ * Returns the category string as-is (categories are now plain strings).
  */
-export function getAllNumbersFromArr(arr: string[]) {
-  return arr
-    .filter((value) => !isNaN(parseInt(value)))
-    .map((value) => parseInt(value));
-}
+export const categoryString = (category: string) => category;
 
 /**
- * Generates a category string based on the provided category number.
- * @param {number} categoryNumber - The category number.
- * @returns {string} The generated category string.
+ * Returns the category name as-is (categories are now plain strings, not numbers).
  */
-export const categoryString = (categoryNumber: number) =>
-  `${Categories.category[categoryNumber].toLowerCase()}`;
-
-/**
- * Converts a category name to its corresponding category number.
- * @param {string} name - The name of the category.
- * @returns {number} The category number or -1 if not found.
- */
-export function toCategoryNumber(name: string): number {
-  if (!name || typeof name !== "string" || name.length === 0) {
-    return -1;
-  }
-  let fixedName = name[0].charAt(0).toUpperCase() + name.slice(1);
-  const categoryNum =
-    Categories.category[fixedName as keyof typeof Categories.category];
-  return typeof categoryNum === "number" ? categoryNum : -1;
+export function toCategoryNumber(name: string): string {
+  return name ?? "";
 }
 
 /**

@@ -1,109 +1,117 @@
 export const Tables: {
   cvs: "cvs";
-  comments: "comments";
+  cv_comments: "cv_comments";
   profiles: "profiles";
-  whitelisted: "whitelisted";
-  admins: "admins";
-  profiles_perms: "profiles_perms";
+  profile_perms: "profile_perms";
   randomized_cvs: "randomized_cvs";
 } = {
   cvs: "cvs",
-  comments: "comments",
+  cv_comments: "cv_comments",
   profiles: "profiles",
-  whitelisted: "whitelisted",
-  admins: "admins",
-  profiles_perms: "profiles_perms",
+  profile_perms: "profile_perms",
   randomized_cvs: "randomized_cvs",
 };
 
 export const CvKeys: {
   cv_categories: "cv_categories";
-  created_at: "created_at";
+  updated_at: "updated_at";
   deleted: "deleted";
   description: "description";
   document_link: "document_link";
-  id: "id";
-  resolved: "resolved";
-  user_id: "user_id";
+  unique_cv_id: "unique_cv_id";
+  unique_profile_id: "unique_profile_id";
+  publishable: "publishable";
 } = {
   cv_categories: "cv_categories",
-  created_at: "created_at",
+  updated_at: "updated_at",
   deleted: "deleted",
   description: "description",
   document_link: "document_link",
-  id: "id",
-  resolved: "resolved",
-  user_id: "user_id",
+  unique_cv_id: "unique_cv_id",
+  unique_profile_id: "unique_profile_id",
+  publishable: "publishable",
 };
 
 export const ProfileKeys: {
   avatar_url: "avatar_url";
-  linkedin_link: "linkedin_link";
-  github_link: "github_link";
-  gitlab_link: "gitlab_link";
-  portfolio_link: "portfolio_link";
+  socials: "socials";
   display_name: "display_name";
   updated_at: "updated_at";
   username: "username";
-  id: "id";
+  unique_profile_id: "unique_profile_id";
+  email: "email";
+  phone_number: "phone_number";
+  hebrew_name: "hebrew_name";
+  english_name: "english_name";
   work_status: {
-    open_to_work: "open to work";
+    open_for_work: "open for work";
+    not_sharing: "not sharing";
     hiring: "hiring";
-    nothing: "nothing";
+    enlisted: "enlisted";
+    employed: "employed";
   };
 } = {
   avatar_url: "avatar_url",
-  linkedin_link: "linkedin_link",
-  github_link: "github_link",
-  gitlab_link: "gitlab_link",
-  portfolio_link: "portfolio_link",
+  socials: "socials",
   display_name: "display_name",
   updated_at: "updated_at",
   username: "username",
-  id: "id",
+  unique_profile_id: "unique_profile_id",
+  email: "email",
+  phone_number: "phone_number",
+  hebrew_name: "hebrew_name",
+  english_name: "english_name",
   work_status: {
-    open_to_work: "open to work",
+    open_for_work: "open for work",
+    not_sharing: "not sharing",
     hiring: "hiring",
-    nothing: "nothing",
+    enlisted: "enlisted",
+    employed: "employed",
   },
 };
 
 export const CommentKeys: {
   data: "data";
   parent_comment_id: "parent_comment_id";
-  last_update: "last_update";
+  updated_at: "updated_at";
   deleted: "deleted";
   upvotes: "upvotes";
-  document_id: "document_id";
-  id: "id";
+  unique_cv_id: "unique_cv_id";
+  unique_cv_comment_id: "unique_cv_comment_id";
   resolved: "resolved";
-  user_id: "user_id";
+  unique_profile_id: "unique_profile_id";
 } = {
   data: "data",
   parent_comment_id: "parent_comment_id",
-  last_update: "last_update",
+  updated_at: "updated_at",
   deleted: "deleted",
   upvotes: "upvotes",
-  document_id: "document_id",
-  id: "id",
+  unique_cv_id: "unique_cv_id",
+  unique_cv_comment_id: "unique_cv_comment_id",
   resolved: "resolved",
-  user_id: "user_id",
+  unique_profile_id: "unique_profile_id",
 };
 
 export const PermsKeys: {
-  id: "id";
-  user_type: "user_type";
-  user_types_enum: {
-    inactive: "inactive";
-    active: "active";
+  unique_profile_id: "unique_profile_id";
+  role: "role";
+  roles_enum: {
+    banned: "banned";
+    pending: "pending";
+    external: "external";
+    member: "member";
+    moderator: "moderator";
     admin: "admin";
   };
 } = {
-  id: "id",
-  user_type: "user_type",
-  user_types_enum: {
-    inactive: "inactive",
-    active: "active",
+  unique_profile_id: "unique_profile_id",
+  role: "role",
+  roles_enum: {
+    banned: "banned",
+    pending: "pending",
+    external: "external",
+    member: "member",
+    moderator: "moderator",
     admin: "admin",
   },
 };

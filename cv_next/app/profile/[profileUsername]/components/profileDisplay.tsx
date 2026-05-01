@@ -1,5 +1,3 @@
-import { ProfileKeys } from "@/lib/supabase-definitions";
-import Categories from "@/types/models/categories";
 
 export const ProfileDisplay = ({ user }: { user: UserModel }) => {
   return (
@@ -17,9 +15,7 @@ export const ProfileDisplay = ({ user }: { user: UserModel }) => {
             Work Categories:{" "}
           </label>
           <span id="workCategories">
-            {user.work_status_categories
-              ?.map((id) => Categories.category[id])
-              .join(", ") || "None"}
+            {user.work_categories?.join(", ") || "None"}
           </span>
         </div>
         <div className="flex flex-wrap justify-between">
@@ -27,7 +23,7 @@ export const ProfileDisplay = ({ user }: { user: UserModel }) => {
             Work Status:{" "}
           </label>
           <span id="workStatus">
-            {ProfileKeys.work_status[user.work_status] || "Nothing"}
+            {user.work_status || "Not sharing"}
           </span>
         </div>
       </div>

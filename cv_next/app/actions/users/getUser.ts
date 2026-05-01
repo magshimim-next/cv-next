@@ -131,8 +131,8 @@ export const isUserAuthor = async (
     logErrorWithTrace(userId);
     return Err("Couldn't get the current user");
   }
-  const authorData = JSON.parse(JSON.stringify(cv.user_id));
-  return Ok(userId.val == authorData.id);
+  const authorData = JSON.parse(JSON.stringify(cv.unique_profile_id));
+  return Ok(userId.val == authorData.unique_profile_id);
 };
 
 /**

@@ -205,7 +205,7 @@ const ResolvedSection = ({
 };
 
 interface CommenterModel {
-  id: string;
+  unique_profile_id: string;
   username?: string;
   display_name?: string;
 }
@@ -227,7 +227,7 @@ const CommenterActions = ({
   userIsAdmin,
   userIsAuthor,
 }: CommenterActionsProps) => {
-  return commenter.id === userId || userIsAdmin ? (
+  return commenter.unique_profile_id === userId || userIsAdmin ? (
     <>
       <span>
         <>
@@ -363,26 +363,26 @@ export default function Comment({
     async (commentData: string): Promise<boolean> => {
       const commentToAdd: NewCommentModel = {
         data: commentData,
-        document_id: comment.document_id,
-        parent_comment_Id: comment.id,
-        user_id: userId,
+        unique_cv_id: comment.unique_cv_id,
+        parent_comment_id: comment.unique_cv_comment_id,
+        unique_profile_id: userId,
       };
 
-      if (comment.parent_comment_Id) {
-        commentToAdd.parent_comment_Id = comment.parent_comment_Id;
+      if (comment.parent_comment_id) {
+        commentToAdd.parent_comment_id = comment.parent_comment_id;
       }
 
       mutate(
-        comment.document_id,
-        (currentSubComments: CommenterModel[] = []) => [
+        comment.unique_cv_id!,
+        (currentSubComments: CommentModel[] = []) => [
           ...currentSubComments,
           {
             ...commentToAdd,
-            id: Date.now().toString(),
+            unique_cv_comment_id: Date.now().toString(),
             deleted: false,
-            last_update: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
             resolved: false,
-            upvoted: [],
+            upvotes: [] as string[],
           },
         ],
         {
@@ -395,14 +395,14 @@ export default function Comment({
       const addedComment = await addComment(commentToAdd);
       if (addedComment.ok) {
         mutate(
-          comment.document_id,
-          async (currentSubComments: CommenterModel[] = []) => {
+          comment.unique_cv_id!,
+          async (currentSubComments: CommentModel[] = []) => {
             return [
               ...currentSubComments,
               {
-                ...addedComment,
-                id: addedComment.val.id,
-                last_update: new Date().toISOString(),
+                ...addedComment.val,
+                unique_cv_comment_id: addedComment.val.unique_cv_comment_id,
+                updated_at: new Date().toISOString(),
               },
             ];
           },
@@ -418,36 +418,36 @@ export default function Comment({
   );
 
   const date = new Date(
-    comment.last_update ? comment.last_update : new Date().getTime()
+    comment.updated_at ? comment.updated_at : new Date().getTime()
   );
   const childOrParentStyling = childDepth
     ? `p-3 ml-${6 / childDepth} lg:ml-${12 / childDepth} border-t border-gray-400 dark:border-gray-600`
     : "p-6 mb-3 border-b border-gray-200 rounded-lg";
 
   const deleteCommentAction = async () => {
-    await deleteComment(comment.id).finally(() => {
+    await deleteComment(comment.unique_cv_comment_id).finally(() => {
       setCommentsOfComments((prev: Map<string, any[]>) => {
         const newCommentsOfComments = new Map<string, any[]>(prev);
-        newCommentsOfComments.delete(comment.id);
+        newCommentsOfComments.delete(comment.unique_cv_comment_id);
         return newCommentsOfComments;
       });
-      mutate(comment.document_id);
+      mutate(comment.unique_cv_id);
     });
   };
 
   const setResolvedCommentAction = async (resolved: boolean) => {
-    await setResolved(comment.id, resolved).finally(() => {
-      mutate(comment.document_id);
+    await setResolved(comment.unique_cv_comment_id, resolved).finally(() => {
+      mutate(comment.unique_cv_id);
     });
   };
 
   const setLikedCommentAction = async (liked: boolean) => {
-    await upvoteComment(comment.id, liked, userId).finally(() => {
-      mutate(comment.document_id);
+    await upvoteComment(comment.unique_cv_comment_id, liked, userId).finally(() => {
+      mutate(comment.unique_cv_id);
     });
   };
 
-  const commenter = JSON.parse(JSON.stringify(comment.user_id || "Loading..."));
+  const commenter = JSON.parse(JSON.stringify(comment.unique_profile_id || "Loading..."));
 
   const userVoted = comment.upvotes?.includes(userId) || false;
   const userResolved = comment.resolved;
@@ -458,7 +458,7 @@ export default function Comment({
 
   return (
     <article
-      key={comment.id}
+      key={comment.unique_cv_comment_id}
       className={`${commentBackground} relative text-base ${childOrParentStyling}`}
     >
       <footer className="mb-2 flex items-center justify-between">
@@ -535,7 +535,7 @@ export default function Comment({
       />
       {commentsOfComment?.map((comment) => (
         <Comment
-          key={comment.id}
+          key={comment.unique_cv_comment_id}
           comment={comment}
           userId={userId}
           childDepth={1}

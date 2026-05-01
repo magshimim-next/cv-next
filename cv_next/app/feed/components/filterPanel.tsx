@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Categories from "@/types/models/categories";
 import { filterValues } from "@/types/models/filters";
-import { categoryString } from "@/lib/utils";
 import { useDebounceValue } from "@/hooks/useDebounceCallback";
 import { DropdownInput } from "./filters/valueSelect";
 import { InputBox } from "./inputbar";
@@ -39,12 +38,10 @@ export const FilterPanel = ({
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
 
-    if (categoryIds) {
-      const uriCategories = searchParams.get(CATEGORY_PARAM)?.split(",") ?? [];
-      const stateCategories = categoryIds?.map((id) => categoryString(id));
-      //only handle change if categories actually changed
-      if (JSON.stringify(uriCategories) != JSON.stringify(stateCategories)) {
-        params.set(CATEGORY_PARAM, categoryIds.map(categoryString).join(","));
+    if (categoryIds && categoryIds.length > 0) {
+      const uriCategories = searchParams.get(CATEGORY_PARAM)?.split(",").filter(Boolean) ?? [];
+      if (JSON.stringify(uriCategories) != JSON.stringify(categoryIds)) {
+        params.set(CATEGORY_PARAM, categoryIds.join(","));
       }
     } else {
       params.delete(CATEGORY_PARAM);
@@ -61,12 +58,7 @@ export const FilterPanel = ({
     router.replace(`${pathname}?${params}`);
   }, [debouncedSearchValue, searchParams, router, pathname, categoryIds]);
 
-  const mapCategories: number[] = useMemo(() => {
-    const keys = Object.keys(Categories.category)
-      .map((key) => parseInt(key))
-      .filter((key) => !isNaN(key));
-    return keys;
-  }, []);
+  const mapCategories = useMemo(() => [...Categories.values], []);
 
   return (
     <div className=" my-[10px] flex flex-col items-center justify-between gap-2 md:flex-row">
@@ -76,15 +68,13 @@ export const FilterPanel = ({
         onChange={setSearchValue}
       ></InputBox>
       <div className="w-80">
-        <DropdownInput
+        <DropdownInput<string>
           placeHolder="all"
           valueIds={mapCategories}
           text="Categories"
           valueId={categoryIds}
           onChange={setCategoryId}
-          getValueById={(id: number) => {
-            return Categories.category[id];
-          }}
+          getValueById={(v) => v}
           noneText="all"
           selected={defaultFilters.categoryIds}
         ></DropdownInput>

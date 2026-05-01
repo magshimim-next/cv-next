@@ -32,9 +32,9 @@ async function validateResolve(
     );
   }
   const resultAdminCheck = await userIsAdmin();
-  const resultAuthorCheck = await isUserAuthor(commentResult.val.document_id);
+  const resultAuthorCheck = await isUserAuthor(commentResult.val.unique_cv_id ?? "");
   if (
-    currentIdResult.val != commentResult.val.user_id &&
+    currentIdResult.val != commentResult.val.unique_profile_id &&
     !resultAdminCheck.ok &&
     !resultAuthorCheck.ok
   ) {

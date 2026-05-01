@@ -13,19 +13,14 @@ import logger from "@/server/base/logger";
 import { Err, Ok } from "@/lib/utils";
 import SupabaseHelper from "./supabaseHelper";
 
-/**
- * Retrieves a CV by its ID from the database.
- * @param {string} cvId - The ID of the CV to retrieve
- * @returns {Promise<CvModel | null>} The retrieved CV or null if not found
- */
 export async function getCvById(cvId: string): Promise<CvModel | null> {
   try {
     const { data: cvs, error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.cvs)
       .select(
-        `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
+        `*, ${CvKeys.unique_profile_id} (${ProfileKeys.unique_profile_id}, ${ProfileKeys.display_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
       )
-      .eq(CvKeys.id, cvId);
+      .eq(CvKeys.unique_cv_id, cvId);
 
     if (error) {
       logger.error(error, "cvs::getCvById");
@@ -46,13 +41,6 @@ export async function getCvById(cvId: string): Promise<CvModel | null> {
   }
 }
 
-/**
- * Retrieves CVs by user ID.
- * @param {string} userId - The user ID
- * @param {boolean} filterOutDeleted - Whether to filter out deleted CVs (default true)
- * @returns {Promise<CvModel[] | null>} The retrieved CVs or null if an error occurs
- * The user_id of the retrieved CVs is a json of the user_id, display_name of that user and it's username
- */
 export async function getCvsByUserId(
   userId: string,
   filterOutDeleted = true
@@ -62,9 +50,9 @@ export async function getCvsByUserId(
     let query = supabase
       .from(Tables.cvs)
       .select(
-        `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username})`
+        `*, ${CvKeys.unique_profile_id} (${ProfileKeys.unique_profile_id}, ${ProfileKeys.display_name}, ${ProfileKeys.username})`
       )
-      .eq(CvKeys.user_id, userId);
+      .eq(CvKeys.unique_profile_id, userId);
 
     if (filterOutDeleted) {
       query = query.eq(CvKeys.deleted, false);
@@ -84,14 +72,6 @@ export async function getCvsByUserId(
   }
 }
 
-/**
- * Retrieves a paginated list of CVs based on the provided page number.
- * @param {boolean} filterOutDeleted - Indicates whether deleted CVs should be filtered out.
- * @param {number} page - The page number for pagination.
- * @param {filterValues} filters - The filters apply to CV search.
- * @returns {Promise<CvModel[] | null>} A Promise that resolves with an array of CvModel or null.
- * The user_id of the retrieved CVs is a json of the user_id, display_name of that user and it's username
- */
 export async function getPaginatedCvs(
   filterOutDeleted: boolean = true,
   page: number = Definitions.PAGINATION_INIT_PAGE_NUMBER,
@@ -107,12 +87,14 @@ export async function getPaginatedCvs(
     let query = supabase
       .from(Tables.cvs)
       .select(
-        `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username})`
+        `*, ${CvKeys.unique_profile_id} (${ProfileKeys.unique_profile_id}, ${ProfileKeys.display_name}, ${ProfileKeys.username})`
       )
-      .order(CvKeys.created_at, { ascending: false })
+      .order(CvKeys.updated_at, { ascending: false })
       .eq(CvKeys.deleted, !filterOutDeleted)
       .range(from, to - 1);
-    let profileQuery = supabase.from(Tables.profiles).select(ProfileKeys.id);
+    let profileQuery = supabase
+      .from(Tables.profiles)
+      .select(ProfileKeys.unique_profile_id);
 
     logger.debug(filters, "filters");
 
@@ -138,14 +120,6 @@ export async function getPaginatedCvs(
   }
 }
 
-/**
- * Retrieves a randomized list of CVs based on the provided filters.
- * @param {boolean} filterOutDeleted - Indicates whether deleted CVs should be filtered out.
- * @param {number} amount - The amount of CVs to return.
- * @param {filterValues} filters - The filters apply to CV search.
- * @returns {Promise<CvModel[] | null>} A Promise that resolves with an array of CvModel or null.
- * The user_id of the retrieved CVs is a json of the user_id, display_name of that user and it's username
- */
 export async function getRandomizedCvs(
   filterOutDeleted: boolean = true,
   amount: number = Definitions.DEFAULT_RANDOM_CVS,
@@ -156,11 +130,10 @@ export async function getRandomizedCvs(
     let query = supabase
       .from(Tables.randomized_cvs)
       .select(
-        `*, ${CvKeys.user_id} (${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username})`
+        `*, ${CvKeys.unique_profile_id} (${ProfileKeys.unique_profile_id}, ${ProfileKeys.display_name}, ${ProfileKeys.username})`
       )
       .eq(CvKeys.deleted, !filterOutDeleted)
       .order("rnd")
-      // +1 to increase the odds of getting enough while excluding the CV that asked for it.
       .limit(amount + 1);
     logger.debug(filters, "filters");
 
@@ -169,7 +142,7 @@ export async function getRandomizedCvs(
 
     const { data: cvs, error } = await query;
     logger.debug(
-      cvs?.map((cv) => cv.cv_categories),
+      (cvs as any[])?.map((cv) => cv.cv_categories),
       "randomized cvs"
     );
 
@@ -178,37 +151,33 @@ export async function getRandomizedCvs(
       return null;
     }
 
-    return cvs as CvModel[];
+    return cvs as unknown as CvModel[];
   } catch (error) {
     logger.error(error, "getRandomizedCvs");
     return null;
   }
 }
 
-/**
- * The function applys a search filter that is based on profiles.
- * @param {any} profileQuery - The existing profiles query that will be modified.
- * @param {filterValues} filters - The existing filter that will be applied.
- * @returns {any} The query with the profiles filter applied.
- */
 function filterOutProfiles(profileQuery: any, filters?: filterValues) {
   if (filters?.searchValue) {
     const searchValue = `${filters.searchValue}`;
 
     profileQuery = profileQuery
-      .not(`user_id.${ProfileKeys.display_name}`, "ilike", searchValue)
-      .not(`user_id.${ProfileKeys.username}`, "ilike", searchValue);
+      .not(
+        `${CvKeys.unique_profile_id}.${ProfileKeys.display_name}`,
+        "ilike",
+        searchValue
+      )
+      .not(
+        `${CvKeys.unique_profile_id}.${ProfileKeys.username}`,
+        "ilike",
+        searchValue
+      );
   }
 
   return profileQuery;
 }
 
-/**
- * The function applys a search filter that is based on profiles.
- * @param {any} profileQuery - The existing profiles query that will be modified.
- * @param {filterValues} filters - The existing filter that will be applied.
- * @returns {any} The query with the profiles filter applied.
- */
 function applyProfileSearchFilter(profileQuery: any, filters?: filterValues) {
   if (filters?.searchValue) {
     const searchValue = `%${filters.searchValue}%`;
@@ -219,12 +188,6 @@ function applyProfileSearchFilter(profileQuery: any, filters?: filterValues) {
   return profileQuery;
 }
 
-/**
- * The function applys a search filter that is based on categories.
- * @param {any} query - The existing query query that will be modified.
- * @param {filterValues} filters - The existing filter that will be applied.
- * @returns {any} The query with the categories filter applied.
- */
 function applyCategoryFilter(query: any, filters?: filterValues) {
   if (filters?.categoryIds?.length) {
     logger.debug(filters.categoryIds, "category ids");
@@ -233,13 +196,6 @@ function applyCategoryFilter(query: any, filters?: filterValues) {
   return query;
 }
 
-/**
- * The function applies the profile filter to CV general filter.
- * @param {any} query The general CVs query.
- * @param {any} profileQuery The profiles query to apply.
- * @param {filterValues} filters The current filters that are applied to the search.
- * @returns {Promise<any>} The query with the profiles search.
- */
 async function applyProfileSearchToCvs(
   query: any,
   profileQuery: any,
@@ -252,20 +208,16 @@ async function applyProfileSearchToCvs(
       return query;
     }
 
-    const profileIds = profiles?.map((profile: UserModel) => profile.id) || [];
+    const profileIds =
+      profiles?.map((profile: UserModel) => profile.unique_profile_id) || [];
     const searchValue = `%${filters.searchValue}%`;
     query = query.or(
-      `${CvKeys.description}.ilike.${searchValue},${CvKeys.user_id}.in.(${profileIds.join(",")})`
+      `${CvKeys.description}.ilike.${searchValue},${CvKeys.unique_profile_id}.in.(${profileIds.join(",")})`
     );
   }
   return query;
 }
 
-/**
- * Updates a CV in the database.
- * @param {CvModel} cv - the CV to be updated
- * @returns {Promise<PostgrestError | CvModel>} the error, if any, or the updated data if the update was successful
- */
 export async function updateGivenCV(
   cv: CvModel
 ): Promise<PostgrestError | CvModel> {
@@ -273,7 +225,7 @@ export async function updateGivenCV(
     const { data, error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.cvs)
       .update(cv)
-      .eq(CvKeys.id, cv.id)
+      .eq(CvKeys.unique_cv_id, cv.unique_cv_id)
       .select();
 
     if (error || data.length === 0) {
@@ -287,28 +239,18 @@ export async function updateGivenCV(
   }
 }
 
-/**
- * Uploads a CV to the database.
- * @param {NewCvModel} cv - the CV to upload
- * @returns {Promise<null | CvModel>} null on error, the uploaded object if upload was successful
- */
 export async function uploadNewCV(cv: NewCvModel): Promise<null | CvModel> {
   const { data, error } = await SupabaseHelper.getSupabaseInstance()
     .from("cvs")
     .insert(cv)
     .select();
   if (error) {
-    logger.error("Error @ cvs::uploadCV", error);
+    logger.error(error, "Error @ cvs::uploadCV");
     return null;
   }
   return data[0];
 }
 
-/**
- * Marks a comment as deleted.
- * @param {string} cvId - The ID of the CV to be marked as deleted.
- * @returns {Promise<Result<void, string>>} A promise that resolves to a Result object indicating the success or failure of the operation.
- */
 export async function markCVAsDeleted(
   cvId: string
 ): Promise<Result<void, string>> {
@@ -316,7 +258,7 @@ export async function markCVAsDeleted(
     const { error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.cvs)
       .update({ deleted: true })
-      .eq(CvKeys.id, cvId);
+      .eq(CvKeys.unique_cv_id, cvId);
     if (error) {
       return Err(markCVAsDeleted.name, { postgrestError: error });
     }
@@ -328,17 +270,13 @@ export async function markCVAsDeleted(
   }
 }
 
-/**
- * The function will get the signed preview URL of a given CV.
- * @param {string} fileName Which preview to get
- * @returns {Promise<Result<string, string>>} The signed URL or an error message.
- */
 export async function getCVSignedPreview(
   fileName: string
 ): Promise<Result<string, string>> {
-  const { data: previewUrl, error } = await SupabaseHelper.getSupabaseInstance()
-    .storage.from(Storage.cvs)
-    .createSignedUrl(fileName, Definitions.CV_PREVIEW_EXPIRATION_TIME);
+  const { data: previewUrl, error } =
+    await SupabaseHelper.getSupabaseInstance()
+      .storage.from(Storage.cvs)
+      .createSignedUrl(fileName, Definitions.CV_PREVIEW_EXPIRATION_TIME);
   const signedUrl = previewUrl?.signedUrl;
 
   if (!error && signedUrl) return Ok(signedUrl);

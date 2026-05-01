@@ -13,6 +13,7 @@ import {
   activateAllUsers,
 } from "@/server/api/users";
 import { Err } from "@/lib/utils";
+import { PermsKeys } from "@/lib/supabase-definitions";
 import { logErrorWithTrace } from "@/server/base/logger";
 
 /**
@@ -82,7 +83,7 @@ export const setNewWorkStatus = async (
  */
 export const setNewWorkCategories = async (
   userId: string,
-  newWorkCategories: number[] | null | undefined
+  newWorkCategories: string[] | null | undefined
 ): Promise<Result<void, string>> => {
   const result = await setWorkCategories(userId, newWorkCategories);
   if (result.ok) {
@@ -173,9 +174,9 @@ export const setCurrentProfilePath = async (
  */
 export const updatePerms = async (
   userId: string,
-  newPerms: string
+  newPerms: keyof typeof PermsKeys.roles_enum
 ): Promise<Result<void, string>> => {
-  const result = await updateUserPerms({ id: userId, user_type: newPerms });
+  const result = await updateUserPerms({ unique_profile_id: userId, role: newPerms });
   if (result.ok) {
     return result;
   } else {
