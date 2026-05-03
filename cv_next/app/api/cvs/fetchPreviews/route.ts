@@ -36,7 +36,7 @@ async function revalidatePreviewHandler(data: {
   const cvLink = data.cvLink;
 
   if (!validateGoogleViewOnlyUrl(cvLink)) {
-    logger.error(cvLink, "URL didn't match regex: ");
+    logger.error({ cvLink }, "URL didn't match regex");
     return NextResponse.json({ message: "Invalid URL" }, { status: 500 });
   }
 

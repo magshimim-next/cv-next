@@ -7,7 +7,7 @@ import { checkCVModifyPermission } from "./checkPermission";
 export interface InputValues {
   link: string;
   description: string;
-  cvCategories: number[] | null;
+  cvCategories: string[] | null;
 }
 
 /**

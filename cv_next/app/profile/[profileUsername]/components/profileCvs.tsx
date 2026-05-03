@@ -15,7 +15,7 @@ export default function ProfileCvs({ cvs }: { cvs: CvModel[] }) {
       {cvs.map((cv) => (
         <div
           className="embla__slide"
-          key={cv.id}
+          key={cv.unique_cv_id}
           style={{
             flex: "0 0 var(--slide-size)",
             minWidth: 0,
@@ -28,7 +28,7 @@ export default function ProfileCvs({ cvs }: { cvs: CvModel[] }) {
           }}
         >
           <div className="aspect-[1/1.414] w-full max-w-[500px] overflow-hidden rounded-lg bg-gray-100">
-            <CVItem key={cv.id} cv={cv} />
+            <CVItem key={cv.unique_cv_id} cv={cv} />
           </div>
         </div>
       ))}

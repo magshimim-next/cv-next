@@ -10,9 +10,10 @@ import logger from "@/server/base/logger";
 import SupabaseHelper from "./supabaseHelper";
 
 /**
- * The function will return a user based on its ID.
- * @param {string} userId The ID of the user to retrieve
- * @returns {Promise<Result<UserModel, string>>} A promise that resolves to result with user model or error message.
+ * Fetches a user profile by their unique profile ID.
+ * Auto-generates and persists a username if the profile has none.
+ * @param {string} userId - The unique profile ID to look up.
+ * @returns {Promise<Result<UserModel, string>>} Ok with the user on success, or Err with a message.
  */
 export async function getUserById(
   userId: string
@@ -21,7 +22,7 @@ export async function getUserById(
     const { data: user, error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.profiles)
       .select("*")
-      .eq(ProfileKeys.id, userId);
+      .eq(ProfileKeys.unique_profile_id, userId);
 
     if (error) {
       return Err("Error @ " + getUserById.name + "\n", {
@@ -36,13 +37,9 @@ export async function getUserById(
       );
     }
 
-    //Generate username if it doesn't exist
-    //TODO: add notice to change user-name after first login
-    //TODO: change all user APIs to use username instead of id
     if (user[0].username === null || user[0].username === "") {
       const usernameResult = await generateUsername(user[0] as UserModel);
       if (usernameResult.ok && usernameResult.val) {
-        //only update the user object if the username was successfully set
         user[0].username = usernameResult.val;
       }
     }
@@ -54,9 +51,9 @@ export async function getUserById(
 }
 
 /**
- * The function will return a user based on its username.
- * @param {string} username The username of the user to retrieve.
- * @returns {Promise<Result<UserModel, string>>} A promise that resolves to result with user model or error message.
+ * Fetches a user profile by their username.
+ * @param {string} username - The username to look up.
+ * @returns {Promise<Result<UserModel, string>>} Ok with the user on success, or Err with a message.
  */
 export async function getUserByUsername(
   username: string
@@ -87,15 +84,15 @@ export async function getUserByUsername(
 }
 
 /**
- * The function will handle username generation for a given user based on their display name.
- * @param {UserModel} user The user object that needs a username generated for it.
- * @returns {Promise<Result<string | undefined, string>>} A promise that resolves to the generated username or an error message.
+ * Generates a unique username from the user's display name and persists it to the profile.
+ * Retries up to 10 times appending a short hash to resolve collisions.
+ * @param {UserModel} user - The user whose display_name is used as the slug base.
+ * @returns {Promise<Result<string | undefined, string>>} Ok with the new username, or Err if generation fails.
  */
 async function generateUsername(
   user: UserModel
 ): Promise<Result<string | undefined, string>> {
   if (!user.display_name) {
-    //username generation is based on user's name, fallback to user id..
     return Err("Error @ " + generateUsername.name + "\n", {
       err: Error("User's full name is empty"),
     });
@@ -121,7 +118,10 @@ async function generateUsername(
       });
     } else if (!usernames || usernames.length === 0) {
       isUnique = true;
-      const updateUserNameResult = await setUserName(user.id, username);
+      const updateUserNameResult = await setUserName(
+        user.unique_profile_id,
+        username
+      );
       if (!updateUserNameResult.ok) {
         return Err(
           "Error @ " + generateUsername.name + "\n",
@@ -139,26 +139,24 @@ async function generateUsername(
 }
 
 /**
- * The function will attempt to generate a username based on the provided name.
- * Generation is done via a hash of the name, timestamp, and a UUID.
- * @param {string} name The name to attempt generatiing a username for.
- * @returns {string} The generated username.
+ * Produces a single candidate username by appending an 8-character hash of the
+ * name, current timestamp, and a random UUID to the slugified name.
+ * @param {string} name - The slugified base name.
+ * @returns {string} A candidate username in the format `name.shortHash`.
  */
 function generateUsernameAttempt(name: string): string {
-  //ensure high entropy by using a random uuid and timestamp
   const timestamp = Math.floor(Date.now() / 1000).toString();
   const uuid = crypto.randomUUID();
   const inputString = `${name}.${timestamp}.${uuid}`;
   const hash = crypto.createHash("sha256").update(inputString).digest("hex");
   const shortHash = hash.slice(0, 8);
-
   return `${name}.${shortHash}`;
 }
 
 /**
- * The function will slugify a full name by removing spaces and special characters.
- * @param {string} fullName The full name to slugify.
- * @returns {string} The slugified name.
+ * Converts a display name to a URL-safe slug by removing spaces and non-alphanumeric characters.
+ * @param {string} fullName - The user's display name to slugify.
+ * @returns {string} The slugified name containing only letters, digits, and dots.
  */
 function slugifyName(fullName: string): string {
   return fullName
@@ -169,24 +167,24 @@ function slugifyName(fullName: string): string {
 }
 
 /**
- * The function will update a user in the database.
- * @param {Partial<UserModel>} user The user object to update.
- * @returns {Promise<Result<void, string>>} A promise that resolves with void or error message.
+ * Updates one or more fields on an existing user profile row.
+ * @param {Partial<UserModel>} user - Partial user object with fields to update; must include unique_profile_id.
+ * @returns {Promise<Result<void, string>>} Ok on success, or Err with a message on failure.
  */
 export async function updateUser(
   user: Partial<UserModel>
 ): Promise<Result<void, string>> {
-  if (user?.id === undefined) {
+  if (user?.unique_profile_id === undefined) {
     return Err(updateUser.name, {
       err: Error("User ID is undefined"),
     });
   }
-  const { id } = user;
+  const { unique_profile_id: uniqueProfileId } = user;
   try {
     const { error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.profiles)
       .update({ ...user })
-      .eq(ProfileKeys.id, id);
+      .eq(ProfileKeys.unique_profile_id, uniqueProfileId);
     if (error) {
       return Err(updateUser.name, { postgrestError: error });
     }
@@ -199,10 +197,10 @@ export async function updateUser(
 }
 
 /**
- * Changes the username of a given user.
- * @param {string} userId - The ID of the user to update.
- * @param {string} newUserName - The new username.
- * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ * Sets a new username for a user after validating it against the allowed format.
+ * @param {string} userId - The unique profile ID of the user to update.
+ * @param {string} newUserName - The desired username; must pass checkUsername validation.
+ * @returns {Promise<Result<void, string>>} Ok on success, or Err if validation fails or the update errors.
  */
 export async function setUserName(
   userId: string,
@@ -218,7 +216,7 @@ export async function setUserName(
     const { error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.profiles)
       .update({ username: newUserName })
-      .eq(ProfileKeys.id, userId);
+      .eq(ProfileKeys.unique_profile_id, userId);
     if (error) {
       return Err(setUserName.name, { postgrestError: error });
     }
@@ -231,10 +229,10 @@ export async function setUserName(
 }
 
 /**
- * Changes the status of a given user.
- * @param {string} userId - The ID of the user to update.
- * @param {string} newWorkStatus - The new status.
- * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ * Updates the work_status field on a user's profile.
+ * @param {string} userId - The unique profile ID of the user to update.
+ * @param {string} newWorkStatus - The new work status value (e.g. "open for work", "employed").
+ * @returns {Promise<Result<void, string>>} Ok on success, or Err on failure.
  */
 export async function setWorkStatus(
   userId: string,
@@ -245,12 +243,14 @@ export async function setWorkStatus(
       .from(Tables.profiles)
       .update({
         work_status: newWorkStatus as
-          | "open_to_work"
+          | "open for work"
+          | "not sharing"
           | "hiring"
-          | "nothing"
+          | "enlisted"
+          | "employed"
           | undefined,
       })
-      .eq(ProfileKeys.id, userId);
+      .eq(ProfileKeys.unique_profile_id, userId);
     if (error) {
       return Err(setWorkStatus.name, { postgrestError: error });
     }
@@ -263,22 +263,22 @@ export async function setWorkStatus(
 }
 
 /**
- * Changes the categories of a given user.
- * @param {string} userId - The ID of the user to update.
- * @param {number[] | null | undefined} newWorkCategories - The new categories.
- * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ * Updates the work_categories array on a user's profile.
+ * @param {string} userId - The unique profile ID of the user to update.
+ * @param {string[] | null | undefined} newWorkCategories - The new list of work category values, or null to clear.
+ * @returns {Promise<Result<void, string>>} Ok on success, or Err on failure.
  */
 export async function setWorkCategories(
   userId: string,
-  newWorkCategories: number[] | null | undefined
+  newWorkCategories: string[] | null | undefined
 ): Promise<Result<void, string>> {
   try {
     const { error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.profiles)
       .update({
-        work_status_categories: newWorkCategories,
+        work_categories: newWorkCategories as UserModel["work_categories"],
       })
-      .eq(ProfileKeys.id, userId);
+      .eq(ProfileKeys.unique_profile_id, userId);
     if (error) {
       return Err(setWorkCategories.name, { postgrestError: error });
     }
@@ -291,8 +291,8 @@ export async function setWorkCategories(
 }
 
 /**
- * Get current user ID
- * @returns {Promise<Result<string, string>>} A promise that resolves with the id or rejects with an error message.
+ * Returns the Supabase auth UID of the currently authenticated user.
+ * @returns {Promise<Result<string, string>>} Ok with the user ID string, or Err if not authenticated.
  */
 export async function getCurrentId(): Promise<Result<string, string>> {
   try {
@@ -313,8 +313,8 @@ export async function getCurrentId(): Promise<Result<string, string>> {
 }
 
 /**
- * Check if the current user is an admin
- * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ * Checks whether the currently authenticated user holds the admin role.
+ * @returns {Promise<Result<void, string>>} Ok if the user is an admin, or Err otherwise.
  */
 export async function userIsAdmin(): Promise<Result<void, string>> {
   try {
@@ -326,16 +326,16 @@ export async function userIsAdmin(): Promise<Result<void, string>> {
     if (!user.user) {
       return Err(userIsAdmin.name, { err: Error("User object is empty") });
     }
-    const { data: admin, error } = await SupabaseHelper.getSupabaseInstance()
-      .from(Tables.admins)
-      .select("*")
-      .eq(ProfileKeys.id, user.user.id)
+    const { data: perm, error } = await SupabaseHelper.getSupabaseInstance()
+      .from(Tables.profile_perms)
+      .select(PermsKeys.role)
+      .eq(PermsKeys.unique_profile_id, user.user.id)
       .single();
     if (error) {
       return Err(userIsAdmin.name, { postgrestError: error });
     }
-    if (admin.id == null) {
-      return Err(userIsAdmin.name, { err: Error("No ID found") });
+    if (perm.role !== PermsKeys.roles_enum.admin) {
+      return Err(userIsAdmin.name, { err: Error("User is not an admin") });
     }
     return Ok.EMPTY;
   } catch (err) {
@@ -346,8 +346,9 @@ export async function userIsAdmin(): Promise<Result<void, string>> {
 }
 
 /**
- * check if the username is valid and generate one if it's not
- * @returns {Promise<Result<string, string>>} return the username or an error message
+ * Ensures the currently authenticated user has a username, auto-generating one if absent.
+ * Also sets the first_login flag when a username is generated for the first time.
+ * @returns {Promise<Result<string, string>>} Ok with the username on success, or Err on failure.
  */
 export async function validateUsername(): Promise<Result<String, String>> {
   const id = await getCurrentId();
@@ -359,7 +360,7 @@ export async function validateUsername(): Promise<Result<String, String>> {
   const { data: user, error } = await SupabaseHelper.getSupabaseInstance()
     .from(Tables.profiles)
     .select("*")
-    .eq(ProfileKeys.id, id.val)
+    .eq(ProfileKeys.unique_profile_id, id.val)
     .single();
 
   if (error) {
@@ -370,7 +371,6 @@ export async function validateUsername(): Promise<Result<String, String>> {
   if (user.username === null || user.username === "") {
     const usernameResult = await generateUsername(user as UserModel);
     if (usernameResult.ok && usernameResult.val) {
-      //only update the user object if the username was successfully set
       user.username = usernameResult.val;
       username = usernameResult.val;
 
@@ -385,10 +385,10 @@ export async function validateUsername(): Promise<Result<String, String>> {
 }
 
 /**
- * Changes the display name of a given user.
- * @param {string} userId - The ID of the user to update.
- * @param {string} newDisplayName - The new display name.
- * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ * Updates the display_name field on a user's profile.
+ * @param {string} userId - The unique profile ID of the user to update.
+ * @param {string} newDisplayName - The new display name to set.
+ * @returns {Promise<Result<void, string>>} Ok on success, or Err on failure.
  */
 export async function setDisplayName(
   userId: string,
@@ -398,7 +398,7 @@ export async function setDisplayName(
     const { error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.profiles)
       .update({ display_name: newDisplayName })
-      .eq(ProfileKeys.id, userId);
+      .eq(ProfileKeys.unique_profile_id, userId);
     if (error) {
       return Err(setDisplayName.name, { postgrestError: error });
     }
@@ -411,9 +411,9 @@ export async function setDisplayName(
 }
 
 /**
- * Set the first login status of the current user.
- * @param {boolean} isFirstLogin - first login status.
- * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ * Sets the is_first_login flag in the current user's Supabase auth metadata.
+ * @param {boolean} isFirstLogin - The value to write to the is_first_login metadata field.
+ * @returns {Promise<Result<void, string>>} Ok on success, or Err if not authenticated or the update fails.
  */
 export async function setFirstLogin(
   isFirstLogin: boolean
@@ -440,8 +440,8 @@ export async function setFirstLogin(
 }
 
 /**
- * The function will check if the current user is on their first login.
- * @returns {Promise<Result<boolean, string>>} A promise that resolves with the first login status or rejects with an error message.
+ * Reads the is_first_login flag from the current user's Supabase auth metadata.
+ * @returns {Promise<Result<boolean, string>>} Ok with the flag value, or Err if not authenticated.
  */
 export async function isCurrentFirstLogin(): Promise<Result<Boolean, string>> {
   try {
@@ -468,9 +468,10 @@ export async function isCurrentFirstLogin(): Promise<Result<Boolean, string>> {
 }
 
 /**
- * Upload the new user profile to a bucket.
- * @param {string} fileToUpload - new user profile image
- * @returns {Promise<Result<string, string>>} the bucket upload image url
+ * Uploads a base64-encoded profile picture to the avatars storage bucket for the current user.
+ * The file is stored at `public/<userId>D<timestamp>.png` with a 1-hour cache control.
+ * @param {string} fileToUpload - Base64-encoded image data to upload.
+ * @returns {Promise<Result<string, string>>} Ok with the storage path on success, or Err on failure.
  */
 export async function uploadProfilePic(
   fileToUpload: string
@@ -484,7 +485,7 @@ export async function uploadProfilePic(
     const { data, error } = await SupabaseHelper.getSupabaseInstance()
       .storage.from("avatars")
       .upload(
-        `public/${id.val}D${new Date().toISOString()}.png`,
+        `${id.val}/${new Date().toISOString()}.png`,
         decode(fileToUpload),
         {
           cacheControl: "3600",
@@ -509,9 +510,10 @@ export async function uploadProfilePic(
 }
 
 /**
- * Returns all users with their minimal data and permissions.
- * @param {string} userType - Requested permission.
- * @returns {Promise<Result<Partial<UserWithPerms>[], string>>} A promise that resolves with an array of partial user models or rejects with an error message.
+ * Fetches all users joined with their permissions, ordered by role.
+ * Optionally filters to a single role when userType is provided.
+ * @param {string} [userType] - An optional role name from PermsKeys.roles_enum to filter by.
+ * @returns {Promise<Result<Partial<UserWithPerms>[], string>>} Ok with the user list, or Err on failure.
  */
 export async function getAllUsers(
   userType?: string
@@ -519,40 +521,40 @@ export async function getAllUsers(
   const supabase = SupabaseHelper.getSupabaseInstance();
   try {
     let query = supabase
-      .from(Tables.profiles_perms)
+      .from(Tables.profile_perms)
       .select(
-        `*, ${Tables.profiles}(${ProfileKeys.id}, ${ProfileKeys.display_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
+        `*, ${Tables.profiles}(${ProfileKeys.unique_profile_id}, ${ProfileKeys.display_name}, ${ProfileKeys.username}, ${ProfileKeys.avatar_url})`
       )
-      .order(PermsKeys.user_type, { ascending: true });
+      .order(PermsKeys.role, { ascending: true });
 
     type PermissionsWithUserData = QueryData<typeof query>;
 
-    if (userType && userType in PermsKeys.user_types_enum) {
+    if (userType && userType in PermsKeys.roles_enum) {
       query = query.eq(
-        PermsKeys.user_type,
-        userType as "inactive" | "active" | "admin"
+        PermsKeys.role,
+        userType as keyof typeof PermsKeys.roles_enum
       );
     }
 
     const { data: users, error } = await query;
 
     if (error) {
-      logger.error("Failed to fetch all users", error);
+      logger.error(error, "Failed to fetch all users");
       return Err(getAllUsers.name, { postgrestError: error });
     }
     const usersWithPerms: PermissionsWithUserData = users;
 
     const transformedData = usersWithPerms.map((entry) => ({
-      id: entry.id,
+      unique_profile_id: entry.unique_profile_id,
       username: entry.profiles?.username,
       avatar_url: entry.profiles?.avatar_url,
       display_name: entry.profiles?.display_name,
-      user_type: entry.user_type,
+      role: entry.role,
     }));
 
     return Ok(transformedData as Partial<UserWithPerms>[]);
   } catch (err) {
-    logger.error("Failed to fetch all users", err);
+    logger.error(err, "Failed to fetch all users");
     return Err(getAllUsers.name, {
       err: err as Error,
     });
@@ -560,9 +562,9 @@ export async function getAllUsers(
 }
 
 /**
- * Updates the url pic of the user.
- * @param {string} newUrl - The new url pic
- * @returns {Promise<Result<void, string>>} Was the update successful?
+ * Resolves a storage path to a public URL and saves it as the current user's avatar_url.
+ * @param {string} newUrl - The storage object path within the avatars bucket.
+ * @returns {Promise<Result<void, string>>} Ok on success, or Err if not authenticated or the update fails.
  */
 export async function setProfilePath(
   newUrl: string
@@ -580,7 +582,7 @@ export async function setProfilePath(
     const { error } = await SupabaseHelper.getSupabaseInstance()
       .from(Tables.profiles)
       .update({ avatar_url: data.publicUrl })
-      .eq(ProfileKeys.id, id.val);
+      .eq(ProfileKeys.unique_profile_id, id.val);
 
     if (error) {
       return Err(setProfilePath.name, { postgrestError: error });
@@ -595,9 +597,9 @@ export async function setProfilePath(
 }
 
 /**
- * Updates the user_type of a given user id.
- * @param {Partial<UserWithPerms>} user The user object to update.
- * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ * Updates the role of a user in the permissions table. Admin-only — rejects if the caller is not an admin.
+ * @param {Partial<UserWithPerms>} user - Must include unique_profile_id and role.
+ * @returns {Promise<Result<void, string>>} Ok on success, or Err if the caller lacks admin rights or the update fails.
  */
 export async function updateUserPerms(
   user: Partial<UserWithPerms>
@@ -610,19 +612,19 @@ export async function updateUserPerms(
     });
   }
 
-  if (user?.id === undefined || user?.user_type === undefined) {
+  if (user?.unique_profile_id === undefined || user?.role === undefined) {
     return Err(updateUserPerms.name, {
       err: Error("User ID or Permissions aren't undefined"),
     });
   }
-  const { id, user_type: userType } = user;
+  const { unique_profile_id: uniqueProfileId, role } = user;
   try {
     const { error } = await SupabaseHelper.getSupabaseInstance()
-      .from(Tables.profiles_perms)
-      .update({ user_type: userType })
-      .eq(ProfileKeys.id, id);
+      .from(Tables.profile_perms)
+      .update({ role })
+      .eq(PermsKeys.unique_profile_id, uniqueProfileId);
     if (error) {
-      logger.error("Failed to activate the user", error);
+      logger.error(error, "Failed to activate the user");
       return Err(updateUserPerms.name, { postgrestError: error });
     }
     return Ok.EMPTY;
@@ -634,8 +636,8 @@ export async function updateUserPerms(
 }
 
 /**
- * Activates all users.
- * @returns {Promise<Result<void, string>>} A promise that resolves with void or rejects with an error message.
+ * Bulk-promotes all users with a pending role to member. Admin-only — rejects if the caller is not an admin.
+ * @returns {Promise<Result<void, string>>} Ok on success, or Err if the caller lacks admin rights or the update fails.
  */
 export async function activateAllUsers(): Promise<Result<void, string>> {
   const resultAdminCheck = await userIsAdmin();
@@ -648,16 +650,16 @@ export async function activateAllUsers(): Promise<Result<void, string>> {
 
   try {
     const { error } = await SupabaseHelper.getSupabaseInstance()
-      .from(Tables.profiles_perms)
-      .update({ user_type: PermsKeys.user_types_enum.active })
-      .eq(PermsKeys.user_type, PermsKeys.user_types_enum.inactive);
+      .from(Tables.profile_perms)
+      .update({ role: PermsKeys.roles_enum.member })
+      .eq(PermsKeys.role, PermsKeys.roles_enum.pending);
     if (error) {
-      logger.error("Failed to activate all users", error);
+      logger.error(error, "Failed to activate all users");
       return Err(activateAllUsers.name, { postgrestError: error });
     }
     return Ok.EMPTY;
   } catch (err) {
-    logger.error("Failed to activate all users", err);
+    logger.error(err, "Failed to activate all users");
     return Err(activateAllUsers.name, {
       err: err as Error,
     });

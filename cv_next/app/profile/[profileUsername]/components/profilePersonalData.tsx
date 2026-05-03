@@ -25,12 +25,12 @@ export const ProfilePersonalData = ({
   const [isCurrentUser, setIsCurrentUser] = useState(false);
 
   useEffect(() => {
-    if (userData && user.id === userData.id) {
+    if (userData && user.unique_profile_id === userData.unique_profile_id) {
       setIsCurrentUser(true);
     } else {
       setIsCurrentUser(false);
     }
-  }, [user.id, userData]);
+  }, [user.unique_profile_id, userData]);
 
   return (
     <>

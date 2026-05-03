@@ -34,7 +34,10 @@ export const NewUsernameForm = ({ user }: { user: UserModel }) => {
    */
   async function onConfirm() {
     if (!userData) return;
-    const isValid = await setNewUsername(userData.id, newUsername);
+    const isValid = await setNewUsername(
+      userData.unique_profile_id,
+      newUsername
+    );
     if (isValid.ok) {
       await setFirstLoginCurrent(false);
       await mutateUser();

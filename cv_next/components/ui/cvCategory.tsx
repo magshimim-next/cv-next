@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { generateCategoryLink } from "@/lib/utils";
-import Categories from "@/types/models/categories";
 
 /**
  * Component that renders a category link with a styled button.
@@ -15,7 +14,7 @@ export const CvCategory = ({
   className,
   onClick,
 }: {
-  categoryId: number;
+  categoryId: string;
   className?: string;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
 }) => {
@@ -28,7 +27,7 @@ export const CvCategory = ({
           "mb-2 mr-2 rounded-full bg-gray-700 px-3 py-1 text-sm font-semibold text-white hover:bg-gray-400 hover:underline"
         }
       >
-        #{Categories.category[categoryId]}
+        #{categoryId}
       </div>
     </Link>
   );
