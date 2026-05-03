@@ -39,5 +39,3 @@ More design documents can be found in the [docs folder](./docs/).
 > For the near future, we have decided to only allow and accept contributions from Magshimim Next members to contribute to the project.
 
 Please read more [here](./CONTRIBUTING.md).
-
-Currently, we are working on transitioning to a self hosted database
