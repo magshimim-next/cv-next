@@ -22,8 +22,8 @@ export function isBrowser() {
 
 /**
  * Decodes a base64-encoded string.
- * @param {string | undefined} value
- * @returns {string | null}
+ * @param {string | undefined} value The value to base64 decode
+ * @returns {string | null} The decoded value or none if failed.
  */
 export function decodeValue(value: string | undefined) {
   if (!value) {
@@ -75,7 +75,6 @@ export namespace Ok {
 
 /**
  * Creates an Error Result object with the specified error value.
- * @param {E} val - the error value
  * @param  {E} where - the location of the error
  * @param {ErrorDetails} errors - additional error details
  * @returns {Result<never, E>} the Result object with ok set to false and containing the specified error value
@@ -133,14 +132,19 @@ export const categoryString = (categoryNumber: number) =>
  * @returns {number} The category number or -1 if not found.
  */
 export function toCategoryNumber(name: string): number {
+  if (!name || typeof name !== "string" || name.length === 0) {
+    return -1;
+  }
   let fixedName = name[0].charAt(0).toUpperCase() + name.slice(1);
-  return Categories.category[fixedName as keyof typeof Categories.category];
+  const categoryNum =
+    Categories.category[fixedName as keyof typeof Categories.category];
+  return typeof categoryNum === "number" ? categoryNum : -1;
 }
 
 /**
  * The function will check if the redirectPath provided is within our website
- * @param redirectPath The path the user wants to redirect to
- * @returns true if can redirect to it, false otherwise
+ * @param {string} redirectPath The path the user wants to redirect to
+ * @returns {boolean} true if can redirect to it, false otherwise
  */
 export function checkRedirect(redirectPath: string): boolean {
   return (
@@ -185,3 +189,50 @@ export const toBase64 = (str: string) =>
   typeof window === "undefined"
     ? Buffer.from(str).toString("base64")
     : window.btoa(str);
+
+/**
+ * The function will extract the display name from an object that contains user data afte a table join.
+ * @param {string | null} jointIdStr The string the is recieved from queries that use joins to get user's data
+ * @returns {string} The display name of the user or the entire object as a string
+ */
+export function getJointDisplayName(jointIdStr: string | null) {
+  return typeof jointIdStr === "object" && jointIdStr !== null
+    ? (jointIdStr as { display_name?: string }).display_name
+    : String(jointIdStr);
+}
+
+/**
+ * The function will extract the id from an object that contains user data afte a table join.
+ * @param {string | null} jointIdStr The string the is recieved from queries that use joins to get user's data
+ * @returns {string} The id of the user or the entire object as a string
+ */
+export function getJointAuthorId(jointIdStr: string | null) {
+  return typeof jointIdStr === "object" && jointIdStr !== null
+    ? (jointIdStr as { id?: string }).id
+    : String(jointIdStr);
+}
+
+/**
+ * The function will return random values from a given enum.
+ * @template {object} T The enum types
+ * @param {T} anEnum The enum object to return random value from
+ * @param {number} count How many random values to return
+ * @returns {any[]} An array of random values from the given enum
+ */
+export function getRandomEnumValues<T extends object>(
+  anEnum: T,
+  count: number
+): T[keyof T][] {
+  const allEntries = Object.values(anEnum);
+  const isNumeric = allEntries.some((v) => typeof v === "number");
+
+  const filteredValues = isNumeric
+    ? allEntries.filter((v) => typeof v === "number")
+    : allEntries;
+
+  const shuffled = [...filteredValues].sort(() => 0.5 - Math.random());
+  return shuffled.slice(
+    0,
+    Math.min(count, filteredValues.length)
+  ) as T[keyof T][];
+}
