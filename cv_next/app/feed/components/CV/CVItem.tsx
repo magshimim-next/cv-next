@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
+import { API_DEFINITIONS } from "@/lib/definitions";
 import { encodeValue, shimmer, toBase64 } from "@/lib/utils";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import access_denied from "@/public/images/access_denied.png";
@@ -38,8 +38,6 @@ export default function CVItem({ cv }: CVCardProps) {
     [fetchFromApi]
   );
 
-  const interval = useRef<ReturnType<typeof setInterval> | null>(null);
-
   useEffect(() => {
     const fetchData = async () => {
       const revalidateImage = async () => {
@@ -53,23 +51,10 @@ export default function CVItem({ cv }: CVCardProps) {
       };
 
       await revalidateImage();
-
-      interval.current = setInterval(() => {
-        revalidateImage();
-      }, Definitions.FETCH_WAIT_TIME * 1000);
     };
 
     fetchData();
   }, [cv.document_link, revalidatePreview]);
-
-  useEffect(
-    () => () => {
-      if (interval.current != null) {
-        clearInterval(interval.current);
-      }
-    },
-    []
-  );
 
   const authorObject = JSON.parse(JSON.stringify(cv.user_id || "Loading..."));
   const formattedDate = new Date(cv.created_at).toLocaleDateString("en-US");
