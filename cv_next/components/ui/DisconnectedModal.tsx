@@ -7,9 +7,11 @@ interface DisconnectedModalProps {
 }
 
 /**
- *
- * @param root0
- * @param root0.onDismiss
+ * Blocking modal shown after the user has been automatically signed out due to
+ * inactivity. Requires acknowledgement before redirecting to the home page.
+ * @param {DisconnectedModalProps} root0 - Component props.
+ * @param {() => void} root0.onDismiss - Called when the user dismisses the modal.
+ * @returns {JSX.Element} The modal component.
  */
 export default function DisconnectedModal({
   onDismiss,

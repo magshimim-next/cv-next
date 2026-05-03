@@ -8,10 +8,13 @@ interface InactivityWarningModalProps {
 }
 
 /**
- *
- * @param root0
- * @param root0.secondsLeft
- * @param root0.onStillHere
+ * Blocking modal shown when the user has been idle for the inactivity threshold.
+ * Displays a live countdown and requires the user to confirm they are still present.
+ * If ignored until the countdown reaches zero, the parent handles sign-out.
+ * @param {InactivityWarningModalProps} root0 - Component props.
+ * @param {number} root0.secondsLeft - Remaining seconds before automatic sign-out.
+ * @param {() => void} root0.onStillHere - Called when the user confirms they are still present.
+ * @returns {JSX.Element} The modal component.
  */
 export default function InactivityWarningModal({
   secondsLeft,

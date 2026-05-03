@@ -27,9 +27,11 @@ interface RootLayoutProps {
 }
 
 /**
- *
- * @param root0
- * @param root0.children
+ * Root layout wrapping every page. Mounts global providers (error handling,
+ * theming, CV state, inactivity timeout) and renders the shared navbar and footer.
+ * @param {RootLayoutProps} root0 - Component props.
+ * @param {React.ReactNode} root0.children - The active page content.
+ * @returns {JSX.Element} The layout component wrapping the page content and shared UI.
  */
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
