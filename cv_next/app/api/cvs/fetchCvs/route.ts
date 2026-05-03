@@ -6,7 +6,7 @@ import { getPaginatedCvs } from "@/server/api/cvs";
 
 /**
  * Request handler for fetching paginated CVs with filters
- * @param req {NextRequest} - The incoming request containing pagination and filter data
+ * @param {NextRequest} req - The incoming request containing pagination and filter data
  * @returns {Promise<NextResponse>} - A JSON response containing the paginated CVs or an error message
  */
 export async function POST(req: NextRequest) {
