@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import Definitions, { API_DEFINITIONS } from "@/lib/definitions";
+import { API_DEFINITIONS } from "@/lib/definitions";
 import { encodeValue, shimmer, toBase64 } from "@/lib/utils";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import access_denied from "@/public/images/access_denied.png";
@@ -38,8 +38,6 @@ export default function CVItem({ cv }: CVCardProps) {
     [fetchFromApi]
   );
 
-  const interval = useRef<ReturnType<typeof setInterval> | null>(null);
-
   useEffect(() => {
     const fetchData = async () => {
       const revalidateImage = async () => {
@@ -53,25 +51,14 @@ export default function CVItem({ cv }: CVCardProps) {
       };
 
       await revalidateImage();
-
-      interval.current = setInterval(() => {
-        revalidateImage();
-      }, Definitions.FETCH_WAIT_TIME * 1000);
     };
 
     fetchData();
   }, [cv.document_link, revalidatePreview]);
 
-  useEffect(
-    () => () => {
-      if (interval.current != null) {
-        clearInterval(interval.current);
-      }
-    },
-    []
+  const authorObject = JSON.parse(
+    JSON.stringify(cv.unique_profile_id || "Loading...")
   );
-
-  const authorObject = JSON.parse(JSON.stringify(cv.unique_profile_id || "Loading..."));
   const formattedDate = new Date(cv.updated_at).toLocaleDateString("en-US");
 
   const cvMetadata = (
@@ -88,7 +75,11 @@ export default function CVItem({ cv }: CVCardProps) {
 
   return (
     <div className="group relative h-full w-full max-w-full overflow-hidden rounded-xl bg-white shadow-2xl">
-      <Link id={cv.unique_cv_id} href={`/cv/${encodeValue(cv.unique_cv_id)}`} scroll={false}>
+      <Link
+        id={cv.unique_cv_id}
+        href={`/cv/${encodeValue(cv.unique_cv_id)}`}
+        scroll={false}
+      >
         <div className="relative aspect-[1/1.414] w-full overflow-hidden rounded-lg bg-gray-100">
           <Image
             src={
