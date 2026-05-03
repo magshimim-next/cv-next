@@ -8,7 +8,10 @@ import {
   ValidationRule,
 } from "react-hook-form";
 
-interface MultiSelectProps<T extends FieldValues, V extends string | number = number> {
+interface MultiSelectProps<
+  T extends FieldValues,
+  V extends string | number = number,
+> {
   name: Path<T>;
   label: string;
   options: V[];
@@ -29,9 +32,27 @@ interface MultiSelectProps<T extends FieldValues, V extends string | number = nu
 }
 
 /**
- * MultiSelect component allows users to select multiple options from a dropdown.
+ * Controlled multi-select field integrated with react-hook-form.
+ * Renders a dropdown to add values and a scrollable tag list to remove them.
+ * Selected values are stored as an array on the form field.
+ * @template T - The react-hook-form FieldValues type for the parent form.
+ * @template V - The value type for each option; defaults to number.
+ * @param {MultiSelectProps<T, V>} props - Component props.
+ * @param {Path<T>} props.name - The form field name registered with react-hook-form.
+ * @param {string} props.label - Label displayed above the select.
+ * @param {V[]} props.options - Array of selectable values; must be the same length as labels.
+ * @param {string[]} props.labels - Display labels corresponding to each option value.
+ * @param {Control<T>} props.control - The react-hook-form control object from the parent form.
+ * @param {object} [props.validation] - Optional react-hook-form validation rules.
+ * @param {string} [props.selectLabel] - Placeholder text shown in the dropdown. Defaults to "Choose values".
+ * @param {PathValue<T, Path<T>>} [props.defaultValue] - Initial value for the field.
+ * @param {string} [props.customErrorStyle] - Tailwind class overrides for the validation error message.
+ * @returns {JSX.Element} The multi-select field with label, dropdown, tag list, and error message.
  */
-export const MultiSelect = <T extends FieldValues, V extends string | number = number>({
+export const MultiSelect = <
+  T extends FieldValues,
+  V extends string | number = number,
+>({
   name,
   label,
   options,
@@ -83,7 +104,9 @@ export const MultiSelect = <T extends FieldValues, V extends string | number = n
           className="rounded-md bg-accent hover:bg-muted"
           onChange={(event) => {
             const raw = event.target.value;
-            const parsed = (typeof options[0] === "number" ? Number(raw) : raw) as V;
+            const parsed = (
+              typeof options[0] === "number" ? Number(raw) : raw
+            ) as V;
             handleChange(parsed);
           }}
         >

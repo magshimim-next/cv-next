@@ -26,6 +26,16 @@ interface NewCommentBlockProps {
   parentCommenter: string;
 }
 
+/**
+ * Inline reply input that appears beneath a comment when the user initiates a reply.
+ * Prefills the textarea with the parent commenter's @mention and submits on Enter.
+ * @param {NewCommentBlockProps} props - Component props.
+ * @param {boolean} props.commentOnCommentStatus - Whether the reply input is currently visible.
+ * @param {(commentData: string) => Promise<boolean>} props.addNewCommentClickEvent - Submits the reply; returns true on success.
+ * @param {(status: boolean) => void} props.setCommentOnCommentStatus - Toggles the reply input visibility.
+ * @param {string} props.parentCommenter - Username of the comment being replied to, used for the @mention prefill.
+ * @returns {JSX.Element | null} The reply textarea and submit button, or null when hidden.
+ */
 const NewCommentBlock = ({
   commentOnCommentStatus,
   addNewCommentClickEvent,
@@ -132,6 +142,14 @@ interface VotingSectionProps {
   setLikedCommentAction: (liked: boolean) => Promise<void>;
 }
 
+/**
+ * Like/dislike toggle button for a comment.
+ * Renders a filled icon when the current user has already voted, outline otherwise.
+ * @param {VotingSectionProps} props - Component props.
+ * @param {boolean} props.userVoted - Whether the current user has upvoted this comment.
+ * @param {(liked: boolean) => Promise<void>} props.setLikedCommentAction - Persists the updated vote state.
+ * @returns {JSX.Element} The like or dislike button with a tooltip.
+ */
 const VotingSection = ({
   userVoted,
   setLikedCommentAction,
@@ -169,6 +187,14 @@ interface ResolvedSectionProps {
   setResolvedCommentAction: (resolved: boolean) => Promise<void>;
 }
 
+/**
+ * Resolve/unresolve toggle button for a comment.
+ * Renders a filled green checkmark when resolved, outline otherwise.
+ * @param {ResolvedSectionProps} props - Component props.
+ * @param {boolean} props.userResolved - Whether the comment is currently marked as resolved.
+ * @param {(resolved: boolean) => Promise<void>} props.setResolvedCommentAction - Persists the updated resolved state.
+ * @returns {JSX.Element} The resolve or unresolve button with a tooltip.
+ */
 const ResolvedSection = ({
   userResolved,
   setResolvedCommentAction,
@@ -219,6 +245,19 @@ interface CommenterActionsProps {
   userIsAuthor: boolean;
 }
 
+/**
+ * Owner/admin action bar shown on the right side of a comment.
+ * Renders the delete button and resolved section if the current user owns the comment or is an admin.
+ * Renders only the resolved section if the current user is the CV author.
+ * @param {CommenterActionsProps} props - Component props.
+ * @param {CommenterModel} props.commenter - The user who wrote the comment.
+ * @param {string} props.userId - The current logged-in user's profile ID.
+ * @param {(value: boolean) => void} props.setShowAlert - Shows or hides the delete confirmation alert.
+ * @param {JSX.Element} props.resolvedSection - Pre-rendered resolved toggle element.
+ * @param {boolean} props.userIsAdmin - Whether the current user is an admin.
+ * @param {boolean} props.userIsAuthor - Whether the current user is the CV author.
+ * @returns {JSX.Element | null} The action buttons, or null when the user has no permissions.
+ */
 const CommenterActions = ({
   commenter,
   userId,
@@ -259,6 +298,15 @@ interface GeneralActionsProps {
   comment: CommentModel;
 }
 
+/**
+ * Left-side action bar shown on every comment regardless of ownership.
+ * Renders the reply toggle and the voting section with the current upvote count.
+ * @param {GeneralActionsProps} props - Component props.
+ * @param {JSX.Element} props.startNewComment - Pre-rendered reply toggle element.
+ * @param {JSX.Element} props.votingSection - Pre-rendered like/dislike element.
+ * @param {CommentModel} props.comment - The comment data, used to read the upvote count.
+ * @returns {JSX.Element} The reply and voting controls.
+ */
 const GeneralActions = ({
   startNewComment,
   votingSection,
@@ -279,6 +327,13 @@ interface AlertComponentProps {
   onAlertClick: (type: boolean) => Promise<void>;
 }
 
+/**
+ * Conditional delete confirmation alert. Renders nothing when hidden.
+ * @param {AlertComponentProps} props - Component props.
+ * @param {boolean} props.showAlert - Whether the alert is visible.
+ * @param {(type: boolean) => Promise<void>} props.onAlertClick - Called with true to confirm deletion, false to cancel.
+ * @returns {JSX.Element | null} The confirmation alert, or null when hidden.
+ */
 const AlertComponent = ({ showAlert, onAlertClick }: AlertComponentProps) => {
   return showAlert ? (
     <Alert
@@ -295,6 +350,14 @@ interface StartNewCommentProps {
   setCommentOnCommentStatus: (status: boolean) => void;
 }
 
+/**
+ * Toggle button that opens or closes the inline reply input.
+ * Shows a comment icon when the reply input is closed, an X when open.
+ * @param {StartNewCommentProps} props - Component props.
+ * @param {boolean} props.commentOnCommentStatus - Whether the reply input is currently open.
+ * @param {(status: boolean) => void} props.setCommentOnCommentStatus - Toggles the reply input visibility.
+ * @returns {JSX.Element} The open or close reply button with a tooltip.
+ */
 const StartNewComment = ({
   commentOnCommentStatus,
   setCommentOnCommentStatus,
@@ -341,15 +404,18 @@ interface CommentProps {
 }
 
 /**
- *
- * @param root0
- * @param root0.comment
- * @param root0.userId
- * @param root0.childDepth
- * @param root0.commentsOfComment
- * @param root0.setCommentsOfComments
- * @param root0.userIsAdmin
- * @param root0.userIsAuthor
+ * Renders a single comment with its full action bar, nested replies, and reply input.
+ * Handles optimistic updates for adding replies and delegates delete/resolve/vote
+ * actions to server actions via SWR mutation.
+ * @param {CommentProps} props - Component props.
+ * @param {CommentModel} props.comment - The comment data to display.
+ * @param {string} props.userId - The current logged-in user's profile ID.
+ * @param {number} [props.childDepth] - Nesting depth; controls indentation. Pass 1 for replies.
+ * @param {CommentModel[]} props.commentsOfComment - Direct replies to this comment.
+ * @param {(update: (prev: Map<string, any[]>) => Map<string, any[]>) => void} props.setCommentsOfComments - Updates the parent's reply map.
+ * @param {boolean} props.userIsAdmin - Whether the current user is an admin.
+ * @param {boolean} props.userIsAuthor - Whether the current user is the CV author.
+ * @returns {JSX.Element} The comment article element with actions and nested replies.
  */
 export default function Comment({
   comment,
