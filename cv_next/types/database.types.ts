@@ -336,6 +336,7 @@ export type Database = {
     Views: {
       randomized_cvs: {
         Row: {
+          cv_categories: Database["public"]["Enums"]["Categories"][] | null
           deleted: boolean | null
           description: string | null
           document_link: string | null
@@ -346,6 +347,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          cv_categories?: Database["public"]["Enums"]["Categories"][] | null
           deleted?: boolean | null
           description?: string | null
           document_link?: string | null
@@ -356,6 +358,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          cv_categories?: Database["public"]["Enums"]["Categories"][] | null
           deleted?: boolean | null
           description?: string | null
           document_link?: string | null
