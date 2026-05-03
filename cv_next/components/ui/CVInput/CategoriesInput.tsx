@@ -2,22 +2,19 @@
 import { Controller } from "react-hook-form";
 import { DropdownInput } from "@/app/feed/components/filters/valueSelect";
 import Categories from "@/types/models/categories";
-import { getAllNumbersFromArr } from "@/lib/utils";
 
-/**
- * Props for CategoriesInput component.
- */
 interface CategoriesInputProps {
-  /** The react hook forms control object */
   control: any;
-  /** The form errors object */
   errors: any;
 }
 
 /**
- * Input component for CV categories with validation.
- * @param {CategoriesInputProps} props - The react hook forms props for the component.
- * @returns {JSX.Element} The component.
+ * Controlled category picker for CV upload/edit forms, integrated with react-hook-form.
+ * Enforces a selection of 1–3 categories and renders a validation error when violated.
+ * @param {CategoriesInputProps} props - Component props.
+ * @param {any} props.control - The react-hook-form control object from the parent form.
+ * @param {any} props.errors - The react-hook-form errors object, used to display the cvCategories error.
+ * @returns {JSX.Element} The category label, dropdown, and validation error message.
  */
 export function CategoriesInput({ control, errors }: CategoriesInputProps) {
   return (
@@ -32,14 +29,13 @@ export function CategoriesInput({ control, errors }: CategoriesInputProps) {
             (value.length >= 1 && value.length <= 3) || "Select 1–3 categories",
         }}
         render={({ field }) => (
-          <DropdownInput
+          <DropdownInput<string>
             onChange={(value) => field.onChange(value || [])}
-            valueIds={getAllNumbersFromArr(Object.keys(Categories.category))}
-            getValueById={(id) => Categories.category[id]}
-            valueId={field.value}
+            valueIds={[...Categories.values]}
+            getValueById={(v) => v}
+            valueId={field.value?.length ? field.value : null}
             noneText="none"
             placeHolder="Select categories"
-            exclude={[Categories.category.Undefined]}
           />
         )}
       />

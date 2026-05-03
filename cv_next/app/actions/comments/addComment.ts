@@ -20,7 +20,7 @@ export const addComment = async (
       "An error has occurred while commenting on the CV. Please try again later."
     );
   }
-  if (currentIdResult.val != comment.user_id) {
+  if (currentIdResult.val != comment.unique_profile_id) {
     logger.error(
       `${currentIdResult.val} tried adding a comment with a different ID!`
     );

@@ -28,7 +28,7 @@ export async function RecommendedCvsSection({
   title = "Relevant CVs",
   subtitle = "Based on the categories of this page",
 }: {
-  filteredCategories: number[];
+  filteredCategories: string[];
   currentUserId?: string;
   currentCvId?: string;
   amountToFetch?: number;
@@ -48,12 +48,11 @@ export async function RecommendedCvsSection({
   if (currentUserId) {
     // TODO: use filtering that is based on name recieved using the DB query.
     recommendedCVs = (recommendedRaw || []).filter((rec: CvModel) => {
-      let authorId: string | undefined;
-      if (typeof rec.user_id === "object" && rec.user_id !== null) {
-        authorId = (rec.user_id as { id?: string }).id;
-      } else {
-        authorId = String(rec.user_id);
-      }
+      const authorData = rec.unique_profile_id as any;
+      const authorId =
+        typeof authorData === "object" && authorData !== null
+          ? authorData.unique_profile_id
+          : String(authorData);
       return authorId !== currentUserId;
     });
     if (recommendedCVs.length >= amountToRecommend) {
@@ -61,7 +60,7 @@ export async function RecommendedCvsSection({
     }
   } else if (currentCvId) {
     recommendedCVs = (recommendedRaw || []).filter(
-      (rec: CvModel) => rec.id !== currentCvId
+      (rec: CvModel) => rec.unique_cv_id !== currentCvId
     );
     if (recommendedCVs.length >= amountToRecommend) {
       recommendedCVs = recommendedCVs.slice(0, amountToRecommend);
@@ -78,7 +77,7 @@ export async function RecommendedCvsSection({
           </h3>
           <CarouselStructure options={{ loop: true }}>
             {recommendedCVs.map((recCv: CvModel) => (
-              <div className="p-4" key={recCv.id}>
+              <div className="p-4" key={recCv.unique_cv_id}>
                 <CVClickableCard cv={recCv} />
               </div>
             ))}

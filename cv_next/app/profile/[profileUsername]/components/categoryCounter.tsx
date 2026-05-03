@@ -4,7 +4,7 @@ import { cache } from "react";
 import { CvCategory } from "@/components/ui/cvCategory";
 
 const getTopCategories = async (cvs: CvModel[]) => {
-  const categoryCount: { [key: number]: number } = {};
+  const categoryCount: { [key: string]: number } = {};
   cvs.forEach((cv) => {
     cv.cv_categories.forEach((category_id) => {
       categoryCount[category_id] = (categoryCount[category_id] || 0) + 1;
@@ -13,7 +13,7 @@ const getTopCategories = async (cvs: CvModel[]) => {
 
   const categoryCountArray = Object.entries(categoryCount).map(
     ([categoryId, count]) => ({
-      categoryId: parseInt(categoryId),
+      categoryId,
       count,
     })
   );

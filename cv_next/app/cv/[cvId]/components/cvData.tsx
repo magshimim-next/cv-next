@@ -28,7 +28,7 @@ export default function CvData({
   validCV: boolean;
   canEditCv: boolean;
 }) {
-  const uploader = JSON.parse(JSON.stringify(cv.user_id));
+  const uploader = JSON.parse(JSON.stringify(cv.unique_profile_id));
   const displayName = uploader.display_name || uploader.username;
   const { showError } = useError();
   const router = useRouter();
@@ -39,7 +39,7 @@ export default function CvData({
         showError(
           Visible_Error_Messages.CurrentUserPrivateCV.title,
           Visible_Error_Messages.CurrentUserPrivateCV.description,
-          () => router.push(`/cv/${encodeValue(cv.id)}/edit`)
+          () => router.push(`/cv/${encodeValue(cv.unique_cv_id)}/edit`)
         );
       } else {
         showError(
@@ -49,7 +49,7 @@ export default function CvData({
         );
       }
     }
-  }, [validCV, canEditCv, showError, router, cv.id]);
+  }, [validCV, canEditCv, showError, router, cv.unique_cv_id]);
 
   const showData = validCV ? "md:grid-cols-[70%_30%]" : "";
 
@@ -66,7 +66,9 @@ export default function CvData({
                 <FiSettings
                   size={22}
                   style={{ cursor: "pointer" }}
-                  onClick={() => router.push(`/cv/${encodeValue(cv.id)}/edit`)}
+                  onClick={() =>
+                    router.push(`/cv/${encodeValue(cv.unique_cv_id)}/edit`)
+                  }
                 />
               </Tooltip>
             </div>
