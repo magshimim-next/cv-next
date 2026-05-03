@@ -340,6 +340,17 @@ interface CommentProps {
   userIsAuthor: boolean;
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.comment
+ * @param root0.userId
+ * @param root0.childDepth
+ * @param root0.commentsOfComment
+ * @param root0.setCommentsOfComments
+ * @param root0.userIsAdmin
+ * @param root0.userIsAuthor
+ */
 export default function Comment({
   comment,
   userId,
@@ -442,12 +453,16 @@ export default function Comment({
   };
 
   const setLikedCommentAction = async (liked: boolean) => {
-    await upvoteComment(comment.unique_cv_comment_id, liked, userId).finally(() => {
-      mutate(comment.unique_cv_id);
-    });
+    await upvoteComment(comment.unique_cv_comment_id, liked, userId).finally(
+      () => {
+        mutate(comment.unique_cv_id);
+      }
+    );
   };
 
-  const commenter = JSON.parse(JSON.stringify(comment.unique_profile_id || "Loading..."));
+  const commenter = JSON.parse(
+    JSON.stringify(comment.unique_profile_id || "Loading...")
+  );
 
   const userVoted = comment.upvotes?.includes(userId) || false;
   const userResolved = comment.resolved;

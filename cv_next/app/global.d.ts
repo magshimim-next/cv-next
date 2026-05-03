@@ -21,11 +21,7 @@ declare global {
       };
   type NewCommentModel = Omit<
     CommentModel,
-    | "unique_cv_comment_id"
-    | "updated_at"
-    | "upvotes"
-    | "deleted"
-    | "resolved"
+    "unique_cv_comment_id" | "updated_at" | "upvotes" | "deleted" | "resolved"
   >;
   type UserModel = DB["public"]["Tables"]["profiles"]["Row"];
   type PageHeader = {
@@ -34,9 +30,12 @@ declare global {
     explanation?: string;
   };
 
-  type NewCvModel = Omit<CvModel, "unique_cv_id" | "updated_at" | "deleted" | "publishable">;
+  type NewCvModel = Omit<
+    CvModel,
+    "unique_cv_id" | "updated_at" | "deleted" | "publishable"
+  >;
   type UILocation = (typeof UI_Location)[keyof typeof UI_Location];
-  type route = {
+  type Route = {
     route: string;
     path: string;
     image: string;

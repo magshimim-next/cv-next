@@ -39,7 +39,8 @@ export const FilterPanel = ({
     const params = new URLSearchParams(searchParams);
 
     if (categoryIds && categoryIds.length > 0) {
-      const uriCategories = searchParams.get(CATEGORY_PARAM)?.split(",").filter(Boolean) ?? [];
+      const uriCategories =
+        searchParams.get(CATEGORY_PARAM)?.split(",").filter(Boolean) ?? [];
       if (JSON.stringify(uriCategories) != JSON.stringify(categoryIds)) {
         params.set(CATEGORY_PARAM, categoryIds.join(","));
       }

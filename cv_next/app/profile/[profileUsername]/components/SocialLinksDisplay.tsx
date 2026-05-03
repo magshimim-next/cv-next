@@ -2,7 +2,12 @@ import { FaLinkedin, FaGithub, FaExternalLinkAlt } from "react-icons/fa";
 import { FaGitlab } from "react-icons/fa6";
 
 export const SocialLinksDisplay = ({ user }: { user: UserModel }) => {
-  const socials = user.socials as { linkedin?: string | null; github?: string | null; gitlab?: string | null; portfolio?: string | null } | null;
+  const socials = user.socials as {
+    linkedin?: string | null;
+    github?: string | null;
+    gitlab?: string | null;
+    portfolio?: string | null;
+  } | null;
   return (
     <div>
       <div className="flex flex-row items-center justify-start gap-2 pt-2">

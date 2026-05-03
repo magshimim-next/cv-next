@@ -1,4 +1,3 @@
-
 export const ProfileDisplay = ({ user }: { user: UserModel }) => {
   return (
     <>
@@ -22,9 +21,7 @@ export const ProfileDisplay = ({ user }: { user: UserModel }) => {
           <label className="font-bold" htmlFor="workStatus">
             Work Status:{" "}
           </label>
-          <span id="workStatus">
-            {user.work_status || "Not sharing"}
-          </span>
+          <span id="workStatus">{user.work_status || "Not sharing"}</span>
         </div>
       </div>
     </>

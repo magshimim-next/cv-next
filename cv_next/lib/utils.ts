@@ -100,7 +100,7 @@ export function transformToPreviewLink(link: string): string {
 
 /**
  * Generates a category link based on the provided category number.
- * @param {number} categoryNumber - The category number.
+ * @param {string} category - The category number.
  * @returns {string} The generated category link.
  */
 export const generateCategoryLink = (category: string) =>
@@ -108,11 +108,15 @@ export const generateCategoryLink = (category: string) =>
 
 /**
  * Returns the category string as-is (categories are now plain strings).
+ * @param {string} category - The category string identifier.
+ * @returns {string} The category string as is.
  */
 export const categoryString = (category: string) => category;
 
 /**
  * Returns the category name as-is (categories are now plain strings, not numbers).
+ * @param {string} name - The category string.
+ * @returns {string} The category name.
  */
 export function toCategoryNumber(name: string): string {
   return name ?? "";

@@ -79,7 +79,9 @@ export default async function Page({ params }: { params: { cvId: string } }) {
       <CvData
         cv={cv}
         validCV={validCV}
-        canEditCv={userId.val == authorData.unique_profile_id || resultAdminCheck.ok}
+        canEditCv={
+          userId.val == authorData.unique_profile_id || resultAdminCheck.ok
+        }
       />
       <div className={`grid grid-cols-1 gap-y-4 ${fullCV} md:gap-x-4`}>
         <section className=" flex-col rounded-lg">

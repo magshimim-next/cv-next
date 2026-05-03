@@ -1,8 +1,8 @@
 "use server";
 import Image from "next/image";
 import Link from "next/link";
-import { PermsDropDown } from "./permsDropDown";
 import { PermsKeys } from "@/lib/supabase-definitions";
+import { PermsDropDown } from "./permsDropDown";
 
 export const ProfilesTable = ({
   profiles,
@@ -61,7 +61,10 @@ export const ProfilesTable = ({
               <td className="whitespace-nowrap border p-4">
                 <PermsDropDown
                   userId={profile.unique_profile_id || ""}
-                  currentPerms={(profile.role ?? "pending") as keyof typeof PermsKeys.roles_enum}
+                  currentPerms={
+                    (profile.role ??
+                      "pending") as keyof typeof PermsKeys.roles_enum
+                  }
                 />
               </td>
             </tr>

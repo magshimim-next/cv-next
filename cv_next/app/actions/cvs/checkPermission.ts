@@ -20,9 +20,10 @@ export async function checkCVModifyPermission(
     );
   }
   const authorData = cvData.unique_profile_id as any;
-  const authorId = typeof authorData === "object" && authorData !== null
-    ? authorData.unique_profile_id
-    : String(authorData);
+  const authorId =
+    typeof authorData === "object" && authorData !== null
+      ? authorData.unique_profile_id
+      : String(authorData);
 
   const resultAdminCheck = await userIsAdmin();
   if (currentIdResult.val != authorId && !resultAdminCheck.ok) {

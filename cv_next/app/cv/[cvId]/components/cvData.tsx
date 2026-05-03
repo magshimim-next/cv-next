@@ -66,7 +66,9 @@ export default function CvData({
                 <FiSettings
                   size={22}
                   style={{ cursor: "pointer" }}
-                  onClick={() => router.push(`/cv/${encodeValue(cv.unique_cv_id)}/edit`)}
+                  onClick={() =>
+                    router.push(`/cv/${encodeValue(cv.unique_cv_id)}/edit`)
+                  }
                 />
               </Tooltip>
             </div>

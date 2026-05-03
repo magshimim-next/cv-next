@@ -12,10 +12,15 @@ import { ProfileKeys } from "@/lib/supabase-definitions";
 import { sanitizeLink } from "@/helpers/cvLinkRegexHelper";
 import { FormInput } from "./formInput";
 
-type SocialsShape = { linkedin?: string | null; github?: string | null; gitlab?: string | null; portfolio?: string | null };
+type SocialsShape = {
+  linkedin?: string | null;
+  github?: string | null;
+  gitlab?: string | null;
+  portfolio?: string | null;
+};
 
 export type FormValues = {
-  display_name: string;
+  displayName: string;
   workCategories: string[];
   workStatus: UserModel["work_status"];
   linkedin: string;
@@ -60,7 +65,7 @@ export default function ProfileForm({
 
   const handleOnSubmit: SubmitHandler<FormValues> = async (data) => {
     const {
-      display_name,
+      displayName,
       workCategories,
       workStatus,
       linkedin,
@@ -73,14 +78,15 @@ export default function ProfileForm({
       unique_profile_id: user.unique_profile_id,
     };
     // Only update if the value has changed
-    if (display_name !== user.display_name) {
-      userDataToUpdate.display_name = display_name;
+    if (displayName !== user.display_name) {
+      userDataToUpdate.display_name = displayName;
     }
     if (
       JSON.stringify([...workCategories].sort()) !==
       JSON.stringify([...(user.work_categories ?? [])].sort())
     ) {
-      userDataToUpdate.work_categories = workCategories as UserModel["work_categories"];
+      userDataToUpdate.work_categories =
+        workCategories as UserModel["work_categories"];
     }
     if (workStatus !== user.work_status) {
       userDataToUpdate.work_status = workStatus;
@@ -98,7 +104,9 @@ export default function ProfileForm({
         if (sanitized) {
           socialChanges[socialKey] = sanitized;
         } else {
-          setError(formFieldName, { message: `Invalid ${String(formFieldName)} link` });
+          setError(formFieldName, {
+            message: `Invalid ${String(formFieldName)} link`,
+          });
           setValue(formFieldName, "");
           return false;
         }
@@ -107,9 +115,13 @@ export default function ProfileForm({
     };
 
     if (!checkAndAddSocial(gitlab, socials.gitlab, "gitlab", "gitlab")) return;
-    if (!checkAndAddSocial(portfolio, socials.portfolio, "portfolio", "portfolio")) return;
+    if (
+      !checkAndAddSocial(portfolio, socials.portfolio, "portfolio", "portfolio")
+    )
+      return;
     if (!checkAndAddSocial(github, socials.github, "github", "github")) return;
-    if (!checkAndAddSocial(linkedin, socials.linkedin, "linkedin", "linkedin")) return;
+    if (!checkAndAddSocial(linkedin, socials.linkedin, "linkedin", "linkedin"))
+      return;
 
     if (Object.keys(socialChanges).length > 0) {
       userDataToUpdate.socials = { ...socials, ...socialChanges };
@@ -145,7 +157,12 @@ export default function ProfileForm({
   const clearSocial = async (social: Path<FormValues>) => {
     setValue(social, "");
 
-    const validSocials: (keyof SocialsShape)[] = ["linkedin", "github", "gitlab", "portfolio"];
+    const validSocials: (keyof SocialsShape)[] = [
+      "linkedin",
+      "github",
+      "gitlab",
+      "portfolio",
+    ];
     if (!validSocials.includes(social as keyof SocialsShape)) {
       setError("root", { message: "Invalid social field" });
       return;
@@ -166,13 +183,13 @@ export default function ProfileForm({
       onSubmit={handleSubmit(handleOnSubmit)}
     >
       <FormInput
-        field="display_name"
+        field="displayName"
         placeholder="display name"
         defaultValue={user.display_name ?? ""}
         register={register}
         isRequired={true}
-        hasError={errors.display_name && true}
-        errorMsg={errors.display_name?.message}
+        hasError={errors.displayName && true}
+        errorMsg={errors.displayName?.message}
       />
 
       <MultiSelect<FormValues, string>

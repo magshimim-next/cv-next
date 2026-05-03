@@ -78,7 +78,10 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
       mutate(
         cv.unique_cv_id,
         (currentComments: CommentModel[] = []) =>
-          currentComments.filter((comment) => comment.unique_cv_comment_id !== comment.unique_cv_comment_id),
+          currentComments.filter(
+            (comment) =>
+              comment.unique_cv_comment_id !== comment.unique_cv_comment_id
+          ),
         false
       );
       return false;

@@ -18,7 +18,6 @@ import { logErrorWithTrace } from "@/server/base/logger";
 
 /**
  * Partial update to a user.
- *
  * @param {Partial<UserModel>} user - partial user data to update
  * @returns {Promise<Result<void, string>>} A Promise with the result of the operation.
  */
@@ -36,10 +35,9 @@ export const updateUserAction = async (
 
 /**
  * Updates a user's username.
- *
  * @param {string} userId - The ID of the user to update
  * @param {string} newUserName - The new username
- * @return {Promise<Result<void, string>>} A Promise with the result of the operation.
+ * @returns {Promise<Result<void, string>>} A Promise with the result of the operation.
  */
 export const setNewUsername = async (
   userId: string,
@@ -56,10 +54,9 @@ export const setNewUsername = async (
 
 /**
  * Updates a user's work status.
- *
  * @param {string} userId - The ID of the user to update
  * @param {string} newWorkStatus - The new work status
- * @return {Promise<Result<void, string>>} A Promise with the result of the operation.
+ * @returns {Promise<Result<void, string>>} A Promise with the result of the operation.
  */
 export const setNewWorkStatus = async (
   userId: string,
@@ -76,10 +73,9 @@ export const setNewWorkStatus = async (
 
 /**
  * Updates a user's work categories.
- *
  * @param {string} userId - The ID of the user to update
  * @param {number[] | null | undefined} newWorkCategories - The new work categories
- * @return {Promise<Result<void, string>>} A Promise with the result of the operation.
+ * @returns {Promise<Result<void, string>>} A Promise with the result of the operation.
  */
 export const setNewWorkCategories = async (
   userId: string,
@@ -96,10 +92,9 @@ export const setNewWorkCategories = async (
 
 /**
  * Updates a user's display name
- *
  * @param {string} userId - The ID of the user to update
  * @param {string} newDisplayName - The new display name
- * @return {Promise<Result<void, string>>} A Promise with the result of the operation.
+ * @returns {Promise<Result<void, string>>} A Promise with the result of the operation.
  */
 export const setNewDisplayName = async (
   userId: string,
@@ -117,7 +112,7 @@ export const setNewDisplayName = async (
 /**
  * Updates the first login status of a user.
  * @param {boolean} firstLogin - The new first login status
- * @return {Promise<Result<void, string>>} A Promise with the result of the operation.
+ * @returns {Promise<Result<void, string>>} A Promise with the result of the operation.
  */
 export const setFirstLoginCurrent = async (
   firstLogin: boolean
@@ -133,9 +128,8 @@ export const setFirstLoginCurrent = async (
 
 /**
  * Upload the new user profile to a bucket.
- *
  * @param {string} fileToUpload - new user profile image
- * @return {Promise<Result<void, string>>} the bucket upload image url
+ * @returns {Promise<Result<void, string>>} the bucket upload image url
  */
 export const uploadProfilePicture = async (
   fileToUpload: string
@@ -152,7 +146,7 @@ export const uploadProfilePicture = async (
 /**
  * Updates the url pic of the user.
  * @param {string} newUrl - The new url pic
- * @return {Promise<Result<void, string>>} Was the update successful?
+ * @returns {Promise<Result<void, string>>} Was the update successful?
  */
 export const setCurrentProfilePath = async (
   newUrl: string
@@ -170,13 +164,16 @@ export const setCurrentProfilePath = async (
  * Updates the type of a user.
  * @param {string} userId - The ID of the user to update
  * @param {string} newPerms - The new perms
- * @return {Promise<Result<void, string>>} A Promise with the result of the operation.
+ * @returns {Promise<Result<void, string>>} A Promise with the result of the operation.
  */
 export const updatePerms = async (
   userId: string,
   newPerms: keyof typeof PermsKeys.roles_enum
 ): Promise<Result<void, string>> => {
-  const result = await updateUserPerms({ unique_profile_id: userId, role: newPerms });
+  const result = await updateUserPerms({
+    unique_profile_id: userId,
+    role: newPerms,
+  });
   if (result.ok) {
     return result;
   } else {
@@ -187,7 +184,7 @@ export const updatePerms = async (
 
 /**
  * Activates all users.
- * @return {Promise<Result<void, string>>} A Promise with the result of the operation.
+ * @returns {Promise<Result<void, string>>} A Promise with the result of the operation.
  */
 export const activateUsers = async (): Promise<Result<void, string>> => {
   const result = await activateAllUsers();

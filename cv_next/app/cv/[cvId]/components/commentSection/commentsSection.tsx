@@ -80,7 +80,9 @@ export default function CommentsSection({
                 comment={comment}
                 userId={userId}
                 commentsOfComment={
-                  commentsOfComments.get(comment.unique_cv_comment_id) as Array<any>
+                  commentsOfComments.get(
+                    comment.unique_cv_comment_id
+                  ) as Array<any>
                 }
                 setCommentsOfComments={setCommentsOfComments}
                 userIsAdmin={userIsAdmin}

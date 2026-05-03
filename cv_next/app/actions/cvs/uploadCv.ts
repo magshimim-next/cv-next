@@ -6,8 +6,9 @@ import { encodeValue } from "@/lib/utils";
 import { transformGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 import logger from "@/server/base/logger";
 import { getCurrentId } from "@/server/api/users";
-import { checkCVModifyPermission } from "./checkPermission";
 import Categories from "@/types/models/categories";
+import { checkCVModifyPermission } from "./checkPermission";
+
 export interface InputValues {
   link: string;
   description: string;
