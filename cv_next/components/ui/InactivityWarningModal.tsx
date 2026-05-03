@@ -26,17 +26,17 @@ export default function InactivityWarningModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="w-full max-w-sm rounded-xl bg-background p-8 text-center shadow-2xl">
-        <h2 className="mb-2 text-xl font-semibold text-primary">
+      <div className="w-full max-w-sm rounded-xl bg-theme-700 p-8 text-center shadow-2xl">
+        <h2 className="mb-2 text-xl font-semibold text-white">
           Are you still there?
         </h2>
-        <p className="mb-6 text-sm text-muted-foreground">
+        <p className="mb-6 text-sm text-white/70">
           You will be signed out in{" "}
-          <span className="font-mono font-semibold text-primary">
+          <span className="font-mono font-semibold text-white">
             {timeDisplay}
           </span>
         </p>
-        <Button onClick={onStillHere} className="w-full">
+        <Button onClick={onStillHere} variant="secondary" className="w-full">
           I&apos;m still here
         </Button>
       </div>

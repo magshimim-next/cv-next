@@ -16,14 +16,14 @@ export default function DisconnectedModal({
 }: DisconnectedModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="w-full max-w-sm rounded-xl bg-background p-8 text-center shadow-2xl">
-        <h2 className="mb-2 text-xl font-semibold text-primary">
+      <div className="w-full max-w-sm rounded-xl bg-theme-700 p-8 text-center shadow-2xl">
+        <h2 className="mb-2 text-xl font-semibold text-white">
           You have been disconnected
         </h2>
-        <p className="mb-6 text-sm text-muted-foreground">
+        <p className="mb-6 text-sm text-white/70">
           You were signed out due to inactivity.
         </p>
-        <Button onClick={onDismiss} className="w-full">
+        <Button onClick={onDismiss} variant="secondary" className="w-full">
           OK
         </Button>
       </div>
