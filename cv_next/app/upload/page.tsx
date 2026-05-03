@@ -15,7 +15,9 @@ export default async function Page() {
   if (!userId.ok) {
     notFound();
   }
-  const randomCategories = [...Categories.values].sort(() => 0.5 - Math.random()).slice(0, 3);
+  const randomCategories = [...Categories.values]
+    .sort(() => 0.5 - Math.random())
+    .slice(0, 3);
 
   return (
     <div>

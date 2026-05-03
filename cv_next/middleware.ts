@@ -5,8 +5,20 @@ import Definitions, {
   API_DEFINITIONS,
   Visible_Error_Messages,
 } from "./lib/definitions";
-import { PermsKeys, ProfileKeys, Tables } from "./lib/supabase-definitions";
+import { PermsKeys, Tables } from "./lib/supabase-definitions";
 
+/**
+ * Next.js middleware that guards all protected routes.
+ * Runs on every request matched by the config below and enforces three checks in order:
+ * 1. Bypasses auth for internal CV API routes.
+ * 2. Redirects unauthenticated users to the login page, preserving the intended URL in `?next`.
+ * 3. Redirects users without an active member role (member/moderator/admin) to the home page with an error.
+ *    Admin-only routes additionally redirect non-admins to `/not_found`.
+ * Cookie forwarding follows the Supabase SSR pattern — cookies set during the auth check
+ * are propagated to both the request and the response to keep the session fresh.
+ * @param {NextRequest} request - The incoming Next.js request object.
+ * @returns {Promise<NextResponse>} A redirect response if auth fails, or the original response with refreshed cookies.
+ */
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -61,7 +73,11 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse;
   }
 
-  const memberRoles = [PermsKeys.roles_enum.member, PermsKeys.roles_enum.moderator, PermsKeys.roles_enum.admin];
+  const memberRoles = [
+    PermsKeys.roles_enum.member,
+    PermsKeys.roles_enum.moderator,
+    PermsKeys.roles_enum.admin,
+  ];
   if (!perm || permError || !memberRoles.includes(perm.role)) {
     const nextUrl = new URL(
       `/?error=${Visible_Error_Messages.InactiveUser.keyword}`,

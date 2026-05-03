@@ -49,9 +49,10 @@ export async function RecommendedCvsSection({
     // TODO: use filtering that is based on name recieved using the DB query.
     recommendedCVs = (recommendedRaw || []).filter((rec: CvModel) => {
       const authorData = rec.unique_profile_id as any;
-      const authorId = typeof authorData === "object" && authorData !== null
-        ? authorData.unique_profile_id
-        : String(authorData);
+      const authorId =
+        typeof authorData === "object" && authorData !== null
+          ? authorData.unique_profile_id
+          : String(authorData);
       return authorId !== currentUserId;
     });
     if (recommendedCVs.length >= amountToRecommend) {

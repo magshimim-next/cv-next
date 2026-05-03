@@ -8,6 +8,14 @@ interface CategoriesInputProps {
   errors: any;
 }
 
+/**
+ * Controlled category picker for CV upload/edit forms, integrated with react-hook-form.
+ * Enforces a selection of 1–3 categories and renders a validation error when violated.
+ * @param {CategoriesInputProps} props - Component props.
+ * @param {any} props.control - The react-hook-form control object from the parent form.
+ * @param {any} props.errors - The react-hook-form errors object, used to display the cvCategories error.
+ * @returns {JSX.Element} The category label, dropdown, and validation error message.
+ */
 export function CategoriesInput({ control, errors }: CategoriesInputProps) {
   return (
     <div className="flex flex-col">

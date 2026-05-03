@@ -13,6 +13,11 @@ import logger from "@/server/base/logger";
 import { Err, Ok } from "@/lib/utils";
 import SupabaseHelper from "./supabaseHelper";
 
+/**
+ * Fetches a single CV by its ID, joining the author's profile fields.
+ * @param {string} cvId - The unique CV ID to look up.
+ * @returns {Promise<CvModel | null>} The matching CV with author profile, or null on error or no match.
+ */
 export async function getCvById(cvId: string): Promise<CvModel | null> {
   try {
     const { data: cvs, error } = await SupabaseHelper.getSupabaseInstance()
@@ -41,6 +46,12 @@ export async function getCvById(cvId: string): Promise<CvModel | null> {
   }
 }
 
+/**
+ * Fetches all CVs belonging to a user, optionally including soft-deleted ones.
+ * @param {string} userId - The profile ID of the CV owner.
+ * @param {boolean} [filterOutDeleted] - When true, excludes CVs marked as deleted.
+ * @returns {Promise<CvModel[] | null>} Array of CVs with author profile, or null on error.
+ */
 export async function getCvsByUserId(
   userId: string,
   filterOutDeleted = true
@@ -72,6 +83,14 @@ export async function getCvsByUserId(
   }
 }
 
+/**
+ * Fetches a paginated, filtered page of CVs ordered by most recently updated.
+ * Applies category overlap filtering and profile name search when provided.
+ * @param {boolean} [filterOutDeleted] - When true, excludes soft-deleted CVs.
+ * @param {number} [page] - Zero-based page index; defaults to PAGINATION_INIT_PAGE_NUMBER.
+ * @param {filterValues} [filters] - Optional category and search value filters.
+ * @returns {Promise<PaginatedCvsModel | null>} The page number and matching CVs, or null on error.
+ */
 export async function getPaginatedCvs(
   filterOutDeleted: boolean = true,
   page: number = Definitions.PAGINATION_INIT_PAGE_NUMBER,
@@ -120,6 +139,14 @@ export async function getPaginatedCvs(
   }
 }
 
+/**
+ * Fetches a randomized sample of CVs from the randomized_cvs view.
+ * Uses the `rnd` column for ordering so results differ across calls.
+ * @param {boolean} [filterOutDeleted] - When true, excludes soft-deleted CVs.
+ * @param {number} [amount] - Maximum number of CVs to return; defaults to DEFAULT_RANDOM_CVS.
+ * @param {filterValues} [filters] - Optional category and profile exclusion filters.
+ * @returns {Promise<CvModel[] | null>} Array of randomized CVs, or null on error.
+ */
 export async function getRandomizedCvs(
   filterOutDeleted: boolean = true,
   amount: number = Definitions.DEFAULT_RANDOM_CVS,
@@ -158,6 +185,13 @@ export async function getRandomizedCvs(
   }
 }
 
+/**
+ * Excludes CVs whose author display name or username matches the search value.
+ * Used for the randomized feed where matching profiles should be hidden, not surfaced.
+ * @param {any} profileQuery - The active Supabase query builder to mutate.
+ * @param {filterValues} [filters] - Filters containing the optional search value.
+ * @returns {any} The query builder with profile exclusion filters applied.
+ */
 function filterOutProfiles(profileQuery: any, filters?: filterValues) {
   if (filters?.searchValue) {
     const searchValue = `${filters.searchValue}`;
@@ -178,6 +212,13 @@ function filterOutProfiles(profileQuery: any, filters?: filterValues) {
   return profileQuery;
 }
 
+/**
+ * Narrows a profiles query to rows whose display name or username matches the search value (ilike).
+ * The resulting profile IDs are later used to include matching CVs in the paginated feed.
+ * @param {any} profileQuery - The active Supabase profiles query builder to mutate.
+ * @param {filterValues} [filters] - Filters containing the optional search value.
+ * @returns {any} The query builder with the profile name filter applied.
+ */
 function applyProfileSearchFilter(profileQuery: any, filters?: filterValues) {
   if (filters?.searchValue) {
     const searchValue = `%${filters.searchValue}%`;
@@ -188,6 +229,12 @@ function applyProfileSearchFilter(profileQuery: any, filters?: filterValues) {
   return profileQuery;
 }
 
+/**
+ * Adds an array-overlap filter on cv_categories when category IDs are provided.
+ * @param {any} query - The active Supabase CVs query builder to mutate.
+ * @param {filterValues} [filters] - Filters containing the optional category ID list.
+ * @returns {any} The query builder with the category filter applied, or unchanged if no categories.
+ */
 function applyCategoryFilter(query: any, filters?: filterValues) {
   if (filters?.categoryIds?.length) {
     logger.debug(filters.categoryIds, "category ids");
@@ -196,6 +243,15 @@ function applyCategoryFilter(query: any, filters?: filterValues) {
   return query;
 }
 
+/**
+ * Extends a CVs query to include results matching either the CV description or the
+ * profile IDs returned by a pre-built profile search query.
+ * Executes the profile query internally and joins the results into the CV filter.
+ * @param {any} query - The active Supabase CVs query builder to mutate.
+ * @param {any} profileQuery - A Supabase profiles query already filtered by search value.
+ * @param {filterValues} [filters] - Filters containing the optional search value.
+ * @returns {Promise<any>} The CV query builder extended with the combined OR filter.
+ */
 async function applyProfileSearchToCvs(
   query: any,
   profileQuery: any,
@@ -218,6 +274,11 @@ async function applyProfileSearchToCvs(
   return query;
 }
 
+/**
+ * Updates all fields of an existing CV row matched by its unique_cv_id.
+ * @param {CvModel} cv - The CV object with updated fields; must include unique_cv_id.
+ * @returns {Promise<PostgrestError | CvModel>} The updated CV on success, or the PostgREST error on failure.
+ */
 export async function updateGivenCV(
   cv: CvModel
 ): Promise<PostgrestError | CvModel> {
@@ -239,6 +300,11 @@ export async function updateGivenCV(
   }
 }
 
+/**
+ * Inserts a new CV row into the cvs table and returns the created record.
+ * @param {NewCvModel} cv - The new CV data to insert.
+ * @returns {Promise<CvModel | null>} The created CV on success, or null on error.
+ */
 export async function uploadNewCV(cv: NewCvModel): Promise<null | CvModel> {
   const { data, error } = await SupabaseHelper.getSupabaseInstance()
     .from("cvs")
@@ -251,6 +317,11 @@ export async function uploadNewCV(cv: NewCvModel): Promise<null | CvModel> {
   return data[0];
 }
 
+/**
+ * Soft-deletes a CV by setting its deleted flag to true. The row is retained in the database.
+ * @param {string} cvId - The unique CV ID to mark as deleted.
+ * @returns {Promise<Result<void, string>>} Ok on success, or Err with a message on failure.
+ */
 export async function markCVAsDeleted(
   cvId: string
 ): Promise<Result<void, string>> {
@@ -270,13 +341,18 @@ export async function markCVAsDeleted(
   }
 }
 
+/**
+ * Generates a short-lived signed URL for previewing a CV file from Supabase Storage.
+ * The URL expiration is controlled by CV_PREVIEW_EXPIRATION_TIME in Definitions.
+ * @param {string} fileName - The storage path of the CV file.
+ * @returns {Promise<Result<string, string>>} Ok with the signed URL on success, or Err on failure.
+ */
 export async function getCVSignedPreview(
   fileName: string
 ): Promise<Result<string, string>> {
-  const { data: previewUrl, error } =
-    await SupabaseHelper.getSupabaseInstance()
-      .storage.from(Storage.cvs)
-      .createSignedUrl(fileName, Definitions.CV_PREVIEW_EXPIRATION_TIME);
+  const { data: previewUrl, error } = await SupabaseHelper.getSupabaseInstance()
+    .storage.from(Storage.cvs)
+    .createSignedUrl(fileName, Definitions.CV_PREVIEW_EXPIRATION_TIME);
   const signedUrl = previewUrl?.signedUrl;
 
   if (!error && signedUrl) return Ok(signedUrl);
