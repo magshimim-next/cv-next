@@ -7,7 +7,7 @@ import {
   ProfileKeys,
   Storage,
 } from "@/lib/supabase-definitions";
-import { filterValues } from "@/types/models/filters";
+import { FilterValues } from "@/types/models/filters";
 import Definitions from "@/lib/definitions";
 import logger from "@/server/base/logger";
 import { Err, Ok } from "@/lib/utils";
@@ -88,13 +88,13 @@ export async function getCvsByUserId(
  * Applies category overlap filtering and profile name search when provided.
  * @param {boolean} [filterOutDeleted] - When true, excludes soft-deleted CVs.
  * @param {number} [page] - Zero-based page index; defaults to PAGINATION_INIT_PAGE_NUMBER.
- * @param {filterValues} [filters] - Optional category and search value filters.
+ * @param {FilterValues} [filters] - Optional category and search value filters.
  * @returns {Promise<PaginatedCvsModel | null>} The page number and matching CVs, or null on error.
  */
 export async function getPaginatedCvs(
   filterOutDeleted: boolean = true,
   page: number = Definitions.PAGINATION_INIT_PAGE_NUMBER,
-  filters?: filterValues
+  filters?: FilterValues
 ): Promise<PaginatedCvsModel | null> {
   try {
     const from = page * Definitions.CVS_PER_PAGE;
@@ -144,13 +144,13 @@ export async function getPaginatedCvs(
  * Uses the `rnd` column for ordering so results differ across calls.
  * @param {boolean} [filterOutDeleted] - When true, excludes soft-deleted CVs.
  * @param {number} [amount] - Maximum number of CVs to return; defaults to DEFAULT_RANDOM_CVS.
- * @param {filterValues} [filters] - Optional category and profile exclusion filters.
+ * @param {FilterValues} [filters] - Optional category and profile exclusion filters.
  * @returns {Promise<CvModel[] | null>} Array of randomized CVs, or null on error.
  */
 export async function getRandomizedCvs(
   filterOutDeleted: boolean = true,
   amount: number = Definitions.DEFAULT_RANDOM_CVS,
-  filters?: filterValues
+  filters?: FilterValues
 ): Promise<CvModel[] | null> {
   try {
     const supabase = SupabaseHelper.getSupabaseInstance();
@@ -189,10 +189,10 @@ export async function getRandomizedCvs(
  * Excludes CVs whose author display name or username matches the search value.
  * Used for the randomized feed where matching profiles should be hidden, not surfaced.
  * @param {any} profileQuery - The active Supabase query builder to mutate.
- * @param {filterValues} [filters] - Filters containing the optional search value.
+ * @param {FilterValues} [filters] - Filters containing the optional search value.
  * @returns {any} The query builder with profile exclusion filters applied.
  */
-function filterOutProfiles(profileQuery: any, filters?: filterValues) {
+function filterOutProfiles(profileQuery: any, filters?: FilterValues) {
   if (filters?.searchValue) {
     const searchValue = `${filters.searchValue}`;
 
@@ -216,10 +216,10 @@ function filterOutProfiles(profileQuery: any, filters?: filterValues) {
  * Narrows a profiles query to rows whose display name or username matches the search value (ilike).
  * The resulting profile IDs are later used to include matching CVs in the paginated feed.
  * @param {any} profileQuery - The active Supabase profiles query builder to mutate.
- * @param {filterValues} [filters] - Filters containing the optional search value.
+ * @param {FilterValues} [filters] - Filters containing the optional search value.
  * @returns {any} The query builder with the profile name filter applied.
  */
-function applyProfileSearchFilter(profileQuery: any, filters?: filterValues) {
+function applyProfileSearchFilter(profileQuery: any, filters?: FilterValues) {
   if (filters?.searchValue) {
     const searchValue = `%${filters.searchValue}%`;
     profileQuery = profileQuery.or(
@@ -232,10 +232,10 @@ function applyProfileSearchFilter(profileQuery: any, filters?: filterValues) {
 /**
  * Adds an array-overlap filter on cv_categories when category IDs are provided.
  * @param {any} query - The active Supabase CVs query builder to mutate.
- * @param {filterValues} [filters] - Filters containing the optional category ID list.
+ * @param {FilterValues} [filters] - Filters containing the optional category ID list.
  * @returns {any} The query builder with the category filter applied, or unchanged if no categories.
  */
-function applyCategoryFilter(query: any, filters?: filterValues) {
+function applyCategoryFilter(query: any, filters?: FilterValues) {
   if (filters?.categoryIds?.length) {
     logger.debug(filters.categoryIds, "category ids");
     query = query.overlaps(CvKeys.cv_categories, filters.categoryIds);
@@ -249,13 +249,13 @@ function applyCategoryFilter(query: any, filters?: filterValues) {
  * Executes the profile query internally and joins the results into the CV filter.
  * @param {any} query - The active Supabase CVs query builder to mutate.
  * @param {any} profileQuery - A Supabase profiles query already filtered by search value.
- * @param {filterValues} [filters] - Filters containing the optional search value.
+ * @param {FilterValues} [filters] - Filters containing the optional search value.
  * @returns {Promise<any>} The CV query builder extended with the combined OR filter.
  */
 async function applyProfileSearchToCvs(
   query: any,
   profileQuery: any,
-  filters?: filterValues
+  filters?: FilterValues
 ) {
   if (filters?.searchValue) {
     const { data: profiles, error: profileError } = await profileQuery;

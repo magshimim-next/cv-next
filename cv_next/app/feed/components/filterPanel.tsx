@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Categories from "@/types/models/categories";
-import { filterValues } from "@/types/models/filters";
+import { FilterValues } from "@/types/models/filters";
 import { useDebounceValue } from "@/hooks/useDebounceCallback";
 import { DropdownInput } from "./filters/valueSelect";
 import { InputBox } from "./inputbar";
@@ -12,13 +12,13 @@ export const DESCRIPTION_PARAM = "description";
 /**
  * This component handles the main filter panel for the feed.
  * @param {any} root0 The arguments to the component
- * @param {filterValues} root0.defaultFilters the currently set default filters to apply
+ * @param {FilterValues} root0.defaultFilters the currently set default filters to apply
  * @returns {Element} The main filters of the feed
  */
 export const FilterPanel = ({
   defaultFilters,
 }: {
-  defaultFilters: filterValues;
+  defaultFilters: FilterValues;
 }) => {
   const [searchValue, setSearchValue] = useState(defaultFilters.searchValue);
   const [categoryIds, setCategoryId] = useState(defaultFilters.categoryIds);

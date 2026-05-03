@@ -19,7 +19,7 @@ import {
   DESCRIPTION_PARAM,
   FilterPanel,
 } from "@/app/feed/components/filterPanel";
-import { filterValues } from "@/types/models/filters";
+import { FilterValues } from "@/types/models/filters";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
 import { useDebounceCallback } from "@/hooks/useDebounceCallback";
@@ -50,7 +50,7 @@ export default function Feed() {
   const [loadMore, setLoadMore] = useState(true);
   const fetchFromApi = useApiFetch();
   //aggregate the filters
-  const filters: filterValues = useMemo(() => {
+  const filters: FilterValues = useMemo(() => {
     return {
       searchValue: description ?? "",
       categoryIds: uriCategories
