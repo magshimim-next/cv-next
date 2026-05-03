@@ -15,8 +15,8 @@ export async function getCvsFromComments(
   const uniqueCvsFromComments: Set<string> = new Set();
 
   for (const comment of comments) {
-    if (comment.document_id !== undefined) {
-      uniqueCvsFromComments.add(comment.document_id);
+    if (comment.unique_cv_id !== undefined) {
+      uniqueCvsFromComments.add(comment.unique_cv_id ?? "");
     }
   }
 

@@ -26,7 +26,7 @@ export default async function Page({
     res === null ||
     !current.ok ||
     !res.ok ||
-    res.val.id !== current.val ||
+    res.val.unique_profile_id !== current.val ||
     !isFirstLogin.ok ||
     !isFirstLogin.val
   ) {

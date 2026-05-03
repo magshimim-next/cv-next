@@ -7,11 +7,10 @@ import {
   useRef,
   useState,
 } from "react";
-import Categories from "@/types/models/categories";
 import { CvCategory } from "@/components/ui/cvCategory";
 
 interface CategoriesDisplayProps {
-  categories: number[];
+  categories: string[];
 }
 
 /**
@@ -26,8 +25,8 @@ export default function CategoriesDisplay({
   const thisElement = useRef<HTMLDivElement | null>(null);
 
   const [displayedCategories, setDisplayedCategories] =
-    useState<number[]>(categories);
-  const [overFlowingCategories, setOverFlowingCategories] = useState<number[]>(
+    useState<string[]>(categories);
+  const [overFlowingCategories, setOverFlowingCategories] = useState<string[]>(
     []
   );
   const [savedWidth, setSavedWidth] = useState<number>();
@@ -168,7 +167,7 @@ function OverflowNumber({
   categories,
   onClick,
 }: {
-  categories: number[];
+  categories: string[];
   onClick: () => void;
 }) {
   return (
@@ -187,6 +186,6 @@ function OverflowNumber({
  * @param {number} id The ID of the category
  * @returns {string} The category string with a hashtag prefix
  */
-function getCategoryText(id: number) {
-  return `#${Categories.category[id]}`;
+function getCategoryText(id: string) {
+  return `#${id}`;
 }

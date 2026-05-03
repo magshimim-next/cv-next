@@ -18,7 +18,7 @@ import { CvActions } from "./components/cvEditActions";
 type FormValues = {
   link: string;
   description: string;
-  cvCategories: number[];
+  cvCategories: string[];
 };
 
 /**
@@ -79,7 +79,7 @@ export default function Page({ params }: { params: { cvId: string } }) {
         });
         const canEdit = await checkCVModifyPermission(data.val);
         if (!canEdit.ok) {
-          router.push(`/cv/${encodeValue(data.val.id)}`);
+          router.push(`/cv/${encodeValue(data.val.unique_cv_id)}`);
           return;
         }
         setCvData(data.val);
@@ -99,13 +99,13 @@ export default function Page({ params }: { params: { cvId: string } }) {
     const updatedCV: CvModel = cvData;
     updatedCV.document_link = data.link;
     updatedCV.description = data.description;
-    updatedCV.cv_categories = data.cvCategories;
+    updatedCV.cv_categories = data.cvCategories as CvModel["cv_categories"];
     const updateResp = await updateCV({
       cvData: updatedCV,
     });
     if (updateResp) {
       showError(updateResp, "", () =>
-        router.push(`/cv/${encodeValue(cvData.id)}`)
+        router.push(`/cv/${encodeValue(cvData.unique_cv_id)}`)
       );
     } else {
       setCvData(updatedCV);
@@ -137,7 +137,7 @@ export default function Page({ params }: { params: { cvId: string } }) {
           isValid={isValid}
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
-          cvId={cvData.id}
+          cvId={cvData.unique_cv_id}
           onDeleteAlertClick={onDeleteAlertClick}
           router={router}
         />

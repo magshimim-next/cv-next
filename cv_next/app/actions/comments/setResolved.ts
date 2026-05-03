@@ -11,8 +11,8 @@ import { isUserAuthor } from "@/app/actions/users/getUser";
 
 /**
  * The function will see if the comment can be resolved
- * @param commentResult The comment model to be resolved
- * @returns A promise of error or null based on if the action can be performed
+ * @param {Result<CommentModel, string>} commentResult The comment model to be resolved
+ * @returns {Promise<Result<never, string> | null>} A promise of error or null based on if the action can be performed
  */
 async function validateResolve(
   commentResult: Result<CommentModel, string>
@@ -32,9 +32,11 @@ async function validateResolve(
     );
   }
   const resultAdminCheck = await userIsAdmin();
-  const resultAuthorCheck = await isUserAuthor(commentResult.val.document_id);
+  const resultAuthorCheck = await isUserAuthor(
+    commentResult.val.unique_cv_id ?? ""
+  );
   if (
-    currentIdResult.val != commentResult.val.user_id &&
+    currentIdResult.val != commentResult.val.unique_profile_id &&
     !resultAdminCheck.ok &&
     !resultAuthorCheck.ok
   ) {
@@ -50,10 +52,9 @@ async function validateResolve(
 
 /**
  * Sets a comment as resolved or unresolved.
- *
  * @param {string} commentId - The ID of the comment to be resolved.
  * @param {boolean} resolved - Boolean indicating if the comment is resolved.
- * @return {Promise<Result<void, string>>} A Promise with the result of the operation.
+ * @returns {Promise<Result<void, string>>} A Promise with the result of the operation.
  */
 export const setResolved = async (
   commentId: string,
