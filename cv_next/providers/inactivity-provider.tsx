@@ -9,7 +9,7 @@ import DisconnectedModal from "@/components/ui/DisconnectedModal";
 
 const FEED_IDLE_MS = 5 * 60 * 1000;
 const DEFAULT_IDLE_MS = 15 * 60 * 1000;
-const COUNTDOWN_SECONDS = 30;
+const COUNTDOWN_SECONDS = 120;
 
 const PROTECTED_PREFIXES = [
   "/feed",
