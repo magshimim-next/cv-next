@@ -485,7 +485,7 @@ export async function uploadProfilePic(
     const { data, error } = await SupabaseHelper.getSupabaseInstance()
       .storage.from("avatars")
       .upload(
-        `public/${id.val}D${new Date().toISOString()}.png`,
+        `${id.val}/${new Date().toISOString()}.png`,
         decode(fileToUpload),
         {
           cacheControl: "3600",
