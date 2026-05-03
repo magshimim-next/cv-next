@@ -32,7 +32,7 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
     if (!loading && !userData) {
       router.push(`/${Definitions.LOGIN_REDIRECT}?next=${pathname}`);
     } else {
-      setUserId(userData?.unique_profile_id || "");
+      setUserId(userData?.id || "");
     }
   }, [loading, userData, pathname, router]);
 
@@ -45,20 +45,21 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
     if (userId.length <= 0) return;
     const comment: NewCommentModel = {
       data: formData.get(COMMENT_FIELD_NAME) as string,
-      unique_cv_id: cv.unique_cv_id,
-      parent_comment_id: null,
-      unique_profile_id: userId,
+      document_id: cv.id,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      parent_comment_Id: null,
+      user_id: userId,
     };
 
     mutate(
-      cv.unique_cv_id,
+      cv.id,
       (currentComments: CommentModel[] = []) => [
         ...currentComments,
         {
           ...comment,
-          unique_cv_comment_id: Date.now().toString(),
+          id: Date.now().toString(),
           deleted: false,
-          updated_at: new Date().toISOString(),
+          last_update: new Date().toISOString(),
           resolved: false,
           upvotes: [],
         },
@@ -71,17 +72,14 @@ export default function CommentForm({ cv }: { cv: CvModel }) {
       if (result.ok) {
         setText("");
       }
-      mutate(cv.unique_cv_id);
+      mutate(cv.id);
       return result.ok;
     } catch (error) {
       // Rollback optimistic update
       mutate(
-        cv.unique_cv_id,
+        cv.id,
         (currentComments: CommentModel[] = []) =>
-          currentComments.filter(
-            (comment) =>
-              comment.unique_cv_comment_id !== comment.unique_cv_comment_id
-          ),
+          currentComments.filter((comment) => comment.id !== comment.id),
         false
       );
       return false;

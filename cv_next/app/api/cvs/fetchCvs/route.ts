@@ -1,18 +1,13 @@
 "use server";
 
 import { NextRequest, NextResponse } from "next/server";
-import { FilterValues } from "@/types/models/filters";
+import { filterValues } from "@/types/models/filters";
 import { getPaginatedCvs } from "@/server/api/cvs";
 
-/**
- * Request handler for fetching paginated CVs with filters
- * @param {NextRequest} req - The incoming request containing pagination and filter data
- * @returns {Promise<NextResponse>} - A JSON response containing the paginated CVs or an error message
- */
 export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
-    const { nextPage, filters }: { nextPage?: number; filters: FilterValues } =
+    const { nextPage, filters }: { nextPage?: number; filters: filterValues } =
       data;
 
     const cvs = await getPaginatedCvs(true, nextPage, filters);

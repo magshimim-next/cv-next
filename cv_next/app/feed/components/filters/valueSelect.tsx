@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-export const DropdownInput = <T extends string | number>({
+export const DropdownInput = ({
   placeHolder,
   valueIds,
   valueId,
@@ -13,18 +13,18 @@ export const DropdownInput = <T extends string | number>({
   exclude,
 }: {
   placeHolder: string;
-  valueIds: T[];
-  valueId: T[] | null;
-  getValueById: (id: T) => string;
-  onChange: (newValue: T[] | null) => void;
+  valueIds: number[];
+  valueId: number[] | null;
+  getValueById: (id: number) => string;
+  onChange: (newValue: number[] | null) => void;
   text?: string;
   isApplyOptionVisible?: boolean;
   noneText: "all" | "none";
-  selected?: T[] | null;
-  exclude?: T[];
+  selected?: number[] | null;
+  exclude?: number[];
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState<T[]>(
+  const [selectedCategories, setSelectedCategories] = useState<number[]>(
     selected || []
   );
   const isPlaceHolder = valueId === null;
@@ -44,9 +44,9 @@ export const DropdownInput = <T extends string | number>({
     setIsMenuOpen((prev) => !prev);
   };
 
-  const handleCheckboxChange = (categoryId: T) => {
+  const handleCheckboxChange = (categoryId: number) => {
     setSelectedCategories((prevSelectedIds) => {
-      let updated: T[];
+      let updated;
       if (prevSelectedIds.includes(categoryId)) {
         updated = prevSelectedIds.filter((id) => id !== categoryId);
       } else {
@@ -110,7 +110,7 @@ export const DropdownInput = <T extends string | number>({
             .filter((item) => !exclude?.includes(item))
             .map((possibleValueId) => (
               <label
-                key={String(possibleValueId)}
+                key={possibleValueId}
                 className="flex h-8 w-full items-center justify-between bg-white text-black hover:bg-slate-200"
                 style={{ paddingLeft: "20px", paddingRight: "20px" }}
                 htmlFor={`checkbox-${possibleValueId}`}

@@ -8,13 +8,10 @@ import {
   ValidationRule,
 } from "react-hook-form";
 
-interface MultiSelectProps<
-  T extends FieldValues,
-  V extends string | number = number,
-> {
+interface MultiSelectProps<T extends FieldValues> {
   name: Path<T>;
   label: string;
-  options: V[];
+  options: number[];
   labels: string[];
   control: Control<T>;
   validation?: Partial<{
@@ -32,27 +29,20 @@ interface MultiSelectProps<
 }
 
 /**
- * Controlled multi-select field integrated with react-hook-form.
- * Renders a dropdown to add values and a scrollable tag list to remove them.
- * Selected values are stored as an array on the form field.
- * @template T - The react-hook-form FieldValues type for the parent form.
- * @template V - The value type for each option; defaults to number.
- * @param {MultiSelectProps<T, V>} props - Component props.
- * @param {Path<T>} props.name - The form field name registered with react-hook-form.
- * @param {string} props.label - Label displayed above the select.
- * @param {V[]} props.options - Array of selectable values; must be the same length as labels.
- * @param {string[]} props.labels - Display labels corresponding to each option value.
- * @param {Control<T>} props.control - The react-hook-form control object from the parent form.
- * @param {object} [props.validation] - Optional react-hook-form validation rules.
- * @param {string} [props.selectLabel] - Placeholder text shown in the dropdown. Defaults to "Choose values".
- * @param {PathValue<T, Path<T>>} [props.defaultValue] - Initial value for the field.
- * @param {string} [props.customErrorStyle] - Tailwind class overrides for the validation error message.
- * @returns {JSX.Element} The multi-select field with label, dropdown, tag list, and error message.
+ * MultiSelect component allows users to select multiple options from a dropdown.
+ * @param {object} props - The component props.
+ * @param {Path<T>} props.name - The name of the field.
+ * @param {string} props.label - The label for the select input.
+ * @param {number[]} props.options - The options for the select input.
+ * @param {string[]} props.labels - The labels for the options.
+ * @param {Control<T>} props.control - The react-hook-form control object.
+ * @param {object} props.validation - The validation rules for the field.
+ * @param {string} props.selectLabel - The label for the select input when no value is selected.
+ * @param {PathValue<T, Path<T>>} props.defaultValue - The default value for the field.
+ * @param {string} props.customErrorStyle - The custom error style for the field.
+ * @returns {JSX.Element} The MultiSelect component.
  */
-export const MultiSelect = <
-  T extends FieldValues,
-  V extends string | number = number,
->({
+export const MultiSelect = <T extends FieldValues>({
   name,
   label,
   options,
@@ -62,7 +52,7 @@ export const MultiSelect = <
   selectLabel,
   defaultValue,
   customErrorStyle,
-}: MultiSelectProps<T, V>) => {
+}: MultiSelectProps<T>) => {
   if (options.length !== labels.length) {
     //eslint-disable-next-line
     console.error(
@@ -78,7 +68,7 @@ export const MultiSelect = <
     defaultValue: defaultValue,
   });
 
-  const handleChange = (value: V) => {
+  const handleChange = (value: number) => {
     field.onChange(
       field?.value
         ? !field?.value?.includes(value)
@@ -86,11 +76,6 @@ export const MultiSelect = <
           : field.value.filter((item: any) => item !== value)
         : [value]
     );
-  };
-
-  const getLabelForValue = (value: V): string => {
-    const idx = options.indexOf(value);
-    return idx >= 0 ? labels[idx] : String(value);
   };
 
   return (
@@ -102,37 +87,31 @@ export const MultiSelect = <
         <select
           value=""
           className="rounded-md bg-accent hover:bg-muted"
-          onChange={(event) => {
-            const raw = event.target.value;
-            const parsed = (
-              typeof options[0] === "number" ? Number(raw) : raw
-            ) as V;
-            handleChange(parsed);
-          }}
+          onChange={(event) => handleChange(parseInt(event.target.value))}
         >
           <option value="">{selectLabel ?? "Choose values"}</option>
           {options
             .filter((value) => !field?.value?.includes(value))
-            .map((value, idx) => (
-              <option key={String(value)} value={String(value)}>
-                {labels[idx]}
+            .map((value) => (
+              <option key={value} value={value}>
+                {labels[value]}
               </option>
             ))}
         </select>
       </div>
       <div className="mt-1 max-h-16 w-full overflow-y-scroll rounded-md bg-accent p-1 hover:bg-muted">
         {field?.value?.length
-          ? field?.value.map((value: V, idx: number) => (
+          ? field?.value.map((value: any, idx: number) => (
               <a
                 className="cursor-pointer"
-                key={String(value)}
+                key={value}
                 onClick={() =>
                   field.onChange(
                     field?.value.filter((item: any) => item !== value)
                   )
                 }
               >
-                {getLabelForValue(value)}
+                {labels[value]}
                 {idx < field?.value?.length - 1 && ","} &nbsp;
               </a>
             ))

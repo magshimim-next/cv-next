@@ -3,6 +3,7 @@
 import { notFound } from "next/navigation";
 import { RecommendedCvsSection } from "@/components/ui/recommendedCvs";
 import Categories from "@/types/models/categories";
+import { getRandomEnumValues } from "@/lib/utils";
 import { getCurrentId } from "@/server/api/users";
 import UploadCVForm from "./components/uploadForm";
 
@@ -15,9 +16,7 @@ export default async function Page() {
   if (!userId.ok) {
     notFound();
   }
-  const randomCategories = [...Categories.values]
-    .sort(() => 0.5 - Math.random())
-    .slice(0, 3);
+  const randomCategories = getRandomEnumValues(Categories.category, 3);
 
   return (
     <div>

@@ -16,7 +16,10 @@ export async function GET(request: Request) {
       if (checkRedirect(next)) {
         const isValid = await validateUsername();
         if (isValid.ok) {
-          logger.info("Username was generated successfully: " + isValid.val);
+          logger.info(
+            validateUsername.name,
+            "Username was generated successfully: " + isValid.val
+          );
 
           const isFirstLogin = await isCurrentFirstLogin();
           if (isFirstLogin.ok && isFirstLogin.val) {

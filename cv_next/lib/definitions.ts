@@ -53,7 +53,7 @@ export const heroHeader: PageHeader = {
 We expect all interactions to be respectful and constructive, with no tolerance for abuse, hateful comments, or any form of inappropriate behavior.`,
 };
 
-export const routes: Route[] = [
+export const routes: route[] = [
   {
     route: "Login",
     path: "/login",

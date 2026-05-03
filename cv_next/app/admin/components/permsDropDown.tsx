@@ -7,7 +7,7 @@ import { Visible_Error_Messages } from "@/lib/definitions";
 import { updatePerms } from "@/app/actions/users/updateUser";
 
 type FormValues = {
-  perms: keyof typeof PermsKeys.roles_enum;
+  perms: keyof typeof PermsKeys.user_types_enum;
 };
 
 export const PermsDropDown = ({
@@ -15,10 +15,10 @@ export const PermsDropDown = ({
   currentPerms,
 }: {
   userId: string;
-  currentPerms: keyof typeof PermsKeys.roles_enum;
+  currentPerms: keyof typeof PermsKeys.user_types_enum;
 }) => {
   const [newPerms, setNewPerms] =
-    useState<keyof typeof PermsKeys.roles_enum>(currentPerms);
+    useState<keyof typeof PermsKeys.user_types_enum>(currentPerms);
   const { handleSubmit, register, reset } = useForm<FormValues>({
     mode: "onChange",
   });
@@ -26,8 +26,8 @@ export const PermsDropDown = ({
 
   const handleOnSubmit: SubmitHandler<FormValues> = async (data) => {
     if (
-      currentPerms === PermsKeys.roles_enum.admin ||
-      data.perms === PermsKeys.roles_enum.admin
+      currentPerms === PermsKeys.user_types_enum.admin ||
+      data.perms === PermsKeys.user_types_enum.admin
     ) {
       showError(
         Visible_Error_Messages.UpdateAdminPerms.title,
@@ -72,21 +72,21 @@ export const PermsDropDown = ({
           className="rounded-full px-3 py-1 text-sm font-medium"
           style={{
             backgroundColor:
-              newPerms === "pending"
+              newPerms === "inactive"
                 ? "#EF4444"
                 : newPerms === "admin"
                   ? "#F59E0B"
                   : "#10B981",
           }}
         >
-          {Object.entries(PermsKeys.roles_enum).map(([key, value]) => (
+          {Object.entries(PermsKeys.user_types_enum).map(([key, value]) => (
             <option
               key={key}
               value={key}
               className="rounded-full px-3 py-1 text-sm font-medium"
               style={{
                 backgroundColor:
-                  value === "pending"
+                  value === "inactive"
                     ? "#EF4444"
                     : value === "admin"
                       ? "#F59E0B"

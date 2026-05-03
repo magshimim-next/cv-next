@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Categories from "@/types/models/categories";
-import { FilterValues } from "@/types/models/filters";
+import { filterValues } from "@/types/models/filters";
+import { categoryString } from "@/lib/utils";
 import { useDebounceValue } from "@/hooks/useDebounceCallback";
 import { DropdownInput } from "./filters/valueSelect";
 import { InputBox } from "./inputbar";
@@ -12,13 +13,13 @@ export const DESCRIPTION_PARAM = "description";
 /**
  * This component handles the main filter panel for the feed.
  * @param {any} root0 The arguments to the component
- * @param {FilterValues} root0.defaultFilters the currently set default filters to apply
+ * @param {filterValues} root0.defaultFilters the currently set default filters to apply
  * @returns {Element} The main filters of the feed
  */
 export const FilterPanel = ({
   defaultFilters,
 }: {
-  defaultFilters: FilterValues;
+  defaultFilters: filterValues;
 }) => {
   const [searchValue, setSearchValue] = useState(defaultFilters.searchValue);
   const [categoryIds, setCategoryId] = useState(defaultFilters.categoryIds);
@@ -38,11 +39,12 @@ export const FilterPanel = ({
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
 
-    if (categoryIds && categoryIds.length > 0) {
-      const uriCategories =
-        searchParams.get(CATEGORY_PARAM)?.split(",").filter(Boolean) ?? [];
-      if (JSON.stringify(uriCategories) != JSON.stringify(categoryIds)) {
-        params.set(CATEGORY_PARAM, categoryIds.join(","));
+    if (categoryIds) {
+      const uriCategories = searchParams.get(CATEGORY_PARAM)?.split(",") ?? [];
+      const stateCategories = categoryIds?.map((id) => categoryString(id));
+      //only handle change if categories actually changed
+      if (JSON.stringify(uriCategories) != JSON.stringify(stateCategories)) {
+        params.set(CATEGORY_PARAM, categoryIds.map(categoryString).join(","));
       }
     } else {
       params.delete(CATEGORY_PARAM);
@@ -59,7 +61,12 @@ export const FilterPanel = ({
     router.replace(`${pathname}?${params}`);
   }, [debouncedSearchValue, searchParams, router, pathname, categoryIds]);
 
-  const mapCategories = useMemo(() => [...Categories.values], []);
+  const mapCategories: number[] = useMemo(() => {
+    const keys = Object.keys(Categories.category)
+      .map((key) => parseInt(key))
+      .filter((key) => !isNaN(key));
+    return keys;
+  }, []);
 
   return (
     <div className=" my-[10px] flex flex-col items-center justify-between gap-2 md:flex-row">
@@ -69,13 +76,15 @@ export const FilterPanel = ({
         onChange={setSearchValue}
       ></InputBox>
       <div className="w-80">
-        <DropdownInput<string>
+        <DropdownInput
           placeHolder="all"
           valueIds={mapCategories}
           text="Categories"
           valueId={categoryIds}
           onChange={setCategoryId}
-          getValueById={(v) => v}
+          getValueById={(id: number) => {
+            return Categories.category[id];
+          }}
           noneText="all"
           selected={defaultFilters.categoryIds}
         ></DropdownInput>

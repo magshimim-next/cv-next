@@ -27,7 +27,7 @@ export default function CommentsSection({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { data: comments } = useSWR(cv.unique_cv_id, fetchCvComments);
+  const { data: comments } = useSWR(cv.id, fetchCvComments);
   const { userData, loading } = useUser();
   const [userId, setUserId] = useState<string>("");
   const [commentsOfComments, setCommentsOfComments] = useState<
@@ -41,16 +41,16 @@ export default function CommentsSection({
     >();
 
     comments?.forEach((comment) => {
-      if (!comment.parent_comment_id)
-        copyOfCommentOfComments.set(comment.unique_cv_comment_id, []);
+      if (!comment.parent_comment_Id)
+        copyOfCommentOfComments.set(comment.id, []);
     });
 
     comments?.forEach((comment) => {
-      if (comment.parent_comment_id)
+      if (comment.parent_comment_Id)
         copyOfCommentOfComments.set(
-          comment.parent_comment_id,
+          comment.parent_comment_Id,
           copyOfCommentOfComments
-            .get(comment.parent_comment_id)
+            .get(comment.parent_comment_Id)
             ?.concat([comment]) as Array<any>
         );
     });
@@ -66,7 +66,7 @@ export default function CommentsSection({
     if (!loading && !userData) {
       router.push(`/${Definitions.LOGIN_REDIRECT}?next=${pathname}`);
     } else {
-      setUserId(userData?.unique_profile_id || "");
+      setUserId(userData?.id || "");
     }
   }, [loading, userData, pathname, router]);
 
@@ -74,15 +74,13 @@ export default function CommentsSection({
     <div className="h-[72vh] overflow-y-auto overflow-x-hidden">
       {comments
         ? comments.map((comment: CommentModel) =>
-            !comment.parent_comment_id ? (
+            !comment.parent_comment_Id ? (
               <Comment
-                key={comment.unique_cv_comment_id}
+                key={comment.id}
                 comment={comment}
                 userId={userId}
                 commentsOfComment={
-                  commentsOfComments.get(
-                    comment.unique_cv_comment_id
-                  ) as Array<any>
+                  commentsOfComments.get(comment.id) as Array<any>
                 }
                 setCommentsOfComments={setCommentsOfComments}
                 userIsAdmin={userIsAdmin}

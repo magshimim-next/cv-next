@@ -19,9 +19,10 @@ import {
   DESCRIPTION_PARAM,
   FilterPanel,
 } from "@/app/feed/components/filterPanel";
-import { FilterValues } from "@/types/models/filters";
+import { filterValues } from "@/types/models/filters";
 import { useApiFetch } from "@/hooks/useAPIFetch";
 import { ScrollToTop } from "@/components/ui/scrollToTop";
+import { toCategoryNumber } from "@/lib/utils";
 import { useDebounceCallback } from "@/hooks/useDebounceCallback";
 import CVItem from "./CV/CVItem";
 
@@ -50,12 +51,10 @@ export default function Feed() {
   const [loadMore, setLoadMore] = useState(true);
   const fetchFromApi = useApiFetch();
   //aggregate the filters
-  const filters: FilterValues = useMemo(() => {
+  const filters: filterValues = useMemo(() => {
     return {
       searchValue: description ?? "",
-      categoryIds: uriCategories
-        ? uriCategories.split(",").filter(Boolean)
-        : null,
+      categoryIds: uriCategories?.split(",").map(toCategoryNumber) ?? [],
     };
   }, [description, uriCategories]);
 
@@ -101,9 +100,7 @@ export default function Feed() {
         setCvs((prevCvs) => {
           const newCvs = response.cvs.filter(
             (newCv: CvModel) =>
-              !prevCvs.some(
-                (prevCv) => prevCv.unique_cv_id === newCv.unique_cv_id
-              )
+              !prevCvs.some((prevCv) => prevCv.id === newCv.id)
           );
           return [...prevCvs, ...newCvs];
         });
@@ -156,11 +153,7 @@ export default function Feed() {
       <FilterPanel defaultFilters={filters}></FilterPanel>
       <div className="container mx-auto space-y-8 p-6">
         <div className="grid grid-cols-1 justify-evenly gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
-          {cvs ? (
-            cvs.map((cv) => <CVItem key={cv.unique_cv_id} cv={cv} />)
-          ) : (
-            <></>
-          )}
+          {cvs ? cvs.map((cv) => <CVItem key={cv.id} cv={cv} />) : <></>}
           <TriggerPagination callbackTrigger={debouncedFetchCvsCallback} />
         </div>
         {!loadMore ? (

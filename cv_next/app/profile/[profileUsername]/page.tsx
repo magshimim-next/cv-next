@@ -74,9 +74,9 @@ export default async function Page({
     notFound();
   }
 
-  const cvs = await getCvsByUserId(result.val.unique_profile_id);
+  const cvs = await getCvsByUserId(result.val.id);
   const recommendedCategories = [
-    ...(result.val.work_categories || []),
+    ...(result.val.work_status_categories || []),
     ...new Set(cvs?.flatMap((cv) => cv.cv_categories)),
   ];
 
@@ -107,7 +107,7 @@ export default async function Page({
       )}
       <RecommendedCvsSection
         filteredCategories={recommendedCategories}
-        currentUserId={result.val.unique_profile_id}
+        currentUserId={result.val.id}
         amountToFetch={8}
       />
     </div>

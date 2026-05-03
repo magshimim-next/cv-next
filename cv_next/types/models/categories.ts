@@ -1,20 +1,18 @@
 namespace Categories {
-  export const values = [
-    "general",
-    "medical",
-    "insurance",
-    "financial",
-    "legal",
-    "education",
-    "fullstack",
-    "frontend",
-    "backend",
-    "devops",
-    "cybersecurity",
-    "freelance",
-  ] as const;
-
-  export type Value = (typeof values)[number];
+  export enum category {
+    Undefined,
+    General,
+    Medical,
+    Insurance,
+    Financial,
+    Legal,
+    Education,
+    Fullstack,
+    Frontend,
+    Backend,
+    Devops,
+    Cybersecurity,
+    Freelance,
+  }
 }
-
 export default Categories;

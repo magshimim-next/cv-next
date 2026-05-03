@@ -12,17 +12,10 @@ import { ProfileKeys } from "@/lib/supabase-definitions";
 import { sanitizeLink } from "@/helpers/cvLinkRegexHelper";
 import { FormInput } from "./formInput";
 
-type SocialsShape = {
-  linkedin?: string | null;
-  github?: string | null;
-  gitlab?: string | null;
-  portfolio?: string | null;
-};
-
 export type FormValues = {
-  displayName: string;
-  workCategories: string[];
-  workStatus: UserModel["work_status"];
+  display_name: string;
+  workCategories: number[];
+  workStatus: keyof typeof ProfileKeys.work_status;
   linkedin: string;
   github: string;
   gitlab: string;
@@ -57,7 +50,12 @@ export default function ProfileForm({
   const { userData, mutateUser } = useUser();
   const [isPending, startTransition] = useTransition();
 
-  const mapCategories = useMemo(() => [...Categories.values], []);
+  const mapCategories: number[] = useMemo(() => {
+    const keys = Object.keys(Categories.category)
+      .map((key) => parseInt(key))
+      .filter((key) => !isNaN(key));
+    return keys;
+  }, []);
 
   if (!userData) {
     return <div>Loading...</div>;
@@ -65,7 +63,7 @@ export default function ProfileForm({
 
   const handleOnSubmit: SubmitHandler<FormValues> = async (data) => {
     const {
-      displayName,
+      display_name,
       workCategories,
       workStatus,
       linkedin,
@@ -73,37 +71,34 @@ export default function ProfileForm({
       gitlab,
       portfolio,
     } = data;
-    const socials = (user.socials ?? {}) as SocialsShape;
     let userDataToUpdate: Partial<UserModel> = {
-      unique_profile_id: user.unique_profile_id,
+      id: user.id,
     };
     // Only update if the value has changed
-    if (displayName !== user.display_name) {
-      userDataToUpdate.display_name = displayName;
+    if (display_name !== user.display_name) {
+      userDataToUpdate.display_name = display_name;
     }
     if (
-      workCategories &&
-      JSON.stringify([...workCategories].sort()) !==
-        JSON.stringify([...(user.work_categories ?? [])].sort())
+      JSON.stringify(workCategories.toSorted()) !==
+      JSON.stringify(user.work_status_categories?.toSorted())
     ) {
-      userDataToUpdate.work_categories =
-        workCategories as UserModel["work_categories"];
+      userDataToUpdate.work_status_categories = workCategories;
     }
     if (workStatus !== user.work_status) {
       userDataToUpdate.work_status = workStatus;
     }
 
-    const socialChanges: SocialsShape = {};
-    const checkAndAddSocial = (
+    const socialInputCheck = (
       value: string,
       existingValue: string | null | undefined,
-      socialKey: keyof SocialsShape,
+      userFieldKey: keyof UserModel,
       formFieldName: Path<FormValues>
-    ): boolean => {
-      if (value !== (existingValue ?? "") && value.length > 0) {
+    ) => {
+      if (value !== existingValue && value.length > 0) {
         const sanitized = sanitizeLink(value);
         if (sanitized) {
-          socialChanges[socialKey] = sanitized;
+          // @ts-ignore -- dynamic key assignment on Partial<UserModel>
+          userDataToUpdate[userFieldKey] = sanitized;
         } else {
           setError(formFieldName, {
             message: `Invalid ${String(formFieldName)} link`,
@@ -115,18 +110,28 @@ export default function ProfileForm({
       return true;
     };
 
-    if (!checkAndAddSocial(gitlab, socials.gitlab, "gitlab", "gitlab")) return;
+    if (!socialInputCheck(gitlab, user.gitlab_link, "gitlab_link", "gitlab"))
+      return;
     if (
-      !checkAndAddSocial(portfolio, socials.portfolio, "portfolio", "portfolio")
+      !socialInputCheck(
+        portfolio,
+        user.portfolio_link,
+        "portfolio_link",
+        "portfolio"
+      )
     )
       return;
-    if (!checkAndAddSocial(github, socials.github, "github", "github")) return;
-    if (!checkAndAddSocial(linkedin, socials.linkedin, "linkedin", "linkedin"))
+    if (!socialInputCheck(github, user.github_link, "github_link", "github"))
       return;
-
-    if (Object.keys(socialChanges).length > 0) {
-      userDataToUpdate.socials = { ...socials, ...socialChanges };
-    }
+    if (
+      !socialInputCheck(
+        linkedin,
+        user.linkedin_link,
+        "linkedin_link",
+        "linkedin"
+      )
+    )
+      return;
 
     if (Object.keys(userDataToUpdate).length === 1) {
       // No changes
@@ -158,22 +163,27 @@ export default function ProfileForm({
   const clearSocial = async (social: Path<FormValues>) => {
     setValue(social, "");
 
-    const validSocials: (keyof SocialsShape)[] = [
-      "linkedin",
-      "github",
-      "gitlab",
-      "portfolio",
-    ];
-    if (!validSocials.includes(social as keyof SocialsShape)) {
-      setError("root", { message: "Invalid social field" });
-      return;
-    }
-
-    const socials = (user.socials ?? {}) as SocialsShape;
-    const userDataToUpdate: Partial<UserModel> = {
-      unique_profile_id: user.unique_profile_id,
-      socials: { ...socials, [social]: null },
+    let userDataToUpdate: Partial<UserModel> = {
+      id: user.id,
     };
+
+    switch (social) {
+      case "linkedin":
+        userDataToUpdate.linkedin_link = null;
+        break;
+      case "github":
+        userDataToUpdate.github_link = null;
+        break;
+      case "gitlab":
+        userDataToUpdate.gitlab_link = null;
+        break;
+      case "portfolio":
+        userDataToUpdate.portfolio_link = null;
+        break;
+      default:
+        setError("root", { message: "Invalid social field" });
+        return;
+    }
 
     updateUser(userDataToUpdate);
   };
@@ -184,22 +194,22 @@ export default function ProfileForm({
       onSubmit={handleSubmit(handleOnSubmit)}
     >
       <FormInput
-        field="displayName"
+        field="display_name"
         placeholder="display name"
         defaultValue={user.display_name ?? ""}
         register={register}
         isRequired={true}
-        hasError={errors.displayName && true}
-        errorMsg={errors.displayName?.message}
+        hasError={errors.display_name && true}
+        errorMsg={errors.display_name?.message}
       />
 
-      <MultiSelect<FormValues, string>
+      <MultiSelect<FormValues>
         name="workCategories"
         label="Work Categories: "
         options={mapCategories}
-        labels={mapCategories}
+        labels={mapCategories.map((id) => Categories.category[id])}
         control={control}
-        defaultValue={user.work_categories ?? undefined}
+        defaultValue={user.work_status_categories ?? undefined}
       />
 
       <div className="flex flex-wrap justify-between">
@@ -210,10 +220,10 @@ export default function ProfileForm({
           id="workStatus"
           className="rounded-md bg-accent hover:bg-muted"
           {...register("workStatus", { required: "Work status is required" })}
-          defaultValue={user.work_status ?? "not sharing"}
+          defaultValue={user.work_status ?? "nothing"}
         >
           {Object.entries(ProfileKeys.work_status).map(([key, value]) => (
-            <option key={key} value={value}>
+            <option key={key} value={key}>
               {value}
             </option>
           ))}
@@ -226,7 +236,7 @@ export default function ProfileForm({
       <FormInput
         field="linkedin"
         placeholder="linkedin url"
-        defaultValue={((user.socials as SocialsShape) ?? {}).linkedin ?? ""}
+        defaultValue={user.linkedin_link ?? ""}
         register={register}
         clearFunc={clearSocial}
         hasError={errors.linkedin && true}
@@ -236,7 +246,7 @@ export default function ProfileForm({
       <FormInput
         field="github"
         placeholder="github url"
-        defaultValue={((user.socials as SocialsShape) ?? {}).github ?? ""}
+        defaultValue={user.github_link ?? ""}
         register={register}
         clearFunc={clearSocial}
         hasError={errors.github && true}
@@ -246,7 +256,7 @@ export default function ProfileForm({
       <FormInput
         field="gitlab"
         placeholder="gitlab url"
-        defaultValue={((user.socials as SocialsShape) ?? {}).gitlab ?? ""}
+        defaultValue={user.gitlab_link ?? ""}
         register={register}
         clearFunc={clearSocial}
         hasError={errors.gitlab && true}
@@ -256,7 +266,7 @@ export default function ProfileForm({
       <FormInput
         field="portfolio"
         placeholder="portfolio url"
-        defaultValue={((user.socials as SocialsShape) ?? {}).portfolio ?? ""}
+        defaultValue={user.portfolio_link ?? ""}
         register={register}
         clearFunc={clearSocial}
         hasError={errors.portfolio && true}

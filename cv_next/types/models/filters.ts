@@ -1,4 +1,4 @@
-export interface FilterValues {
+export interface filterValues {
   searchValue: string;
-  categoryIds: string[] | null;
+  categoryIds: number[] | null;
 }

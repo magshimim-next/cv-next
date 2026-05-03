@@ -16,13 +16,13 @@ import { ProfilePersonalData } from "./profilePersonalData";
  * @returns {JSX.Element} The ProfileData component.
  */
 export default async function ProfileData({ user }: { user: UserModel }) {
-  const cvs = await getCvsByUserId(user.unique_profile_id);
+  const cvs = await getCvsByUserId(user.id);
 
   if (cvs === null) {
     logger.error("Couldn't get CVs by user");
     return <div>Error Fetching user&apos;s CVs</div>;
   }
-  const commentsResult = await fetchUserComments(user.unique_profile_id);
+  const commentsResult = await fetchUserComments(user.id);
   if (commentsResult === null) {
     logger.error("Couldn't get CVs by user");
     return <div>Error Fetching user&apos;s CVs</div>;

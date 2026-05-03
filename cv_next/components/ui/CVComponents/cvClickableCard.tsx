@@ -13,16 +13,16 @@ import { encodeValue, getJointDisplayName } from "@/lib/utils";
 export function CVClickableCard({ cv }: { cv: CvModel }) {
   return (
     <Link
-      href={`/cv/${encodeValue(cv.unique_cv_id)}`}
+      href={`/cv/${encodeValue(cv.id)}`}
       className="block h-full no-underline hover:no-underline"
     >
       <div className="flex h-72 min-w-[400px] max-w-md cursor-pointer flex-col items-center justify-center gap-4 overflow-hidden rounded-2xl border-gray-200 bg-white py-6 shadow-lg transition hover:shadow-xl dark:border-gray-700 dark:bg-gray-800">
         <div className="flex w-full flex-shrink-0 flex-col items-center justify-center gap-1">
           <div className="w-full text-center text-2xl font-bold">
-            {getJointDisplayName(cv.unique_profile_id)}
+            {getJointDisplayName(cv.user_id)}
           </div>
           <p className="w-full text-center text-base text-neutral-400">
-            {new Date(cv.updated_at).toLocaleDateString("en-US")}
+            {new Date(cv.created_at).toLocaleDateString("en-US")}
           </p>
         </div>
         <div className="flex w-full flex-shrink-0 justify-center">

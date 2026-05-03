@@ -35,7 +35,7 @@ export async function generateMetadata({
     notFound();
   }
 
-  const authorData = JSON.parse(JSON.stringify(cv.unique_profile_id));
+  const authorData = JSON.parse(JSON.stringify(cv.user_id));
 
   return {
     title: "CV of " + authorData.display_name,
@@ -70,7 +70,7 @@ export default async function Page({ params }: { params: { cvId: string } }) {
   if (!userId.ok) {
     notFound();
   }
-  const authorData = JSON.parse(JSON.stringify(cv.unique_profile_id));
+  const authorData = JSON.parse(JSON.stringify(cv.user_id));
   const resultAdminCheck = await userIsAdmin();
 
   return (
@@ -79,9 +79,7 @@ export default async function Page({ params }: { params: { cvId: string } }) {
       <CvData
         cv={cv}
         validCV={validCV}
-        canEditCv={
-          userId.val == authorData.unique_profile_id || resultAdminCheck.ok
-        }
+        canEditCv={userId.val == authorData.id || resultAdminCheck.ok}
       />
       <div className={`grid grid-cols-1 gap-y-4 ${fullCV} md:gap-x-4`}>
         <section className=" flex-col rounded-lg">
@@ -95,7 +93,7 @@ export default async function Page({ params }: { params: { cvId: string } }) {
                 <CommentsSection
                   cv={cv}
                   userIsAdmin={resultAdminCheck.ok}
-                  userIsAuthor={userId.val == authorData.unique_profile_id}
+                  userIsAuthor={userId.val == authorData.id}
                 />
               </div>
             </section>
@@ -105,7 +103,7 @@ export default async function Page({ params }: { params: { cvId: string } }) {
 
       <RecommendedCvsSection
         filteredCategories={cv.cv_categories}
-        currentCvId={cv.unique_cv_id}
+        currentCvId={cv.id}
       />
     </div>
   );

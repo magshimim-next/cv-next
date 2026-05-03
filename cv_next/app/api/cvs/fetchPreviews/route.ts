@@ -4,10 +4,13 @@ import { NextRequest, NextResponse } from "next/server";
 import Definitions from "@/lib/definitions";
 import { getIdFromLink, getGoogleImageUrl } from "@/helpers/imageURLHelper";
 import SupabaseHelper from "@/server/api/supabaseHelper";
+import { compareHashes } from "@/helpers/blobHelper";
 import logger from "@/server/base/logger";
 import { Storage } from "@/lib/supabase-definitions";
 import { validateGoogleViewOnlyUrl } from "@/helpers/cvLinkRegexHelper";
 import { getCVSignedPreview } from "@/server/api/cvs";
+
+const blobDataMap = new Map<string, Blob>();
 
 /**
  * The POST request handler for the revalidatePreview endpoint.
@@ -23,7 +26,7 @@ export async function POST(req: NextRequest) {
 }
 
 /**
- * Fetch the supabase preview
+ * Revalidate the image a given CV in supabase
  * If the hash of the CV that was saved in the map is similar to the one that just got fetched
  * nothing is done. If something changed, the image is uploaded to supabase again
  * @param {string} data - Data sent to the handler
@@ -36,20 +39,12 @@ async function revalidatePreviewHandler(data: {
   const cvLink = data.cvLink;
 
   if (!validateGoogleViewOnlyUrl(cvLink)) {
-    logger.error({ cvLink }, "URL didn't match regex");
+    logger.error(cvLink, "URL didn't match regex: ");
     return NextResponse.json({ message: "Invalid URL" }, { status: 500 });
   }
 
   const docsID = getIdFromLink(cvLink);
   const fileName = docsID + ".png";
-  const signedUrlResp = await getCVSignedPreview(fileName);
-
-  if (signedUrlResp.ok) {
-    return NextResponse.json({ signedUrl: signedUrlResp.val });
-  }
-
-  logger.debug("No preview found in supabase, fetching from docs...");
-
   const fetchDocsResponse = await fetch(getGoogleImageUrl(cvLink), {
     next: { revalidate: Definitions.FETCH_WAIT_TIME },
     redirect: "manual",
@@ -61,6 +56,22 @@ async function revalidatePreviewHandler(data: {
   }
 
   const docsBlob = await fetchDocsResponse.blob();
+  const isSimilar = await compareHashes(
+    docsBlob,
+    blobDataMap.get(docsID || "") || new Blob()
+  );
+
+  if (isSimilar) {
+    logger.debug("Files were similar");
+    const signedUrlResp = await getCVSignedPreview(fileName);
+    if (signedUrlResp.ok) {
+      return NextResponse.json({ signedUrl: signedUrlResp.val });
+    }
+    logger.error(signedUrlResp.errors.err, "Failed to get signed URL");
+  }
+
+  blobDataMap.delete(docsID || "");
+  blobDataMap.set(docsID || "", docsBlob);
 
   const { data: uploadedData, error: uploadError } =
     await SupabaseHelper.getSupabaseInstance()

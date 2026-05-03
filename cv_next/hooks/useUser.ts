@@ -81,7 +81,7 @@ export const useUser = () => {
     }
   }, [mounted, mutateAdmin, userIsAdmin, adminError]);
 
-  const activeUser = data?.unique_profile_id;
+  const activeUser = data?.id;
   const loading = !data && !error;
   const loginState = activeUser && !error;
   //const loggedOut = error && error.status === 403; : might be useful instead of loginState
