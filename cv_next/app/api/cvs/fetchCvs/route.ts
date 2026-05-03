@@ -5,8 +5,9 @@ import { FilterValues } from "@/types/models/filters";
 import { getPaginatedCvs } from "@/server/api/cvs";
 
 /**
- *
- * @param req
+ * Request handler for fetching paginated CVs with filters
+ * @param req {NextRequest} - The incoming request containing pagination and filter data
+ * @returns {Promise<NextResponse>} - A JSON response containing the paginated CVs or an error message
  */
 export async function POST(req: NextRequest) {
   try {
