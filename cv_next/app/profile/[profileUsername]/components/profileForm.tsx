@@ -82,8 +82,9 @@ export default function ProfileForm({
       userDataToUpdate.display_name = displayName;
     }
     if (
+      workCategories &&
       JSON.stringify([...workCategories].sort()) !==
-      JSON.stringify([...(user.work_categories ?? [])].sort())
+        JSON.stringify([...(user.work_categories ?? [])].sort())
     ) {
       userDataToUpdate.work_categories =
         workCategories as UserModel["work_categories"];
