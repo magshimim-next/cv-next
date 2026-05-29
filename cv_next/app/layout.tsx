@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/providers/theme-provider";
 import { CvsProvider } from "@/providers/cvs-provider";
 import { ErrorProvider } from "@/providers/error-provider";
 import { InactivityProvider } from "@/providers/inactivity-provider";
+import { AccessibilityWidget } from "@/components/ui/accessibility-widget";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   {children}
                 </div>
                 <Footer />
+                <AccessibilityWidget />
               </InactivityProvider>
             </CvsProvider>
           </ThemeProvider>
