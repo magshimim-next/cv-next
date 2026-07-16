@@ -82,6 +82,12 @@ export const Visible_Error_Messages: ErrorMessages = {
     title: "Inactive User",
     description: "That page requires that you get approved by the moderators.",
   },
+  PendingUser: {
+    keyword: "PendingUser",
+    title: "Pending User",
+    description:
+      "To use cv next and other magshimim next products. Please sign-up at forms.magshimim-next.com",
+  },
   UploadFailed: {
     keyword: "UploadFailed",
     title: "Upload Failed",

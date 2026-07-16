@@ -1,5 +1,5 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { Visible_Error_Messages, heroHeader } from "@/lib/definitions";
 import { useError } from "@/providers/error-provider";
@@ -9,15 +9,18 @@ import Login from "./login";
 export const LoginLayout = () => {
   const searchparams = useSearchParams();
   const { showError } = useError();
-  const router = useRouter();
   const error = searchparams.get("error");
 
   useEffect(() => {
-    if (error === Visible_Error_Messages.InactiveUser.keyword) {
+    if (error === Visible_Error_Messages.PendingUser.keyword) {
+      showError(
+        Visible_Error_Messages.PendingUser.title,
+        Visible_Error_Messages.PendingUser.description
+      );
+    } else if (error === Visible_Error_Messages.InactiveUser.keyword) {
       showError(
         Visible_Error_Messages.InactiveUser.title,
-        Visible_Error_Messages.InactiveUser.description,
-        () => router.push("/signout")
+        Visible_Error_Messages.InactiveUser.description
       );
     } else if (error != null) {
       showError(
@@ -25,7 +28,7 @@ export const LoginLayout = () => {
         Visible_Error_Messages.DefaultError.description
       );
     }
-  }, [error, showError, router]);
+  }, [error, showError]);
 
   return (
     <main className="p-4">
