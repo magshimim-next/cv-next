@@ -76,7 +76,7 @@ type ErrorMessages = {
   };
 };
 
-export const Visible_Error_Messages: ErrorMessages = {
+export const Visible_Error_Messages = {
   InactiveUser: {
     keyword: "InactiveUser",
     title: "Inactive User",
@@ -122,4 +122,4 @@ export const Visible_Error_Messages: ErrorMessages = {
     description:
       "Please try again later and contact support if the problem persists.",
   },
-};
+} satisfies ErrorMessages;
