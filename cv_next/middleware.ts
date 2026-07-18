@@ -80,7 +80,7 @@ export async function middleware(request: NextRequest) {
   ];
   if (!perm || permError || !memberRoles.includes(perm.role)) {
     const nextUrl = new URL(
-      `/?error=${Visible_Error_Messages.InactiveUser.keyword}`,
+      `/?error=${Visible_Error_Messages.PendingUser.keyword}`,
       request.url
     );
     return NextResponse.redirect(nextUrl);
