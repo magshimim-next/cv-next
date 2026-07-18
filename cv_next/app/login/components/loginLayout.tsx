@@ -1,5 +1,5 @@
 "use client";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { Visible_Error_Messages, heroHeader } from "@/lib/definitions";
 import { useError } from "@/providers/error-provider";
@@ -15,12 +15,14 @@ export const LoginLayout = () => {
     if (error === Visible_Error_Messages.PendingUser.keyword) {
       showError(
         Visible_Error_Messages.PendingUser.title,
-        Visible_Error_Messages.PendingUser.description
+        Visible_Error_Messages.PendingUser.description,
+        () => redirect("https://forms.magshimim-next.com/register")
       );
     } else if (error === Visible_Error_Messages.InactiveUser.keyword) {
       showError(
         Visible_Error_Messages.InactiveUser.title,
-        Visible_Error_Messages.InactiveUser.description
+        Visible_Error_Messages.InactiveUser.description,
+        () => redirect("https://forms.magshimim-next.com/register")
       );
     } else if (error != null) {
       showError(
