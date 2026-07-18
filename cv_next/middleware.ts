@@ -32,6 +32,7 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      cookieOptions: { domain: process.env.NEXT_PUBLIC_TOP_DOMAIN! },
       cookies: {
         getAll() {
           return request.cookies.getAll();
@@ -66,7 +67,12 @@ export async function middleware(request: NextRequest) {
     .single();
 
   if (request.nextUrl.pathname == "/admin") {
-    if (!perm || perm.role !== PermsKeys.roles_enum.admin || permError) {
+    if (
+      !perm ||
+      (perm.role !== PermsKeys.roles_enum.admin &&
+        perm.role !== PermsKeys.roles_enum.moderator) ||
+      permError
+    ) {
       const nextUrl = new URL(`/not_found`, request.url);
       return NextResponse.redirect(nextUrl);
     }

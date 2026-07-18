@@ -13,7 +13,7 @@ export default class SupabaseHelper {
    * On the server, it basically configures a fetch call.
    * You need to reconfigure the fetch call anew for every request to your server,
    * because you need the cookies from the request.
-   * @return {SupabaseClient} The Supabase server instance
+   * @returns {SupabaseClient} The Supabase server instance
    */
   public static getSupabaseInstance(): SupabaseClient<Database> {
     const cookieStore = cookies();
@@ -21,6 +21,7 @@ export default class SupabaseHelper {
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
+        cookieOptions: { domain: process.env.NEXT_PUBLIC_TOP_DOMAIN! },
         cookieEncoding: "raw",
         cookies: {
           getAll() {
