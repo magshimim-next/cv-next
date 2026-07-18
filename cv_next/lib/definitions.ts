@@ -76,11 +76,17 @@ type ErrorMessages = {
   };
 };
 
-export const Visible_Error_Messages: ErrorMessages = {
+export const Visible_Error_Messages = {
   InactiveUser: {
     keyword: "InactiveUser",
     title: "Inactive User",
     description: "That page requires that you get approved by the moderators.",
+  },
+  PendingUser: {
+    keyword: "PendingUser",
+    title: "Pending User",
+    description:
+      "To use cv next and other magshimim next products. Please sign-up at forms.magshimim-next.com",
   },
   UploadFailed: {
     keyword: "UploadFailed",
@@ -116,4 +122,4 @@ export const Visible_Error_Messages: ErrorMessages = {
     description:
       "Please try again later and contact support if the problem persists.",
   },
-};
+} satisfies ErrorMessages;

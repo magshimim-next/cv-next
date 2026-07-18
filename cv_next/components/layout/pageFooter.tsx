@@ -5,6 +5,25 @@ import { FaCodeBranch } from "react-icons/fa";
 import Definitions from "@/lib/definitions";
 import DynamicLogo from "@/components/ui/DynamicLogo";
 
+const LEGAL_LINKS = [
+  {
+    label: "Privacy Policy",
+    href: "https://docs.google.com/document/d/1zWeOzRA0eK_ahKxknTbAlG17MUsIIb3bH9Af6qPDuI0/edit?usp=sharing",
+  },
+  {
+    label: "Terms of Service",
+    href: "https://docs.google.com/document/d/1XBm2E3KjwGY2KHTboQ0Wyo1Clk_psBV1pjul0aB0soY/edit?usp=sharing",
+  },
+  {
+    label: "Accessibility Notice",
+    href: "https://docs.google.com/document/d/1i4THS6x877WCb3VGFHvVqdb2g7vxa_-zuNykStVhm7A/edit?usp=sharing",
+  },
+];
+
+/**
+ *
+ * @param repo
+ */
 function useGithubVersion(repo = Definitions.GITHUB_REPO) {
   const [version, setVersion] = useState<string | null>(null);
 
@@ -79,6 +98,21 @@ const Footer: React.FC = () => {
         <p>
           &copy; {new Date().getFullYear()} Magshimim Next. All rights reserved.
         </p>
+      </div>
+      <div className="mb-2 flex flex-wrap justify-center gap-x-2 text-center text-xs">
+        {LEGAL_LINKS.map((link, i) => (
+          <span key={link.href} className="flex items-center gap-2">
+            {i > 0 && <span aria-hidden="true">&middot;</span>}
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:underline"
+            >
+              {link.label}
+            </a>
+          </span>
+        ))}
       </div>
       <div className="mt-1 rounded-md">
         <div className="flex justify-center text-center text-xs sm:text-left">

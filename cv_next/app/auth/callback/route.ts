@@ -5,8 +5,14 @@ import SupabaseHelper from "@/server/api/supabaseHelper";
 import { checkRedirect } from "@/lib/utils";
 import logger from "@/server/base/logger";
 import { validateUsername, isCurrentFirstLogin } from "@/server/api/users";
+
+/**
+ * The GET request handler for the auth endpoint.
+ * @param {Request} request The request object that was sent to the server.
+ * @returns {Promise<NextResponse>} The response object with the relevant data or error message.
+ */
 export async function GET(request: Request) {
-  const { searchParams, origin: _origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
   let next = searchParams.get("next") || "";
   if (code) {
@@ -29,7 +35,7 @@ export async function GET(request: Request) {
         } else {
           logger.error(isValid.errors, "Error in validating Username");
           const nextUrl = new URL(
-            `/?error=${Visible_Error_Messages.InactiveUser.keyword}`,
+            `/?error=${Visible_Error_Messages.PendingUser.keyword}`,
             process.env.NEXT_PUBLIC_BASE_URL
           );
           return NextResponse.redirect(nextUrl);
