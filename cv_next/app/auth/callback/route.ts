@@ -5,9 +5,11 @@ import SupabaseHelper from "@/server/api/supabaseHelper";
 import { checkRedirect } from "@/lib/utils";
 import logger from "@/server/base/logger";
 import { validateUsername, isCurrentFirstLogin } from "@/server/api/users";
+
 /**
- *
- * @param request
+ * The GET request handler for the auth endpoint.
+ * @param {Request} request The request object that was sent to the server.
+ * @returns {Promise<NextResponse>} The response object with the relevant data or error message.
  */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

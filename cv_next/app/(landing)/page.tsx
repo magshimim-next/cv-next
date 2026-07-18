@@ -3,10 +3,11 @@ import { getUser } from "@/app/actions/users/getUser";
 import { LoginLayout } from "@/app/login/components/loginLayout";
 
 /**
- *
- * @param root0
- * @param root0.searchParams
- * @param root0.searchParams.error
+ * This page is the main page of the site.
+ * @param {any} root0 The search params sent to the page.
+ * @param {any} root0.searchParams The search params sent to the page
+ * @param {string} root0.searchParams.error The error message from the url parameters.
+ * @returns {JSX.Element} The CV page.
  */
 export default async function Page({
   searchParams,
